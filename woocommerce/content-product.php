@@ -107,16 +107,16 @@ if (empty($product) || !$product->is_visible()) {
         </div>
 
         <!-- Product Info -->
-        <div class="product-info">
+        <div class="product-info text-center">
             <!-- Product Title -->
-            <h2 class="text-sm md:text-base text-charcoal mb-1 hover:text-taupe-600 transition-colors">
+            <h2 class="text-xs md:text-sm font-bold text-charcoal mb-2 hover:text-taupe-600 transition-colors uppercase tracking-wider leading-snug">
                 <a href="<?php the_permalink(); ?>">
                     <?php the_title(); ?>
                 </a>
             </h2>
 
             <!-- Product Price -->
-            <div class="product-price text-sm md:text-base text-charcoal font-medium mb-2">
+            <div class="product-price text-sm md:text-base text-charcoal font-bold mb-3">
                 <?php echo $product->get_price_html(); ?>
             </div>
 

@@ -362,6 +362,42 @@
     @apply flex items-center gap-2;
   }
 
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  /* Shop Page Refinements */
+  .woocommerce-shop-wrapper .products {
+    @apply gap-y-16;
+  }
+
+  .woocommerce-shop-wrapper .product-card {
+    @apply transition-transform duration-300;
+  }
+
+  .moretti-pagination-wrapper ul.page-numbers {
+    @apply flex items-center justify-center gap-2 list-none p-0;
+  }
+
+  .moretti-pagination-wrapper ul.page-numbers li span.current {
+    @apply bg-charcoal text-white border-charcoal;
+  }
+
+  .moretti-pagination-wrapper ul.page-numbers li a,
+  .moretti-pagination-wrapper ul.page-numbers li span {
+    @apply w-10 h-10 flex items-center justify-center border border-gray-200 text-xs font-bold transition-all;
+  }
+
+  .moretti-pagination-wrapper ul.page-numbers li a:hover {
+    @apply border-charcoal text-charcoal;
+  }
+
   /* Marquee Animation */
   @keyframes marquee {
     0% { transform: translateX(0); }

@@ -9,248 +9,179 @@ defined('ABSPATH') || exit;
 
 get_header(); ?>
 
-    <!-- ARCHIVE-PRODUCT.PHP LOADED -->
-    <div class="woocommerce-shop-wrapper bg-white">
+<div class="woocommerce-shop-wrapper bg-white min-h-screen">
+    <div class="container mx-auto px-4 py-12 md:py-20">
         
         <?php if (have_posts()) : ?>
 
-            <div class="container mx-auto px-4 py-8 md:py-12">
-                
-                <!-- Page Title -->
-                <?php if (apply_filters('woocommerce_show_page_title', true)) : ?>
-                    <h1 class="text-3xl md:text-4xl font-light text-charcoal mb-8 md:mb-12 text-center tracking-[0.2em] uppercase">
-                        <?php 
-                        $title = woocommerce_page_title(false);
-                        if ($title === 'Sklep' || $title === 'Products') {
-                            echo 'SKLEP';
-                        } else {
-                            echo esc_html(strtoupper($title));
-                        }
-                        ?>
-                    </h1>
-                <?php endif; ?>
+            <!-- Shop Header -->
+            <header class="text-center mb-16 md:mb-24">
+                <span class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 mb-4 block font-medium">Kolekcja Akcesoriów</span>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-charcoal uppercase tracking-tighter leading-none">
+                    <?php 
+                    $title = woocommerce_page_title(false);
+                    if (is_search()) {
+                        echo 'Wyniki wyszukiwania';
+                    } elseif (is_product_category()) {
+                        echo esc_html(strtoupper(single_cat_title('', false)));
+                    } else {
+                        echo 'NASZ SKLEP';
+                    }
+                    ?>
+                </h1>
+            </header>
 
-                <!-- Search & Filter Bar -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 md:mb-12 pb-6 border-b border-gray-100">
-                    
-                <!-- Search Bar -->
-                <form role="search" method="get" class="w-full md:max-w-xs" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
-                    <div class="relative group">
+            <!-- Control Bar: Search, Sort, Filter -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 pb-8 border-b border-gray-100">
+                
+                <!-- Search -->
+                <div class="w-full md:w-1/3">
+                    <form role="search" method="get" class="relative group" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
                         <input 
                             type="search" 
                             name="s" 
-                            placeholder="Szukaj produktów..."
+                            placeholder="SZUKAJ..."
                             value="<?php echo get_search_query(); ?>"
-                            class="w-full bg-transparent border-b border-gray-300 focus:border-charcoal focus:outline-none py-2 pr-10 text-sm transition-colors"
+                            class="w-full bg-transparent border-b border-gray-200 focus:border-charcoal focus:outline-none py-2 pr-10 text-xs font-bold uppercase tracking-widest transition-colors"
                         >
                         <input type="hidden" name="post_type" value="product" />
-                        <button type="submit" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-taupe-600 hover:text-charcoal transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                        <button type="submit" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-charcoal hover:text-taupe-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </button>
-                    </div>
-                </form>
-                    
-                    <!-- Sort Dropdown -->
-                    <div class="flex items-center gap-8">
-                        <?php
-                        $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
-                            'menu_order' => 'Domyślne sortowanie',
-                            'popularity' => 'Sortuj wg popularności',
-                            'rating'     => 'Sortuj wg ocen',
-                            'date'       => 'Sortuj od najnowszych',
-                            'price'      => 'Cena: od najniższej',
-                            'price-desc' => 'Cena: od najwyższej',
-                        ));
-                        $orderby = isset($_GET['orderby']) ? wc_clean($_GET['orderby']) : apply_filters('woocommerce_default_catalog_orderby', get_option('woocommerce_default_catalog_orderby', 'menu_order'));
-                        ?>
-                        <form method="get" class="woocommerce-ordering border-none m-0 p-0">
-                            <select name="orderby" class="orderby text-xs uppercase tracking-widest bg-transparent border-none text-charcoal cursor-pointer hover:text-taupe-600 focus:outline-none p-0" onchange="this.form.submit()">
-                                <?php foreach ($catalog_orderby_options as $id => $name) : ?>
-                                    <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <?php wc_query_string_form_fields(null, array('orderby', 'submit', 'paged', 'product-page')); ?>
-                        </form>
-
-                        <!-- Filter Toggle Button -->
-                        <button 
-                            id="filter-toggle" 
-                            class="text-xs uppercase tracking-widest text-charcoal hover:text-taupe-600 transition-colors flex items-center gap-2 group"
-                        >
-                            <span>Filtry</span>
-                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    </form>
                 </div>
 
-                <!-- Filters Sidebar (Collapsible) -->
-                <div id="filters-panel" class="hidden mb-12 bg-sand-50/50 border border-gray-100 p-8 animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
-                        
-                        <!-- Price Filter -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Cena</h3>
-                            <form method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
-                                <?php
-                                foreach ($_GET as $key => $value) {
-                                    if ($key !== 'min_price' && $key !== 'max_price') {
-                                        echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
-                                    }
-                                }
-                                ?>
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-3">
-                                        <input 
-                                            type="number" 
-                                            name="min_price" 
-                                            placeholder="Min" 
-                                            value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>"
-                                            class="w-full bg-white border border-gray-200 text-xs p-3 focus:ring-1 focus:ring-charcoal rounded-none"
-                                        >
-                                        <span class="text-taupe-400">—</span>
-                                        <input 
-                                            type="number" 
-                                            name="max_price" 
-                                            placeholder="Max" 
-                                            value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>"
-                                            class="w-full bg-white border border-gray-200 text-xs p-3 focus:ring-1 focus:ring-charcoal rounded-none"
-                                        >
-                                    </div>
-                                    <button type="submit" class="w-full py-3 bg-charcoal text-white text-[10px] uppercase tracking-[0.2em] hover:bg-taupe-800 transition-colors font-bold">
-                                        Filtruj
-                                    </button>
-                                </div>
-                            </form>
+                <!-- Category Navigation -->
+                <nav class="hidden lg:flex items-center gap-8">
+                    <?php
+                    $categories = get_terms(array(
+                        'taxonomy' => 'product_cat',
+                        'hide_empty' => true,
+                        'exclude' => array(get_option('default_product_cat')),
+                    ));
+                    ?>
+                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
+                       class="text-[10px] font-bold uppercase tracking-[0.2em] <?php echo !is_product_category() ? 'text-charcoal border-b-2 border-charcoal' : 'text-taupe-400 hover:text-charcoal'; ?> pb-1 transition-all">
+                        Wszystko
+                    </a>
+                    <?php foreach ($categories as $cat) : ?>
+                        <a href="<?php echo esc_url(get_term_link($cat)); ?>" 
+                           class="text-[10px] font-bold uppercase tracking-[0.2em] <?php echo is_product_category($cat->slug) ? 'text-charcoal border-b-2 border-charcoal' : 'text-taupe-400 hover:text-charcoal'; ?> pb-1 transition-all">
+                            <?php echo esc_html($cat->name); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+
+                <!-- Sort & Filter Actions -->
+                <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                    <!-- Sort -->
+                    <div class="relative">
+                        <select name="orderby" class="appearance-none text-[10px] font-bold uppercase tracking-[0.2em] bg-transparent border-none text-charcoal cursor-pointer hover:text-taupe-600 focus:outline-none pr-6" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
+                            <?php
+                            $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
+                                'menu_order' => 'Sortowanie',
+                                'popularity' => 'Popularność',
+                                'date'       => 'Nowości',
+                                'price'      => 'Cena ↑',
+                                'price-desc' => 'Cena ↓',
+                            ));
+                            $orderby = isset($_GET['orderby']) ? wc_clean($_GET['orderby']) : 'menu_order';
+                            foreach ($catalog_orderby_options as $id => $name) : ?>
+                                <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                         </div>
-                        
-                        <!-- Color Filter -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Kolor</h3>
+                    </div>
+
+                    <!-- Filter Button -->
+                    <button id="filter-toggle" class="bg-charcoal text-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center gap-2">
+                        FILTRY
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2" stroke-linecap="round"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Expandable Filter Panel -->
+            <div id="filters-panel" class="hidden mb-16 bg-gray-50 border border-gray-100 p-8 md:p-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+                    <!-- Price -->
+                    <div>
+                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Cena (PLN)</h4>
+                        <form method="get" class="flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <input type="number" name="min_price" placeholder="Od" class="w-full bg-white border-none py-3 px-4 text-xs focus:ring-1 focus:ring-charcoal" value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
+                                <input type="number" name="max_price" placeholder="Do" class="w-full bg-white border-none py-3 px-4 text-xs focus:ring-1 focus:ring-charcoal" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>">
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-charcoal text-white text-[10px] font-bold uppercase tracking-widest hover:bg-taupe-800 transition-colors">Zastosuj</button>
+                        </form>
+                    </div>
+
+                    <!-- Colors -->
+                    <div>
+                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Kolory</h4>
+                        <div class="flex flex-wrap gap-3">
                             <?php
                             $colors = get_terms(array('taxonomy' => 'pa_color', 'hide_empty' => true));
-                            if (!empty($colors) && !is_wp_error($colors)) : ?>
-                                <div class="flex flex-wrap gap-3">
-                                    <?php foreach ($colors as $color) : 
-                                        $color_hex = moretti_get_color_hex($color->name);
-                                        $is_active = isset($_GET['filter_color']) && $_GET['filter_color'] === $color->slug;
-                                    ?>
-                                        <a 
-                                            href="?filter_color=<?php echo esc_attr($color->slug); ?><?php echo isset($_GET['product_cat']) ? '&product_cat=' . esc_attr($_GET['product_cat']) : ''; ?>" 
-                                            class="w-6 h-6 rounded-full ring-1 <?php echo $is_active ? 'ring-charcoal ring-offset-2 ring-2' : 'ring-gray-200'; ?> hover:ring-charcoal transition-all"
-                                            style="background-color: <?php echo esc_attr($color_hex); ?>;"
-                                            title="<?php echo esc_attr($color->name); ?>"
-                                        ></a>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
+                            foreach ($colors as $color) :
+                                $color_hex = moretti_get_color_hex($color->name);
+                                $is_active = isset($_GET['filter_color']) && $_GET['filter_color'] === $color->slug;
+                            ?>
+                                <a href="?filter_color=<?php echo $color->slug; ?>" class="w-8 h-8 rounded-full border-2 <?php echo $is_active ? 'border-charcoal scale-110' : 'border-transparent'; ?> transition-all hover:scale-110" style="background-color: <?php echo $color_hex; ?>;" title="<?php echo $color->name; ?>"></a>
+                            <?php endforeach; ?>
                         </div>
-                        
-                        <!-- Stock Status -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Dostępność</h3>
-                            <div class="space-y-3">
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input 
-                                        type="checkbox" 
-                                        <?php echo isset($_GET['stock_status']) && in_array('instock', explode(',', $_GET['stock_status'])) ? 'checked' : ''; ?>
-                                        onchange="location.href='<?php echo esc_url(add_query_arg('stock_status', 'instock')); ?>'"
-                                        class="w-4 h-4 border-gray-300 text-charcoal focus:ring-charcoal rounded-none"
-                                    >
-                                    <span class="text-xs text-taupe-700 group-hover:text-charcoal transition-colors">W magazynie</span>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <!-- Clear Filters -->
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Reset</h3>
-                            <a 
-                                href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-                                class="inline-block w-full text-center py-3 border border-charcoal text-[10px] uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white transition-colors"
-                            >
-                                Wyczyść filtry
-                            </a>
-                        </div>
-                        
+                    </div>
+
+                    <!-- Categories (Mobile only) -->
+                    <div class="lg:hidden">
+                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Kategorie</h4>
+                        <ul class="space-y-3">
+                            <?php foreach ($categories as $cat) : ?>
+                                <li><a href="<?php echo esc_url(get_term_link($cat)); ?>" class="text-xs uppercase tracking-widest text-taupe-600 hover:text-charcoal"><?php echo $cat->name; ?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-col justify-end">
+                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="text-[10px] font-bold uppercase tracking-[0.2em] text-charcoal border-b border-charcoal pb-1 w-fit hover:opacity-70 transition-opacity">Wyczyść wszystkie filtry</a>
                     </div>
                 </div>
+            </div>
 
-                <!-- Category Filter Pills -->
+            <!-- Product Grid -->
+            <?php woocommerce_product_loop_start(); ?>
+                <?php while (have_posts()) : the_post(); ?>
+                    <?php wc_get_template_part('content', 'product'); ?>
+                <?php endwhile; ?>
+            <?php woocommerce_product_loop_end(); ?>
+
+            <!-- Pagination -->
+            <div class="mt-20 flex justify-center">
                 <?php
-                $product_categories = get_terms(array(
-                    'taxonomy' => 'product_cat',
-                    'hide_empty' => true,
-                    'exclude' => array(get_option('default_product_cat')),
+                echo paginate_links(array(
+                    'base'         => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+                    'format'       => '?paged=%#%',
+                    'current'      => max(1, get_query_var('paged')),
+                    'total'        => $wp_query->max_num_pages,
+                    'prev_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>',
+                    'next_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>',
+                    'type'         => 'list',
+                    'class'        => 'moretti-pagination'
                 ));
-
-                if (!empty($product_categories) && !is_wp_error($product_categories)) : ?>
-                    <div class="mb-12 flex flex-wrap justify-center gap-4">
-                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-                           class="text-[10px] uppercase tracking-[0.2em] px-6 py-2 border border-charcoal transition-colors rounded-none <?php echo (!is_product_category()) ? 'bg-charcoal text-white' : 'text-charcoal hover:bg-charcoal hover:text-white'; ?>">
-                            Wszystko
-                        </a>
-                        <?php foreach ($product_categories as $category) : ?>
-                            <a href="<?php echo esc_url(get_term_link($category)); ?>" 
-                               class="text-[10px] uppercase tracking-[0.2em] px-6 py-2 border border-charcoal transition-colors rounded-none <?php echo (is_product_category($category->slug)) ? 'bg-charcoal text-white' : 'text-charcoal hover:bg-charcoal hover:text-white'; ?>">
-                                <?php echo esc_html($category->name); ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Products Grid -->
-                <?php
-                woocommerce_product_loop_start();
-
-                while (have_posts()) {
-                    the_post();
-                    
-                    /**
-                     * Hook: woocommerce_shop_loop.
-                     */
-                    do_action('woocommerce_shop_loop');
-
-                    wc_get_template_part('content', 'product');
-                }
-
-                woocommerce_product_loop_end();
                 ?>
-                <div class="clear-both"></div>
-
-                <!-- Pagination -->
-                <div class="moretti-pagination-wrapper mt-12 md:mt-20">
-                    <style>
-                        .moretti-pagination-wrapper ul.page-numbers { display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 8px !important; list-style: none !important; }
-                        .moretti-pagination-wrapper ul.page-numbers li { display: block !important; margin: 0 !important; }
-                    </style>
-                    <?php
-                    /**
-                     * Hook: woocommerce_after_shop_loop.
-                     */
-                    do_action('woocommerce_after_shop_loop');
-                    ?>
-                </div>
-
             </div>
 
         <?php else : ?>
+            <div class="text-center py-20">
+                <h2 class="text-2xl font-light text-charcoal mb-4 uppercase tracking-widest">Nie znaleziono produktów</h2>
+                <p class="text-taupe-600 mb-8">Spróbuj zmienić filtry lub wyszukiwaną frazę.</p>
+                <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="inline-block bg-charcoal text-white px-10 py-4 font-bold text-xs uppercase tracking-widest">Wszystkie produkty</a>
+            </div>
+        <?php endif; ?>
 
-        <div class="container mx-auto px-4 py-12 text-center">
-            <?php
-            /**
-             * Hook: woocommerce_no_products_found.
-             */
-            do_action('woocommerce_no_products_found');
-            ?>
-        </div>
-
-    <?php endif; ?>
-
+    </div>
 </div>
 
-<?php
-get_footer();
+<?php get_footer(); ?>
