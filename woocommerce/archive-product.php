@@ -32,7 +32,7 @@ get_header(); ?>
             </header>
 
             <!-- Control Bar: Search, Sort, Filter -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 pb-8 border-b border-gray-100">
+            <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-16 pb-8 border-b border-gray-100 relative z-50">
                 
                 <!-- Search -->
                 <div class="w-full md:w-1/3">
@@ -42,7 +42,7 @@ get_header(); ?>
                             name="s" 
                             placeholder="SZUKAJ..."
                             value="<?php echo get_search_query(); ?>"
-                            class="w-full bg-transparent border-b border-gray-200 focus:border-charcoal focus:outline-none py-2 pr-10 text-xs font-bold uppercase tracking-widest transition-colors"
+                            class="w-full bg-transparent border-b border-gray-200 focus:border-charcoal focus:outline-none py-4 pr-10 text-xs font-bold uppercase tracking-widest transition-colors"
                         >
                         <input type="hidden" name="post_type" value="product" />
                         <button type="submit" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-charcoal hover:text-taupe-600 transition-colors">
@@ -73,10 +73,10 @@ get_header(); ?>
                 </nav>
 
                 <!-- Sort & Filter Actions -->
-                <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                     <!-- Sort -->
-                    <div class="relative">
-                        <select name="orderby" class="appearance-none text-[10px] font-bold uppercase tracking-[0.2em] bg-transparent border-none text-charcoal cursor-pointer hover:text-taupe-600 focus:outline-none pr-6" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
+                    <div class="relative w-full md:w-[220px]">
+                        <select name="orderby" class="moretti-custom-select appearance-none text-[10px] font-bold uppercase tracking-[0.2em] bg-transparent border-none text-charcoal cursor-pointer hover:text-taupe-600 focus:outline-none pr-6" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
                             <?php
                             $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
                                 'menu_order' => 'Sortowanie',
@@ -90,15 +90,12 @@ get_header(); ?>
                                 <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                        </div>
                     </div>
 
                     <!-- Filter Button -->
-                    <button id="filter-toggle" class="bg-charcoal text-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center gap-2">
+                    <button id="filter-toggle" class="bg-charcoal text-white px-8 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center justify-center gap-3">
                         FILTRY
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2" stroke-linecap="round"></path></svg>
+                        <svg class="transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                     </button>
                 </div>
             </div>

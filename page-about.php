@@ -7,140 +7,94 @@
 
 get_header(); ?>
 
-<!-- Hero Section -->
-<section class="relative bg-cream py-16 md:py-24">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-charcoal mb-6 uppercase tracking-widest">
-                O nas
-            </h1>
-            <div class="text-lg md:text-xl text-taupe-700 max-w-3xl mx-auto">
-                <?php if (get_the_content()) : ?>
-                    <?php the_content(); ?>
-                <?php else : ?>
-                    <p>Wierzymy w ponadczasowy design, najwyższą jakość polskiej skóry i rzemiosło, które przetrwa lata. Każdy nasz portfel to owoc pasji do detalu i minimalizmu.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Image Section -->
-<section class="container mx-auto px-4 py-12 md:py-20">
-    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden rounded-none">
-        <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('full', array('class' => 'w-full h-full object-cover')); ?>
-        <?php else : ?>
-            <div class="w-full h-full bg-sand-100 flex items-center justify-center">
-                <p class="text-taupe-600 text-xs uppercase tracking-widest">Nasza Pracownia</p>
-            </div>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- Our Story Section -->
-<section class="bg-white py-12 md:py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6 uppercase tracking-widest text-center md:text-left">Nasza Historia</h2>
-                    <div class="text-taupe-700 space-y-4 text-sm leading-relaxed">
-                        <p>Moretti narodziło się z miłości do tradycyjnego kaletnictwa. Zaczynaliśmy jako mała rodzinna hurtownia, dostarczając produkty najwyższej klasy do najlepszych sklepów w kraju.</p>
-                        <p>Dzisiaj Moretti to marka detaliczna, która stawia na bezpośrednią relację z klientem. Rezygnujemy z pośredników, aby oferować luksusowe portfele w uczciwych cenach.</p>
-                        <p>Każdy kawałek skóry jest przez nas starannie selekcjonowany, a każdy szew sprawdzany dwukrotnie.</p>
+<div class="about-page-wrapper bg-white">
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-20 md:pt-32 md:pb-32 border-b border-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 mb-8 block font-medium">O NASZEJ MARCE</span>
+                <h1 class="text-5xl md:text-7xl lg:text-9xl font-bold text-charcoal uppercase tracking-tighter leading-[0.85] mb-20">
+                    POLSKIE RZEMIOSŁO<br/>
+                    <span class="text-taupe-300">NOWOCZESNY DESIGN</span>
+                </h1>
+                <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-start">
+                    <div class="text-xl md:text-2xl text-charcoal leading-tight font-bold uppercase tracking-tight">
+                        Wierzymy, że portfel to coś więcej niż przedmiot. To towarzysz codzienności, świadek sukcesów i strażnik Twoich najważniejszych rzeczy.
                     </div>
-                </div>
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6 uppercase tracking-widest text-center md:text-left">Nasze Wartości</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Jakość</h3>
-                            <p class="text-taupe-700 text-sm">Używamy wyłącznie skóry licowej, która z wiekiem szlachetnieje i nabiera charakteru.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Rzemiosło</h3>
-                            <p class="text-taupe-700 text-sm">Łączymy tradycyjne techniki kaletnicze z nowoczesną technologią ochrony RFID.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Minimalizm</h3>
-                            <p class="text-taupe-700 text-sm">Tworzymy akcesoria, które są funkcjonalne i eleganckie bez zbędnych ozdobników.</p>
-                        </div>
+                    <div class="text-taupe-600 text-base leading-relaxed">
+                        Moretti narodziło się z pasji do tradycyjnego kaletnictwa. Łączymy dekady doświadczenia w obróbce skóry z minimalistyczną estetyką jutra. Każdy produkt opuszczający naszą pracownię to obietnica trwałości, która przetrwa próbę czasu i trendów.
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Mission Statement -->
-<section class="bg-sand-50 py-16 md:py-24">
-    <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-light text-charcoal mb-6 uppercase tracking-widest">Nasza Misja</h2>
-            <p class="text-lg md:text-xl text-taupe-700 mb-8 leading-relaxed">
-                Tworzyć akcesoria, które towarzyszą Ci w najważniejszych momentach życia, łącząc polską tradycję z nowoczesnym stylem życia.
-            </p>
-            <div class="flex flex-wrap justify-center gap-12 md:gap-16 mt-12">
-                <div>
-                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">15+</div>
-                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Lat Doświadczenia</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">100k+</div>
-                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Zadowolonych Klientów</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">100%</div>
-                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Polska Skóra</div>
+    <!-- Values & Philosophy -->
+    <section class="py-24 md:py-48 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid lg:grid-cols-3 gap-16 md:gap-32">
+                    <div class="space-y-10">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">01 / JAKOŚĆ</span>
+                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">SKÓRA LICOWA</h3>
+                        <p class="text-taupe-600 text-base leading-relaxed">
+                            Wykorzystujemy wyłącznie najwyższej klasy skórę licową z polskich i włoskich garbarni. Materiał ten z czasem nabiera unikalnej patyny, stając się jeszcze szlachetniejszym z każdym rokiem użytkowania.
+                        </p>
+                    </div>
+                    <div class="space-y-10">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">02 / TECHNOLOGIA</span>
+                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">OCHRONA RFID</h3>
+                        <p class="text-taupe-600 text-base leading-relaxed">
+                            Współczesność wymaga bezpieczeństwa. Każdy nasz portfel wyposażony jest w ultra-cienkie membrany blokujące sygnały RFID, chroniąc Twoje dane i środki przed nieautoryzowanym skanowaniem.
+                        </p>
+                    </div>
+                    <div class="space-y-10">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">03 / ETYKA</span>
+                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">LOCAL FIRST</h3>
+                        <p class="text-taupe-600 text-base leading-relaxed">
+                            Cały proces projektowania i produkcji odbywa się w Polsce. Wspieramy lokalnych rzemieślników i dbamy o to, by nasz ślad węglowy był jak najmniejszy, stawiając na transparentność i uczciwość.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Team Section (Optional) -->
-<section class="container mx-auto px-4 py-12 md:py-20">
-    <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-light text-charcoal mb-12 text-center">Meet Our Team</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            <?php 
-            $team_members = array(
-                array('name' => 'Sarah Johnson', 'role' => 'Founder & CEO'),
-                array('name' => 'Michael Chen', 'role' => 'Creative Director'),
-                array('name' => 'Emma Rodriguez', 'role' => 'Head of Sustainability'),
-                array('name' => 'David Kim', 'role' => 'Operations Manager'),
-            );
-            
-            foreach ($team_members as $member) : ?>
-                <div class="text-center">
-                    <div class="aspect-square bg-sand-100 rounded-lg mb-4 overflow-hidden">
-                        <div class="w-full h-full flex items-center justify-center">
-                            <span class="text-taupe-600 text-xs">Team Member</span>
-                        </div>
-                    </div>
-                    <h3 class="text-base font-medium text-charcoal mb-1"><?php echo esc_html($member['name']); ?></h3>
-                    <p class="text-sm text-taupe-600"><?php echo esc_html($member['role']); ?></p>
+    <!-- Stats Section -->
+    <section class="py-32 md:py-48 bg-charcoal text-white overflow-hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-16 md:gap-8 text-center">
+                <div class="space-y-6">
+                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">15+</div>
+                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Lat Tradycji</div>
                 </div>
-            <?php endforeach; ?>
+                <div class="space-y-6">
+                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">48h</div>
+                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Czas Produkcji</div>
+                </div>
+                <div class="space-y-6">
+                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">10k+</div>
+                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Uszytych Portfeli</div>
+                </div>
+                <div class="space-y-6">
+                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">100%</div>
+                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Gwarancja Jakości</div>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- CTA Section -->
-<section class="bg-charcoal text-white py-16 md:py-20">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl md:text-3xl font-light mb-6">Join Our Journey</h2>
-        <p class="text-sand-100 mb-8 max-w-2xl mx-auto">
-            Be part of a movement that values quality, sustainability, and timeless style.
-        </p>
-        <?php if (class_exists('WooCommerce')) : ?>
-            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-               class="inline-block px-8 py-3 bg-white text-charcoal hover:bg-sand-50 transition-colors">
-                Shop Now
-            </a>
-        <?php endif; ?>
-    </div>
-</section>
+    <!-- Final CTA -->
+    <section class="py-48 md:py-72 text-center bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-5xl md:text-8xl font-bold uppercase tracking-tighter leading-none mb-16">GOTOWY NA ZMIANĘ?</h2>
+                <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="inline-block bg-charcoal text-white px-16 py-6 text-xs font-bold uppercase tracking-[0.3em] hover:bg-taupe-800 transition-all transform hover:-translate-y-1">
+                    ODKRYJ KOLEKCJĘ
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
 
 <?php get_footer(); ?>

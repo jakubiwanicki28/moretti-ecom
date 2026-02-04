@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Custom Select Dropdowns
     function initCustomSelects() {
-        const selects = document.querySelectorAll('.product-cart-form-custom .variations select');
+        const selects = document.querySelectorAll('.product-cart-form-custom .variations select, select.moretti-custom-select');
         
         selects.forEach(select => {
             if (select.parentElement.querySelector('.custom-select-wrapper')) return;
@@ -120,21 +120,31 @@ document.addEventListener('DOMContentLoaded', function() {
             wrapper.className = 'custom-select-wrapper relative w-full';
             
             const trigger = document.createElement('div');
-            trigger.className = 'custom-select-trigger w-full px-4 py-3 border border-gray-300 text-sm bg-white cursor-pointer flex items-center justify-between select-none rounded-none';
-            trigger.innerHTML = `<span>${select.options[select.selectedIndex].text}</span><svg class="w-4 h-4 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>`;
+            trigger.className = 'custom-select-trigger w-full px-4 border border-gray-200 text-[10px] font-bold uppercase tracking-widest bg-white cursor-pointer flex items-center justify-between select-none rounded-none transition-colors hover:border-charcoal';
+            
+            trigger.innerHTML = `<span class="whitespace-nowrap overflow-hidden text-ellipsis">${select.options[select.selectedIndex].text}</span><svg class="w-3 h-3 ml-2 transition-transform duration-200 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>`;
             
             const optionsList = document.createElement('div');
-            optionsList.className = 'custom-options-list hidden absolute top-full left-0 w-full bg-white border border-gray-300 border-t-0 z-[100] shadow-lg rounded-none';
+            optionsList.className = 'custom-options-list hidden rounded-none';
             
             Array.from(select.options).forEach((option, index) => {
                 const opt = document.createElement('div');
-                opt.className = `custom-option px-4 py-3 text-sm hover:bg-sand-50 cursor-pointer transition-colors ${index === select.selectedIndex ? 'bg-sand-50 font-semibold' : ''}`;
+                opt.className = `custom-option px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-gray-50 cursor-pointer transition-colors ${index === select.selectedIndex ? 'bg-gray-50 font-black' : ''}`;
+
                 opt.textContent = option.text;
                 opt.dataset.value = option.value;
                 
                 opt.addEventListener('click', () => {
                     select.value = option.value;
+                    
+                    // Trigger change
                     select.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    // Also trigger inline onchange if it exists
+                    if (select.onchange) {
+                        select.onchange();
+                    }
+
                     trigger.querySelector('span').textContent = option.text;
                     optionsList.classList.add('hidden');
                     trigger.querySelector('svg').classList.remove('rotate-180');

@@ -75,7 +75,7 @@
     </div>
 
     <!-- HUGE LOGO TEXT (Screenshot 11) -->
-    <div class="footer-big-text text-center select-none">
+    <div class="footer-big-text text-center select-none pt-24 pb-12">
         MORETTI
     </div>
 </footer>
