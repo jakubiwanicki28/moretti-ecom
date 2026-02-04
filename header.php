@@ -18,7 +18,7 @@
 <!-- Top Banner (optional - can be controlled via Customizer) -->
 <?php if (get_theme_mod('show_top_banner', true)) : ?>
 <div class="bg-charcoal text-white text-center py-2 px-4 text-xs md:text-sm">
-    <?php echo wp_kses_post(get_theme_mod('top_banner_text', 'Complimentary U.S. No-Rush Shipping on orders of $60 or more. <a href="/shop" class="underline">Shop now</a>')); ?>
+    <?php echo wp_kses_post(get_theme_mod('top_banner_text', 'Darmowa dostawa przy zamówieniach powyżej 250 zł. <a href="/shop" class="underline">Kup teraz</a>')); ?>
 </div>
 <?php endif; ?>
 
@@ -144,7 +144,7 @@
     <div id="mobile-menu" style="display: none;" class="md:hidden bg-white border-t border-gray-100">
         <nav class="container mx-auto px-6 py-8">
             <ul class="space-y-6">
-                <li><a href="<?php echo esc_url(home_url('/')); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">Home</a></li>
+                <li><a href="<?php echo esc_url(home_url('/')); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">Start</a></li>
                 <?php if (class_exists('WooCommerce')) : ?>
                     <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">Sklep</a></li>
                 <?php endif; ?>

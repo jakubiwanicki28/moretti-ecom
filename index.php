@@ -21,13 +21,13 @@ get_header(); ?>
                     <h1 class="text-4xl md:text-6xl font-light text-charcoal mb-4">
                         <?php bloginfo('name'); ?>
                     </h1>
-                    <p class="text-lg md:text-xl text-taupe-700 max-w-2xl mx-auto">
-                        Discover timeless elegance and modern simplicity
+                    <p class="text-lg md:text-xl text-taupe-700 max-w-2xl mx-auto uppercase tracking-widest">
+                        Odkryj ponadczasową elegancję i nowoczesny minimalizm
                     </p>
                     <?php if (class_exists('WooCommerce')) : ?>
                         <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-                           class="inline-block mt-8 px-8 py-3 bg-charcoal text-white hover:bg-taupe-800 transition-colors">
-                            Shop Now
+                           class="inline-block mt-8 px-10 py-4 bg-charcoal text-white hover:bg-taupe-800 transition-colors font-bold text-sm uppercase tracking-widest">
+                            ZOBACZ KOLEKCJĘ
                         </a>
                     <?php endif; ?>
                 </div>
@@ -100,25 +100,25 @@ get_header(); ?>
 <!-- Call to Action / Newsletter Section -->
 <section class="bg-cream py-16 md:py-24">
     <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-4">
-            Lorem ipsum
+        <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-4 uppercase tracking-widest">
+            Bądź na bieżąco
         </h2>
         <p class="text-taupe-700 mb-8 max-w-2xl mx-auto">
-            Get the latest new from us
+            Zapisz się do naszego newslettera i otrzymuj informacje o nowych kolekcjach oraz ofertach specjalnych.
         </p>
         
         <form class="max-w-md mx-auto flex gap-2">
             <input 
                 type="email" 
-                placeholder="Enter your email address"
+                placeholder="Twój adres e-mail"
                 class="flex-1 px-4 py-3 border border-gray-300 focus:border-charcoal focus:outline-none text-sm"
                 required
             >
             <button 
                 type="submit"
-                class="px-6 py-3 bg-charcoal text-white hover:bg-taupe-800 transition-colors text-sm font-medium"
+                class="px-6 py-3 bg-charcoal text-white hover:bg-taupe-800 transition-colors text-sm font-bold uppercase tracking-widest"
             >
-                Subscribe
+                Zapisz się
             </button>
         </form>
     </div>
@@ -140,11 +140,11 @@ get_header(); ?>
         if ($featured_query->have_posts()) : ?>
             
             <section class="container mx-auto px-4 py-12 md:py-20">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-2">Featured Products</h2>
+                <div class="text-center mb-12">
+                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-2 uppercase tracking-widest">Polecane produkty</h2>
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-                       class="text-sm text-taupe-600 hover:text-charcoal transition-colors">
-                        View All →
+                       class="text-xs font-bold text-taupe-600 hover:text-charcoal transition-colors uppercase tracking-widest">
+                        Zobacz wszystko →
                     </a>
                 </div>
                 

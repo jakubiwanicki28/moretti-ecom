@@ -12,49 +12,45 @@
             
             <!-- Column 1: Contact -->
             <div>
-                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Contact Us</h4>
+                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Kontakt</h4>
                 <ul class="space-y-2 text-sm text-taupe-700">
-                    <li>+1 (844) 326-4000</li>
-                    <li><a href="mailto:info@moretti.com" class="hover:text-charcoal transition-colors">Email Us</a></li>
-                    <li>Mon-Fri 9am-3pm PT</li>
+                    <li>+48 123 456 789</li>
+                    <li><a href="mailto:biuro@moretti.com" class="hover:text-charcoal transition-colors">Napisz do nas</a></li>
+                    <li>Pn-Pt 9:00 - 17:00</li>
                 </ul>
             </div>
 
             <!-- Column 2: Customer Service -->
             <div>
-                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Customers</h4>
+                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Dla Klienta</h4>
                 <ul class="space-y-2 text-sm text-taupe-700">
                     <?php if (class_exists('WooCommerce')) : ?>
-                    <li><a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>" class="hover:text-charcoal transition-colors">Start a Return</a></li>
-                    <li><a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="hover:text-charcoal transition-colors">Return Policy</a></li>
+                    <li><a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>" class="hover:text-charcoal transition-colors">Zwroty i reklamacje</a></li>
+                    <li><a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="hover:text-charcoal transition-colors">Moje konto</a></li>
                     <?php endif; ?>
                     <li><a href="<?php echo esc_url(home_url('/faq')); ?>" class="hover:text-charcoal transition-colors">FAQ</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/catalog')); ?>" class="hover:text-charcoal transition-colors">Catalogs and Mailers</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/about-group-gifting')); ?>" class="hover:text-charcoal transition-colors">About Group Gifting</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/regulamin')); ?>" class="hover:text-charcoal transition-colors">Regulamin</a></li>
                 </ul>
             </div>
 
             <!-- Column 3: Company -->
             <div>
-                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Company</h4>
+                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Firma</h4>
                 <ul class="space-y-2 text-sm text-taupe-700">
-                    <li><a href="<?php echo esc_url(home_url('/about-us')); ?>" class="hover:text-charcoal transition-colors">About Us</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/sustainability')); ?>" class="hover:text-charcoal transition-colors">Sustainability</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/discover-renne')); ?>" class="hover:text-charcoal transition-colors">Discover Renne</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/careers')); ?>" class="hover:text-charcoal transition-colors">Careers</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/privacy-policy')); ?>" class="hover:text-charcoal transition-colors">Privacy Policy</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/terms')); ?>" class="hover:text-charcoal transition-colors">Terms</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/o-nas')); ?>" class="hover:text-charcoal transition-colors">O nas</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/produkcja')); ?>" class="hover:text-charcoal transition-colors">Nasza produkcja</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/polityka-prywatnosci')); ?>" class="hover:text-charcoal transition-colors">Polityka prywatności</a></li>
                 </ul>
             </div>
 
             <!-- Column 4: Newsletter -->
             <div>
-                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Join us in living freer, better. Every day.</h4>
+                <h4 class="text-xs font-semibold tracking-wider text-charcoal mb-4 uppercase">Zapisz się do newslettera i odbierz -10% na pierwszy portfel.</h4>
                 <form class="space-y-3" action="#" method="post">
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Enter your email address"
+                        placeholder="Twój adres e-mail"
                         class="w-full px-4 py-2 text-sm border border-gray-300 focus:border-charcoal focus:outline-none transition-colors"
                         required
                     >
@@ -62,11 +58,11 @@
                         type="submit"
                         class="w-full bg-charcoal text-white text-sm font-medium py-2 px-4 hover:bg-taupe-800 transition-colors"
                     >
-                        Subscribe
+                        Zapisz się
                     </button>
                 </form>
                 <p class="mt-3 text-xs text-taupe-600">
-                    By signing up, you agree to our <a href="<?php echo esc_url(home_url('/privacy-policy')); ?>" class="underline hover:text-charcoal">Privacy Policy</a> and <a href="<?php echo esc_url(home_url('/terms')); ?>" class="underline hover:text-charcoal">Terms of Service</a>.
+                    Zapisując się, akceptujesz naszą <a href="<?php echo esc_url(home_url('/polityka-prywatnosci')); ?>" class="underline hover:text-charcoal">politykę prywatności</a>.
                 </p>
             </div>
         </div>

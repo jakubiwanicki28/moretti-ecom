@@ -93,7 +93,7 @@ get_header(); ?>
                         
                         <!-- Price Filter -->
                         <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Zakres ceny</h3>
+                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Cena</h3>
                             <form method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
                                 <?php
                                 foreach ($_GET as $key => $value) {
@@ -109,7 +109,7 @@ get_header(); ?>
                                             name="min_price" 
                                             placeholder="Min" 
                                             value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>"
-                                            class="w-full bg-white border-none text-xs p-3 focus:ring-1 focus:ring-charcoal"
+                                            class="w-full bg-white border border-gray-200 text-xs p-3 focus:ring-1 focus:ring-charcoal rounded-none"
                                         >
                                         <span class="text-taupe-400">—</span>
                                         <input 
@@ -117,11 +117,11 @@ get_header(); ?>
                                             name="max_price" 
                                             placeholder="Max" 
                                             value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>"
-                                            class="w-full bg-white border-none text-xs p-3 focus:ring-1 focus:ring-charcoal"
+                                            class="w-full bg-white border border-gray-200 text-xs p-3 focus:ring-1 focus:ring-charcoal rounded-none"
                                         >
                                     </div>
-                                    <button type="submit" class="w-full py-3 bg-charcoal text-white text-[10px] uppercase tracking-[0.2em] hover:bg-taupe-800 transition-colors">
-                                        Zastosuj
+                                    <button type="submit" class="w-full py-3 bg-charcoal text-white text-[10px] uppercase tracking-[0.2em] hover:bg-taupe-800 transition-colors font-bold">
+                                        Filtruj
                                     </button>
                                 </div>
                             </form>
@@ -129,7 +129,7 @@ get_header(); ?>
                         
                         <!-- Color Filter -->
                         <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Kolory</h3>
+                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Kolor</h3>
                             <?php
                             $colors = get_terms(array('taxonomy' => 'pa_color', 'hide_empty' => true));
                             if (!empty($colors) && !is_wp_error($colors)) : ?>
@@ -162,26 +162,17 @@ get_header(); ?>
                                     >
                                     <span class="text-xs text-taupe-700 group-hover:text-charcoal transition-colors">W magazynie</span>
                                 </label>
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input 
-                                        type="checkbox" 
-                                        <?php echo isset($_GET['stock_status']) && in_array('onbackorder', explode(',', $_GET['stock_status'])) ? 'checked' : ''; ?>
-                                        onchange="location.href='<?php echo esc_url(add_query_arg('stock_status', 'onbackorder')); ?>'"
-                                        class="w-4 h-4 border-gray-300 text-charcoal focus:ring-charcoal rounded-none"
-                                    >
-                                    <span class="text-xs text-taupe-700 group-hover:text-charcoal transition-colors">Na zamówienie</span>
-                                </label>
                             </div>
                         </div>
                         
                         <!-- Clear Filters -->
                         <div>
-                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Akcje</h3>
+                            <h3 class="text-xs font-semibold text-charcoal mb-4 uppercase tracking-widest">Reset</h3>
                             <a 
                                 href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
                                 class="inline-block w-full text-center py-3 border border-charcoal text-[10px] uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white transition-colors"
                             >
-                                Wyczyść wszystko
+                                Wyczyść filtry
                             </a>
                         </div>
                         

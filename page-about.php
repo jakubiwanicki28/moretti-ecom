@@ -11,14 +11,14 @@ get_header(); ?>
 <section class="relative bg-cream py-16 md:py-24">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-charcoal mb-6">
-                <?php echo get_the_title() ? get_the_title() : 'About Us'; ?>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-light text-charcoal mb-6 uppercase tracking-widest">
+                O nas
             </h1>
             <div class="text-lg md:text-xl text-taupe-700 max-w-3xl mx-auto">
                 <?php if (get_the_content()) : ?>
                     <?php the_content(); ?>
                 <?php else : ?>
-                    <p>We believe in timeless design, sustainable practices, and the power of simplicity. Every piece we create is thoughtfully crafted to elevate your everyday.</p>
+                    <p>Wierzymy w ponadczasowy design, najwyższą jakość polskiej skóry i rzemiosło, które przetrwa lata. Każdy nasz portfel to owoc pasji do detalu i minimalizmu.</p>
                 <?php endif; ?>
             </div>
         </div>
@@ -27,12 +27,12 @@ get_header(); ?>
 
 <!-- Image Section -->
 <section class="container mx-auto px-4 py-12 md:py-20">
-    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden rounded-lg">
+    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden rounded-none">
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('full', array('class' => 'w-full h-full object-cover')); ?>
         <?php else : ?>
             <div class="w-full h-full bg-sand-100 flex items-center justify-center">
-                <p class="text-taupe-600 text-sm">About Us Hero Image</p>
+                <p class="text-taupe-600 text-xs uppercase tracking-widest">Nasza Pracownia</p>
             </div>
         <?php endif; ?>
     </div>
@@ -44,27 +44,27 @@ get_header(); ?>
         <div class="max-w-4xl mx-auto">
             <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6">Our Story</h2>
-                    <div class="text-taupe-700 space-y-4">
-                        <p>Founded in 2020, Moretti began with a simple vision: to create clothing that transcends trends and celebrates the beauty of minimalism.</p>
-                        <p>We believe that true style comes from confidence, not complexity. Every piece in our collection is designed to be versatile, timeless, and effortlessly elegant.</p>
-                        <p>From our headquarters to your closet, we're committed to sustainable practices, ethical production, and exceptional quality.</p>
+                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6 uppercase tracking-widest text-center md:text-left">Nasza Historia</h2>
+                    <div class="text-taupe-700 space-y-4 text-sm leading-relaxed">
+                        <p>Moretti narodziło się z miłości do tradycyjnego kaletnictwa. Zaczynaliśmy jako mała rodzinna hurtownia, dostarczając produkty najwyższej klasy do najlepszych sklepów w kraju.</p>
+                        <p>Dzisiaj Moretti to marka detaliczna, która stawia na bezpośrednią relację z klientem. Rezygnujemy z pośredników, aby oferować luksusowe portfele w uczciwych cenach.</p>
+                        <p>Każdy kawałek skóry jest przez nas starannie selekcjonowany, a każdy szew sprawdzany dwukrotnie.</p>
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6">Our Values</h2>
+                    <h2 class="text-2xl md:text-3xl font-light text-charcoal mb-6 uppercase tracking-widest text-center md:text-left">Nasze Wartości</h2>
                     <div class="space-y-6">
                         <div>
-                            <h3 class="text-lg font-medium text-charcoal mb-2">Sustainability</h3>
-                            <p class="text-taupe-700 text-sm">We source eco-friendly materials and partner with ethical manufacturers who share our commitment to the planet.</p>
+                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Jakość</h3>
+                            <p class="text-taupe-700 text-sm">Używamy wyłącznie skóry licowej, która z wiekiem szlachetnieje i nabiera charakteru.</p>
                         </div>
                         <div>
-                            <h3 class="text-lg font-medium text-charcoal mb-2">Quality</h3>
-                            <p class="text-taupe-700 text-sm">Each piece is crafted with meticulous attention to detail, designed to last for years, not seasons.</p>
+                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Rzemiosło</h3>
+                            <p class="text-taupe-700 text-sm">Łączymy tradycyjne techniki kaletnicze z nowoczesną technologią ochrony RFID.</p>
                         </div>
                         <div>
-                            <h3 class="text-lg font-medium text-charcoal mb-2">Simplicity</h3>
-                            <p class="text-taupe-700 text-sm">We embrace clean lines, neutral tones, and versatile designs that integrate seamlessly into any wardrobe.</p>
+                            <h3 class="text-xs font-semibold text-charcoal mb-2 uppercase tracking-widest">Minimalizm</h3>
+                            <p class="text-taupe-700 text-sm">Tworzymy akcesoria, które są funkcjonalne i eleganckie bez zbędnych ozdobników.</p>
                         </div>
                     </div>
                 </div>
@@ -77,22 +77,22 @@ get_header(); ?>
 <section class="bg-sand-50 py-16 md:py-24">
     <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-light text-charcoal mb-6">Our Mission</h2>
-            <p class="text-lg md:text-xl text-taupe-700 mb-8">
-                To empower individuals through thoughtfully designed, sustainably produced clothing that enhances their daily lives and respects our planet.
+            <h2 class="text-3xl md:text-4xl font-light text-charcoal mb-6 uppercase tracking-widest">Nasza Misja</h2>
+            <p class="text-lg md:text-xl text-taupe-700 mb-8 leading-relaxed">
+                Tworzyć akcesoria, które towarzyszą Ci w najważniejszych momentach życia, łącząc polską tradycję z nowoczesnym stylem życia.
             </p>
             <div class="flex flex-wrap justify-center gap-12 md:gap-16 mt-12">
                 <div>
-                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">500+</div>
-                    <div class="text-sm text-taupe-600 uppercase tracking-wider">Products</div>
+                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">15+</div>
+                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Lat Doświadczenia</div>
                 </div>
                 <div>
-                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">50K+</div>
-                    <div class="text-sm text-taupe-600 uppercase tracking-wider">Happy Customers</div>
+                    <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">100k+</div>
+                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Zadowolonych Klientów</div>
                 </div>
                 <div>
                     <div class="text-4xl md:text-5xl font-light text-charcoal mb-2">100%</div>
-                    <div class="text-sm text-taupe-600 uppercase tracking-wider">Sustainable</div>
+                    <div class="text-[10px] text-taupe-600 uppercase tracking-[0.2em]">Polska Skóra</div>
                 </div>
             </div>
         </div>

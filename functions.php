@@ -9,34 +9,50 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Theme setup
+// Polish WooCommerce Defaults
+function moretti_wallet_setup() {
+    update_option('woocommerce_currency', 'PLN');
+    update_option('woocommerce_default_country', 'PL');
+    update_option('woocommerce_price_num_decimals', 2);
+    update_option('woocommerce_currency_pos', 'right_space'); // 100,00 zł
+    update_option('woocommerce_coming_soon', 'no');
+    update_option('woocommerce_store_pages_only', 'no');
+}
+add_action('after_setup_theme', 'moretti_wallet_setup', 20);
+
+// Professional Wallet Categories
+function moretti_create_wallet_categories() {
+    if (!class_exists('WooCommerce')) return;
+    
+    $categories = array(
+        'portfele-meskie' => 'Portfele Męskie',
+        'portfele-damskie' => 'Portfele Damskie',
+        'slim-wallets' => 'Portfele Slim',
+        'etui-na-karty' => 'Etui na karty',
+        'akcesoria' => 'Akcesoria skórzane'
+    );
+    
+    foreach ($categories as $slug => $name) {
+        if (!get_term_by('slug', $slug, 'product_cat')) {
+            wp_insert_term($name, 'product_cat', array('slug' => $slug));
+        }
+    }
+}
+add_action('init', 'moretti_create_wallet_categories');
+
+// Register navigation menus
 function moretti_theme_setup() {
-    // Add theme support
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
     add_theme_support('custom-logo');
-    add_theme_support('html5', array(
-        'search-form',
-        'comment-form',
-        'comment-list',
-        'gallery',
-        'caption',
-    ));
-
-    // WooCommerce support
     add_theme_support('woocommerce');
     add_theme_support('wc-product-gallery-zoom');
     add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
 
-    // Disable WooCommerce Coming Soon mode programmatically
-    update_option('woocommerce_coming_soon', 'no');
-    update_option('woocommerce_store_pages_only', 'no');
-
-    // Register navigation menus
     register_nav_menus(array(
-        'primary' => __('Primary Menu', 'moretti-theme'),
-        'footer' => __('Footer Menu', 'moretti-theme'),
+        'primary' => __('Menu Główne', 'moretti-theme'),
+        'footer' => __('Menu Stopki', 'moretti-theme'),
     ));
 }
 add_action('after_setup_theme', 'moretti_theme_setup');
@@ -44,7 +60,7 @@ add_action('after_setup_theme', 'moretti_theme_setup');
 // Default menu fallback
 function moretti_default_menu() {
     echo '<ul class="flex space-x-8 items-center">';
-    echo '<li><a href="' . esc_url(home_url('/')) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">Home</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/')) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">Start</a></li>';
     if (class_exists('WooCommerce')) {
         echo '<li><a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">Sklep</a></li>';
     }
@@ -153,7 +169,7 @@ function moretti_customize_register($wp_customize) {
     ));
 
     $wp_customize->add_setting('top_banner_text', array(
-        'default' => 'Complimentary U.S. No-Rush Shipping on orders of $60 or more. <a href="/shop" class="underline">Shop now</a>',
+        'default' => 'Darmowa dostawa przy zamówieniach powyżej 250 zł. <a href="/shop" class="underline">Kup teraz</a>',
         'transport' => 'refresh',
         'sanitize_callback' => 'wp_kses_post',
     ));
@@ -258,6 +274,15 @@ function moretti_create_default_pages() {
 
     // Add pages to menu
     if ($menu_id) {
+        // Add Home link
+        wp_update_nav_menu_item($menu_id, 0, array(
+            'menu-item-title' => 'Start',
+            'menu-item-url' => home_url('/'),
+            'menu-item-type' => 'custom',
+            'menu-item-status' => 'publish',
+            'menu-item-position' => 1
+        ));
+
         // Add Shop page if WooCommerce is active
         if (class_exists('WooCommerce')) {
             $shop_page_id = wc_get_page_id('shop');
@@ -268,7 +293,7 @@ function moretti_create_default_pages() {
                     'menu-item-object' => 'page',
                     'menu-item-type' => 'post_type',
                     'menu-item-status' => 'publish',
-                    'menu-item-position' => 1
+                    'menu-item-position' => 2
                 ));
             }
         }
@@ -281,7 +306,7 @@ function moretti_create_default_pages() {
                 'menu-item-object' => 'page',
                 'menu-item-type' => 'post_type',
                 'menu-item-status' => 'publish',
-                'menu-item-position' => 2
+                'menu-item-position' => 3
             ));
         }
 
@@ -293,7 +318,7 @@ function moretti_create_default_pages() {
                 'menu-item-object' => 'page',
                 'menu-item-type' => 'post_type',
                 'menu-item-status' => 'publish',
-                'menu-item-position' => 3
+                'menu-item-position' => 4
             ));
         }
 
@@ -568,12 +593,12 @@ remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30
 // Add custom orderby options
 function moretti_custom_orderby($orderby_options) {
     return array(
-        'menu_order' => __('Default sorting', 'moretti-theme'),
-        'popularity' => __('Sort by popularity', 'moretti-theme'),
-        'rating'     => __('Sort by average rating', 'moretti-theme'),
-        'date'       => __('Sort by latest', 'moretti-theme'),
-        'price'      => __('Sort by price: low to high', 'moretti-theme'),
-        'price-desc' => __('Sort by price: high to low', 'moretti-theme'),
+        'menu_order' => 'Domyślne sortowanie',
+        'popularity' => 'Sortuj wg popularności',
+        'rating'     => 'Sortuj wg średniej oceny',
+        'date'       => 'Sortuj od najnowszych',
+        'price'      => 'Cena: od najniższej',
+        'price-desc' => 'Cena: od najwyższej',
     );
 }
 add_filter('woocommerce_catalog_orderby', 'moretti_custom_orderby');
