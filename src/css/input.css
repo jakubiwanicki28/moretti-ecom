@@ -362,17 +362,34 @@
     @apply flex items-center gap-2;
   }
 
-  /* Accordion styling */
-  .product-accordion summary {
-    @apply list-none cursor-pointer;
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
-  .product-accordion summary::-webkit-details-marker {
-    display: none;
+  .animate-marquee {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
   }
 
-  .product-accordion details[open] summary svg {
-    @apply rotate-180;
+  /* Typography overhaul for STYNRA style */
+  h1, h2, h3, h4 {
+    @apply tracking-tight font-bold;
+  }
+
+  .tracking-tighter {
+    letter-spacing: -0.05em;
+  }
+
+  /* Grid spacing fix */
+  .products.grid {
+    @apply gap-y-12;
+  }
+
+  /* Footer Overhaul */
+  .footer-big-text {
+    @apply text-[15vw] md:text-[20vw] font-bold leading-none tracking-tighter text-charcoal opacity-10 pointer-events-none select-none mt-12 overflow-hidden whitespace-nowrap;
   }
 
   /* OLD WOOCOMMERCE HOOKS STYLING - DEPRECATED BUT KEPT FOR BACKWARDS COMPAT */

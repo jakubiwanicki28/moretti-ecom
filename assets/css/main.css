@@ -1796,12 +1796,20 @@ header a.woocommerce-cart table.cart td.product-name a {
   top: 0.75rem;
 }
 
+.bottom-10 {
+  bottom: 2.5rem;
+}
+
 .z-10 {
   z-index: 10;
 }
 
 .z-50 {
   z-index: 50;
+}
+
+.z-0 {
+  z-index: 0;
 }
 
 .order-1 {
@@ -1828,6 +1836,11 @@ header a.woocommerce-cart table.cart td.product-name a {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mx-8 {
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .mb-1 {
@@ -1896,6 +1909,14 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mb-20 {
+  margin-bottom: 5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .block {
@@ -1990,6 +2011,22 @@ header a.woocommerce-cart table.cart td.product-name a {
   height: 100%;
 }
 
+.h-2 {
+  height: 0.5rem;
+}
+
+.h-\[70vh\] {
+  height: 70vh;
+}
+
+.h-\[80vh\] {
+  height: 80vh;
+}
+
+.h-\[90vh\] {
+  height: 90vh;
+}
+
 .w-1\.5 {
   width: 0.375rem;
 }
@@ -2032,6 +2069,10 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .w-full {
   width: 100%;
+}
+
+.w-2 {
+  width: 0.5rem;
 }
 
 .max-w-2xl {
@@ -2096,6 +2137,10 @@ header a.woocommerce-cart table.cart td.product-name a {
   resize: none;
 }
 
+.list-none {
+  list-style-type: none;
+}
+
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
@@ -2118,6 +2163,10 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .items-start {
   align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
 }
 
 .items-center {
@@ -2170,6 +2219,19 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .gap-8 {
   gap: 2rem;
+}
+
+.gap-16 {
+  gap: 4rem;
+}
+
+.gap-x-8 {
+  -moz-column-gap: 2rem;
+       column-gap: 2rem;
+}
+
+.gap-y-12 {
+  row-gap: 3rem;
 }
 
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
@@ -2254,6 +2316,16 @@ header a.woocommerce-cart table.cart td.product-name a {
   border-width: 2px;
 }
 
+.border-x {
+  border-left-width: 1px;
+  border-right-width: 1px;
+}
+
+.border-y {
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -2264,6 +2336,14 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .border-t {
   border-top-width: 1px;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.border-l {
+  border-left-width: 1px;
 }
 
 .border-none {
@@ -2298,6 +2378,15 @@ header a.woocommerce-cart table.cart td.product-name a {
 .border-red-600 {
   --tw-border-opacity: 1;
   border-color: rgb(220 38 38 / var(--tw-border-opacity, 1));
+}
+
+.border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+}
+
+.border-white\/10 {
+  border-color: rgb(255 255 255 / 0.1);
 }
 
 .bg-black\/10 {
@@ -2383,6 +2472,27 @@ header a.woocommerce-cart table.cart td.product-name a {
   background-color: rgb(255 255 255 / 0.9);
 }
 
+.bg-black\/20 {
+  background-color: rgb(0 0 0 / 0.2);
+}
+
+.bg-black\/30 {
+  background-color: rgb(0 0 0 / 0.3);
+}
+
+.bg-black\/40 {
+  background-color: rgb(0 0 0 / 0.4);
+}
+
+.bg-gray-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+}
+
+.bg-white\/40 {
+  background-color: rgb(255 255 255 / 0.4);
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -2458,6 +2568,16 @@ header a.woocommerce-cart table.cart td.product-name a {
   padding-bottom: 2rem;
 }
 
+.px-12 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
 .pb-20 {
   padding-bottom: 5rem;
 }
@@ -2488,6 +2608,10 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pb-1 {
+  padding-bottom: 0.25rem;
 }
 
 .text-left {
@@ -2546,6 +2670,11 @@ header a.woocommerce-cart table.cart td.product-name a {
   line-height: 1rem;
 }
 
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -2574,6 +2703,14 @@ header a.woocommerce-cart table.cart td.product-name a {
   line-height: 1.625;
 }
 
+.leading-none {
+  line-height: 1;
+}
+
+.leading-tight {
+  line-height: 1.25;
+}
+
 .tracking-\[0\.2em\] {
   letter-spacing: 0.2em;
 }
@@ -2592,6 +2729,14 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .tracking-widest {
   letter-spacing: 0.1em;
+}
+
+.tracking-\[0\.4em\] {
+  letter-spacing: 0.4em;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
 }
 
 .text-charcoal {
@@ -2654,12 +2799,25 @@ header a.woocommerce-cart table.cart td.product-name a {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+.text-yellow-400 {
+  --tw-text-opacity: 1;
+  color: rgb(250 204 21 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
 
 .opacity-0 {
   opacity: 0;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-90 {
+  opacity: 0.9;
 }
 
 .shadow-md {
@@ -2694,6 +2852,11 @@ header a.woocommerce-cart table.cart td.product-name a {
   --tw-ring-offset-width: 2px;
 }
 
+.grayscale {
+  --tw-grayscale: grayscale(100%);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .backdrop-blur-sm {
   --tw-backdrop-blur: blur(4px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
@@ -2726,6 +2889,10 @@ header a.woocommerce-cart table.cart td.product-name a {
 
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.duration-700 {
+  transition-duration: 700ms;
 }
 
 .animate-fade-in {
@@ -2927,6 +3094,11 @@ header a.text-base {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.hover\:bg-gray-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-charcoal:hover {
   --tw-text-opacity: 1;
   color: rgb(42 40 38 / var(--tw-text-opacity, 1));
@@ -2950,6 +3122,10 @@ header a.text-base {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.hover\:opacity-70:hover {
+  opacity: 0.7;
 }
 
 .hover\:ring-charcoal:hover {
@@ -2978,15 +3154,31 @@ header a.text-base {
   --tw-ring-color: rgb(42 40 38 / var(--tw-ring-opacity, 1));
 }
 
+.group[open] .group-open\:rotate-45 {
+  --tw-rotate: 45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .group:hover .group-hover\:scale-110 {
   --tw-scale-x: 1.1;
   --tw-scale-y: 1.1;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.group:hover .group-hover\:scale-105 {
+  --tw-scale-x: 1.05;
+  --tw-scale-y: 1.05;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .group:hover .group-hover\:text-charcoal {
   --tw-text-opacity: 1;
   color: rgb(42 40 38 / var(--tw-text-opacity, 1));
+}
+
+.group:hover .group-hover\:text-taupe-600 {
+  --tw-text-opacity: 1;
+  color: rgb(118 106 93 / var(--tw-text-opacity, 1));
 }
 
 .group:hover .group-hover\:opacity-100 {
@@ -3038,6 +3230,10 @@ header a.text-base {
 
   .md\:mt-24 {
     margin-top: 6rem;
+  }
+
+  .md\:block {
+    display: block;
   }
 
   .md\:flex {
@@ -3182,6 +3378,11 @@ header a.text-base {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
+
+  .md\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -3217,6 +3418,11 @@ header a.text-base {
 
   .lg\:text-6xl {
     font-size: 3.75rem;
+    line-height: 1;
+  }
+
+  .lg\:text-8xl {
+    font-size: 6rem;
     line-height: 1;
   }
 }
