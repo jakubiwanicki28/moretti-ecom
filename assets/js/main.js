@@ -50,6 +50,112 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Custom Select Dropdowns - Premium styling
+    function initCustomSelects() {
+        const selects = document.querySelectorAll('.product-cart-form-custom .variations select, select.moretti-custom-select');
+        
+        selects.forEach(select => {
+            if (select.parentElement.querySelector('.custom-select-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'custom-select-wrapper relative w-full';
+            
+            const trigger = document.createElement('div');
+            trigger.className = 'custom-select-trigger';
+            trigger.style.cssText = 'height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; padding-right: 45px; background: white; border: 1px solid #e5e7eb; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #2a2826; transition: all 0.2s;';
+            
+            trigger.innerHTML = `<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${select.options[select.selectedIndex].text}</span><svg style="width: 14px; height: 14px; margin-left: 12px; flex-shrink: 0; transition: transform 0.2s;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>`;
+            
+            const optionsList = document.createElement('div');
+            optionsList.className = 'custom-options-list';
+            optionsList.style.cssText = 'display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e5e7eb; border-top: none; max-height: 300px; overflow-y: auto; z-index: 1000;';
+            
+            Array.from(select.options).forEach((option, index) => {
+                const opt = document.createElement('div');
+                opt.className = 'custom-option';
+                opt.style.cssText = `padding: 16px 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; transition: background 0.2s; ${index === select.selectedIndex ? 'background: #f9fafb;' : ''}`;
+                opt.textContent = option.text;
+                opt.dataset.value = option.value;
+                
+                opt.addEventListener('mouseenter', () => {
+                    opt.style.background = '#f9fafb';
+                });
+                opt.addEventListener('mouseleave', () => {
+                    if (select.value !== opt.dataset.value) {
+                        opt.style.background = 'white';
+                    }
+                });
+                
+                opt.addEventListener('click', () => {
+                    select.value = option.value;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    if (select.onchange) {
+                        select.onchange();
+                    }
+
+                    trigger.querySelector('span').textContent = option.text;
+                    optionsList.style.display = 'none';
+                    trigger.querySelector('svg').style.transform = 'rotate(0deg)';
+                    
+                    optionsList.querySelectorAll('.custom-option').forEach(el => {
+                        el.style.background = el === opt ? '#f9fafb' : 'white';
+                    });
+                });
+                
+                optionsList.appendChild(opt);
+            });
+            
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = optionsList.style.display !== 'none';
+                
+                document.querySelectorAll('.custom-options-list').forEach(list => list.style.display = 'none');
+                document.querySelectorAll('.custom-select-trigger svg').forEach(svg => svg.style.transform = 'rotate(0deg)');
+                
+                if (!isOpen) {
+                    optionsList.style.display = 'block';
+                    trigger.querySelector('svg').style.transform = 'rotate(180deg)';
+                }
+            });
+            
+            trigger.addEventListener('mouseenter', () => {
+                trigger.style.borderColor = '#2a2826';
+                trigger.style.background = '#f9fafb';
+            });
+            trigger.addEventListener('mouseleave', () => {
+                trigger.style.borderColor = '#e5e7eb';
+                trigger.style.background = 'white';
+            });
+            
+            wrapper.appendChild(trigger);
+            wrapper.appendChild(optionsList);
+            
+            select.style.display = 'none';
+            select.parentElement.appendChild(wrapper);
+            
+            select.addEventListener('change', () => {
+                trigger.querySelector('span').textContent = select.options[select.selectedIndex].text;
+                optionsList.querySelectorAll('.custom-option').forEach(opt => {
+                    opt.style.background = opt.dataset.value === select.value ? '#f9fafb' : 'white';
+                });
+            });
+        });
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.custom-options-list').forEach(list => list.style.display = 'none');
+        document.querySelectorAll('.custom-select-trigger svg').forEach(svg => svg.style.transform = 'rotate(0deg)');
+    });
+
+    initCustomSelects();
+
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document.body).on('woocommerce_variation_has_changed', function() {
+            setTimeout(initCustomSelects, 50);
+        });
+    }
+
     // Product Image Slider Functions
     window.morettiSliderNext = function(button) {
         const slider = button.closest('.product-image-slider');
@@ -109,99 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Custom Select Dropdowns
-    function initCustomSelects() {
-        const selects = document.querySelectorAll('.product-cart-form-custom .variations select, select.moretti-custom-select');
-        
-        selects.forEach(select => {
-            if (select.parentElement.querySelector('.custom-select-wrapper')) return;
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'custom-select-wrapper relative w-full';
-            
-            const trigger = document.createElement('div');
-            trigger.className = 'custom-select-trigger w-full px-4 border border-gray-200 text-[10px] font-bold uppercase tracking-widest bg-white cursor-pointer flex items-center justify-between select-none rounded-none transition-colors hover:border-charcoal';
-            
-            trigger.innerHTML = `<span class="whitespace-nowrap overflow-hidden text-ellipsis">${select.options[select.selectedIndex].text}</span><svg class="w-3 h-3 ml-2 transition-transform duration-200 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 12px; height: 12px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>`;
-            
-            const optionsList = document.createElement('div');
-            optionsList.className = 'custom-options-list hidden rounded-none';
-            
-            Array.from(select.options).forEach((option, index) => {
-                const opt = document.createElement('div');
-                opt.className = `custom-option px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-gray-50 cursor-pointer transition-colors ${index === select.selectedIndex ? 'bg-gray-50 font-black' : ''}`;
-
-                opt.textContent = option.text;
-                opt.dataset.value = option.value;
-                
-                opt.addEventListener('click', () => {
-                    select.value = option.value;
-                    
-                    // Trigger change
-                    select.dispatchEvent(new Event('change', { bubbles: true }));
-                    
-                    // Also trigger inline onchange if it exists
-                    if (select.onchange) {
-                        select.onchange();
-                    }
-
-                    trigger.querySelector('span').textContent = option.text;
-                    optionsList.classList.add('hidden');
-                    trigger.querySelector('svg').classList.remove('rotate-180');
-                    
-                    // Update active state in list
-                    optionsList.querySelectorAll('.custom-option').forEach(el => el.classList.remove('bg-sand-50', 'font-semibold'));
-                    opt.classList.add('bg-sand-50', 'font-semibold');
-                });
-                
-                optionsList.appendChild(opt);
-            });
-            
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isOpen = !optionsList.classList.contains('hidden');
-                
-                // Close all other custom selects
-                document.querySelectorAll('.custom-options-list').forEach(list => list.classList.add('hidden'));
-                document.querySelectorAll('.custom-select-trigger svg').forEach(svg => svg.classList.remove('rotate-180'));
-                
-                if (!isOpen) {
-                    optionsList.classList.remove('hidden');
-                    trigger.querySelector('svg').classList.add('rotate-180');
-                }
-            });
-            
-            wrapper.appendChild(trigger);
-            wrapper.appendChild(optionsList);
-            
-            // Hide original select but keep it for WooCommerce logic
-            select.style.display = 'none';
-            select.parentElement.appendChild(wrapper);
-            
-            // Sync back if select changes externally (e.g. reset variations)
-            select.addEventListener('change', () => {
-                trigger.querySelector('span').textContent = select.options[select.selectedIndex].text;
-                optionsList.querySelectorAll('.custom-option').forEach(opt => {
-                    opt.classList.toggle('bg-sand-50', opt.dataset.value === select.value);
-                    opt.classList.toggle('font-semibold', opt.dataset.value === select.value);
-                });
-            });
-        });
-    }
-
-    // Close dropdowns on outside click
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.custom-options-list').forEach(list => list.classList.add('hidden'));
-        document.querySelectorAll('.custom-select-trigger svg').forEach(svg => svg.classList.remove('rotate-180'));
-    });
-
-    initCustomSelects();
-
-    // Re-init when WooCommerce updates variations (e.g. AJAX)
-    jQuery(document.body).on('woocommerce_variation_has_changed', function() {
-        // Small delay to ensure DOM is updated
-        setTimeout(initCustomSelects, 50);
-    });
 });
 
 // Quick Add to Cart functionality

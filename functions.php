@@ -138,6 +138,17 @@ function moretti_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'moretti_enqueue_assets');
 
+// Disable Select2/SelectWoo - Use native selects for clean, consistent UI
+function moretti_disable_select2() {
+    wp_dequeue_style('select2');
+    wp_deregister_style('select2');
+    wp_dequeue_script('selectWoo');
+    wp_deregister_script('selectWoo');
+    wp_dequeue_script('select2');
+    wp_deregister_script('select2');
+}
+add_action('wp_enqueue_scripts', 'moretti_disable_select2', 100);
+
 // WooCommerce customizations
 function moretti_woocommerce_support() {
     // Remove default WooCommerce styles (we'll use Tailwind)

@@ -11,6 +11,81 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php wp_head(); ?>
+    <style>
+        /* MORETTI PREMIUM CONTROLS */
+        
+        /* Filter button - 64px consistent height */
+        button#filter-toggle {
+            height: 64px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #2a2826 !important;
+            color: #ffffff !important;
+            border: 1px solid #2a2826 !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.15em !important;
+        }
+        
+        button#filter-toggle:hover {
+            background-color: #4a4240 !important;
+        }
+        
+        /* Variations table - clean block layout */
+        .woocommerce div.product form.cart .variations {
+            display: block !important;
+            width: 100% !important;
+            border: none !important;
+            margin-bottom: 24px !important;
+        }
+        
+        .woocommerce div.product form.cart .variations tbody {
+            display: block !important;
+        }
+        
+        .woocommerce div.product form.cart .variations tr {
+            display: block !important;
+            margin-bottom: 20px !important;
+            border: none !important;
+        }
+        
+        .woocommerce div.product form.cart .variations td,
+        .woocommerce div.product form.cart .variations th {
+            display: block !important;
+            padding: 0 !important;
+            border: none !important;
+            width: 100% !important;
+        }
+        
+        .woocommerce div.product form.cart .variations td.label {
+            margin-bottom: 8px !important;
+        }
+        
+        .woocommerce div.product form.cart .variations td.value {
+            width: 100% !important;
+        }
+        
+        /* Quantity input - consistent 64px */
+        .woocommerce div.product form.cart .quantity input.qty {
+            height: 64px !important;
+            padding: 0 16px !important;
+            text-align: center !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            border: 1px solid #e5e7eb !important;
+        }
+        
+        /* Add to cart button - consistent 64px */
+        .woocommerce div.product form.cart button.single_add_to_cart_button {
+            height: 64px !important;
+            padding: 0 40px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    </style>
 </head>
 <body <?php body_class('bg-white text-charcoal'); ?>>
 <?php wp_body_open(); ?>
@@ -116,14 +191,14 @@
                     type="search" 
                     id="search-input"
                     name="s" 
-                    class="flex-1 px-4 py-3 border border-gray-200 focus:outline-none focus:border-charcoal text-sm"
+                    class="flex-1 px-6 h-[64px] border border-gray-200 focus:outline-none focus:border-charcoal text-sm"
                     placeholder="Szukaj produktów..."
                     value="<?php echo get_search_query(); ?>"
                 />
                 <input type="hidden" name="post_type" value="product" />
                 <button 
                     type="submit" 
-                    class="px-6 py-3 bg-charcoal text-white hover:bg-taupe-700 transition-colors text-sm font-medium uppercase tracking-wide"
+                    class="px-8 h-[64px] bg-charcoal text-white hover:bg-taupe-700 transition-colors text-[11px] font-bold uppercase tracking-[0.15em] border border-charcoal"
                 >
                     Szukaj
                 </button>

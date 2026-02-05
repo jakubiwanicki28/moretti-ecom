@@ -56,10 +56,10 @@ get_header(); ?>
                 </nav>
 
                 <!-- Sort & Filter Actions -->
-                <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+                <div class="flex items-center gap-0 w-full md:w-auto md:ml-auto">
                     <!-- Sort -->
-                    <div class="relative w-full md:w-[240px]">
-                        <select name="orderby" class="moretti-custom-select appearance-none w-full h-[50px] px-6 text-[10px] font-bold uppercase tracking-[0.2em] bg-white border border-gray-200 text-charcoal cursor-pointer hover:border-charcoal focus:outline-none transition-all" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
+                    <div class="relative w-full md:w-[280px]">
+                        <select name="orderby" class="moretti-custom-select w-full px-6 text-charcoal cursor-pointer hover:bg-gray-50 focus:outline-none transition-all" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
                             <?php
                             $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
                                 'menu_order' => 'Domyślne sortowanie',
@@ -79,7 +79,7 @@ get_header(); ?>
                     </div>
 
                     <!-- Filter Button -->
-                    <button id="filter-toggle" class="bg-charcoal text-white px-10 h-[50px] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center justify-center gap-3">
+                    <button id="filter-toggle" class="px-10 flex gap-3 -ml-[1px]">
                         FILTRY
                         <svg class="transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                     </button>
