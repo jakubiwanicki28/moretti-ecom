@@ -1,159 +1,180 @@
 <?php
 /**
  * The Template for displaying product archives, including the main shop page
+ * UX-First Design: Products visible immediately
  *
  * @package Moretti
  */
 
 defined('ABSPATH') || exit;
 
-get_header(); ?>
+get_header(); 
+
+// Declare WordPress global query object
+global $wp_query;
+
+// Get categories for navigation
+$categories = get_terms(array(
+    'taxonomy' => 'product_cat',
+    'hide_empty' => true,
+    'exclude' => array(get_option('default_product_cat')),
+));
+
+// Determine page title
+$page_title = 'Sklep';
+if (is_search()) {
+    $page_title = 'Wyniki: "' . get_search_query() . '"';
+} elseif (is_product_category()) {
+    $page_title = single_cat_title('', false);
+}
+
+// Count products
+$product_count = $wp_query->found_posts;
+?>
 
 <div class="woocommerce-shop-wrapper bg-white min-h-screen">
-    <div class="container mx-auto px-4 py-12 md:py-20">
+    <div class="container mx-auto px-4 py-8">
         
         <?php if (have_posts()) : ?>
 
-            <!-- Shop Header -->
-            <header class="text-center mb-16 md:mb-24">
-                <span class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 mb-4 block font-medium">Kolekcja Akcesoriów</span>
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-charcoal uppercase tracking-tighter leading-none">
-                    <?php 
-                    $title = woocommerce_page_title(false);
-                    if (is_search()) {
-                        echo 'Wyniki wyszukiwania';
-                    } elseif (is_product_category()) {
-                        echo esc_html(strtoupper(single_cat_title('', false)));
-                    } else {
-                        echo 'NASZ SKLEP';
-                    }
-                    ?>
-                </h1>
-            </header>
-
-            <!-- Control Bar: Sort & Filter -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 pb-8 border-b border-gray-100 relative z-50">
+            <!-- Sidebar + Main Grid Layout -->
+            <div class="moretti-shop-layout">
                 
-                <!-- Category Navigation -->
-                <nav class="hidden lg:flex items-center gap-8">
-                    <?php
-                    $categories = get_terms(array(
-                        'taxonomy' => 'product_cat',
-                        'hide_empty' => true,
-                        'exclude' => array(get_option('default_product_cat')),
-                    ));
-                    ?>
-                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-                       class="text-[10px] font-bold uppercase tracking-[0.2em] <?php echo !is_product_category() ? 'text-charcoal border-b-2 border-charcoal' : 'text-taupe-400 hover:text-charcoal'; ?> pb-1 transition-all">
-                        Wszystko
-                    </a>
-                    <?php foreach ($categories as $cat) : ?>
-                        <a href="<?php echo esc_url(get_term_link($cat)); ?>" 
-                           class="text-[10px] font-bold uppercase tracking-[0.2em] <?php echo is_product_category($cat->slug) ? 'text-charcoal border-b-2 border-charcoal' : 'text-taupe-400 hover:text-charcoal'; ?> pb-1 transition-all">
-                            <?php echo esc_html($cat->name); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </nav>
-
-                <!-- Sort & Filter Actions -->
-                <div class="flex items-center gap-0 w-full md:w-auto md:ml-auto">
-                    <!-- Sort -->
-                    <div class="relative w-full md:w-[280px]">
-                        <select name="orderby" class="moretti-custom-select w-full px-6 text-charcoal cursor-pointer hover:bg-gray-50 focus:outline-none transition-all" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
-                            <?php
-                            $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
-                                'menu_order' => 'Domyślne sortowanie',
-                                'popularity' => 'Popularność',
-                                'date'       => 'Nowości',
-                                'price'      => 'Cena: od najniższej',
-                                'price-desc' => 'Cena: od najwyższej',
-                            ));
-                            $orderby = isset($_GET['orderby']) ? wc_clean($_GET['orderby']) : 'menu_order';
-                            foreach ($catalog_orderby_options as $id => $name) : ?>
-                                <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
+                <!-- LEFT SIDEBAR: Filters & Categories -->
+                <aside class="moretti-sidebar">
+                    
+                    <!-- Categories Section -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-heading">Kategorie</h3>
+                        <nav class="sidebar-nav">
+                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
+                               class="sidebar-link <?php echo !is_product_category() ? 'active' : ''; ?>">
+                                Wszystko
+                            </a>
+                            <?php foreach ($categories as $cat) : ?>
+                                <a href="<?php echo esc_url(get_term_link($cat)); ?>" 
+                                   class="sidebar-link <?php echo is_product_category($cat->slug) ? 'active' : ''; ?>">
+                                    <?php echo esc_html($cat->name); ?>
+                                </a>
                             <?php endforeach; ?>
-                        </select>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg class="w-3 h-3 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                        </div>
+                        </nav>
                     </div>
 
-                    <!-- Filter Button -->
-                    <button id="filter-toggle" class="px-10 flex gap-3 -ml-[1px]">
-                        FILTRY
-                        <svg class="transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Expandable Filter Panel -->
-            <div id="filters-panel" class="hidden mb-16 bg-gray-50 border border-gray-100 p-8 md:p-12">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-                    <!-- Price -->
-                    <div>
-                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Cena (PLN)</h4>
-                        <form method="get" class="flex flex-col gap-4">
-                            <div class="flex items-center gap-3">
-                                <input type="number" name="min_price" placeholder="Od" class="w-full bg-white border-none py-3 px-4 text-xs focus:ring-1 focus:ring-charcoal" value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
-                                <input type="number" name="max_price" placeholder="Do" class="w-full bg-white border-none py-3 px-4 text-xs focus:ring-1 focus:ring-charcoal" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>">
+                    <!-- Price Filter -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-heading">Cena (PLN)</h3>
+                        <form method="get" class="price-filter-form">
+                            <div class="price-inputs">
+                                <input type="number" name="min_price" placeholder="Od" class="price-input" value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
+                                <span class="price-separator">-</span>
+                                <input type="number" name="max_price" placeholder="Do" class="price-input" value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>">
                             </div>
-                            <button type="submit" class="w-full py-3 bg-charcoal text-white text-[10px] font-bold uppercase tracking-widest hover:bg-taupe-800 transition-colors">Zastosuj</button>
+                            <button type="submit" class="price-submit">Zastosuj</button>
                         </form>
                     </div>
 
-                    <!-- Colors -->
-                    <div>
-                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Kolory</h4>
-                        <div class="flex flex-wrap gap-3">
+                    <!-- Color Filter -->
+                    <?php
+                    $colors = get_terms(array('taxonomy' => 'pa_color', 'hide_empty' => true));
+                    if (!empty($colors) && !is_wp_error($colors)) :
+                    ?>
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-heading">Kolory</h3>
+                        <div class="color-swatches">
                             <?php
-                            $colors = get_terms(array('taxonomy' => 'pa_color', 'hide_empty' => true));
                             foreach ($colors as $color) :
                                 $color_hex = moretti_get_color_hex($color->name);
                                 $is_active = isset($_GET['filter_color']) && $_GET['filter_color'] === $color->slug;
                             ?>
-                                <a href="?filter_color=<?php echo $color->slug; ?>" class="w-8 h-8 rounded-full border-2 <?php echo $is_active ? 'border-charcoal scale-110' : 'border-transparent'; ?> transition-all hover:scale-110" style="background-color: <?php echo $color_hex; ?>;" title="<?php echo $color->name; ?>"></a>
+                                <a href="?filter_color=<?php echo $color->slug; ?>" 
+                                   class="color-swatch <?php echo $is_active ? 'active' : ''; ?>"
+                                   style="background-color: <?php echo $color_hex; ?>;" 
+                                   title="<?php echo $color->name; ?>"></a>
                             <?php endforeach; ?>
                         </div>
                     </div>
+                    <?php endif; ?>
 
-                    <!-- Categories (Mobile only) -->
-                    <div class="lg:hidden">
-                        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-6">Kategorie</h4>
-                        <ul class="space-y-3">
-                            <?php foreach ($categories as $cat) : ?>
-                                <li><a href="<?php echo esc_url(get_term_link($cat)); ?>" class="text-xs uppercase tracking-widest text-taupe-600 hover:text-charcoal"><?php echo $cat->name; ?></a></li>
-                            <?php endforeach; ?>
-                        </ul>
+                    <!-- Clear Filters -->
+                    <div class="sidebar-section">
+                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="clear-filters">
+                            Wyczyść filtry
+                        </a>
                     </div>
 
-                    <!-- Actions -->
-                    <div class="flex flex-col justify-end">
-                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="text-[10px] font-bold uppercase tracking-[0.2em] text-charcoal border-b border-charcoal pb-1 w-fit hover:opacity-70 transition-opacity">Wyczyść wszystkie filtry</a>
+                </aside>
+
+                <!-- RIGHT MAIN: Products Grid -->
+                <main class="moretti-main">
+                    
+                    <!-- Top Bar: Title + Sort + Mobile Filter Toggle -->
+                    <div class="shop-top-bar" style="border-bottom: 1px solid #f3f4f6 !important; padding-bottom: 20px !important; margin-bottom: 30px !important;">
+                        <div class="shop-title-section" style="display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 4px !important; margin-bottom: 15px !important; width: 100% !important;">
+                            <h1 class="shop-title" style="font-size: 24px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; color: #2a2826 !important; margin: 0 !important; line-height: 1.2 !important;"><?php echo esc_html($page_title); ?></h1>
+                            <span class="product-count" style="font-size: 11px !important; color: #8f8275 !important; text-transform: uppercase !important; letter-spacing: 0.1em !important; font-weight: 500 !important;"><?php echo $product_count; ?> <?php echo $product_count == 1 ? 'produkt' : ($product_count < 5 ? 'produkty' : 'produktów'); ?></span>
+                        </div>
+                        
+                        <div class="shop-controls" style="display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 12px !important; width: 100% !important;">
+                            <!-- Mobile Filter Toggle Button -->
+                            <button id="mobile-filter-toggle" class="mobile-filter-btn" style="width: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; padding: 0 !important; background: #2a2826 !important; color: #fff !important; border: none !important; font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.15em !important; cursor: pointer !important; height: 56px !important; line-height: 56px !important; margin: 0 !important; box-sizing: border-box !important;">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                                </svg>
+                                Filtry
+                            </button>
+                            
+                            <!-- Sort Dropdown (Custom Select) -->
+                            <div class="sort-dropdown-wrapper" style="width: 100% !important; position: relative !important; height: 56px !important; box-sizing: border-box !important; border: 1px solid #e5e7eb !important; margin: 0 !important; background: #fff !important;">
+                                <select name="orderby" class="moretti-custom-select" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value" style="width: 100% !important; height: 54px !important; border: none !important; background: transparent !important; padding: 0 15px !important; font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.15em !important; color: #2a2826 !important; appearance: none !important; -webkit-appearance: none !important; border-radius: 0 !important; cursor: pointer !important; margin: 0 !important; box-sizing: border-box !important; display: block !important; line-height: 54px !important; outline: none !important;">
+                                    <?php
+                                    $catalog_orderby_options = array(
+                                        'menu_order' => 'Sortuj',
+                                        'popularity' => 'Popularność',
+                                        'date'       => 'Nowości',
+                                        'price'      => 'Cena: rosnąco',
+                                        'price-desc' => 'Cena: malejąco',
+                                    );
+                                    $orderby = isset($_GET['orderby']) ? wc_clean($_GET['orderby']) : 'menu_order';
+                                    foreach ($catalog_orderby_options as $id => $name) : ?>
+                                        <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div style="position: absolute !important; right: 15px !important; top: 50% !important; transform: translateY(-50%) !important; pointer-events: none !important;">
+                                    <svg width="10" height="10" fill="none" stroke="#2a2826" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Product Grid -->
-            <?php woocommerce_product_loop_start(); ?>
-                <?php while (have_posts()) : the_post(); ?>
-                    <?php wc_get_template_part('content', 'product'); ?>
-                <?php endwhile; ?>
-            <?php woocommerce_product_loop_end(); ?>
+                    <!-- Product Grid -->
+                    <div class="products-wrapper">
+                        <?php woocommerce_product_loop_start(); ?>
+                            <?php while (have_posts()) : the_post(); ?>
+                                <?php wc_get_template_part('content', 'product'); ?>
+                            <?php endwhile; ?>
+                        <?php woocommerce_product_loop_end(); ?>
+                    </div>
 
-            <!-- Pagination -->
-            <div class="mt-20 flex justify-center">
-                <?php
-                echo paginate_links(array(
-                    'base'         => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
-                    'format'       => '?paged=%#%',
-                    'current'      => max(1, get_query_var('paged')),
-                    'total'        => $wp_query->max_num_pages,
-                    'prev_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>',
-                    'next_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>',
-                    'type'         => 'list',
-                    'class'        => 'moretti-pagination'
-                ));
-                ?>
+                    <!-- Pagination -->
+                    <div class="shop-pagination">
+                        <?php
+                        echo paginate_links(array(
+                            'base'         => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+                            'format'       => '?paged=%#%',
+                            'current'      => max(1, get_query_var('paged')),
+                            'total'        => $wp_query->max_num_pages,
+                            'prev_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>',
+                            'next_text'    => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>',
+                            'type'         => 'list',
+                            'class'        => 'moretti-pagination'
+                        ));
+                        ?>
+                    </div>
+
+                </main>
+
             </div>
 
         <?php else : ?>
@@ -166,5 +187,41 @@ get_header(); ?>
 
     </div>
 </div>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="mobile-sidebar-overlay" class="mobile-sidebar-overlay"></div>
+
+<script>
+// Mobile Sidebar Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.getElementById('mobile-filter-toggle');
+    const sidebar = document.querySelector('.moretti-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    
+    if (!toggleBtn || !sidebar || !overlay) return;
+    
+    function openSidebar() {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeSidebar() {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    toggleBtn.addEventListener('click', openSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+            closeSidebar();
+        }
+    });
+});
+</script>
 
 <?php get_footer(); ?>

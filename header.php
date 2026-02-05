@@ -14,25 +14,30 @@
     <style>
         /* MORETTI PREMIUM CONTROLS */
         
-        /* Filter button - 64px consistent height */
-        button#filter-toggle {
-            height: 64px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background-color: #2a2826 !important;
-            color: #ffffff !important;
-            border: 1px solid #2a2826 !important;
-            font-size: 11px !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.15em !important;
+        /* Shop Page Mobile Overrides */
+        @media (max-width: 1023px) {
+            .shop-top-bar {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+            .shop-title-section {
+                margin-bottom: 20px !important;
+            }
+            .shop-controls {
+                display: flex !important;
+                width: 100% !important;
+                gap: 10px !important;
+            }
+            .mobile-filter-btn, .sort-dropdown-wrapper {
+                flex: 1 !important;
+                width: 50% !important;
+            }
+            .moretti-custom-select {
+                width: 100% !important;
+            }
         }
-        
-        button#filter-toggle:hover {
-            background-color: #4a4240 !important;
-        }
-        
+
         /* Variations table - clean block layout */
         .woocommerce div.product form.cart .variations {
             display: block !important;
@@ -85,7 +90,35 @@
             align-items: center !important;
             justify-content: center !important;
         }
+
+        /* EMPTY CART OVERRIDES */
+        .cart-empty, .woocommerce-info, .cart-empty-container {
+            display: none !important;
+        }
+        
+        #moretti-empty-cart-override {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     </style>
+    <script>
+        // Brutal force fix for empty cart
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.body.classList.contains('woocommerce-cart')) {
+                const checkEmpty = () => {
+                    const content = document.querySelector('.page-content') || document.querySelector('.woocommerce');
+                    if (content && (content.innerText.includes('pusty') || content.innerText.includes('empty'))) {
+                        // If we don't see our override, but we see the empty message, force it
+                        if (!document.getElementById('moretti-empty-cart-override')) {
+                            window.location.reload(); // Refresh might help if it's a race condition
+                        }
+                    }
+                };
+                setTimeout(checkEmpty, 500);
+            }
+        });
+    </script>
 </head>
 <body <?php body_class('bg-white text-charcoal'); ?>>
 <?php wp_body_open(); ?>
@@ -99,26 +132,40 @@
 
 <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
     <div class="container mx-auto">
-        <div class="flex items-center h-16 md:h-18 px-4">
+        <div class="flex items-center h-16 md:h-18 px-4" style="position: relative !important;">
             
-            <!-- Mobile Menu Button (ONLY MOBILE) -->
-            <div class="w-12 md:hidden">
+            <!-- Left Icons (Hamburger + Search) -->
+            <div class="flex items-center md:hidden" style="position: absolute !important; left: 10px !important; top: 50% !important; transform: translateY(-50%) !important; z-index: 10 !important;">
+                <!-- Mobile Menu Button -->
                 <a 
                     href="#mobile-nav" 
                     id="mobile-menu-link"
-                    class="w-12 h-12 flex items-center justify-center text-charcoal hover:text-taupe-600"
+                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600"
                     onclick="event.preventDefault(); var menu = document.getElementById('mobile-menu'); if(menu.style.display === 'block') { menu.style.display = 'none'; } else { menu.style.display = 'block'; } return false;"
                 >
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </a>
+
+                <!-- Search Icon -->
+                <a 
+                    href="#search" 
+                    id="search-toggle-mobile"
+                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
+                    aria-label="Search"
+                    onclick="event.preventDefault(); var search = document.getElementById('search-bar'); if(search.style.display === 'block') { search.style.display = 'none'; } else { search.style.display = 'block'; document.getElementById('search-input').focus(); } return false;"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </a>
             </div>
 
             <!-- Logo (Center on mobile, Left on desktop) -->
-            <div class="flex-shrink-0 flex items-center justify-center md:justify-start absolute left-1/2 -translate-x-1/2 md:relative md:left-auto md:translate-x-0">
+            <div class="flex-shrink-0 flex items-center justify-center md:justify-start absolute left-1/2 -translate-x-1/2 md:relative md:left-auto md:translate-x-0" style="max-width: 140px !important;">
                 <?php if (has_custom_logo()) : ?>
-                    <div class="max-w-[120px] md:max-w-none">
+                    <div class="max-w-[100px] md:max-w-none">
                         <?php the_custom_logo(); ?>
                     </div>
                 <?php else : ?>
@@ -143,13 +190,13 @@
                 ?>
             </nav>
 
-            <!-- Right Icons -->
-            <div class="w-auto flex items-center justify-end space-x-1 md:space-x-4">
-                <!-- Search Icon -->
+            <!-- Right Icons (Desktop Search + Cart) -->
+            <div class="w-auto flex items-center justify-end space-x-1 md:space-x-4" style="position: absolute !important; right: 10px !important; top: 50% !important; transform: translateY(-50%) !important; z-index: 10 !important;">
+                <!-- Desktop Search Icon (Hidden on Mobile) -->
                 <a 
                     href="#search" 
                     id="search-toggle"
-                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
+                    class="hidden md:flex w-10 h-10 items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
                     aria-label="Search"
                     onclick="event.preventDefault(); var search = document.getElementById('search-bar'); if(search.style.display === 'block') { search.style.display = 'none'; } else { search.style.display = 'block'; document.getElementById('search-input').focus(); } return false;"
                 >
@@ -159,12 +206,14 @@
                 </a>
 
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <!-- Wishlist Icon (heart) -->
+                    <!-- Wishlist Icon (heart) - HIDDEN BY USER REQUEST -->
+                    <!-- 
                     <a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors relative" aria-label="Wishlist">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                     </a>
+                    -->
 
                     <!-- Cart Icon with Counter -->
                     <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="relative text-charcoal hover:text-taupe-600 w-10 h-10 flex items-center justify-center transition-colors" aria-label="Shopping cart">
@@ -183,22 +232,24 @@
         </div>
     </div>
 
-    <!-- Search Bar Dropdown -->
-    <div id="search-bar" <?php echo (is_search() || is_shop() || is_product_taxonomy()) ? 'style="display: block;"' : 'style="display: none;"'; ?> class="bg-white border-t border-b border-gray-100">
-        <div class="container mx-auto px-4 py-4">
+    <!-- Search Bar Dropdown - Hidden by default, toggle via search icon -->
+    <div id="search-bar" style="display: none;" class="bg-white border-t border-b border-gray-100">
+        <div class="container mx-auto px-4" style="padding-top: 2rem; padding-bottom: 2rem;">
             <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
                 <input 
                     type="search" 
                     id="search-input"
                     name="s" 
-                    class="flex-1 px-6 h-[64px] border border-gray-200 focus:outline-none focus:border-charcoal text-sm"
+                    class="flex-1 border border-gray-200 focus:outline-none focus:border-charcoal"
+                    style="height: 64px; padding: 0 1.5rem; font-size: 14px;"
                     placeholder="Szukaj produktów..."
                     value="<?php echo get_search_query(); ?>"
                 />
                 <input type="hidden" name="post_type" value="product" />
                 <button 
                     type="submit" 
-                    class="px-8 h-[64px] bg-charcoal text-white hover:bg-taupe-700 transition-colors text-[11px] font-bold uppercase tracking-[0.15em] border border-charcoal"
+                    class="bg-charcoal text-white hover:bg-taupe-700 transition-colors font-bold uppercase"
+                    style="height: 64px; padding: 0 2.5rem; font-size: 11px; letter-spacing: 0.15em; border: 1px solid #2a2826;"
                 >
                     Szukaj
                 </button>

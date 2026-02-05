@@ -716,15 +716,15 @@ a {
 
 @media (min-width: 768px) {
   .woocommerce ul.products {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .woocommerce ul.products {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 }
 
@@ -3023,6 +3023,325 @@ header a.text-base {
 /* Utilities */
 
 /* Additional WooCommerce overrides */
+
+/* ============================================
+   SIDEBAR LAYOUT - Professional E-commerce
+   ============================================ */
+
+/* Main Shop Layout: Sidebar + Products Grid */
+.moretti-shop-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .moretti-shop-layout {
+        grid-template-columns: 260px 1fr;
+        gap: 3rem;
+    }
+}
+
+/* ============================================
+   LEFT SIDEBAR
+   ============================================ */
+
+.moretti-sidebar {
+    display: none;
+}
+
+/* Mobile Sidebar - Drawer from Left */
+@media (max-width: 1023px) {
+    .moretti-sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 100vh;
+        background: #fff;
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        padding: 2rem 1.5rem;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .moretti-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+}
+
+/* Mobile Overlay */
+.mobile-sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+@media (min-width: 1024px) {
+    .moretti-sidebar {
+        display: block;
+        position: static;
+        transform: none;
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .mobile-sidebar-overlay {
+        display: none !important;
+    }
+}
+
+.sidebar-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sidebar-section:last-child {
+    border-bottom: none;
+}
+
+.sidebar-heading {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #2a2826;
+    margin-bottom: 1rem;
+}
+
+/* Sidebar Navigation Links */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.sidebar-link {
+    font-size: 13px;
+    color: #766a5d;
+    text-decoration: none;
+    transition: color 0.15s ease;
+    padding: 0.25rem 0;
+}
+
+.sidebar-link:hover {
+    color: #2a2826;
+}
+
+.sidebar-link.active {
+    color: #2a2826;
+    font-weight: 600;
+}
+
+/* Price Filter */
+.price-filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #2a2826;
+    background: #fff;
+}
+
+.price-input:focus {
+    outline: none;
+    border-color: #2a2826;
+}
+
+.price-separator {
+    font-size: 12px;
+    color: #8f8275;
+}
+
+.price-submit {
+    padding: 0.625rem;
+    background: #2a2826;
+    color: #fff;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.price-submit:hover {
+    background: #4a423a;
+}
+
+/* Color Swatches */
+.color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    border-color: #2a2826;
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2a2826;
+}
+
+/* Clear Filters */
+.clear-filters {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2a2826;
+    text-decoration: underline;
+    transition: opacity 0.15s ease;
+}
+
+.clear-filters:hover {
+    opacity: 0.7;
+}
+
+/* ============================================
+   RIGHT MAIN CONTENT
+   ============================================ */
+
+.moretti-main {
+    min-width: 0;
+}
+
+/* Top Bar: Title + Sort + Filter Toggle */
+.shop-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.shop-title-section {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.shop-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #2a2826;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .shop-title {
+        font-size: 1.5rem;
+    }
+}
+
+.product-count {
+    font-size: 0.75rem;
+    color: #8f8275;
+}
+
+@media (min-width: 768px) {
+    .product-count {
+        font-size: 0.875rem;
+    }
+}
+
+/* Shop Controls - Sort + Mobile Filter */
+.shop-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Mobile Filter Toggle Button */
+.mobile-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: #2a2826;
+    color: #fff;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.mobile-filter-btn:hover {
+    background: #4a423a;
+}
+
+@media (min-width: 1024px) {
+    .mobile-filter-btn {
+        display: none;
+    }
+}
+
+/* Sort Dropdown Wrapper */
+.sort-dropdown-wrapper {
+    position: relative;
+    min-width: 180px;
+}
+
+/* Products Wrapper */
+.products-wrapper {
+    margin-bottom: 3rem;
+}
+
+/* Pagination */
+.shop-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
 
 @keyframes spin {
   to {

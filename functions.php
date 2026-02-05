@@ -168,6 +168,17 @@ function moretti_woocommerce_template_path($template, $template_name, $template_
 }
 add_filter('woocommerce_locate_template', 'moretti_woocommerce_template_path', 10, 3);
 
+// Force empty cart template and clean content
+function moretti_force_empty_cart_ui($content) {
+    if (is_cart() && class_exists('WooCommerce') && WC()->cart->is_empty()) {
+        ob_start();
+        include get_template_directory() . '/woocommerce/cart/cart-empty.php';
+        return ob_get_clean();
+    }
+    return $content;
+}
+add_filter('the_content', 'moretti_force_empty_cart_ui', 999);
+
 // Add custom body classes
 function moretti_body_classes($classes) {
     if (is_woocommerce()) {

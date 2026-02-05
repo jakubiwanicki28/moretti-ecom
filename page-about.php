@@ -34,23 +34,23 @@ get_header(); ?>
         <div class="container mx-auto px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="grid lg:grid-cols-3 gap-16 md:gap-32">
-                    <div class="space-y-10">
-                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">01 / JAKOŚĆ</span>
-                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">SKÓRA LICOWA</h3>
+                    <div class="space-y-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-taupe-400">01 / JAKOŚĆ</span>
+                        <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight leading-none">SKÓRA LICOWA</h3>
                         <p class="text-taupe-600 text-base leading-relaxed">
                             Wykorzystujemy wyłącznie najwyższej klasy skórę licową z polskich i włoskich garbarni. Materiał ten z czasem nabiera unikalnej patyny, stając się jeszcze szlachetniejszym z każdym rokiem użytkowania.
                         </p>
                     </div>
-                    <div class="space-y-10">
-                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">02 / TECHNOLOGIA</span>
-                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">OCHRONA RFID</h3>
+                    <div class="space-y-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-taupe-400">02 / TECHNOLOGIA</span>
+                        <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight leading-none">OCHRONA RFID</h3>
                         <p class="text-taupe-600 text-base leading-relaxed">
                             Współczesność wymaga bezpieczeństwa. Każdy nasz portfel wyposażony jest w ultra-cienkie membrany blokujące sygnały RFID, chroniąc Twoje dane i środki przed nieautoryzowanym skanowaniem.
                         </p>
                     </div>
-                    <div class="space-y-10">
-                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-taupe-400">03 / ETYKA</span>
-                        <h3 class="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none">LOCAL FIRST</h3>
+                    <div class="space-y-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-taupe-400">03 / ETYKA</span>
+                        <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight leading-none">LOCAL FIRST</h3>
                         <p class="text-taupe-600 text-base leading-relaxed">
                             Cały proces projektowania i produkcji odbywa się w Polsce. Wspieramy lokalnych rzemieślników i dbamy o to, by nasz ślad węglowy był jak najmniejszy, stawiając na transparentność i uczciwość.
                         </p>
@@ -61,24 +61,24 @@ get_header(); ?>
     </section>
 
     <!-- Stats Section -->
-    <section class="py-32 md:py-48 bg-charcoal text-white overflow-hidden">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-16 md:gap-8 text-center">
-                <div class="space-y-6">
-                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">15+</div>
-                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Lat Tradycji</div>
+    <section style="padding: 100px 0; background-color: #2a2826; color: #ffffff; overflow: hidden; margin: 40px 0;">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 0 48px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 40px; text-align: center;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;">15+</div>
+                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: #8f8275; font-weight: 700;">Lat Tradycji</div>
                 </div>
-                <div class="space-y-6">
-                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">48h</div>
-                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Czas Produkcji</div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;">48h</div>
+                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: #8f8275; font-weight: 700;">Czas Produkcji</div>
                 </div>
-                <div class="space-y-6">
-                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">10k+</div>
-                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Uszytych Portfeli</div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;">10k+</div>
+                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: #8f8275; font-weight: 700;">Uszytych Portfeli</div>
                 </div>
-                <div class="space-y-6">
-                    <div class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">100%</div>
-                    <div class="text-[10px] uppercase tracking-[0.4em] text-taupe-500 font-bold">Gwarancja Jakości</div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;">100%</div>
+                    <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: #8f8275; font-weight: 700;">Gwarancja Jakości</div>
                 </div>
             </div>
         </div>
