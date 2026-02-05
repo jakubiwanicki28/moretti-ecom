@@ -25,11 +25,9 @@ function moretti_create_wallet_categories() {
     if (!class_exists('WooCommerce')) return;
     
     $categories = array(
-        'portfele-meskie' => 'Portfele Męskie',
-        'portfele-damskie' => 'Portfele Damskie',
-        'slim-wallets' => 'Portfele Slim',
-        'etui-na-karty' => 'Etui na karty',
-        'akcesoria' => 'Akcesoria skórzane'
+        'portfele' => 'Portfele',
+        'wizytowniki' => 'Wizytowniki',
+        'akcesoria' => 'Akcesoria'
     );
     
     foreach ($categories as $slug => $name) {
@@ -39,6 +37,49 @@ function moretti_create_wallet_categories() {
     }
 }
 add_action('init', 'moretti_create_wallet_categories');
+
+// Register WooCommerce Attributes for Filters
+function moretti_register_attributes() {
+    if (!class_exists('WooCommerce')) return;
+
+    $attributes = array(
+        'wielkosc' => 'Wielkość',
+        'zapiecie' => 'Zapięcie',
+        'wykonczenie' => 'Wykończenie',
+        'wzor' => 'Wzór',
+        'material' => 'Materiał'
+    );
+
+    foreach ($attributes as $slug => $name) {
+        if (!taxonomy_exists(wc_attribute_taxonomy_name($slug))) {
+            wc_create_attribute(array(
+                'name' => $name,
+                'slug' => $slug,
+                'type' => 'select',
+                'order_by' => 'menu_order',
+                'has_archives' => true,
+            ));
+        }
+    }
+
+    // Add terms for attributes
+    $attribute_terms = array(
+        'pa_wielkosc' => array('Duży', 'Średni', 'Mały'),
+        'pa_zapiecie' => array('Bigiel', 'Suwak', 'Magnes'),
+        'pa_wykonczenie' => array('Lakier', 'Mat'),
+        'pa_wzor' => array('Gładka', 'Ze wzorem'),
+        'pa_material' => array('Skóra naturalna')
+    );
+
+    foreach ($attribute_terms as $taxonomy => $terms) {
+        foreach ($terms as $term) {
+            if (!term_exists($term, $taxonomy)) {
+                wp_insert_term($term, $taxonomy);
+            }
+        }
+    }
+}
+add_action('admin_init', 'moretti_register_attributes');
 
 // Register navigation menus
 function moretti_theme_setup() {
