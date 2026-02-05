@@ -233,12 +233,21 @@ function morettiQuickAddToCart(productId) {
     formData.append('quantity', 1);
     formData.append('nonce', morettiData.nonce);
 
+    // Debug log
+    console.log('Adding to cart:', productId);
+
     fetch(morettiData.ajaxUrl, {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Response:', data);
         if (data.success) {
             // Update cart count
             updateCartCount();
@@ -253,14 +262,22 @@ function morettiQuickAddToCart(productId) {
             }, 2000);
         } else {
             // Show error
-            alert(data.data.message || 'Error adding to cart');
+            console.error('Add to cart failed:', data);
+            
+            // If it's a variable product, redirect to product page
+            if (data.data && data.data.redirect) {
+                window.location.href = data.data.redirect;
+                return;
+            }
+            
+            alert(data.data && data.data.message ? data.data.message : 'Nie udało się dodać produktu do koszyka. Spróbuj odświeżyć stronę.');
             button.innerHTML = originalContent;
             button.disabled = false;
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error adding to cart');
+        alert('Wystąpił błąd połączenia. Spróbuj ponownie.');
         button.innerHTML = originalContent;
         button.disabled = false;
     });
@@ -272,9 +289,11 @@ function updateCartCount() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                const cartCountElements = document.querySelectorAll('.cart-count, [data-cart-count]');
+                // Update all possible cart count indicators
+                const cartCountElements = document.querySelectorAll('.cart-count, [data-cart-count], .absolute.top-1.right-1');
                 cartCountElements.forEach(el => {
                     el.textContent = data.data.count;
+                    el.style.display = data.data.count > 0 ? 'flex' : 'none';
                 });
             }
         })

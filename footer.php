@@ -26,8 +26,6 @@
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Klienci</h4>
                 <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 14px;"><a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Logowanie</a></li>
-                    <li style="margin-bottom: 14px;"><a href="<?php echo get_permalink(get_option('woocommerce_myaccount_page_id')); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Rejestracja</a></li>
                     <li style="margin-bottom: 14px;"><a href="/polityka-prywatnosci" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka prywatności</a></li>
                     <li><a href="/regulamin" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Regulamin</a></li>
                 </ul>
@@ -71,7 +69,7 @@
             </p>
             
             <p style="font-size: 9px; color: #a8a09d; text-transform: uppercase; letter-spacing: 0.15em; margin: 0; font-weight: 600;">
-                DESIGN & DEVELOPED BY CTO AI
+                DESIGN & DEVELOPED BY VISUAL CONTENT
             </p>
         </div>
     </div>
