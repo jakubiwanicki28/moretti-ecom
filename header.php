@@ -109,9 +109,9 @@
     </div>
 
     <!-- Search Bar Dropdown -->
-    <div id="search-bar" style="display: none;" class="bg-white border-t border-b border-gray-100">
+    <div id="search-bar" <?php echo (is_search() || is_shop() || is_product_taxonomy()) ? 'style="display: block;"' : 'style="display: none;"'; ?> class="bg-white border-t border-b border-gray-100">
         <div class="container mx-auto px-4 py-4">
-            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(home_url('/')); ?>">
+            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
                 <input 
                     type="search" 
                     id="search-input"
@@ -120,15 +120,14 @@
                     placeholder="Szukaj produktów..."
                     value="<?php echo get_search_query(); ?>"
                 />
-                <?php if (class_exists('WooCommerce')) : ?>
-                    <input type="hidden" name="post_type" value="product" />
-                <?php endif; ?>
+                <input type="hidden" name="post_type" value="product" />
                 <button 
                     type="submit" 
                     class="px-6 py-3 bg-charcoal text-white hover:bg-taupe-700 transition-colors text-sm font-medium uppercase tracking-wide"
                 >
                     Szukaj
                 </button>
+                <?php if (!is_search() && !is_shop() && !is_product_taxonomy()) : ?>
                 <button 
                     type="button"
                     onclick="document.getElementById('search-bar').style.display = 'none';"
@@ -136,6 +135,7 @@
                 >
                     ✕
                 </button>
+                <?php endif; ?>
             </form>
         </div>
     </div>

@@ -31,26 +31,9 @@ get_header(); ?>
                 </h1>
             </header>
 
-            <!-- Control Bar: Search, Sort, Filter -->
-            <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-16 pb-8 border-b border-gray-100 relative z-50">
+            <!-- Control Bar: Sort & Filter -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 pb-8 border-b border-gray-100 relative z-50">
                 
-                <!-- Search -->
-                <div class="w-full md:w-1/3">
-                    <form role="search" method="get" class="relative group" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
-                        <input 
-                            type="search" 
-                            name="s" 
-                            placeholder="SZUKAJ..."
-                            value="<?php echo get_search_query(); ?>"
-                            class="w-full bg-transparent border-b border-gray-200 focus:border-charcoal focus:outline-none py-4 pr-10 text-xs font-bold uppercase tracking-widest transition-colors"
-                        >
-                        <input type="hidden" name="post_type" value="product" />
-                        <button type="submit" class="absolute right-0 top-1/2 transform -translate-y-1/2 text-charcoal hover:text-taupe-600 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </button>
-                    </form>
-                </div>
-
                 <!-- Category Navigation -->
                 <nav class="hidden lg:flex items-center gap-8">
                     <?php
@@ -75,25 +58,28 @@ get_header(); ?>
                 <!-- Sort & Filter Actions -->
                 <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                     <!-- Sort -->
-                    <div class="relative w-full md:w-[220px]">
-                        <select name="orderby" class="moretti-custom-select appearance-none text-[10px] font-bold uppercase tracking-[0.2em] bg-transparent border-none text-charcoal cursor-pointer hover:text-taupe-600 focus:outline-none pr-6" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
+                    <div class="relative w-full md:w-[240px]">
+                        <select name="orderby" class="moretti-custom-select appearance-none w-full h-[50px] px-6 text-[10px] font-bold uppercase tracking-[0.2em] bg-white border border-gray-200 text-charcoal cursor-pointer hover:border-charcoal focus:outline-none transition-all" onchange="window.location.href=window.location.pathname + '?orderby=' + this.value">
                             <?php
                             $catalog_orderby_options = apply_filters('woocommerce_catalog_orderby', array(
-                                'menu_order' => 'Sortowanie',
+                                'menu_order' => 'Domyślne sortowanie',
                                 'popularity' => 'Popularność',
                                 'date'       => 'Nowości',
-                                'price'      => 'Cena ↑',
-                                'price-desc' => 'Cena ↓',
+                                'price'      => 'Cena: od najniższej',
+                                'price-desc' => 'Cena: od najwyższej',
                             ));
                             $orderby = isset($_GET['orderby']) ? wc_clean($_GET['orderby']) : 'menu_order';
                             foreach ($catalog_orderby_options as $id => $name) : ?>
                                 <option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg class="w-3 h-3 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
                     </div>
 
                     <!-- Filter Button -->
-                    <button id="filter-toggle" class="bg-charcoal text-white px-8 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center justify-center gap-3">
+                    <button id="filter-toggle" class="bg-charcoal text-white px-10 h-[50px] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-taupe-800 transition-all flex items-center justify-center gap-3">
                         FILTRY
                         <svg class="transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                     </button>

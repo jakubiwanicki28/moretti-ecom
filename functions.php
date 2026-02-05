@@ -578,14 +578,17 @@ function moretti_delayed_product_creation() {
 }
 add_action('woocommerce_init', 'moretti_delayed_product_creation');
 
-// Force products to show on shop page
+// Force products to show on shop page and prevent redirect to single product on single search result
 function moretti_force_shop_query($query) {
-    if (!is_admin() && $query->is_main_query() && is_shop()) {
+    if (!is_admin() && $query->is_main_query() && (is_shop() || is_search())) {
         $query->set('post_type', 'product');
         $query->set('post_status', 'publish');
     }
 }
 add_action('pre_get_posts', 'moretti_force_shop_query', 999);
+
+// Prevent WooCommerce from redirecting to single product when there's only one search result
+add_filter('woocommerce_redirect_single_search_result', '__return_false');
 
 // WooCommerce: Custom product loop structure
 remove_action('woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10);
