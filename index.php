@@ -179,27 +179,173 @@ if ($loop->have_posts()) : ?>
 
 <!-- 8. FEATURED DETAIL (Screenshot 5) -->
 <section class="container mx-auto px-4 py-20 border-t border-gray-100">
-<div class="grid md:grid-cols-2 gap-12 items-center">
-    <div>
-        <img src="<?php echo get_template_directory_uri(); ?>/images/hero.png" class="w-full h-auto" alt="Detail">
-    </div>
-    <div class="max-w-md">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-taupe-500 mb-4 block">Ekskluzywne</span>
-        <h2 class="text-4xl font-bold text-charcoal uppercase mb-6 leading-tight">NATURALNA SKÓRA<br>NAJWYŻSZEJ JAKOŚCI</h2>
-        <p class="text-taupe-700 mb-8 leading-relaxed">
-            Nasze portfele powstają z wyselekcjonowanej skóry naturalnej. To gwarantuje nie tylko nieskazitelny wygląd, ale i wytrzymałość, która przetrwa lata.
-        </p>
-        <div class="flex items-center gap-4 mb-8">
-            <span class="text-2xl font-bold text-charcoal">od 199,00 zł</span>
-            <div class="flex text-yellow-400">
-                <?php for($i=0; $i<5; $i++) echo "★"; ?>
-                <span class="text-taupe-400 text-xs ml-2">(12 opinii)</span>
+    <?php
+    // Get the specific featured product: Elegance Red
+    $featured_product_name = 'Elegance Red - Portfel Damski';
+    $args = array(
+        'post_type' => 'product',
+        'posts_per_page' => 1,
+        'title' => $featured_product_name
+    );
+    $featured_loop = new WP_Query($args);
+    
+    // Fallback if not found by title
+    if (!$featured_loop->have_posts()) {
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => 1,
+            'orderby' => 'rand'
+        );
+        $featured_loop = new WP_Query($args);
+    }
+
+    if ($featured_loop->have_posts()) : $featured_loop->the_post();
+        global $product;
+        $product_id = get_the_ID();
+        $gallery_ids = $product->get_gallery_image_ids();
+        $main_image_id = $product->get_image_id();
+        
+        // Combine main image + gallery
+        $all_images = array_filter(array_merge(array($main_image_id), $gallery_ids));
+        // Limit to 3 images for the slider
+        $slider_images = array_slice($all_images, 0, 3);
+    ?>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+        <!-- Image Slider Column -->
+        <div style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
+            <div id="featured-slider" style="position: relative; width: 100%; max-width: 600px; height: 550px; overflow: visible;">
+                <div style="height: 100%; position: relative;">
+                    <?php foreach ($slider_images as $index => $image_id) : 
+                        $image_url = wp_get_attachment_image_url($image_id, 'large');
+                        if (!$image_url) continue;
+                    ?>
+                        <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease;">
+                            <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: contain;" alt="<?php the_title(); ?>">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if (count($slider_images) > 1) : ?>
+                <!-- Slider Arrows -->
+                <button onclick="featuredSliderPrev()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; left: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button onclick="featuredSliderNext()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; right: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <!-- Slider Dots -->
+                <div style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 20;">
+                    <?php foreach ($slider_images as $index => $image_id) : ?>
+                        <button onclick="featuredSliderGoTo(<?php echo $index; ?>)" class="slider-dot" data-index="<?php echo $index; ?>" style="width: <?php echo $index === 0 ? '24px' : '8px'; ?>; height: 8px; border-radius: 4px; background: <?php echo $index === 0 ? '#2a2826' : 'rgba(42,40,38,0.2)'; ?>; border: none; cursor: pointer; transition: all 0.3s; padding: 0;"></button>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
-        <a href="/shop" class="inline-block bg-charcoal text-white px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-taupe-800 transition-all">KUP TERAZ</a>
+
+        <!-- Content Column -->
+        <div style="padding: 3rem 0;">
+            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: #8f8275; margin-bottom: 1rem; display: block;">POLECANY PRODUKT</span>
+            <h2 style="font-size: 2.25rem; font-weight: 700; text-transform: uppercase; color: #2a2826; margin-bottom: 1.5rem; line-height: 1.1;"><?php the_title(); ?></h2>
+            <p style="color: #766a5d; margin-bottom: 2rem; line-height: 1.7;">
+                <?php echo wp_trim_words(get_the_excerpt(), 25); ?>
+            </p>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <span style="font-size: 1.5rem; font-weight: 700; color: #2a2826;"><?php echo $product->get_price_html(); ?></span>
+                <div style="display: flex; color: #fbbf24; font-size: 1rem;">
+                    <?php for($i=0; $i<5; $i++) echo "★"; ?>
+                    <span style="color: #a39588; font-size: 0.75rem; margin-left: 0.5rem;">(<?php echo $product->get_review_count(); ?> opinie)</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
+                <button onclick="morettiQuickAddToCart(<?php echo $product_id; ?>)" data-product-id="<?php echo $product_id; ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
+            </div>
+        </div>
     </div>
-</div>
+    <?php endif; wp_reset_postdata(); ?>
 </section>
+
+<script>
+// Featured Product Slider - Pure JavaScript, no classes
+let featuredCurrentIndex = 0;
+
+function featuredSliderNext() {
+    const slider = document.getElementById('featured-slider');
+    if (!slider) return;
+    
+    const images = slider.querySelectorAll('.slider-image');
+    const dots = slider.querySelectorAll('.slider-dot');
+    const totalImages = images.length;
+    
+    // Hide current
+    images[featuredCurrentIndex].style.opacity = '0';
+    dots[featuredCurrentIndex].style.width = '8px';
+    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
+    
+    // Calculate next
+    featuredCurrentIndex = (featuredCurrentIndex + 1) % totalImages;
+    
+    // Show next
+    images[featuredCurrentIndex].style.opacity = '1';
+    dots[featuredCurrentIndex].style.width = '24px';
+    dots[featuredCurrentIndex].style.background = '#2a2826';
+}
+
+function featuredSliderPrev() {
+    const slider = document.getElementById('featured-slider');
+    if (!slider) return;
+    
+    const images = slider.querySelectorAll('.slider-image');
+    const dots = slider.querySelectorAll('.slider-dot');
+    const totalImages = images.length;
+    
+    // Hide current
+    images[featuredCurrentIndex].style.opacity = '0';
+    dots[featuredCurrentIndex].style.width = '8px';
+    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
+    
+    // Calculate prev
+    featuredCurrentIndex = (featuredCurrentIndex - 1 + totalImages) % totalImages;
+    
+    // Show prev
+    images[featuredCurrentIndex].style.opacity = '1';
+    dots[featuredCurrentIndex].style.width = '24px';
+    dots[featuredCurrentIndex].style.background = '#2a2826';
+}
+
+function featuredSliderGoTo(index) {
+    const slider = document.getElementById('featured-slider');
+    if (!slider) return;
+    
+    const images = slider.querySelectorAll('.slider-image');
+    const dots = slider.querySelectorAll('.slider-dot');
+    
+    // Hide current
+    images[featuredCurrentIndex].style.opacity = '0';
+    dots[featuredCurrentIndex].style.width = '8px';
+    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
+    
+    // Set new index
+    featuredCurrentIndex = index;
+    
+    // Show target
+    images[featuredCurrentIndex].style.opacity = '1';
+    dots[featuredCurrentIndex].style.width = '24px';
+    dots[featuredCurrentIndex].style.background = '#2a2826';
+}
+
+// Auto-advance featured slider every 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('featured-slider');
+    if (!slider) return;
+    
+    setInterval(function() {
+        featuredSliderNext();
+    }, 5000);
+});
+</script>
 
 <!-- 9. ICONS OF THE SEASON (Screenshot 8) -->
 <section class="relative h-[70vh] flex items-center justify-center text-center">

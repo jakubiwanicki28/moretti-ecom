@@ -174,15 +174,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextIndex = (currentIndex + 1) % images.length;
         
         // Update images
-        images[currentIndex].classList.remove('active');
-        images[nextIndex].classList.add('active');
+        images[currentIndex].classList.remove('active', 'opacity-100');
+        images[currentIndex].classList.add('opacity-0');
+        images[nextIndex].classList.add('active', 'opacity-100');
+        images[nextIndex].classList.remove('opacity-0');
         
         // Update dots
         if (dots.length > 0) {
-            dots[currentIndex].classList.remove('bg-white', 'w-4');
-            dots[currentIndex].classList.add('bg-white/60');
-            dots[nextIndex].classList.remove('bg-white/60');
-            dots[nextIndex].classList.add('bg-white', 'w-4');
+            dots[currentIndex].classList.remove('bg-charcoal', 'w-4');
+            dots[currentIndex].classList.add('bg-charcoal/20');
+            dots[nextIndex].classList.remove('bg-charcoal/20');
+            dots[nextIndex].classList.add('bg-charcoal', 'w-4');
         }
     };
 
@@ -203,15 +205,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const prevIndex = (currentIndex - 1 + images.length) % images.length;
         
         // Update images
-        images[currentIndex].classList.remove('active');
-        images[prevIndex].classList.add('active');
+        images[currentIndex].classList.remove('active', 'opacity-100');
+        images[currentIndex].classList.add('opacity-0');
+        images[prevIndex].classList.add('active', 'opacity-100');
+        images[prevIndex].classList.remove('opacity-0');
         
         // Update dots
         if (dots.length > 0) {
-            dots[currentIndex].classList.remove('bg-white', 'w-4');
-            dots[currentIndex].classList.add('bg-white/60');
-            dots[prevIndex].classList.remove('bg-white/60');
-            dots[prevIndex].classList.add('bg-white', 'w-4');
+            dots[currentIndex].classList.remove('bg-charcoal', 'w-4');
+            dots[currentIndex].classList.add('bg-charcoal/20');
+            dots[prevIndex].classList.remove('bg-charcoal/20');
+            dots[prevIndex].classList.add('bg-charcoal', 'w-4');
         }
     };
 
