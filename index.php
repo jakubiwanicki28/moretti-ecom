@@ -10,7 +10,7 @@ get_header(); ?>
 <!-- 1. HERO SECTION (Screenshot 1) -->
 <section class="relative h-[90vh] flex items-center overflow-hidden bg-gray-100">
     <div class="absolute inset-0 z-0">
-        <img src="<?php echo get_template_directory_uri(); ?>/images/hero.png" class="w-full h-full object-cover" alt="Luxury Wallets">
+        <img src="<?php echo get_template_directory_uri(); ?>/images/Baner strona www Large.jpeg" class="w-full h-full object-cover" alt="Luxury Wallets">
         <div class="absolute inset-0 bg-black/20"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10 text-white">
