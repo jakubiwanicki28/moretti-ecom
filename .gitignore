@@ -1,0 +1,70 @@
+# WordPress
+wordpress/
+!wordpress/.gitkeep
+
+# Node modules
+node_modules/
+moretti-theme/node_modules/
+
+# Build files
+moretti-theme/dist/
+moretti-theme/build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+
+# Ignoruj pliki konfiguracyjne z hasłami
+wp-config.php
+
+# Ignoruj folder ze zdjęciami (są ciężkie i są już na serwerze)
+wp-content/uploads/
+
+# Ignoruj rdzeń WordPressa (to się aktualizuje na serwerze)
+wp-admin/
+wp-includes/
+*.php (pliki w głównym katalogu)
+
+# Najważniejsze: Nigdy nie wysyłaj zrzutów bazy danych!
+*.sql
+*.sql.gz
+
+# --- WordPress Core w podkatalogu (Ignorujemy pliki systemowe) ---
+wordpress/wp-admin/
+wordpress/wp-includes/
+wordpress/*.php
+!wordpress/wp-content/
+
+# --- Bezpieczeństwo ---
+wordpress/wp-config.php
+wordpress/.htaccess
+.env
+
+# --- Media i Pliki Tymczasowe ---
+wordpress/wp-content/uploads/
+wordpress/wp-content/cache/
+wordpress/wp-content/backups/
+wordpress/wp-content/upgrade/
+
+# --- Baza Danych (Bardzo ważne!) ---
+*.sql
+*.sql.gz
+
+# --- Systemowe i IDE ---
+.DS_Store
+.vscode/
+.idea/
+node_modules/
