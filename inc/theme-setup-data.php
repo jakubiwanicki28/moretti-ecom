@@ -6,6 +6,11 @@
 
 if (!defined('ABSPATH')) exit;
 
+// DEBUG: Confirm file is loaded
+add_action('admin_notices', function() {
+    echo '<div class="notice notice-info is-dismissible"><p>Moretti Setup Engine Aktywny. Szukaj menu "Moretti Setup" po lewej.</p></div>';
+});
+
 function moretti_run_site_setup() {
     if (!class_exists('WooCommerce')) return 'Błąd: WooCommerce nie jest zainstalowany.';
 

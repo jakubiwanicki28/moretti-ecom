@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Include site setup engine
+require_once get_template_directory() . '/inc/theme-setup-data.php';
+
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {
     update_option('woocommerce_currency', 'PLN');
