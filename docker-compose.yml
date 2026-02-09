@@ -33,7 +33,7 @@ services:
       WORDPRESS_DEBUG: 1
     volumes:
       - ./wordpress:/var/www/html
-      - ./moretti-theme:/var/www/html/wp-content/themes/moretti-theme
+      - .:/var/www/html/wp-content/themes/moretti-theme
 
   # Node.js for Tailwind compilation (dev tools)
   node:
@@ -41,7 +41,7 @@ services:
     container_name: moretti-node
     working_dir: /app
     volumes:
-      - ./moretti-theme:/app
+      - .:/app
     command: tail -f /dev/null  # Keep container running
     stdin_open: true
     tty: true
