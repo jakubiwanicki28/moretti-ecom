@@ -131,7 +131,7 @@
 <?php endif; ?>
 
 <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-    <div class="container mx-auto">
+    <div style="max-width: 1700px; margin: 0 auto;">
         <div class="flex items-center h-16 md:h-18 px-4" style="position: relative !important;">
             
             <!-- Left Icons (Hamburger + Search) -->
@@ -176,18 +176,13 @@
             </div>
 
             <!-- Desktop Navigation (ONLY DESKTOP) -->
-            <nav class="hidden md:flex items-center space-x-8 flex-1 justify-center">
-                <?php
-                wp_nav_menu(array(
-                    'theme_location' => 'primary',
-                    'container' => false,
-                    'menu_class' => 'flex space-x-8 items-center',
-                    'fallback_cb' => 'moretti_default_menu',
-                    'items_wrap' => '<ul class="%2$s">%3$s</ul>',
-                    'link_before' => '<span class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-wide">',
-                    'link_after' => '</span>',
-                ));
-                ?>
+            <nav class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                <ul class="flex space-x-12 items-center">
+                    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Start</a></li>
+                    <?php if (class_exists('WooCommerce')) : ?>
+                        <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Sklep</a></li>
+                    <?php endif; ?>
+                </ul>
             </nav>
 
             <!-- Right Icons (Desktop Search + Cart) -->
@@ -274,8 +269,6 @@
                 <?php if (class_exists('WooCommerce')) : ?>
                     <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">Sklep</a></li>
                 <?php endif; ?>
-                <li><a href="<?php echo esc_url(home_url('/o-nas')); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">O nas</a></li>
-                <li><a href="<?php echo esc_url(home_url('/kontakt')); ?>" class="block text-xl font-light text-charcoal uppercase tracking-[0.2em] hover:text-taupe-600">Kontakt</a></li>
             </ul>
         </nav>
     </div>

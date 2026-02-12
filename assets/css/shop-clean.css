@@ -11,7 +11,7 @@
 }
 
 .shop-container {
-    max-width: 1320px;
+    max-width: 1700px;
     margin: 0 auto;
     padding: 0 24px;
     display: grid;
@@ -524,8 +524,14 @@
 /* ===== PRODUCTS GRID ===== */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 40px 24px;
+}
+
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 1023px) {

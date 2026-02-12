@@ -8,10 +8,12 @@
 get_header(); ?>
 
 <!-- 1. HERO SECTION (Screenshot 1) -->
-<section class="relative h-[90vh] flex items-center overflow-hidden bg-gray-100">
+<section class="relative h-[80vh] flex items-center overflow-hidden bg-gray-100">
     <div class="absolute inset-0 z-0">
-        <img src="<?php echo get_template_directory_uri(); ?>/images/Baner strona www Large.jpeg" class="w-full h-full object-cover" alt="Luxury Wallets">
-        <div class="absolute inset-0 bg-black/20"></div>
+        <img src="<?php echo get_template_directory_uri(); ?>/images/Baner strona www Large.jpeg" 
+             class="w-full h-full object-cover" 
+             alt="Luxury Wallets">
+        <div class="absolute inset-0 bg-black/15"></div>
     </div>
     <div class="container mx-auto px-4 relative z-10 text-white">
         <div class="max-w-2xl">
@@ -37,28 +39,133 @@ get_header(); ?>
     </div>
 </section>
 
-<!-- 2. NEW ARRIVALS (Screenshot 1) -->
-<section class="container mx-auto px-4 py-20">
-    <div class="flex flex-col mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-charcoal uppercase tracking-tighter">NOWOŚCI</h2>
+<!-- 2. NEW ARRIVALS (Screenshot 1) - AUTO CAROUSEL MODE -->
+<section class="py-20 overflow-hidden bg-white">
+    <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem; margin-bottom: 3rem;">
+        <div class="flex justify-between items-end pb-4 border-b border-charcoal">
+            <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">NOWOŚCI</h2>
+            <div class="flex gap-4">
+                <button id="new-arrivals-prev" class="w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button id="new-arrivals-next" class="w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
     </div>
     
-    <?php
-    $args = array(
-        'post_type' => 'product',
-        'posts_per_page' => 3,
-        'orderby' => 'date',
-        'order' => 'DESC'
-    );
-    $loop = new WP_Query($args);
-    if ($loop->have_posts()) : ?>
-        <ul class="products grid grid-cols-1 md:grid-cols-3 gap-8">
-            <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-                <?php wc_get_template_part('content', 'product'); ?>
-            <?php endwhile; ?>
-        </ul>
-    <?php endif; wp_reset_postdata(); ?>
+    <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
+        <div class="relative overflow-hidden">
+            <div id="new-arrivals-track" class="flex transition-transform duration-700 ease-in-out" style="gap: 2rem;">
+                <?php
+                $args = array(
+                    'post_type' => 'product',
+                    'posts_per_page' => 12,
+                    'orderby' => 'date',
+                    'order' => 'DESC',
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'product_tag',
+                            'field'    => 'slug',
+                            'terms'    => 'nowosc', // Filtrowanie po tagu 'nowosc'
+                        ),
+                    ),
+                );
+                
+                $loop = new WP_Query($args);
+                
+                // Fallback: jeśli nie ma produktów z tagiem 'nowosc', pokaż ostatnie produkty
+                if (!$loop->have_posts()) {
+                    unset($args['tax_query']);
+                    $loop = new WP_Query($args);
+                }
+
+                if ($loop->have_posts()) : 
+                    while ($loop->have_posts()) : $loop->the_post(); ?>
+                        <div class="carousel-item w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] flex-shrink-0">
+                            <?php wc_get_template_part('content', 'product'); ?>
+                        </div>
+                    <?php endwhile;
+                endif; wp_reset_postdata(); ?>
+            </div>
+        </div>
+    </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('new-arrivals-track');
+    const prev = document.getElementById('new-arrivals-prev');
+    const next = document.getElementById('new-arrivals-next');
+    if (!track || !prev || !next || track.children.length === 0) return;
+
+    let index = 0;
+    const items = track.children;
+    const totalItems = items.length;
+    
+    function getVisibleItems() {
+        if (window.innerWidth >= 1024) return 4;
+        if (window.innerWidth >= 640) return 2;
+        return 1;
+    }
+
+    function updateCarousel() {
+        const visibleItems = getVisibleItems();
+        const gap = 32; // 2rem = 32px
+        const containerWidth = track.parentElement.offsetWidth;
+        const itemWidth = (containerWidth - (gap * (visibleItems - 1))) / visibleItems;
+        
+        // Update items width
+        Array.from(items).forEach(item => {
+            item.style.width = `${itemWidth}px`;
+        });
+
+        const offset = index * (itemWidth + gap);
+        track.style.transform = `translateX(-${offset}px)`;
+    }
+
+    function moveNext() {
+        const visibleItems = getVisibleItems();
+        if (index < totalItems - visibleItems) {
+            index++;
+        } else {
+            index = 0;
+        }
+        updateCarousel();
+    }
+
+    function movePrev() {
+        const visibleItems = getVisibleItems();
+        if (index > 0) {
+            index--;
+        } else {
+            index = Math.max(0, totalItems - visibleItems);
+        }
+        updateCarousel();
+    }
+
+    next.addEventListener('click', () => {
+        clearInterval(autoPlay);
+        moveNext();
+    });
+
+    prev.addEventListener('click', () => {
+        clearInterval(autoPlay);
+        movePrev();
+    });
+
+    // Auto-play every 4 seconds
+    let autoPlay = setInterval(moveNext, 4000);
+
+    // Pause on hover
+    track.addEventListener('mouseenter', () => clearInterval(autoPlay));
+    track.addEventListener('mouseleave', () => autoPlay = setInterval(moveNext, 4000));
+
+    window.addEventListener('resize', updateCarousel);
+    updateCarousel();
+});
+</script>
 
 <!-- 3. PROMO MARQUEE (Screenshot 5) - HIDDEN BY USER REQUEST
 <div class="bg-charcoal py-4 overflow-hidden whitespace-nowrap border-y border-white/10">
@@ -93,10 +200,10 @@ get_header(); ?>
 </section>
 
 <!-- 5. TRENDING COLLECTION (Screenshot 3) -->
-<section class="container mx-auto px-4 py-20">
-    <div class="flex justify-between items-end mb-12">
+<section style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem;">
+    <div class="flex justify-between items-end mb-12 pb-4 border-b border-charcoal">
         <div>
-        <h2 class="text-3xl md:text-4xl font-bold text-charcoal uppercase tracking-tighter">KLASYKA I HITY</h2>
+        <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">KLASYKA I HITY</h2>
     </div>
     <a href="/shop" class="hidden md:block text-xs font-bold border border-charcoal px-6 py-2 hover:bg-charcoal hover:text-white transition-all uppercase tracking-widest">Wszystkie produkty</a>
 </div>
@@ -104,13 +211,13 @@ get_header(); ?>
 <?php
 $args = array(
     'post_type' => 'product',
-    'posts_per_page' => 6,
+    'posts_per_page' => 8,
     'meta_key' => 'total_sales',
     'orderby' => 'meta_value_num'
 );
 $loop = new WP_Query($args);
 if ($loop->have_posts()) : ?>
-    <ul class="products grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-12">
+    <ul class="products grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
         <?php while ($loop->have_posts()) : $loop->the_post(); ?>
             <?php wc_get_template_part('content', 'product'); ?>
         <?php endwhile; ?>
@@ -120,16 +227,16 @@ if ($loop->have_posts()) : ?>
 
 <!-- 6. COMING SOON / ZAPOWIEDZI -->
 <section class="bg-gray-100 py-20">
-<div class="container mx-auto px-4">
-    <div class="flex flex-col items-center text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-charcoal uppercase tracking-tighter">ZAPOWIEDZI</h2>
+<div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
+    <div class="flex flex-col items-center text-center mb-12 pb-4 border-b border-charcoal">
+        <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">ZAPOWIEDZI</h2>
         <p class="mt-4 text-taupe-700 max-w-lg">Już za chwilę nowa dostawa wyjątkowych modeli. Zapisz się do newslettera, aby nie przegapić premiery.</p>
     </div>
     
     <?php
     $args = array(
         'post_type' => 'product',
-        'posts_per_page' => 3,
+        'posts_per_page' => 4,
         'tax_query' => array(
             array(
                 'taxonomy' => 'product_tag',
@@ -140,7 +247,7 @@ if ($loop->have_posts()) : ?>
     );
     $loop = new WP_Query($args);
     if ($loop->have_posts()) : ?>
-        <ul class="products grid grid-cols-1 md:grid-cols-3 gap-8">
+        <ul class="products grid grid-cols-1 md:grid-cols-4 gap-8">
             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
                 <?php wc_get_template_part('content', 'product'); ?>
             <?php endwhile; ?>
@@ -174,7 +281,7 @@ if ($loop->have_posts()) : ?>
 </section>
 
 <!-- 8. FEATURED DETAIL (Screenshot 5) -->
-<section class="container mx-auto px-4 py-20 border-t border-gray-100">
+<section style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
     <?php
     // Get the specific featured product: Elegance Red
     $featured_product_name = 'Elegance Red - Portfel Damski';
@@ -403,7 +510,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <?php 
             $faqs = array(
                 "Jakie są koszty dostawy?" => "Dostawa kurierem InPost kosztuje 15 zł, powyżej 250 zł jest darmowa.",
-                "Czy oferujecie grawerowanie?" => "Tak, na wybranych modelach portfeli męskich oferujemy personalizację.",
                 "Z jakiej skóry wykonane są produkty?" => "Używamy wyłącznie naturalnej skóry bydlęcej.",
                 "Jak dbać o skórzany portfel?" => "Zalecamy stosowanie dedykowanych balsamów do skór raz na kwartał."
             );
@@ -423,9 +529,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- 12. LATEST NEWS (Screenshot 10) - HIDDEN FOR NOW
 <section class="container mx-auto px-4 py-20">
-<div class="flex justify-between items-end mb-12">
-    <h2 class="text-3xl md:text-4xl font-bold text-charcoal uppercase tracking-tighter">Z BLOGA</h2>
-    <a href="/blog" class="text-xs font-bold border-b-2 border-charcoal pb-1 uppercase tracking-widest">Wszystkie wpisy</a>
+<div class="flex justify-between items-end mb-12 pb-4 border-b border-charcoal">
+    <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">Z BLOGA</h2>
+    <a href="/blog" class="text-xs font-bold border-b border-charcoal pb-1 uppercase tracking-widest">Wszystkie wpisy</a>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <?php for($i=1; $i<=3; $i++): ?>

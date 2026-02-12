@@ -111,8 +111,6 @@ function moretti_default_menu() {
     if (class_exists('WooCommerce')) {
         echo '<li><a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">Sklep</a></li>';
     }
-    echo '<li><a href="' . esc_url(home_url('/o-nas')) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">O nas</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/kontakt')) . '" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-widest">Kontakt</a></li>';
     echo '</ul>';
 }
 
@@ -431,29 +429,8 @@ function moretti_create_default_pages() {
             }
         }
 
-        // Add About page
-        if ($about_id) {
-            wp_update_nav_menu_item($menu_id, 0, array(
-                'menu-item-title' => 'O nas',
-                'menu-item-object-id' => $about_id,
-                'menu-item-object' => 'page',
-                'menu-item-type' => 'post_type',
-                'menu-item-status' => 'publish',
-                'menu-item-position' => 3
-            ));
-        }
-
-        // Add Contact page
-        if ($contact_id) {
-            wp_update_nav_menu_item($menu_id, 0, array(
-                'menu-item-title' => 'Kontakt',
-                'menu-item-object-id' => $contact_id,
-                'menu-item-object' => 'page',
-                'menu-item-type' => 'post_type',
-                'menu-item-status' => 'publish',
-                'menu-item-position' => 4
-            ));
-        }
+        // O nas and Kontakt pages are created but NOT added to menu
+        // They remain accessible via direct URL but hidden from navigation
 
         // Assign menu to primary location
         $locations = get_theme_mod('nav_menu_locations');
