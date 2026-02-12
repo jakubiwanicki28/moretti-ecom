@@ -40,7 +40,7 @@ get_header(); ?>
 </section>
 
 <!-- 2. NEW ARRIVALS (Screenshot 1) - AUTO CAROUSEL MODE -->
-<section class="py-20 overflow-hidden bg-white">
+<section id="nowosci" class="py-20 overflow-hidden bg-white">
     <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem; margin-bottom: 3rem;">
         <div class="flex justify-between items-end pb-4 border-b border-charcoal">
             <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">NOWOŚCI</h2>
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- 5. TRENDING COLLECTION (Screenshot 3) -->
-<section style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem;">
+<section id="klasyki" style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem;">
     <div class="flex justify-between items-end mb-12 pb-4 border-b border-charcoal">
         <div>
         <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">KLASYKA I HITY</h2>

@@ -88,11 +88,40 @@
 <?php wp_footer(); ?>
 
 <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-link')?.addEventListener('click', function(e) {
+    // Mobile menu slide-in/slide-out functionality
+    const mobileMenuLink = document.getElementById('mobile-menu-link');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+    // Open menu
+    mobileMenuLink?.addEventListener('click', function(e) {
         e.preventDefault();
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
+        mobileMenu.classList.remove('-translate-x-full');
+        mobileMenuOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent body scroll
+    });
+
+    // Close menu function
+    function closeMobileMenu() {
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenuOverlay.classList.add('hidden');
+        document.body.style.overflow = ''; // Restore body scroll
+    }
+
+    // Close button
+    mobileMenuClose?.addEventListener('click', closeMobileMenu);
+
+    // Overlay click
+    mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+
+    // Close menu when clicking any link inside the menu
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Small delay to allow navigation to start
+            setTimeout(closeMobileMenu, 150);
+        });
     });
 </script>
 
