@@ -446,3 +446,59 @@ function moretti_create_default_pages() {
 // delete_option('moretti_pages_created');
 
 add_action('after_switch_theme', 'moretti_create_default_pages');
+
+/**
+ * Custom CSS for mobile product page layout
+ */
+function moretti_custom_mobile_product_css() {
+    ?>
+    <style>
+        /* Mobile Product Page - Full width gallery */
+        @media (max-width: 767px) {
+            /* Product images - full width on mobile */
+            .single-product .product-images,
+            .single-product .woocommerce-product-gallery {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            
+            /* Gallery images - full width */
+            .single-product .woocommerce-product-gallery__wrapper,
+            .single-product .woocommerce-product-gallery__image {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            /* Main product image */
+            .single-product .woocommerce-product-gallery__image img {
+                width: 100% !important;
+                height: auto !important;
+                object-fit: cover !important;
+            }
+            
+            /* Thumbnail images row - better spacing */
+            .single-product .flex-control-thumbs {
+                padding: 0.5rem !important;
+                gap: 0.5rem !important;
+            }
+            
+            .single-product .flex-control-thumbs li {
+                margin: 0 !important;
+            }
+        }
+        
+        /* Desktop - maintain proper spacing */
+        @media (min-width: 768px) {
+            .single-product .product-images {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'moretti_custom_mobile_product_css');

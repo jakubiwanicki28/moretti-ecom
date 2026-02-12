@@ -88,7 +88,9 @@
 <?php wp_footer(); ?>
 
 <script>
-    // Mobile menu slide-in/slide-out functionality
+    // ========================================
+    // MOBILE MENU - Slide-in/slide-out
+    // ========================================
     const mobileMenuLink = document.getElementById('mobile-menu-link');
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
@@ -100,14 +102,14 @@
         e.preventDefault();
         mobileMenu.classList.remove('-translate-x-full');
         mobileMenuOverlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent body scroll
+        document.body.style.overflow = 'hidden';
     });
 
     // Close menu function
     function closeMobileMenu() {
         mobileMenu.classList.add('-translate-x-full');
         mobileMenuOverlay.classList.add('hidden');
-        document.body.style.overflow = ''; // Restore body scroll
+        document.body.style.overflow = '';
     }
 
     // Close button
@@ -116,12 +118,64 @@
     // Overlay click
     mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
 
-    // Close menu when clicking any link inside the menu
+    // Close menu when clicking any link
     mobileMenuLinks.forEach(link => {
         link.addEventListener('click', function() {
-            // Small delay to allow navigation to start
             setTimeout(closeMobileMenu, 150);
         });
+    });
+
+    // ========================================
+    // MOBILE SEARCH - Full-screen overlay
+    // ========================================
+    const searchToggleMobile = document.getElementById('search-toggle-mobile');
+    const searchOverlayMobile = document.getElementById('search-overlay-mobile');
+    const searchCloseMobile = document.getElementById('search-close-mobile');
+    const searchInputMobile = document.getElementById('search-input-mobile');
+
+    // Open mobile search
+    searchToggleMobile?.addEventListener('click', function(e) {
+        e.preventDefault();
+        searchOverlayMobile.classList.remove('translate-y-full');
+        document.body.style.overflow = 'hidden';
+        // Focus input after animation
+        setTimeout(() => {
+            searchInputMobile?.focus();
+        }, 300);
+    });
+
+    // Close mobile search
+    function closeMobileSearch() {
+        searchOverlayMobile.classList.add('translate-y-full');
+        document.body.style.overflow = '';
+    }
+
+    searchCloseMobile?.addEventListener('click', closeMobileSearch);
+
+    // ========================================
+    // DESKTOP SEARCH - Dropdown bar
+    // ========================================
+    const searchToggleDesktop = document.getElementById('search-toggle-desktop');
+    const searchBarDesktop = document.getElementById('search-bar-desktop');
+    const searchCloseDesktop = document.getElementById('search-close-desktop');
+    const searchInputDesktop = document.getElementById('search-input-desktop');
+
+    // Open desktop search
+    searchToggleDesktop?.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (searchBarDesktop.style.display === 'none' || searchBarDesktop.style.display === '') {
+            searchBarDesktop.style.display = 'block';
+            setTimeout(() => {
+                searchInputDesktop?.focus();
+            }, 100);
+        } else {
+            searchBarDesktop.style.display = 'none';
+        }
+    });
+
+    // Close desktop search
+    searchCloseDesktop?.addEventListener('click', function() {
+        searchBarDesktop.style.display = 'none';
     });
 </script>
 

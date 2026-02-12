@@ -30,10 +30,11 @@
 .shop-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 0;
     background: #ffffff;
-    padding: 24px;
-    border-radius: 4px;
+    padding: 28px 24px;
+    border-radius: 0;
+    border: 1px solid #f3f4f6;
     height: fit-content;
     position: sticky;
     top: 24px;
@@ -45,38 +46,118 @@
         left: 0;
         top: 0;
         bottom: 0;
-        width: 300px;
+        height: 100%; /* Force full height */
+        width: 85vw;
+        max-width: 400px;
         background: #ffffff;
-        z-index: 100;
-        padding: 24px;
+        z-index: 200;
+        padding: 0;
         transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        overflow-y: auto;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        display: flex; /* Change to flex to manage header vs content */
+        flex-direction: column;
+        box-shadow: 2px 0 16px rgba(0,0,0,0.15);
+        border-right: 1px solid #e5e7eb;
+        overflow: hidden; /* Hide main container overflow */
     }
     
     .shop-sidebar.open {
         transform: translateX(0);
+    }
+
+    /* Dedicated scrollable area for filters */
+    .shop-sidebar-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        height: 100%; /* Ensure it takes full available height */
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        padding-bottom: 100px; /* Safe area for mobile browser UI */
+    }
+    
+    .shop-sidebar .sidebar-block {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    
+    .shop-sidebar .sidebar-block:first-of-type {
+        padding-top: 20px;
+    }
+}
+
+/* Mobile Sidebar Header */
+.sidebar-mobile-header {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .sidebar-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        background: #ffffff;
+        z-index: 20;
+    }
+    
+    .sidebar-mobile-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #2a2826;
+        margin: 0;
+    }
+    
+    .sidebar-close-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #2a2826;
+        transition: opacity 0.2s;
+        padding: 0;
+    }
+    
+    .sidebar-close-btn:hover {
+        opacity: 0.7;
     }
 }
 
 .sidebar-block {
     padding-bottom: 24px;
     margin-bottom: 24px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .sidebar-block:last-child {
     border-bottom: none;
     margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+@media (max-width: 1023px) {
+    .sidebar-block:first-of-type {
+        margin-top: 0;
+    }
 }
 
 .sidebar-heading {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #1f2937;
+    letter-spacing: 0.2em;
+    color: #2a2826;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -84,55 +165,62 @@
 }
 
 .sidebar-heading svg {
-    opacity: 0.6;
+    opacity: 0.5;
+    width: 14px;
+    height: 14px;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
 }
 
 /* Category Pills */
 .cat-pill {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    color: #4b5563;
+    color: #766a5d;
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     transition: all 0.2s;
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1.5px solid transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
 }
 
 .cat-pill:hover {
-    color: #1f2937;
-    background: #f9fafb;
-    border-color: #e5e7eb;
+    color: #2a2826;
+    background: transparent;
+    border-bottom-color: #e5e7eb;
 }
 
 .cat-pill.active {
-    color: #ffffff;
-    font-weight: 600;
-    background: #2a2826;
-    border-color: #2a2826;
+    color: #2a2826;
+    font-weight: 700;
+    background: #f9fafb;
+    border-bottom-color: #2a2826;
 }
 
 .cat-count {
-    font-size: 11px;
-    font-weight: 600;
-    background: rgba(0, 0, 0, 0.06);
-    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 3px 8px;
     border-radius: 12px;
     min-width: 24px;
     text-align: center;
+    letter-spacing: 0.02em;
 }
 
 .cat-pill.active .cat-count {
-    background: rgba(255, 255, 255, 0.2);
+    background: #2a2826;
     color: #ffffff;
 }
 
@@ -140,74 +228,83 @@
 .filter-options {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .filter-option {
-    font-size: 14px;
-    font-weight: 400;
-    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+    color: #766a5d;
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     transition: all 0.2s;
-    padding: 9px 12px;
-    border-radius: 6px;
+    padding: 12px 16px;
+    border-radius: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    border: 1px solid transparent;
+    gap: 12px;
+    border: none;
+    border-bottom: 1px solid transparent;
 }
 
 .filter-option:hover {
-    background: #f9fafb;
-    color: #1f2937;
+    background: transparent;
+    color: #2a2826;
+    border-bottom-color: #e5e7eb;
 }
 
 .filter-option.active {
-    background: #f0fdf4;
-    color: #166534;
-    border-color: #bbf7d0;
-    font-weight: 500;
+    background: #f9fafb;
+    color: #2a2826;
+    border-bottom-color: #2a2826;
+    font-weight: 700;
 }
 
 /* Color Dots */
 .color-dot {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 2px solid #e5e7eb;
     flex-shrink: 0;
+    transition: all 0.2s;
 }
 
 .filter-option.active .color-dot {
-    border-color: #166534;
-    box-shadow: 0 0 0 2px #f0fdf4;
+    border-color: #2a2826;
+    box-shadow: 0 0 0 2px #f9fafb;
+    transform: scale(1.1);
 }
 
 /* Size Options */
 .filter-sizes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 12px;
 }
 
 .size-option {
-    font-size: 13px;
-    font-weight: 600;
-    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #766a5d;
     text-decoration: none;
     transition: all 0.2s;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 12px 8px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #e5e7eb;
+    border: 2px solid #e5e7eb;
     background: #ffffff;
 }
 
 .size-option:hover {
     border-color: #2a2826;
     color: #2a2826;
+    background: #f9fafb;
 }
 
 .size-option.active {
@@ -232,52 +329,55 @@
 
 .price-input {
     width: 100%;
-    height: 42px;
-    padding: 0 12px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    height: 48px;
+    padding: 0 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 600;
     text-align: center;
-    background: #fafafa;
-    color: #1f2937;
+    background: #ffffff;
+    color: #2a2826;
     transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .price-input:focus {
     outline: none;
     border-color: #2a2826;
-    background: #ffffff;
+    background: #fafafa;
 }
 
 .price-input::placeholder {
     color: #9ca3af;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .price-dash {
-    color: #d1d5db;
-    font-weight: 600;
+    color: #9ca3af;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .filter-btn {
     width: 100%;
-    height: 42px;
+    height: 48px;
     background: #2a2826;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
+    border: 2px solid #2a2826;
+    border-radius: 0;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.2em;
     color: #ffffff;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .filter-btn:hover {
-    background: #1a1816;
-    transform: translateY(-1px);
+    background: #3a3634;
+    border-color: #3a3634;
 }
 
 /* Clear All Button */
@@ -287,23 +387,30 @@
     justify-content: center;
     gap: 8px;
     width: 100%;
-    padding: 12px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 14px;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #ef4444;
+    letter-spacing: 0.2em;
+    color: #dc2626;
     text-decoration: none;
-    border: 1.5px solid #fee2e2;
-    border-radius: 6px;
-    background: #fef2f2;
+    border: 2px solid #dc2626;
+    border-radius: 0;
+    background: transparent;
     transition: all 0.2s;
 }
 
 .clear-all-btn:hover {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.clear-all-btn svg {
+    transition: transform 0.2s;
+}
+
+.clear-all-btn:hover svg {
+    transform: rotate(90deg);
 }
 
 /* Sidebar Overlay (Mobile) */
@@ -311,7 +418,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 90;
+    z-index: 190;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
@@ -438,8 +545,14 @@
     display: none; /* Hidden on desktop */
 }
 
+.action-filter svg {
+    width: 16px;
+    height: 16px;
+}
+
 .action-filter:hover {
     background: #3a3634;
+    border-color: #3a3634;
 }
 
 @media (max-width: 1023px) {

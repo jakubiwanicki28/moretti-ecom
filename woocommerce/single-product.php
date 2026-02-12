@@ -18,36 +18,34 @@ get_header(); ?>
         
         <?php global $product; ?>
         
-        <div class="container mx-auto px-4 py-8 md:py-12">
+        <!-- Breadcrumbs -->
+        <?php if (function_exists('woocommerce_breadcrumb')) : ?>
+            <div class="container mx-auto px-4 mb-6 text-sm text-taupe-600 pt-8 md:pt-12">
+                <?php woocommerce_breadcrumb(array(
+                    'delimiter' => ' <span class="mx-2">/</span> ',
+                    'wrap_before' => '<nav class="woocommerce-breadcrumb">',
+                    'wrap_after' => '</nav>',
+                )); ?>
+            </div>
+        <?php endif; ?>
+        
+        <div class="flex flex-col md:grid md:grid-cols-2 md:gap-12 lg:gap-16">
             
-            <!-- Breadcrumbs -->
-            <?php if (function_exists('woocommerce_breadcrumb')) : ?>
-                <div class="mb-6 text-sm text-taupe-600">
-                    <?php woocommerce_breadcrumb(array(
-                        'delimiter' => ' <span class="mx-2">/</span> ',
-                        'wrap_before' => '<nav class="woocommerce-breadcrumb">',
-                        'wrap_after' => '</nav>',
-                    )); ?>
-                </div>
-            <?php endif; ?>
+            <!-- Product Images - Full width on mobile, no padding -->
+            <div class="product-images w-full md:px-4">
+                <?php
+                /**
+                 * Hook: woocommerce_before_single_product_summary.
+                 *
+                 * @hooked woocommerce_show_product_sale_flash - 10
+                 * @hooked woocommerce_show_product_images - 20
+                 */
+                do_action('woocommerce_before_single_product_summary');
+                ?>
+            </div>
             
-            <div class="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-                
-                <!-- Product Images -->
-                <div class="product-images">
-                    <?php
-                    /**
-                     * Hook: woocommerce_before_single_product_summary.
-                     *
-                     * @hooked woocommerce_show_product_sale_flash - 10
-                     * @hooked woocommerce_show_product_images - 20
-                     */
-                    do_action('woocommerce_before_single_product_summary');
-                    ?>
-                </div>
-                
-                <!-- Product Info -->
-                <div class="product-summary-custom">
+            <!-- Product Info - With padding on mobile -->
+            <div class="product-summary-custom px-4 py-6 md:px-4 md:py-0">
                     
                     <!-- Title - BIG AND BOLD -->
                     <h1 class="product-title-custom text-2xl md:text-4xl lg:text-5xl font-bold text-charcoal uppercase tracking-wide mb-4">
@@ -157,11 +155,9 @@ get_header(); ?>
              * @hooked woocommerce_output_related_products - 20
              */
             ?>
-            <div class="related-products mt-16 md:mt-24">
+            <div class="related-products container mx-auto px-4 mt-16 md:mt-24">
                 <?php woocommerce_output_related_products(); ?>
             </div>
-            
-        </div>
         
     </div>
 

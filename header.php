@@ -153,7 +153,6 @@
                     id="search-toggle-mobile"
                     class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
                     aria-label="Search"
-                    onclick="event.preventDefault(); var search = document.getElementById('search-bar'); if(search.style.display === 'block') { search.style.display = 'none'; } else { search.style.display = 'block'; document.getElementById('search-input').focus(); } return false;"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -189,10 +188,9 @@
                 <!-- Desktop Search Icon (Hidden on Mobile) -->
                 <a 
                     href="#search" 
-                    id="search-toggle"
+                    id="search-toggle-desktop"
                     class="hidden md:flex w-10 h-10 items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
                     aria-label="Search"
-                    onclick="event.preventDefault(); var search = document.getElementById('search-bar'); if(search.style.display === 'block') { search.style.display = 'none'; } else { search.style.display = 'block'; document.getElementById('search-input').focus(); } return false;"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -226,13 +224,56 @@
         </div>
     </div>
 
-    <!-- Search Bar Dropdown - Hidden by default, toggle via search icon -->
-    <div id="search-bar" style="display: none;" class="bg-white border-t border-b border-gray-100">
+    <!-- Mobile Search Overlay - Full Screen -->
+    <div id="search-overlay-mobile" class="md:hidden fixed inset-0 bg-white z-[250] transition-transform duration-300 translate-y-full">
+        <div class="h-full flex flex-col">
+            <!-- Search Header -->
+            <div class="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+                <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-charcoal">Wyszukaj</h3>
+                <button 
+                    id="search-close-mobile"
+                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600"
+                    aria-label="Zamknij wyszukiwanie"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Search Form -->
+            <div class="flex-1 px-4 py-6">
+                <form role="search" method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                    <div class="flex flex-col gap-4">
+                        <input 
+                            type="search" 
+                            id="search-input-mobile"
+                            name="s" 
+                            class="w-full border-2 border-gray-200 focus:outline-none focus:border-charcoal px-4 py-4 text-base"
+                            placeholder="Wpisz nazwę produktu..."
+                            value="<?php echo get_search_query(); ?>"
+                            autocomplete="off"
+                        />
+                        <input type="hidden" name="post_type" value="product" />
+                        <button 
+                            type="submit" 
+                            class="w-full bg-charcoal text-white hover:bg-taupe-700 transition-colors font-bold uppercase py-4 text-sm tracking-[0.15em]"
+                        >
+                            Szukaj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Search Bar - Hidden by default -->
+    <div id="search-bar-desktop" style="display: none;" class="hidden md:block bg-white border-t border-b border-gray-100">
         <div class="container mx-auto px-4" style="padding-top: 2rem; padding-bottom: 2rem;">
             <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
                 <input 
                     type="search" 
-                    id="search-input"
+                    id="search-input-desktop"
                     name="s" 
                     class="flex-1 border border-gray-200 focus:outline-none focus:border-charcoal"
                     style="height: 64px; padding: 0 1.5rem; font-size: 14px;"
@@ -247,22 +288,20 @@
                 >
                     Szukaj
                 </button>
-                <?php if (!is_search() && !is_shop() && !is_product_taxonomy()) : ?>
                 <button 
                     type="button"
-                    onclick="document.getElementById('search-bar').style.display = 'none';"
+                    id="search-close-desktop"
                     class="px-4 py-3 text-charcoal hover:text-taupe-600 text-sm"
                 >
                     ✕
                 </button>
-                <?php endif; ?>
             </form>
         </div>
     </div>
 
     <!-- Mobile Menu Dropdown - SLIDE FROM LEFT -->
-    <div id="mobile-menu" class="md:hidden bg-white border-r border-gray-200 fixed top-0 left-0 bottom-0 w-[85vw] max-w-[400px] z-[200] overflow-y-auto transition-transform duration-300 -translate-x-full shadow-2xl">
-        <nav class="px-6 py-8">
+    <div id="mobile-menu" class="md:hidden bg-white border-r border-gray-200 fixed top-0 left-0 bottom-0 w-[85vw] max-w-[400px] z-[200] overflow-y-auto transition-transform duration-300 -translate-x-full shadow-2xl overscroll-behavior-y-contain" style="-webkit-overflow-scrolling: touch;">
+        <nav class="px-6 py-8" style="padding-bottom: 100px;">
             <!-- Close Button -->
             <button id="mobile-menu-close" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

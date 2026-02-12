@@ -131,7 +131,18 @@ if (is_product_category()) {
         <!-- Sidebar -->
         <aside class="shop-sidebar" id="shop-sidebar">
             
-            <!-- Categories -->
+            <!-- Mobile Header with Close Button -->
+            <div class="sidebar-mobile-header">
+                <h2 class="sidebar-mobile-title">Filtry</h2>
+                <button id="sidebar-close" class="sidebar-close-btn" aria-label="Zamknij filtry">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="shop-sidebar-content">
+                <!-- Categories -->
             <div class="sidebar-block">
                 <h3 class="sidebar-heading">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,6 +285,7 @@ if (is_product_category()) {
             </div>
             <?php endif; ?>
 
+            </div> <!-- End shop-sidebar-content -->
         </aside>
 
         <!-- Main Content -->
@@ -451,18 +463,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Filter Toggle (Mobile)
     const filterToggle = document.getElementById('filter-toggle');
     const sidebar = document.getElementById('shop-sidebar');
+    const sidebarClose = document.getElementById('sidebar-close');
     const overlay = document.getElementById('sidebar-overlay');
     
+    // Open sidebar
     if (filterToggle && sidebar && overlay) {
         filterToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent body scroll
         });
         
-        overlay.addEventListener('click', function() {
+        // Close sidebar function
+        function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
-        });
+            document.body.style.overflow = ''; // Restore scroll
+        }
+        
+        // Close button
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeSidebar);
+        }
+        
+        // Overlay click
+        overlay.addEventListener('click', closeSidebar);
     }
     
     // Sort Dropdown
