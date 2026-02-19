@@ -10,6 +10,34 @@ defined('ABSPATH') || exit;
 
 get_header();
 
+/**
+ * Resolve attribute taxonomy slug defensively.
+ * Supports legacy imports where attribute names changed (e.g. color vs kolor).
+ */
+$moretti_resolve_attribute_taxonomy = static function (array $candidates) {
+    foreach ($candidates as $taxonomy) {
+        if (taxonomy_exists($taxonomy)) {
+            return $taxonomy;
+        }
+    }
+    return '';
+};
+
+$color_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'));
+$material_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materials', 'pa_materiaal'));
+$size_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'));
+
+$selected_color = '';
+if (isset($_GET['filter_color'])) {
+    $selected_color = sanitize_title(wp_unslash($_GET['filter_color']));
+} elseif (isset($_GET['filter_kolor'])) {
+    // Backward compatibility for old query parameter.
+    $selected_color = sanitize_title(wp_unslash($_GET['filter_kolor']));
+}
+
+$selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
+$selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
+
 // Get all products
 $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 $args = array(
@@ -32,27 +60,27 @@ if (is_product_category()) {
 }
 
 // Handle attribute filters
-if (!empty($_GET['filter_color'])) {
+if ($color_taxonomy && $selected_color !== '') {
     $tax_query[] = array(
-        'taxonomy' => 'pa_color',
+        'taxonomy' => $color_taxonomy,
         'field' => 'slug',
-        'terms' => sanitize_text_field($_GET['filter_color']),
+        'terms' => $selected_color,
     );
 }
 
-if (!empty($_GET['filter_material'])) {
+if ($material_taxonomy && $selected_material !== '') {
     $tax_query[] = array(
-        'taxonomy' => 'pa_material',
+        'taxonomy' => $material_taxonomy,
         'field' => 'slug',
-        'terms' => sanitize_text_field($_GET['filter_material']),
+        'terms' => $selected_material,
     );
 }
 
-if (!empty($_GET['filter_size'])) {
+if ($size_taxonomy && $selected_size !== '') {
     $tax_query[] = array(
-        'taxonomy' => 'pa_wielkosc',
+        'taxonomy' => $size_taxonomy,
         'field' => 'slug',
-        'terms' => sanitize_text_field($_GET['filter_size']),
+        'terms' => $selected_size,
     );
 }
 
@@ -168,10 +196,13 @@ if (is_product_category()) {
 
             <!-- Color Filter -->
             <?php
-            $colors = get_terms(array(
-                'taxonomy' => 'pa_color',
-                'hide_empty' => true,
-            ));
+            $colors = array();
+            if ($color_taxonomy) {
+                $colors = get_terms(array(
+                    'taxonomy' => $color_taxonomy,
+                    'hide_empty' => true,
+                ));
+            }
             if (!empty($colors) && !is_wp_error($colors)) :
             ?>
             <div class="sidebar-block">
@@ -183,11 +214,11 @@ if (is_product_category()) {
                 </h3>
                 <div class="filter-options">
                     <?php foreach ($colors as $color) : 
-                        $is_active = isset($_GET['filter_color']) && $_GET['filter_color'] === $color->slug;
+                        $is_active = ($selected_color === $color->slug);
                         // Map color names to hex
                         $color_hex = moretti_get_color_hex($color->name);
                     ?>
-                        <a href="<?php echo $is_active ? esc_url(remove_query_arg('filter_color')) : esc_url(add_query_arg('filter_color', $color->slug)); ?>" 
+                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'paged'))) : esc_url(add_query_arg(array('filter_color' => $color->slug, 'paged' => false))); ?>" 
                            class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
                             <span class="color-dot" style="background-color: <?php echo esc_attr($color_hex); ?>; <?php echo $color_hex === '#FFFFFF' ? 'border: 2px solid #e5e7eb;' : ''; ?>"></span>
                             <?php echo esc_html($color->name); ?>
@@ -199,10 +230,13 @@ if (is_product_category()) {
 
             <!-- Material Filter -->
             <?php
-            $materials = get_terms(array(
-                'taxonomy' => 'pa_material',
-                'hide_empty' => true,
-            ));
+            $materials = array();
+            if ($material_taxonomy) {
+                $materials = get_terms(array(
+                    'taxonomy' => $material_taxonomy,
+                    'hide_empty' => true,
+                ));
+            }
             if (!empty($materials) && !is_wp_error($materials)) :
             ?>
             <div class="sidebar-block">
@@ -214,9 +248,9 @@ if (is_product_category()) {
                 </h3>
                 <div class="filter-options">
                     <?php foreach ($materials as $material) :
-                        $is_active = isset($_GET['filter_material']) && $_GET['filter_material'] === $material->slug;
+                        $is_active = ($selected_material === $material->slug);
                     ?>
-                        <a href="<?php echo esc_url(add_query_arg('filter_material', $material->slug)); ?>" 
+                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_material', 'paged'))) : esc_url(add_query_arg(array('filter_material' => $material->slug, 'paged' => false))); ?>" 
                            class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
                             <?php echo esc_html($material->name); ?>
                         </a>
@@ -227,10 +261,13 @@ if (is_product_category()) {
 
             <!-- Size Filter -->
             <?php
-            $sizes = get_terms(array(
-                'taxonomy' => 'pa_wielkosc',
-                'hide_empty' => true,
-            ));
+            $sizes = array();
+            if ($size_taxonomy) {
+                $sizes = get_terms(array(
+                    'taxonomy' => $size_taxonomy,
+                    'hide_empty' => true,
+                ));
+            }
             if (!empty($sizes) && !is_wp_error($sizes)) :
             ?>
             <div class="sidebar-block">
@@ -242,9 +279,9 @@ if (is_product_category()) {
                 </h3>
                 <div class="filter-options filter-sizes">
                     <?php foreach ($sizes as $size) :
-                        $is_active = isset($_GET['filter_size']) && $_GET['filter_size'] === $size->slug;
+                        $is_active = ($selected_size === $size->slug);
                     ?>
-                        <a href="<?php echo esc_url(add_query_arg('filter_size', $size->slug)); ?>" 
+                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_size', 'paged'))) : esc_url(add_query_arg(array('filter_size' => $size->slug, 'paged' => false))); ?>" 
                            class="size-option <?php echo $is_active ? 'active' : ''; ?>">
                             <?php echo esc_html($size->name); ?>
                         </a>
@@ -262,6 +299,18 @@ if (is_product_category()) {
                     Cena (PLN)
                 </h3>
                 <form method="get" class="price-form">
+                    <?php if ($selected_color !== '') : ?>
+                        <input type="hidden" name="filter_color" value="<?php echo esc_attr($selected_color); ?>">
+                    <?php endif; ?>
+                    <?php if ($selected_material !== '') : ?>
+                        <input type="hidden" name="filter_material" value="<?php echo esc_attr($selected_material); ?>">
+                    <?php endif; ?>
+                    <?php if ($selected_size !== '') : ?>
+                        <input type="hidden" name="filter_size" value="<?php echo esc_attr($selected_size); ?>">
+                    <?php endif; ?>
+                    <?php if (!empty($orderby)) : ?>
+                        <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
+                    <?php endif; ?>
                     <div class="price-range">
                         <input type="number" name="min_price" placeholder="Od" class="price-input" 
                                value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
@@ -274,9 +323,9 @@ if (is_product_category()) {
             </div>
 
             <!-- Clear Filters -->
-            <?php if (!empty($_GET['filter_color']) || !empty($_GET['filter_material']) || !empty($_GET['filter_size']) || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
+            <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
             <div class="sidebar-block">
-                <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="clear-all-btn">
+                <a href="<?php echo esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'filter_material', 'filter_size', 'min_price', 'max_price', 'paged'))); ?>" class="clear-all-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -345,7 +394,7 @@ if (is_product_category()) {
                         </button>
                         <div class="dropdown-menu" id="sort-menu">
                             <?php foreach ($sort_options as $key => $label) : ?>
-                                <a href="<?php echo esc_url(add_query_arg('orderby', $key)); ?>" 
+                                <a href="<?php echo esc_url(add_query_arg(array('orderby' => $key, 'paged' => false))); ?>" 
                                    class="dropdown-item <?php echo $orderby === $key ? 'active' : ''; ?>"
                                    data-value="<?php echo esc_attr($key); ?>">
                                     <?php echo esc_html($label); ?>
