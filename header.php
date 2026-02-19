@@ -19,6 +19,12 @@
                 max-width: 100%;
                 overflow-x: hidden;
             }
+
+            /* Mobile: hide wishlist hearts everywhere for now */
+            button[aria-label="Add to wishlist"],
+            button[aria-label="Dodaj do ulubionych"] {
+                display: none !important;
+            }
         }
         
         /* Shop Page Mobile Overrides */
