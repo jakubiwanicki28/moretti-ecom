@@ -137,28 +137,8 @@ get_header(); ?>
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
-<!-- 7. LIMITED EDITION "CROWN" -->
-<section class="container mx-auto px-4 py-20">
-    <div class="bg-charcoal text-white p-8 md:p-16 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-        <div class="absolute top-0 right-0 opacity-10 pointer-events-none">
-            <svg class="w-64 h-64 md:w-96 md:h-96" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"></path></svg>
-        </div>
-        <div class="relative z-10 max-w-2xl">
-            <h2 class="text-4xl md:text-6xl font-bold uppercase mb-6 tracking-tighter">KOLEKCJA CROWN</h2>
-            <p class="text-sm md:text-base opacity-80 leading-relaxed">
-                Ekskluzywna linia portfeli sygnowana koroną. Wyjątkowe wzornictwo i limitowana ilość egzemplarzy dla osób ceniących unikalność.
-            </p>
-        </div>
-        <div class="relative z-10 shrink-0">
-            <a href="/tag/crown" class="inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-taupe-100 transition-all">
-                ODKRYJ CROWN
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- 8. FEATURED DETAIL (Screenshot 5) -->
-<section style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
+<!-- 7. FEATURED DETAIL -->
+<section id="home-featured-product" style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
     <?php
     // Get the specific featured product: Elegance Red
     $featured_product_name = 'Elegance Red - Portfel Damski';
@@ -190,9 +170,9 @@ get_header(); ?>
         // Limit to 3 images for the slider
         $slider_images = array_slice($all_images, 0, 3);
     ?>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+    <div id="home-featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         <!-- Image Slider Column -->
-        <div style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
+        <div id="home-featured-media-col" style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
             <div id="featured-slider" style="position: relative; width: 100%; max-width: 600px; height: 550px; overflow: visible;">
                 <div style="height: 100%; position: relative;">
                     <?php foreach ($slider_images as $index => $image_id) : 
@@ -207,15 +187,15 @@ get_header(); ?>
 
                 <?php if (count($slider_images) > 1) : ?>
                 <!-- Slider Arrows -->
-                <button onclick="featuredSliderPrev()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; left: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                <button id="home-featured-prev-btn" onclick="featuredSliderPrev()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; left: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <button onclick="featuredSliderNext()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; right: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                <button id="home-featured-next-btn" onclick="featuredSliderNext()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; right: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
 
                 <!-- Slider Dots -->
-                <div style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 20;">
+                <div id="home-featured-dots" style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 20;">
                     <?php foreach ($slider_images as $index => $image_id) : ?>
                         <button onclick="featuredSliderGoTo(<?php echo $index; ?>)" class="slider-dot" data-index="<?php echo $index; ?>" style="width: <?php echo $index === 0 ? '24px' : '8px'; ?>; height: 8px; border-radius: 4px; background: <?php echo $index === 0 ? '#2a2826' : 'rgba(42,40,38,0.2)'; ?>; border: none; cursor: pointer; transition: all 0.3s; padding: 0;"></button>
                     <?php endforeach; ?>
@@ -225,7 +205,7 @@ get_header(); ?>
         </div>
 
         <!-- Content Column -->
-        <div style="padding: 3rem 0;">
+        <div id="home-featured-content-col" style="padding: 3rem 0;">
             <h2 style="font-size: 2.25rem; font-weight: 700; text-transform: uppercase; color: #2a2826; margin-bottom: 1.5rem; line-height: 1.1;"><?php the_title(); ?></h2>
             <p style="color: #766a5d; margin-bottom: 2rem; line-height: 1.7;">
                 <?php echo wp_trim_words(get_the_excerpt(), 25); ?>
@@ -237,14 +217,80 @@ get_header(); ?>
                     <span style="color: #a39588; font-size: 0.75rem; margin-left: 0.5rem;">(<?php echo $product->get_review_count(); ?> opinie)</span>
                 </div>
             </div>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <a href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
-                <button onclick="morettiQuickAddToCart(<?php echo $product_id; ?>)" data-product-id="<?php echo $product_id; ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
+            <div id="home-featured-cta-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a id="home-featured-details-btn" href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
+                <button id="home-featured-cart-btn" onclick="morettiQuickAddToCart(<?php echo $product_id; ?>)" data-product-id="<?php echo $product_id; ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
             </div>
         </div>
     </div>
     <?php endif; wp_reset_postdata(); ?>
 </section>
+
+<style>
+@media (max-width: 767px) {
+    #home-featured-product {
+        padding: 2rem 1rem !important;
+    }
+
+    #home-featured-grid {
+        gap: 1.25rem !important;
+    }
+
+    #home-featured-media-col,
+    #home-featured-content-col {
+        padding: 0 !important;
+    }
+
+    #featured-slider {
+        max-width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+        overflow: hidden !important;
+    }
+
+    #featured-slider .slider-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
+
+    #home-featured-prev-btn,
+    #home-featured-next-btn {
+        display: none !important;
+    }
+
+    #home-featured-dots {
+        bottom: 0.5rem !important;
+    }
+
+    #home-featured-content-col h2 {
+        margin-bottom: 0.85rem !important;
+        font-size: 2.05rem !important;
+    }
+
+    #home-featured-content-col p {
+        margin-bottom: 1.1rem !important;
+    }
+
+    #home-featured-content-col > div[style*="margin-bottom: 2rem"] {
+        margin-bottom: 1rem !important;
+    }
+
+    #home-featured-cta-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    #home-featured-details-btn,
+    #home-featured-cart-btn {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 1rem 0.6rem !important;
+    }
+}
+</style>
 
 <script>
 // Featured Product Slider - Pure JavaScript, no classes
