@@ -109,14 +109,25 @@ get_header(); ?>
         .thumbnail-item {
             width: 22px !important;
             height: 22px !important;
+            min-width: 22px !important;
+            min-height: 22px !important;
+            max-width: 22px !important;
+            max-height: 22px !important;
+            aspect-ratio: 1 / 1 !important;
             border-width: 1px !important;
             opacity: 0.55;
             flex: 0 0 22px !important;
+            line-height: 0 !important;
+            display: block !important;
         }
         .thumbnail-item img {
             opacity: 1 !important;
+            display: block !important;
             width: 100% !important;
             height: 100% !important;
+            min-width: 100% !important;
+            min-height: 100% !important;
+            aspect-ratio: 1 / 1 !important;
             object-fit: cover !important;
         }
         .thumbnail-item.is-active {
