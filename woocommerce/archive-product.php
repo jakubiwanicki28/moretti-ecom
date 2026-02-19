@@ -251,12 +251,9 @@ if (is_product_category()) {
                 <div class="filter-options">
                     <?php foreach ($colors as $color) : 
                         $is_active = ($selected_color === $color->slug);
-                        // Map color names to hex
-                        $color_hex = moretti_get_color_hex($color->name);
                     ?>
                         <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'paged'))) : esc_url(add_query_arg(array('filter_color' => $color->slug, 'paged' => false))); ?>" 
                            class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
-                            <span class="color-dot" style="background-color: <?php echo esc_attr($color_hex); ?>; <?php echo $color_hex === '#FFFFFF' ? 'border: 2px solid #e5e7eb;' : ''; ?>"></span>
                             <?php echo esc_html($color->name); ?>
                         </a>
                     <?php endforeach; ?>
