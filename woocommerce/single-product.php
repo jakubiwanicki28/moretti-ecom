@@ -41,6 +41,32 @@ get_header(); ?>
         height: 100% !important;
         object-fit: contain !important;
     }
+    .single-gallery-arrow {
+        position: absolute !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 36px !important;
+        height: 36px !important;
+        border: 1px solid #e5e7eb !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        color: #2a2826 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 12 !important;
+        transition: all 0.2s ease !important;
+    }
+    .single-gallery-prev {
+        left: 10px !important;
+    }
+    .single-gallery-next {
+        right: 10px !important;
+    }
+    .single-gallery-arrow:hover {
+        background: #ffffff !important;
+        border-color: #d1d5db !important;
+    }
     .product-thumbnails {
         display: flex !important;
         flex-wrap: wrap !important;
@@ -60,6 +86,42 @@ get_header(); ?>
     .thumbnail-item.is-active {
         border-color: #2a2826 !important;
         border-width: 2px !important;
+    }
+    @media (max-width: 767px) {
+        .single-product-wrapper {
+            padding-top: 1.5rem !important;
+        }
+        .main-product-image-el {
+            object-fit: cover !important;
+        }
+        .product-summary-custom {
+            margin-top: 1rem !important;
+        }
+        .product-thumbnails {
+            justify-content: center !important;
+            gap: 6px !important;
+            margin-top: 10px !important;
+        }
+        .thumbnail-item {
+            width: 22px !important;
+            height: 22px !important;
+            border-width: 1px !important;
+            opacity: 0.55;
+        }
+        .thumbnail-item img {
+            opacity: 0 !important;
+        }
+        .thumbnail-item.is-active {
+            opacity: 1;
+            border-width: 2px !important;
+        }
+        .single-gallery-arrow {
+            width: 32px !important;
+            height: 32px !important;
+        }
+        .related-products .product-image-slider .slider-arrow {
+            opacity: 1 !important;
+        }
     }
 </style>
 

@@ -16,6 +16,17 @@ $main_image_id = $product->get_image_id();
 if (!$main_image_id && !empty($attachment_ids)) {
     $main_image_id = (int) $attachment_ids[0];
 }
+
+$gallery_nav_ids = array();
+if ($main_image_id) {
+    $gallery_nav_ids[] = (int) $main_image_id;
+}
+foreach ($attachment_ids as $attachment_id) {
+    $attachment_id = (int) $attachment_id;
+    if (!in_array($attachment_id, $gallery_nav_ids, true)) {
+        $gallery_nav_ids[] = $attachment_id;
+    }
+}
 ?>
 
 <div class="woocommerce-product-gallery">
@@ -33,6 +44,15 @@ if (!$main_image_id && !empty($attachment_ids)) {
                     class="main-product-image-el w-full h-full block object-contain"
                     id="moretti-main-img"
                 >
+
+                <?php if (count($gallery_nav_ids) > 1) : ?>
+                    <button type="button" class="single-gallery-arrow single-gallery-prev" aria-label="Poprzednie zdjęcie">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button type="button" class="single-gallery-arrow single-gallery-next" aria-label="Następne zdjęcie">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                <?php endif; ?>
             </div>
         <?php
         } else {
@@ -54,16 +74,7 @@ if (!$main_image_id && !empty($attachment_ids)) {
     <!-- Gallery Thumbnails -->
     <?php
     // Build unique thumbnails list: main image first, then gallery images.
-    $thumb_ids = array();
-    if ($main_image_id) {
-        $thumb_ids[] = (int) $main_image_id;
-    }
-    foreach ($attachment_ids as $attachment_id) {
-        $attachment_id = (int) $attachment_id;
-        if (!in_array($attachment_id, $thumb_ids, true)) {
-            $thumb_ids[] = $attachment_id;
-        }
-    }
+    $thumb_ids = $gallery_nav_ids;
     ?>
     <?php if (!empty($thumb_ids)) : ?>
         <div class="product-thumbnails">
@@ -89,39 +100,96 @@ if (!$main_image_id && !empty($attachment_ids)) {
                 const gallery = document.querySelector('.woocommerce-product-gallery');
                 if (!gallery) return;
 
-                const thumbnails = gallery.querySelectorAll('.thumbnail-item');
+                const thumbnails = Array.from(gallery.querySelectorAll('.thumbnail-item'));
                 const mainImage = gallery.querySelector('#moretti-main-img');
+                const prevBtn = gallery.querySelector('.single-gallery-prev');
+                const nextBtn = gallery.querySelector('.single-gallery-next');
                 if (!mainImage || !thumbnails.length) return;
 
-                thumbnails.forEach(thumb => {
+                let currentIndex = Math.max(0, thumbnails.findIndex((thumb) => thumb.classList.contains('is-active')));
+
+                const showIndex = (index) => {
+                    if (index < 0 || index >= thumbnails.length) return;
+                    const selectedThumb = thumbnails[index];
+                    const fullUrl = selectedThumb.dataset.fullUrl;
+                    if (!fullUrl) return;
+
+                    mainImage.style.opacity = '0.4';
+                    mainImage.src = fullUrl;
+                    mainImage.onload = function() {
+                        mainImage.style.opacity = '1';
+                        mainImage.onload = null;
+                    };
+                    mainImage.onerror = function() {
+                        mainImage.style.opacity = '1';
+                        mainImage.onerror = null;
+                    };
+
+                    thumbnails.forEach((thumb) => thumb.classList.remove('is-active'));
+                    selectedThumb.classList.add('is-active');
+                    currentIndex = index;
+                };
+
+                thumbnails.forEach((thumb, index) => {
                     thumb.addEventListener('click', function(e) {
                         e.preventDefault();
-                        const fullUrl = this.dataset.fullUrl;
-                        if (!fullUrl) return;
+                        showIndex(index);
+                    });
 
-                        mainImage.style.opacity = '0.4';
-                        mainImage.src = fullUrl;
-                        mainImage.onload = function() {
-                            mainImage.style.opacity = '1';
-                            mainImage.onload = null;
-                        };
-                        mainImage.onerror = function() {
-                            mainImage.style.opacity = '1';
-                            mainImage.onerror = null;
-                        };
-
-                        thumbnails.forEach(t => t.classList.remove('is-active'));
-                        this.classList.add('is-active');
+                    thumb.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            showIndex(index);
+                        }
                     });
                 });
 
-                // Ensure first thumbnail can recover main image state.
-                const firstThumb = thumbnails[0];
-                if (firstThumb && firstThumb.dataset.fullUrl) {
-                    firstThumb.addEventListener('keydown', function(event) {
-                        if (event.key === 'Enter' || event.key === ' ') {
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function() {
+                        const prevIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+                        showIndex(prevIndex);
+                    });
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function() {
+                        const nextIndex = (currentIndex + 1) % thumbnails.length;
+                        showIndex(nextIndex);
+                    });
+                }
+
+                let startX = 0;
+                let startY = 0;
+                let deltaX = 0;
+                let deltaY = 0;
+
+                const frame = gallery.querySelector('.main-product-image-frame');
+                if (frame && thumbnails.length > 1) {
+                    frame.addEventListener('touchstart', function(event) {
+                        if (event.touches.length !== 1) return;
+                        startX = event.touches[0].clientX;
+                        startY = event.touches[0].clientY;
+                        deltaX = 0;
+                        deltaY = 0;
+                    }, { passive: true });
+
+                    frame.addEventListener('touchmove', function(event) {
+                        if (event.touches.length !== 1) return;
+                        deltaX = event.touches[0].clientX - startX;
+                        deltaY = event.touches[0].clientY - startY;
+                        if (Math.abs(deltaX) > Math.abs(deltaY)) {
                             event.preventDefault();
-                            this.click();
+                        }
+                    }, { passive: false });
+
+                    frame.addEventListener('touchend', function() {
+                        const swipeThreshold = 40;
+                        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > swipeThreshold) {
+                            if (deltaX < 0) {
+                                showIndex((currentIndex + 1) % thumbnails.length);
+                            } else {
+                                showIndex((currentIndex - 1 + thumbnails.length) % thumbnails.length);
+                            }
                         }
                     });
                 }

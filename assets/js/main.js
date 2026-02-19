@@ -249,68 +249,144 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function getSliderActiveIndex(images) {
+        let activeIndex = 0;
+        images.forEach((img, index) => {
+            if (img.classList.contains('active')) {
+                activeIndex = index;
+            }
+        });
+        return activeIndex;
+    }
+
+    function goToSliderIndex(slider, targetIndex) {
+        const images = slider.querySelectorAll('.slider-image');
+        const dots = slider.querySelectorAll('.slider-dot');
+        if (!images.length) return;
+
+        const currentIndex = getSliderActiveIndex(images);
+        const boundedTarget = ((targetIndex % images.length) + images.length) % images.length;
+
+        images[currentIndex].classList.remove('active', 'opacity-100');
+        images[currentIndex].classList.add('opacity-0');
+        images[boundedTarget].classList.add('active', 'opacity-100');
+        images[boundedTarget].classList.remove('opacity-0');
+
+        if (dots.length > 0 && dots[currentIndex] && dots[boundedTarget]) {
+            dots[currentIndex].classList.remove('bg-charcoal', 'w-4');
+            dots[currentIndex].classList.add('bg-charcoal/20');
+            dots[boundedTarget].classList.remove('bg-charcoal/20');
+            dots[boundedTarget].classList.add('bg-charcoal', 'w-4');
+        }
+    }
+
+    function initProductImageSliders() {
+        const sliders = document.querySelectorAll('.product-image-slider');
+        sliders.forEach((slider) => {
+            if (slider.dataset.sliderInitialized === 'true') return;
+            slider.style.touchAction = 'pan-y';
+
+            const images = slider.querySelectorAll('.slider-image');
+            const dots = slider.querySelectorAll('.slider-dot');
+            const prevBtn = slider.querySelector('.slider-prev');
+            const nextBtn = slider.querySelector('.slider-next');
+
+            if (images.length <= 1) {
+                slider.dataset.sliderInitialized = 'true';
+                return;
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToSliderIndex(slider, getSliderActiveIndex(images) - 1);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToSliderIndex(slider, getSliderActiveIndex(images) + 1);
+                });
+            }
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToSliderIndex(slider, index);
+                });
+            });
+
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchDeltaX = 0;
+            let touchDeltaY = 0;
+            let didSwipe = false;
+            const imageLink = slider.querySelector('.slider-images-wrapper');
+
+            slider.addEventListener('touchstart', function(event) {
+                if (event.touches.length !== 1) return;
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+                touchDeltaX = 0;
+                touchDeltaY = 0;
+                didSwipe = false;
+            }, { passive: true });
+
+            slider.addEventListener('touchmove', function(event) {
+                if (event.touches.length !== 1) return;
+                touchDeltaX = event.touches[0].clientX - touchStartX;
+                touchDeltaY = event.touches[0].clientY - touchStartY;
+                if (Math.abs(touchDeltaX) > Math.abs(touchDeltaY)) {
+                    event.preventDefault();
+                }
+            }, { passive: false });
+
+            slider.addEventListener('touchend', function() {
+                const swipeThreshold = 35;
+                if (Math.abs(touchDeltaX) > Math.abs(touchDeltaY) && Math.abs(touchDeltaX) > swipeThreshold) {
+                    didSwipe = true;
+                    if (touchDeltaX < 0) {
+                        goToSliderIndex(slider, getSliderActiveIndex(images) + 1);
+                    } else {
+                        goToSliderIndex(slider, getSliderActiveIndex(images) - 1);
+                    }
+                }
+            });
+
+            if (imageLink) {
+                imageLink.addEventListener('click', function(event) {
+                    if (didSwipe) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        didSwipe = false;
+                    }
+                });
+            }
+
+            slider.dataset.sliderInitialized = 'true';
+        });
+    }
+
     // Product Image Slider Functions
     window.morettiSliderNext = function(button) {
         const slider = button.closest('.product-image-slider');
+        if (!slider) return;
         const images = slider.querySelectorAll('.slider-image');
-        const dots = slider.querySelectorAll('.slider-dot');
-        let currentIndex = 0;
-        
-        // Find current active image
-        images.forEach((img, index) => {
-            if (img.classList.contains('active')) {
-                currentIndex = index;
-            }
-        });
-        
-        // Calculate next index
-        const nextIndex = (currentIndex + 1) % images.length;
-        
-        // Update images
-        images[currentIndex].classList.remove('active', 'opacity-100');
-        images[currentIndex].classList.add('opacity-0');
-        images[nextIndex].classList.add('active', 'opacity-100');
-        images[nextIndex].classList.remove('opacity-0');
-        
-        // Update dots
-        if (dots.length > 0) {
-            dots[currentIndex].classList.remove('bg-charcoal', 'w-4');
-            dots[currentIndex].classList.add('bg-charcoal/20');
-            dots[nextIndex].classList.remove('bg-charcoal/20');
-            dots[nextIndex].classList.add('bg-charcoal', 'w-4');
-        }
+        goToSliderIndex(slider, getSliderActiveIndex(images) + 1);
     };
 
     window.morettiSliderPrev = function(button) {
         const slider = button.closest('.product-image-slider');
+        if (!slider) return;
         const images = slider.querySelectorAll('.slider-image');
-        const dots = slider.querySelectorAll('.slider-dot');
-        let currentIndex = 0;
-        
-        // Find current active image
-        images.forEach((img, index) => {
-            if (img.classList.contains('active')) {
-                currentIndex = index;
-            }
-        });
-        
-        // Calculate previous index
-        const prevIndex = (currentIndex - 1 + images.length) % images.length;
-        
-        // Update images
-        images[currentIndex].classList.remove('active', 'opacity-100');
-        images[currentIndex].classList.add('opacity-0');
-        images[prevIndex].classList.add('active', 'opacity-100');
-        images[prevIndex].classList.remove('opacity-0');
-        
-        // Update dots
-        if (dots.length > 0) {
-            dots[currentIndex].classList.remove('bg-charcoal', 'w-4');
-            dots[currentIndex].classList.add('bg-charcoal/20');
-            dots[prevIndex].classList.remove('bg-charcoal/20');
-            dots[prevIndex].classList.add('bg-charcoal', 'w-4');
-        }
+        goToSliderIndex(slider, getSliderActiveIndex(images) - 1);
     };
+
+    initProductImageSliders();
 
 });
 

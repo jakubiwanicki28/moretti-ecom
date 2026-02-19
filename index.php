@@ -179,8 +179,8 @@ get_header(); ?>
                         $image_url = wp_get_attachment_image_url($image_id, 'large');
                         if (!$image_url) continue;
                     ?>
-                        <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease;">
-                            <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: contain;" alt="<?php the_title(); ?>">
+                        <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease; overflow: hidden;">
+                            <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php the_title(); ?>">
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -227,6 +227,15 @@ get_header(); ?>
 </section>
 
 <style>
+#okazje .product-card,
+#okazje .product-info {
+    background: #f3f4f6 !important;
+}
+
+#okazje .product-image-slider {
+    background: #f9fafb !important;
+}
+
 @media (max-width: 767px) {
     #home-featured-product {
         padding: 2rem 1rem !important;
@@ -251,7 +260,7 @@ get_header(); ?>
     #featured-slider .slider-image img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: contain !important;
+        object-fit: cover !important;
     }
 
     #home-featured-prev-btn,
