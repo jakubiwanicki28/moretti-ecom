@@ -5,6 +5,63 @@
  * @package Moretti
  */
 
+if (!function_exists('moretti_render_home_carousel_section')) {
+    /**
+     * Render homepage product carousel section by WooCommerce category slug.
+     */
+    function moretti_render_home_carousel_section($section_id, $title, $category_slug, $section_classes = 'py-20 overflow-hidden bg-white') {
+        $query_args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $category_slug,
+                ),
+            ),
+        );
+
+        $loop = new WP_Query($query_args);
+        ?>
+        <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
+            <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem; margin-bottom: 3rem;">
+                <div class="flex justify-between items-end pb-4 border-b border-charcoal">
+                    <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter"><?php echo esc_html($title); ?></h2>
+                    <div class="flex gap-4">
+                        <button class="home-carousel-prev w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all" aria-label="<?php echo esc_attr(sprintf('%s poprzednie', $title)); ?>">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        <button class="home-carousel-next w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all" aria-label="<?php echo esc_attr(sprintf('%s następne', $title)); ?>">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
+                <div class="relative overflow-hidden">
+                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 2rem;">
+                        <?php if ($loop->have_posts()) : ?>
+                            <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+                                <div class="home-carousel-item flex-shrink-0">
+                                    <ul class="products list-none m-0 p-0">
+                                        <?php wc_get_template_part('content', 'product'); ?>
+                                    </ul>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else : ?>
+                            <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php
+        wp_reset_postdata();
+    }
+}
+
 get_header(); ?>
 
 <!-- 1. HERO SECTION (Screenshot 1) -->
@@ -39,133 +96,8 @@ get_header(); ?>
     </div>
 </section>
 
-<!-- 2. NEW ARRIVALS (Screenshot 1) - AUTO CAROUSEL MODE -->
-<section id="nowosci" class="py-20 overflow-hidden bg-white">
-    <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem; margin-bottom: 3rem;">
-        <div class="flex justify-between items-end pb-4 border-b border-charcoal">
-            <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">NOWOŚCI</h2>
-            <div class="flex gap-4">
-                <button id="new-arrivals-prev" class="w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <button id="new-arrivals-next" class="w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
-        <div class="relative overflow-hidden">
-            <div id="new-arrivals-track" class="flex transition-transform duration-700 ease-in-out" style="gap: 2rem;">
-                <?php
-                $args = array(
-                    'post_type' => 'product',
-                    'posts_per_page' => 12,
-                    'orderby' => 'date',
-                    'order' => 'DESC',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'product_tag',
-                            'field'    => 'slug',
-                            'terms'    => 'nowosc', // Filtrowanie po tagu 'nowosc'
-                        ),
-                    ),
-                );
-                
-                $loop = new WP_Query($args);
-                
-                // Fallback: jeśli nie ma produktów z tagiem 'nowosc', pokaż ostatnie produkty
-                if (!$loop->have_posts()) {
-                    unset($args['tax_query']);
-                    $loop = new WP_Query($args);
-                }
-
-                if ($loop->have_posts()) : 
-                    while ($loop->have_posts()) : $loop->the_post(); ?>
-                        <div class="carousel-item w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] flex-shrink-0">
-                            <?php wc_get_template_part('content', 'product'); ?>
-                        </div>
-                    <?php endwhile;
-                endif; wp_reset_postdata(); ?>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const track = document.getElementById('new-arrivals-track');
-    const prev = document.getElementById('new-arrivals-prev');
-    const next = document.getElementById('new-arrivals-next');
-    if (!track || !prev || !next || track.children.length === 0) return;
-
-    let index = 0;
-    const items = track.children;
-    const totalItems = items.length;
-    
-    function getVisibleItems() {
-        if (window.innerWidth >= 1024) return 4;
-        if (window.innerWidth >= 640) return 2;
-        return 1;
-    }
-
-    function updateCarousel() {
-        const visibleItems = getVisibleItems();
-        const gap = 32; // 2rem = 32px
-        const containerWidth = track.parentElement.offsetWidth;
-        const itemWidth = (containerWidth - (gap * (visibleItems - 1))) / visibleItems;
-        
-        // Update items width
-        Array.from(items).forEach(item => {
-            item.style.width = `${itemWidth}px`;
-        });
-
-        const offset = index * (itemWidth + gap);
-        track.style.transform = `translateX(-${offset}px)`;
-    }
-
-    function moveNext() {
-        const visibleItems = getVisibleItems();
-        if (index < totalItems - visibleItems) {
-            index++;
-        } else {
-            index = 0;
-        }
-        updateCarousel();
-    }
-
-    function movePrev() {
-        const visibleItems = getVisibleItems();
-        if (index > 0) {
-            index--;
-        } else {
-            index = Math.max(0, totalItems - visibleItems);
-        }
-        updateCarousel();
-    }
-
-    next.addEventListener('click', () => {
-        clearInterval(autoPlay);
-        moveNext();
-    });
-
-    prev.addEventListener('click', () => {
-        clearInterval(autoPlay);
-        movePrev();
-    });
-
-    // Auto-play every 4 seconds
-    let autoPlay = setInterval(moveNext, 4000);
-
-    // Pause on hover
-    track.addEventListener('mouseenter', () => clearInterval(autoPlay));
-    track.addEventListener('mouseleave', () => autoPlay = setInterval(moveNext, 4000));
-
-    window.addEventListener('resize', updateCarousel);
-    updateCarousel();
-});
-</script>
+<!-- 2. NOWOŚCI -->
+<?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'py-20 overflow-hidden bg-white'); ?>
 
 <!-- 3. PROMO MARQUEE (Screenshot 5) - HIDDEN BY USER REQUEST
 <div class="bg-charcoal py-4 overflow-hidden whitespace-nowrap border-y border-white/10">
@@ -178,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 -->
 
 <!-- 4. GENDER SPLIT / CATEGORIES (Screenshot 3) -->
-<section class="grid grid-cols-1 md:grid-cols-2 h-[80vh]">
+<section class="grid grid-cols-1 md:grid-cols-2 h-[80vh] divide-y md:divide-y-0 md:divide-x divide-white/10">
     <!-- Men -->
     <div class="relative group overflow-hidden flex items-center justify-center">
         <img src="<?php echo get_template_directory_uri(); ?>/images/men-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niego">
@@ -189,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
     <!-- Women -->
-    <div class="relative group overflow-hidden flex items-center justify-center border-l border-white/10">
+    <div class="relative group overflow-hidden flex items-center justify-center">
         <img src="<?php echo get_template_directory_uri(); ?>/images/women-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niej">
         <div class="absolute inset-0 bg-black/30"></div>
         <div class="relative z-10 text-center">
@@ -199,66 +131,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </section>
 
-<!-- 5. TRENDING COLLECTION (Screenshot 3) -->
-<section id="klasyki" style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem;">
-    <div class="flex justify-between items-end mb-12 pb-4 border-b border-charcoal">
-        <div>
-        <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">KLASYKA I HITY</h2>
-    </div>
-    <a href="/shop" class="hidden md:block text-xs font-bold border border-charcoal px-6 py-2 hover:bg-charcoal hover:text-white transition-all uppercase tracking-widest">Wszystkie produkty</a>
-</div>
+<!-- 5. KLASYKA I HITY -->
+<?php moretti_render_home_carousel_section('klasyki', 'KLASYKA I HITY', 'klasyka-i-hity', 'py-20 overflow-hidden bg-white'); ?>
 
-<?php
-$args = array(
-    'post_type' => 'product',
-    'posts_per_page' => 8,
-    'meta_key' => 'total_sales',
-    'orderby' => 'meta_value_num'
-);
-$loop = new WP_Query($args);
-if ($loop->have_posts()) : ?>
-    <ul class="products grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
-        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-            <?php wc_get_template_part('content', 'product'); ?>
-        <?php endwhile; ?>
-    </ul>
-<?php endif; wp_reset_postdata(); ?>
-</section>
-
-<!-- 6. COMING SOON / ZAPOWIEDZI -->
-<section class="bg-gray-100 py-20">
-<div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
-    <div class="flex flex-col items-center text-center mb-12 pb-4 border-b border-charcoal">
-        <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter">ZAPOWIEDZI</h2>
-        <p class="mt-4 text-taupe-700 max-w-lg">Już za chwilę nowa dostawa wyjątkowych modeli. Zapisz się do newslettera, aby nie przegapić premiery.</p>
-    </div>
-    
-    <?php
-    $args = array(
-        'post_type' => 'product',
-        'posts_per_page' => 4,
-        'tax_query' => array(
-            array(
-                'taxonomy' => 'product_tag',
-                'field'    => 'slug',
-                'terms'    => 'coming-soon',
-            ),
-        ),
-    );
-    $loop = new WP_Query($args);
-    if ($loop->have_posts()) : ?>
-        <ul class="products grid grid-cols-1 md:grid-cols-4 gap-8">
-            <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-                <?php wc_get_template_part('content', 'product'); ?>
-            <?php endwhile; ?>
-        </ul>
-    <?php else: ?>
-        <div class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-            <p class="text-gray-500 italic">Nowe dostawy już w drodze. Sprawdź naszą aktualną ofertę.</p>
-        </div>
-    <?php endif; wp_reset_postdata(); ?>
-</div>
-</section>
+<!-- 6. OKAZJE -->
+<?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
 <!-- 7. LIMITED EDITION "CROWN" -->
 <section class="container mx-auto px-4 py-20">
@@ -313,7 +190,7 @@ if ($loop->have_posts()) : ?>
         // Limit to 3 images for the slider
         $slider_images = array_slice($all_images, 0, 3);
     ?>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         <!-- Image Slider Column -->
         <div style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
             <div id="featured-slider" style="position: relative; width: 100%; max-width: 600px; height: 550px; overflow: visible;">
@@ -446,6 +323,123 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(function() {
         featuredSliderNext();
     }, 5000);
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const carousels = document.querySelectorAll('section .home-carousel-track');
+
+    carousels.forEach((track) => {
+        const section = track.closest('section');
+        const prev = section ? section.querySelector('.home-carousel-prev') : null;
+        const next = section ? section.querySelector('.home-carousel-next') : null;
+        const items = Array.from(track.children).filter((child) => child.classList.contains('home-carousel-item'));
+
+        if (!prev || !next || items.length === 0) {
+            return;
+        }
+
+        let index = 0;
+        let itemWidth = 0;
+        let dragStartX = 0;
+        let dragDelta = 0;
+        let isDragging = false;
+        const gap = 32;
+        const swipeThreshold = 50;
+
+        const getVisibleItems = () => {
+            if (window.innerWidth >= 1024) return 4;
+            if (window.innerWidth >= 640) return 2;
+            return 1;
+        };
+
+        const getMaxIndex = () => Math.max(0, items.length - getVisibleItems());
+
+        const updateCarousel = () => {
+            const visibleItems = getVisibleItems();
+            const container = track.parentElement;
+            if (!container) return;
+
+            itemWidth = (container.offsetWidth - (gap * (visibleItems - 1))) / visibleItems;
+            items.forEach((item) => {
+                item.style.width = `${itemWidth}px`;
+            });
+
+            index = Math.min(index, getMaxIndex());
+            const offset = index * (itemWidth + gap);
+            track.style.transform = `translateX(-${offset}px)`;
+        };
+
+        const moveNext = () => {
+            const maxIndex = getMaxIndex();
+            index = index < maxIndex ? index + 1 : 0;
+            updateCarousel();
+        };
+
+        const movePrev = () => {
+            const maxIndex = getMaxIndex();
+            index = index > 0 ? index - 1 : maxIndex;
+            updateCarousel();
+        };
+
+        prev.addEventListener('click', movePrev);
+        next.addEventListener('click', moveNext);
+
+        const onDragStart = (clientX) => {
+            isDragging = true;
+            dragStartX = clientX;
+            dragDelta = 0;
+        };
+
+        const onDragMove = (clientX) => {
+            if (!isDragging) return;
+            dragDelta = clientX - dragStartX;
+        };
+
+        const onDragEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (Math.abs(dragDelta) >= swipeThreshold) {
+                if (dragDelta < 0) {
+                    moveNext();
+                } else {
+                    movePrev();
+                }
+            }
+            dragDelta = 0;
+        };
+
+        track.addEventListener('touchstart', (event) => {
+            if (event.touches.length !== 1) return;
+            onDragStart(event.touches[0].clientX);
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (event) => {
+            if (event.touches.length !== 1) return;
+            onDragMove(event.touches[0].clientX);
+        }, { passive: true });
+
+        track.addEventListener('touchend', onDragEnd);
+        track.addEventListener('touchcancel', onDragEnd);
+
+        track.addEventListener('pointerdown', (event) => {
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            onDragStart(event.clientX);
+        });
+
+        track.addEventListener('pointermove', (event) => {
+            onDragMove(event.clientX);
+        });
+
+        track.addEventListener('pointerup', onDragEnd);
+        track.addEventListener('pointercancel', onDragEnd);
+        track.addEventListener('pointerleave', onDragEnd);
+
+        window.addEventListener('resize', updateCarousel);
+        updateCarousel();
+    });
 });
 </script>
 

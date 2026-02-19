@@ -41,13 +41,13 @@ if (empty($product) || !$product->is_visible()) {
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
-                            <?php echo wp_get_attachment_image($image_id, 'woocommerce_thumbnail', false, array(
-                                'class' => 'w-full h-auto object-cover aspect-[3/4] group-hover:opacity-90 transition-opacity'
+                            <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile', false, array(
+                                'class' => 'w-full h-auto object-cover aspect-square group-hover:opacity-90 transition-opacity'
                             )); ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <?php echo woocommerce_get_product_thumbnail('woocommerce_thumbnail', array('class' => 'w-full h-auto object-cover aspect-[3/4] group-hover:opacity-90 transition-opacity')); ?>
+                    <?php echo woocommerce_get_product_thumbnail('moretti_home_tile', array('class' => 'w-full h-auto object-cover aspect-square group-hover:opacity-90 transition-opacity')); ?>
                 <?php endif; ?>
             </a>
 

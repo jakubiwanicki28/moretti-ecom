@@ -180,11 +180,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const thumbImg = thumb.querySelector('img');
                     if (thumbImg && (thumbImg.src === variation.image.thumb_src || thumbImg.src === variation.image.src)) {
                         thumbnails.forEach(t => {
-                            t.classList.remove('border-charcoal');
-                            t.classList.add('border-gray-200');
+                            t.classList.remove('is-active');
                         });
-                        thumb.classList.add('border-charcoal');
-                        thumb.classList.remove('border-gray-200');
+                        thumb.classList.add('is-active');
                         foundMatch = true;
                     }
                 });
@@ -192,8 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 3. If no matching thumbnail, clear highlights
                 if (!foundMatch) {
                     thumbnails.forEach(t => {
-                        t.classList.remove('border-charcoal');
-                        t.classList.add('border-gray-200');
+                        t.classList.remove('is-active');
                     });
                 }
             }

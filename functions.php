@@ -101,6 +101,23 @@ function moretti_theme_setup() {
 }
 add_action('after_setup_theme', 'moretti_theme_setup');
 
+/**
+ * Register dedicated image sizes for homepage product tiles.
+ */
+function moretti_register_image_sizes() {
+    add_image_size('moretti_home_tile', 1000, 1000, true);
+}
+add_action('after_setup_theme', 'moretti_register_image_sizes', 30);
+
+/**
+ * Keep frontend image quality at a safe baseline.
+ */
+function moretti_image_quality($quality) {
+    return 88;
+}
+add_filter('jpeg_quality', 'moretti_image_quality');
+add_filter('wp_editor_set_quality', 'moretti_image_quality');
+
 // Include site setup engine
 require_once get_template_directory() . '/inc/theme-setup-data.php';
 

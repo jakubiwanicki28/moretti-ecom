@@ -383,7 +383,7 @@ if (is_product_category()) {
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
                                                     <a href="<?php echo esc_url(get_permalink()); ?>">
-                                                        <?php echo wp_get_attachment_image($image_id, 'medium'); ?>
+                                                        <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile'); ?>
                                                     </a>
                                                 </div>
                                             <?php endforeach; ?>
