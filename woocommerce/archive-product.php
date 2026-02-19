@@ -20,12 +20,54 @@ $moretti_resolve_attribute_taxonomy = static function (array $candidates) {
             return $taxonomy;
         }
     }
+    // Fallback: resolve from WooCommerce attribute registry by attribute name.
+    if (function_exists('wc_get_attribute_taxonomies') && function_exists('wc_attribute_taxonomy_name')) {
+        $attribute_taxonomies = wc_get_attribute_taxonomies();
+        if (!empty($attribute_taxonomies) && !is_wp_error($attribute_taxonomies)) {
+            foreach ($attribute_taxonomies as $attribute_taxonomy) {
+                if (empty($attribute_taxonomy->attribute_name)) {
+                    continue;
+                }
+                $candidate_name = sanitize_title($attribute_taxonomy->attribute_name);
+                foreach ($candidates as $candidate) {
+                    $candidate_name_only = sanitize_title(str_replace('pa_', '', $candidate));
+                    if ($candidate_name === $candidate_name_only) {
+                        $resolved = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
+                        if (taxonomy_exists($resolved)) {
+                            return $resolved;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return '';
 };
 
 $color_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'));
 $material_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materials', 'pa_materiaal'));
 $size_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'));
+
+$moretti_get_filter_terms = static function ($taxonomy) {
+    if (!$taxonomy || !taxonomy_exists($taxonomy)) {
+        return array();
+    }
+
+    $terms = get_terms(array(
+        'taxonomy' => $taxonomy,
+        'hide_empty' => true,
+    ));
+
+    if (is_wp_error($terms) || empty($terms)) {
+        $terms = get_terms(array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => false,
+        ));
+    }
+
+    return is_wp_error($terms) ? array() : $terms;
+};
 
 $selected_color = '';
 if (isset($_GET['filter_color'])) {
@@ -196,13 +238,7 @@ if (is_product_category()) {
 
             <!-- Color Filter -->
             <?php
-            $colors = array();
-            if ($color_taxonomy) {
-                $colors = get_terms(array(
-                    'taxonomy' => $color_taxonomy,
-                    'hide_empty' => true,
-                ));
-            }
+            $colors = $moretti_get_filter_terms($color_taxonomy);
             if (!empty($colors) && !is_wp_error($colors)) :
             ?>
             <div class="sidebar-block">
@@ -230,13 +266,7 @@ if (is_product_category()) {
 
             <!-- Material Filter -->
             <?php
-            $materials = array();
-            if ($material_taxonomy) {
-                $materials = get_terms(array(
-                    'taxonomy' => $material_taxonomy,
-                    'hide_empty' => true,
-                ));
-            }
+            $materials = $moretti_get_filter_terms($material_taxonomy);
             if (!empty($materials) && !is_wp_error($materials)) :
             ?>
             <div class="sidebar-block">
@@ -261,13 +291,7 @@ if (is_product_category()) {
 
             <!-- Size Filter -->
             <?php
-            $sizes = array();
-            if ($size_taxonomy) {
-                $sizes = get_terms(array(
-                    'taxonomy' => $size_taxonomy,
-                    'hide_empty' => true,
-                ));
-            }
+            $sizes = $moretti_get_filter_terms($size_taxonomy);
             if (!empty($sizes) && !is_wp_error($sizes)) :
             ?>
             <div class="sidebar-block">
