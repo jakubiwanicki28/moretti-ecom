@@ -1231,6 +1231,15 @@ a {
   transition: all 0.3s ease;
 }
 
+.wishlist-toggle.is-active {
+  color: #ef4444 !important;
+}
+
+.wishlist-toggle.is-active svg {
+  stroke: #ef4444 !important;
+  fill: #ef4444 !important;
+}
+
 /* Product images */
 
 .woocommerce ul.products li.product img,

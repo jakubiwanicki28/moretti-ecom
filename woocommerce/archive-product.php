@@ -79,6 +79,16 @@ if (isset($_GET['filter_color'])) {
 
 $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
+$is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
+
+$wishlist_ids = array();
+if ($is_wishlist_view && isset($_COOKIE['moretti_wishlist'])) {
+    $raw_cookie = rawurldecode(wp_unslash($_COOKIE['moretti_wishlist']));
+    $decoded = json_decode($raw_cookie, true);
+    if (is_array($decoded)) {
+        $wishlist_ids = array_values(array_unique(array_filter(array_map('absint', $decoded))));
+    }
+}
 
 // Get all products
 $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
@@ -88,6 +98,11 @@ $args = array(
     'paged' => $paged,
     'post_status' => 'publish',
 );
+
+if ($is_wishlist_view) {
+    $args['post__in'] = !empty($wishlist_ids) ? $wishlist_ids : array(0);
+    $args['orderby'] = 'post__in';
+}
 
 // Initialize tax_query
 $tax_query = array('relation' => 'AND');
@@ -102,7 +117,7 @@ if (is_product_category()) {
 }
 
 // Handle attribute filters
-if ($color_taxonomy && $selected_color !== '') {
+if (!$is_wishlist_view && $color_taxonomy && $selected_color !== '') {
     $tax_query[] = array(
         'taxonomy' => $color_taxonomy,
         'field' => 'slug',
@@ -110,7 +125,7 @@ if ($color_taxonomy && $selected_color !== '') {
     );
 }
 
-if ($material_taxonomy && $selected_material !== '') {
+if (!$is_wishlist_view && $material_taxonomy && $selected_material !== '') {
     $tax_query[] = array(
         'taxonomy' => $material_taxonomy,
         'field' => 'slug',
@@ -118,7 +133,7 @@ if ($material_taxonomy && $selected_material !== '') {
     );
 }
 
-if ($size_taxonomy && $selected_size !== '') {
+if (!$is_wishlist_view && $size_taxonomy && $selected_size !== '') {
     $tax_query[] = array(
         'taxonomy' => $size_taxonomy,
         'field' => 'slug',
@@ -131,7 +146,7 @@ if (count($tax_query) > 1) {
 }
 
 // Handle price filter
-if (!empty($_GET['min_price']) || !empty($_GET['max_price'])) {
+if (!$is_wishlist_view && (!empty($_GET['min_price']) || !empty($_GET['max_price']))) {
     $args['meta_query'] = array('relation' => 'AND');
     
     if (!empty($_GET['min_price'])) {
@@ -192,6 +207,8 @@ $categories = get_terms(array(
 $page_title = 'Sklep';
 if (is_product_category()) {
     $page_title = single_cat_title('', false);
+} elseif ($is_wishlist_view) {
+    $page_title = 'Ulubione';
 }
 ?>
 
@@ -373,6 +390,12 @@ if (is_product_category()) {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                     <span class="current"><?php echo esc_html($page_title); ?></span>
+                <?php elseif ($is_wishlist_view) : ?>
+                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">Sklep</a>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    <span class="current">Ulubione</span>
                 <?php else : ?>
                     <span class="current">Sklep</span>
                 <?php endif; ?>
@@ -475,6 +498,17 @@ if (is_product_category()) {
                                                     <?php endfor; ?>
                                                 </div>
                                             <?php endif; ?>
+                                            <button
+                                                type="button"
+                                                class="wishlist-toggle image-wishlist product-heart"
+                                                data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                                                aria-label="Dodaj do ulubionych"
+                                                aria-pressed="false"
+                                            >
+                                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                                </svg>
+                                            </button>
                                         <?php else : ?>
                                             <a href="<?php echo esc_url(get_permalink()); ?>">
                                                 <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" alt="Placeholder">

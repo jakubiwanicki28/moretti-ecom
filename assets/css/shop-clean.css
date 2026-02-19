@@ -844,6 +844,15 @@
     fill: #ef4444;
 }
 
+.wishlist-toggle.is-active {
+    background: #fef2f2 !important;
+}
+
+.wishlist-toggle.is-active svg {
+    stroke: #ef4444;
+    fill: #ef4444;
+}
+
 .product-add {
     bottom: 12px;
     right: 12px;

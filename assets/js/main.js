@@ -5,6 +5,97 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Moretti Theme loaded!');
 
+    const WISHLIST_COOKIE_NAME = 'moretti_wishlist';
+    const WISHLIST_COOKIE_DAYS = 365;
+
+    function readWishlistCookie() {
+        const cookieRow = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith(`${WISHLIST_COOKIE_NAME}=`));
+
+        if (!cookieRow) return [];
+
+        const cookieValue = cookieRow.split('=')[1] || '';
+        try {
+            const parsed = JSON.parse(decodeURIComponent(cookieValue));
+            if (!Array.isArray(parsed)) return [];
+            return parsed
+                .map((id) => parseInt(id, 10))
+                .filter((id) => Number.isInteger(id) && id > 0);
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function writeWishlistCookie(ids) {
+        const uniqueIds = Array.from(new Set(ids))
+            .map((id) => parseInt(id, 10))
+            .filter((id) => Number.isInteger(id) && id > 0);
+
+        const maxAge = WISHLIST_COOKIE_DAYS * 24 * 60 * 60;
+        document.cookie = `${WISHLIST_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(uniqueIds))}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        return uniqueIds;
+    }
+
+    function updateWishlistUi() {
+        const wishlistIds = readWishlistCookie();
+        const wishlistSet = new Set(wishlistIds);
+
+        document.querySelectorAll('.wishlist-toggle[data-product-id]').forEach((button) => {
+            const id = parseInt(button.dataset.productId || '0', 10);
+            const isActive = wishlistSet.has(id);
+
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            button.setAttribute('aria-label', isActive ? 'Usuń z ulubionych' : 'Dodaj do ulubionych');
+        });
+
+        const count = wishlistIds.length;
+        document.querySelectorAll('[data-wishlist-count]').forEach((badge) => {
+            badge.textContent = String(count);
+            if (count > 0) {
+                badge.classList.remove('hidden');
+                badge.classList.add('flex');
+            } else {
+                badge.classList.remove('flex');
+                badge.classList.add('hidden');
+            }
+        });
+    }
+
+    function toggleWishlist(productId) {
+        const wishlistIds = readWishlistCookie();
+        const id = parseInt(productId, 10);
+        if (!Number.isInteger(id) || id <= 0) return;
+
+        const exists = wishlistIds.includes(id);
+        const updated = exists
+            ? wishlistIds.filter((entry) => entry !== id)
+            : wishlistIds.concat(id);
+
+        writeWishlistCookie(updated);
+        updateWishlistUi();
+    }
+
+    document.addEventListener('click', function(event) {
+        const button = event.target.closest('.wishlist-toggle[data-product-id]');
+        if (!button) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        toggleWishlist(button.dataset.productId);
+    });
+
+    // Public API for potential future integrations.
+    window.morettiWishlist = {
+        getItems: readWishlistCookie,
+        setItems: writeWishlistCookie,
+        refreshUi: updateWishlistUi,
+        toggle: toggleWishlist,
+    };
+
+    updateWishlistUi();
+
     // Mobile menu toggle - Handled by inline onclick in header.php for better reliability
     /*
     const mobileMenuButton = document.getElementById('mobile-menu-button');

@@ -21,6 +21,94 @@ get_header(); ?>
     .product-summary-custom {
         max-width: 560px !important;
     }
+    .product-reviews-summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: -8px 0 18px;
+    }
+    .product-reviews-summary .star-rating {
+        margin: 0 !important;
+    }
+    .product-reviews-link {
+        font-size: 14px;
+        color: #6b7280;
+        text-decoration: none;
+    }
+    .product-reviews-link:hover {
+        color: #2a2826;
+    }
+    .product-lowest-price-note {
+        margin-top: -6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #766a5d;
+        line-height: 1.45;
+    }
+    .product-actions-row {
+        display: flex;
+        align-items: stretch;
+        gap: 14px;
+        margin-bottom: 2rem;
+    }
+    .product-actions-row .product-cart-form-custom {
+        flex: 1;
+        margin-bottom: 0 !important;
+    }
+    .product-cart-form-custom form.cart {
+        display: flex !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        margin: 0 !important;
+    }
+    .product-cart-form-custom form.cart .quantity {
+        display: none !important;
+    }
+    .product-cart-form-custom form.cart .single_add_to_cart_button {
+        flex: 1 !important;
+        margin: 0 !important;
+    }
+    .wishlist-single-btn {
+        width: 64px;
+        min-width: 64px;
+        border: 1px solid #2a2826;
+        background: #fff;
+        color: #2a2826;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .wishlist-single-btn:hover,
+    .wishlist-single-btn.is-active {
+        background: #2a2826;
+        color: #fff;
+    }
+    .product-reviews-custom {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 2rem;
+    }
+    .product-reviews-custom h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #2a2826;
+        margin-bottom: 1.25rem;
+    }
+    .product-reviews-custom #reviews .commentlist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .product-reviews-custom #reviews .commentlist li {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1rem 0;
+    }
+    .product-reviews-custom #review_form_wrapper {
+        margin-top: 1.5rem;
+    }
     @media (min-width: 768px) {
         .product-summary-custom {
             margin-left: auto !important;
@@ -96,6 +184,28 @@ get_header(); ?>
         }
         .product-summary-custom {
             margin-top: 1rem !important;
+        }
+        .product-reviews-summary {
+            margin: -4px 0 14px;
+        }
+        .product-reviews-link {
+            font-size: 13px;
+        }
+        .product-lowest-price-note {
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .product-actions-row {
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .wishlist-single-btn {
+            width: 58px;
+            min-width: 58px;
+        }
+        .product-reviews-custom h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
         .product-thumbnails {
             justify-content: center !important;
@@ -202,6 +312,28 @@ get_header(); ?>
                         <div class="product-price-custom text-xl md:text-2xl lg:text-3xl font-bold text-charcoal mb-6">
                             <?php echo $product->get_price_html(); ?>
                         </div>
+
+                        <?php
+                        $average_rating = (float) $product->get_average_rating();
+                        $review_count = (int) $product->get_review_count();
+                        ?>
+                        <div class="product-reviews-summary">
+                            <?php if (wc_review_ratings_enabled()) : ?>
+                                <?php echo wc_get_rating_html($average_rating, $review_count); ?>
+                            <?php endif; ?>
+                            <a href="#moretti-reviews" class="product-reviews-link">
+                                <?php echo $review_count > 0 ? sprintf('(Zobacz opinie %d)', $review_count) : '(Brak opinii)'; ?>
+                            </a>
+                        </div>
+
+                        <?php
+                        $lowest_price = function_exists('moretti_get_lowest_price_last_30_days') ? moretti_get_lowest_price_last_30_days($product) : null;
+                        if ($lowest_price && $product->is_on_sale()) :
+                        ?>
+                            <div class="product-lowest-price-note">
+                                Najniższa cena z 30 dni przed obniżką: <?php echo wp_kses_post(wc_price($lowest_price)); ?>
+                            </div>
+                        <?php endif; ?>
                         
                         <!-- Short Description -->
                         <?php if ($product->get_short_description()) : ?>
@@ -210,9 +342,22 @@ get_header(); ?>
                             </div>
                         <?php endif; ?>
                         
-                        <!-- Add to Cart Form -->
-                        <div class="product-cart-form-custom mb-8">
-                            <?php woocommerce_template_single_add_to_cart(); ?>
+                        <!-- Add to Cart + Wishlist -->
+                        <div class="product-actions-row">
+                            <div class="product-cart-form-custom">
+                                <?php woocommerce_template_single_add_to_cart(); ?>
+                            </div>
+                            <button
+                                type="button"
+                                class="wishlist-toggle wishlist-single-btn"
+                                data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                                aria-label="Dodaj do ulubionych"
+                                aria-pressed="false"
+                            >
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
                         </div>
                         
                         <!-- Meta (SKU, Kategorie) -->
@@ -286,6 +431,13 @@ get_header(); ?>
                                 </div>
                             </details>
                         </div>
+
+                        <?php if (comments_open() || get_comments_number()) : ?>
+                            <section id="moretti-reviews" class="product-reviews-custom mt-10">
+                                <h2>Opinie (<?php echo esc_html((string) $review_count); ?>)</h2>
+                                <?php comments_template(); ?>
+                            </section>
+                        <?php endif; ?>
                         
                 </div>
             </div>

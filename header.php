@@ -19,12 +19,6 @@
                 max-width: 100%;
                 overflow-x: hidden;
             }
-
-            /* Mobile: hide wishlist hearts everywhere for now */
-            button[aria-label="Add to wishlist"],
-            button[aria-label="Dodaj do ulubionych"] {
-                display: none !important;
-            }
         }
         
         /* Shop Page Mobile Overrides */
@@ -188,10 +182,27 @@
 
             <!-- Desktop Navigation (ONLY DESKTOP) -->
             <nav class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                <?php
+                $mens_term = get_term_by('slug', 'dzial-meski', 'product_cat');
+                if (!$mens_term) {
+                    $mens_term = get_term_by('slug', 'portfele-meskie', 'product_cat');
+                }
+
+                $womens_term = get_term_by('slug', 'dzial-damski', 'product_cat');
+                if (!$womens_term) {
+                    $womens_term = get_term_by('slug', 'portfele-damskie', 'product_cat');
+                }
+                ?>
                 <ul class="flex space-x-12 items-center">
                     <li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Start</a></li>
                     <?php if (class_exists('WooCommerce')) : ?>
                         <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Sklep</a></li>
+                        <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
+                            <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Portfele męskie</a></li>
+                        <?php endif; ?>
+                        <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
+                            <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Portfele damskie</a></li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
             </nav>
@@ -211,14 +222,13 @@
                 </a>
 
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <!-- Wishlist Icon (heart) - HIDDEN BY USER REQUEST -->
-                    <!-- 
-                    <a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors relative" aria-label="Wishlist">
+                    <!-- Wishlist Icon with Counter -->
+                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="wishlist-header-link relative w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" aria-label="Ulubione">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
+                        <span class="wishlist-count-header absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 hidden items-center justify-center rounded-full font-bold" data-wishlist-count>0</span>
                     </a>
-                    -->
 
                     <!-- Cart Icon with Counter -->
                     <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="relative text-charcoal hover:text-taupe-600 w-10 h-10 flex items-center justify-center transition-colors" aria-label="Shopping cart">
@@ -345,6 +355,15 @@
             <ul class="space-y-6">
                 <li><a href="<?php echo esc_url(home_url('/#nowosci')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Nowości</a></li>
                 <li><a href="<?php echo esc_url(home_url('/#klasyki')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Klasyki i Hity</a></li>
+                <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
+                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Portfele męskie</a></li>
+                <?php endif; ?>
+                <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
+                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Portfele damskie</a></li>
+                <?php endif; ?>
+                <?php if (class_exists('WooCommerce')) : ?>
+                    <li><a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Ulubione</a></li>
+                <?php endif; ?>
                 
                 <!-- Divider -->
                 <li style="border-top: 1px solid #f3f4f6; margin: 16px 0 !important; padding-top: 16px;"></li>

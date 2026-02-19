@@ -20,6 +20,9 @@ function moretti_wallet_setup() {
     update_option('woocommerce_currency_pos', 'right_space'); // 100,00 zł
     update_option('woocommerce_coming_soon', 'no');
     update_option('woocommerce_store_pages_only', 'no');
+    update_option('woocommerce_enable_reviews', 'yes');
+    update_option('woocommerce_enable_review_rating', 'yes');
+    update_option('woocommerce_review_rating_required', 'no');
 }
 add_action('after_setup_theme', 'moretti_wallet_setup', 20);
 
@@ -165,6 +168,54 @@ function moretti_get_color_hex($color_name) {
 
     return '#e5e7eb'; // Default gray
 }
+
+/**
+ * Resolve lowest price from last 30 days for Omnibus-like display.
+ * Uses known plugin meta keys when available, otherwise falls back to regular price on sale.
+ */
+function moretti_get_lowest_price_last_30_days($product) {
+    if (!$product instanceof WC_Product) {
+        return null;
+    }
+
+    $meta_keys = array(
+        '_omnibus_lowest_price',
+        '_wc_omnibus_lowest_price',
+        '_alg_wc_omnibus_price',
+        '_lowest_price_30_days',
+        '_lowest_price_last_30_days',
+    );
+
+    foreach ($meta_keys as $meta_key) {
+        $value = get_post_meta($product->get_id(), $meta_key, true);
+        if ($value !== '' && is_numeric($value) && (float) $value > 0) {
+            return (float) $value;
+        }
+    }
+
+    if ($product->is_on_sale()) {
+        $regular = (float) $product->get_regular_price();
+        $sale = (float) $product->get_sale_price();
+        if ($regular > 0 && $sale > 0 && $regular > $sale) {
+            return $regular;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Keep quantity fixed to 1 on single product page.
+ */
+function moretti_single_product_force_quantity_one($args, $product) {
+    if (is_product()) {
+        $args['input_value'] = 1;
+        $args['min_value'] = 1;
+        $args['max_value'] = 1;
+    }
+    return $args;
+}
+add_filter('woocommerce_quantity_input_args', 'moretti_single_product_force_quantity_one', 10, 2);
 
 // Enqueue styles and scripts
 function moretti_enqueue_assets() {
