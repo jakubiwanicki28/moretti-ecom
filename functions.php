@@ -475,12 +475,13 @@ function moretti_custom_mobile_product_css() {
             /* Product images - full width on mobile */
             .single-product .product-images,
             .single-product .woocommerce-product-gallery {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+                overflow-x: hidden !important;
             }
             
             /* Gallery images - full width */

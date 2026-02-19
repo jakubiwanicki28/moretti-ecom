@@ -343,7 +343,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let index = 0;
         let itemWidth = 0;
         let dragStartX = 0;
+        let dragStartY = 0;
         let dragDelta = 0;
+        let verticalDelta = 0;
         let isDragging = false;
         const gap = 32;
         const swipeThreshold = 50;
@@ -386,15 +388,18 @@ document.addEventListener('DOMContentLoaded', function() {
         prev.addEventListener('click', movePrev);
         next.addEventListener('click', moveNext);
 
-        const onDragStart = (clientX) => {
+        const onDragStart = (clientX, clientY = 0) => {
             isDragging = true;
             dragStartX = clientX;
+            dragStartY = clientY;
             dragDelta = 0;
+            verticalDelta = 0;
         };
 
-        const onDragMove = (clientX) => {
+        const onDragMove = (clientX, clientY = 0) => {
             if (!isDragging) return;
             dragDelta = clientX - dragStartX;
+            verticalDelta = clientY - dragStartY;
         };
 
         const onDragEnd = () => {
@@ -413,24 +418,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
         track.addEventListener('touchstart', (event) => {
             if (event.touches.length !== 1) return;
-            onDragStart(event.touches[0].clientX);
+            onDragStart(event.touches[0].clientX, event.touches[0].clientY);
         }, { passive: true });
 
         track.addEventListener('touchmove', (event) => {
             if (event.touches.length !== 1) return;
-            onDragMove(event.touches[0].clientX);
-        }, { passive: true });
+            onDragMove(event.touches[0].clientX, event.touches[0].clientY);
+            if (Math.abs(dragDelta) > Math.abs(verticalDelta)) {
+                event.preventDefault();
+            }
+        }, { passive: false });
 
         track.addEventListener('touchend', onDragEnd);
         track.addEventListener('touchcancel', onDragEnd);
 
         track.addEventListener('pointerdown', (event) => {
             if (event.pointerType === 'mouse' && event.button !== 0) return;
-            onDragStart(event.clientX);
+            onDragStart(event.clientX, event.clientY);
         });
 
         track.addEventListener('pointermove', (event) => {
-            onDragMove(event.clientX);
+            onDragMove(event.clientX, event.clientY);
         });
 
         track.addEventListener('pointerup', onDragEnd);

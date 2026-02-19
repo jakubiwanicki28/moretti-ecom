@@ -525,6 +525,33 @@ document.addEventListener('DOMContentLoaded', function() {
             currentIndex = index;
         }
         
+        // Touch/Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        card.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        card.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe Left -> Next
+                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                showSlide(newIndex);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe Right -> Prev
+                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                showSlide(newIndex);
+            }
+        }
+        
         if (prevBtn) {
             prevBtn.addEventListener('click', (e) => {
                 e.preventDefault();

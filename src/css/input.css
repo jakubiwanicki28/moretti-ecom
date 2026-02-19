@@ -1050,3 +1050,9 @@
 .woocommerce-product-gallery .thumbnail-item.is-active {
   border-color: #2a2826 !important;
 }
+
+@media (max-width: 767px) {
+  .home-carousel-track {
+    touch-action: pan-y;
+  }
+}
