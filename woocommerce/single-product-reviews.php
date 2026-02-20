@@ -16,130 +16,124 @@ if (!comments_open()) {
 $review_count = $product ? (int) $product->get_review_count() : 0;
 ?>
 
-<div id="reviews" class="woocommerce-Reviews border-t border-gray-200 mt-12">
-    <button type="button" 
-            class="w-full flex justify-between items-center py-6 text-left focus:outline-none group" 
-            onclick="toggleReviews()"
-            aria-expanded="false"
-            aria-controls="reviews-content">
-        <h2 class="text-xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors uppercase tracking-wide">
-            <?php printf('Opinie (%d)', $review_count); ?>
-        </h2>
-        <span id="reviews-toggle-icon" class="transform transition-transform duration-300 text-2xl font-light text-gray-400 group-hover:text-gray-600">+</span>
-    </button>
+<details id="reviews" class="woocommerce-Reviews border-t border-gray-200 pt-4 pb-4 border-b group">
+    <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
+        <span>Opinie (<?php echo $review_count; ?>)</span>
+        <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+    </summary>
 
-    <div id="reviews-content" class="hidden transition-all duration-300 ease-in-out">
-        <div class="pb-8">
-            <?php if (have_comments()) : ?>
-                <ol class="commentlist space-y-8 mb-10">
-                    <?php
-                    wp_list_comments(
-                        apply_filters(
-                            'woocommerce_product_review_list_args',
-                            array(
-                                'callback' => 'woocommerce_comments',
-                                'style' => 'ol',
-                            )
-                        )
-                    );
-                    ?>
-                </ol>
-
+    <div class="mt-8 text-taupe-700 text-sm">
+        <?php if (have_comments()) : ?>
+            <ol class="commentlist space-y-8 mb-10">
                 <?php
-                if (get_comment_pages_count() > 1 && get_option('page_comments')) :
-                    echo '<nav class="woocommerce-pagination mb-8">';
-                    paginate_comments_links(
-                        apply_filters(
-                            'woocommerce_comment_pagination_args',
-                            array(
-                                'prev_text' => '&larr;',
-                                'next_text' => '&rarr;',
-                                'type'      => 'list',
-                            )
+                wp_list_comments(
+                    apply_filters(
+                        'woocommerce_product_review_list_args',
+                        array(
+                            'callback' => 'woocommerce_comments',
+                            'style' => 'ol',
                         )
-                    );
-                    echo '</nav>';
-                endif;
+                    )
+                );
                 ?>
-            <?php else : ?>
-                <p class="woocommerce-noreviews text-gray-500 mb-8 italic">Na razie nie ma opinii o produkcie.</p>
-            <?php endif; ?>
+            </ol>
 
-            <div id="review_form_wrapper" class="bg-gray-50 p-6 rounded-lg">
-                <div id="review_form">
+            <?php
+            if (get_comment_pages_count() > 1 && get_option('page_comments')) :
+                echo '<nav class="woocommerce-pagination mb-8">';
+                paginate_comments_links(
+                    apply_filters(
+                        'woocommerce_comment_pagination_args',
+                        array(
+                            'prev_text' => '&larr;',
+                            'next_text' => '&rarr;',
+                            'type'      => 'list',
+                        )
+                    )
+                );
+                echo '</nav>';
+            endif;
+            ?>
+        <?php else : ?>
+            <p class="woocommerce-noreviews text-gray-500 mb-8 italic">Na razie nie ma opinii o produkcie.</p>
+        <?php endif; ?>
+
+        <div id="review_form_wrapper" class="bg-gray-50 p-6 rounded-lg">
+            <div id="review_form">
+                <?php
+                $review_verification_required = get_option('woocommerce_review_rating_verification_required');
+                if (
+                    'yes' === $review_verification_required
+                    && $product
+                    && !wc_customer_bought_product('', get_current_user_id(), $product->get_id())
+                ) :
+                    ?>
+                    <p class="woocommerce-verification-required text-red-600">Tylko zalogowani klienci, którzy kupili ten produkt, mogą dodać opinię.</p>
+                <?php else : ?>
                     <?php
-                    $review_verification_required = get_option('woocommerce_review_rating_verification_required');
-                    if (
-                        'yes' === $review_verification_required
-                        && $product
-                        && !wc_customer_bought_product('', get_current_user_id(), $product->get_id())
-                    ) :
-                        ?>
-                        <p class="woocommerce-verification-required text-red-600">Tylko zalogowani klienci, którzy kupili ten produkt, mogą dodać opinię.</p>
-                    <?php else : ?>
-                        <?php
-                        $commenter = wp_get_current_commenter();
-                        
-                        $comment_form = array(
-                            'title_reply'          => have_comments() ? 'Dodaj opinię' : sprintf('Napisz pierwszą opinię o „%s”', get_the_title()),
-                            'title_reply_to'       => 'Odpowiedz',
-                            'title_reply_before'   => '<h3 id="reply-title" class="comment-reply-title text-lg font-medium text-gray-900 mb-4">',
-                            'title_reply_after'    => '</h3>',
-                            'comment_notes_before' => '',
-                            'comment_notes_after'  => '',
-                            'label_submit'         => 'Wyślij',
-                            'class_submit'         => 'submit bg-black text-white px-8 py-3 uppercase text-xs font-bold tracking-widest hover:bg-gray-800 transition-colors cursor-pointer mt-4',
-                            'logged_in_as'         => '',
-                            'fields'               => array(
-                                'author' => sprintf(
-                                    '<div class="mb-4"><label for="author" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">%s&nbsp;<span class="required text-red-500">*</span></label><input id="author" name="author" type="text" value="%s" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required /></div>',
-                                    esc_html__('Imię', 'moretti-theme'),
-                                    esc_attr($commenter['comment_author'])
-                                ),
-                                'email'  => sprintf(
-                                    '<div class="mb-4"><label for="email" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">%s&nbsp;<span class="required text-red-500">*</span></label><input id="email" name="email" type="email" value="%s" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required /></div>',
-                                    esc_html__('E-mail', 'moretti-theme'),
-                                    esc_attr($commenter['comment_author_email'])
-                                ),
+                    $commenter = wp_get_current_commenter();
+                    
+                    $comment_form = array(
+                        'title_reply'          => have_comments() ? 'Dodaj opinię' : sprintf('Napisz pierwszą opinię o „%s”', get_the_title()),
+                        'title_reply_to'       => 'Odpowiedz',
+                        'title_reply_before'   => '<h3 id="reply-title" class="comment-reply-title text-lg font-medium text-gray-900 mb-4">',
+                        'title_reply_after'    => '</h3>',
+                        'comment_notes_before' => '',
+                        'comment_notes_after'  => '',
+                        'label_submit'         => 'Wyślij',
+                        'class_submit'         => 'submit bg-black text-white px-8 py-3 uppercase text-xs font-bold tracking-widest hover:bg-gray-800 transition-colors cursor-pointer mt-4',
+                        'logged_in_as'         => '',
+                        'fields'               => array(
+                            'author' => sprintf(
+                                '<div class="mb-4"><label for="author" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">%s&nbsp;<span class="required text-red-500">*</span></label><input id="author" name="author" type="text" value="%s" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required placeholder="Wpisz swoje imię" /></div>',
+                                esc_html__('Imię', 'moretti-theme'),
+                                esc_attr($commenter['comment_author'])
                             ),
-                            'comment_field'        => '',
-                        );
+                            'email'  => sprintf(
+                                '<div class="mb-4"><label for="email" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">%s&nbsp;<span class="required text-red-500">*</span></label><input id="email" name="email" type="email" value="%s" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required placeholder="twoj@email.com" /></div>',
+                                esc_html__('E-mail', 'moretti-theme'),
+                                esc_attr($commenter['comment_author_email'])
+                            ),
+                        ),
+                        'comment_field'        => '',
+                    );
 
-                        if (wc_review_ratings_enabled()) {
-                            $comment_form['comment_field'] .= '<div class="comment-form-rating mb-6"><label for="rating" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">' . esc_html__('Twoja ocena', 'moretti-theme') . '&nbsp;<span class="required text-red-500">*</span></label>';
+                    if (wc_review_ratings_enabled()) {
+                        $comment_form['comment_field'] .= '<div class="comment-form-rating mb-6"><label for="rating" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">' . esc_html__('Twoja ocena', 'moretti-theme') . '&nbsp;<span class="required text-red-500">*</span></label>';
+                        
+                        // Custom Star Rating HTML
+                        $comment_form['comment_field'] .= '
+                        <div class="star-rating-widget mb-2">
+                            <input type="radio" id="star5" name="rating" value="5" required />
+                            <label for="star5" title="5 gwiazdek">★</label>
                             
-                            // Custom Star Rating HTML
-                            $comment_form['comment_field'] .= '
-                            <div class="star-rating-widget mb-2">
-                                <input type="radio" id="star5" name="rating" value="5" required />
-                                <label for="star5" title="5 gwiazdek">★</label>
-                                
-                                <input type="radio" id="star4" name="rating" value="4" />
-                                <label for="star4" title="4 gwiazdki">★</label>
-                                
-                                <input type="radio" id="star3" name="rating" value="3" />
-                                <label for="star3" title="3 gwiazdki">★</label>
-                                
-                                <input type="radio" id="star2" name="rating" value="2" />
-                                <label for="star2" title="2 gwiazdki">★</label>
-                                
-                                <input type="radio" id="star1" name="rating" value="1" />
-                                <label for="star1" title="1 gwiazdka">★</label>
-                            </div>';
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4" title="4 gwiazdki">★</label>
                             
-                            $comment_form['comment_field'] .= '</div>';
-                        }
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3" title="3 gwiazdki">★</label>
+                            
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2" title="2 gwiazdki">★</label>
+                            
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1" title="1 gwiazdka">★</label>
+                        </div>';
+                        
+                        $comment_form['comment_field'] .= '</div>';
+                    }
 
-                        $comment_form['comment_field'] .= '<div class="comment-form-comment mb-6"><label for="comment" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">' . esc_html__('Twoja opinia', 'moretti-theme') . '&nbsp;<span class="required text-red-500">*</span></label><textarea id="comment" name="comment" cols="45" rows="8" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required></textarea></div>';
+                    $comment_form['comment_field'] .= '<div class="comment-form-comment mb-6"><label for="comment" class="block text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">' . esc_html__('Twoja opinia', 'moretti-theme') . '&nbsp;<span class="required text-red-500">*</span></label><textarea id="comment" name="comment" cols="45" rows="8" class="w-full border-gray-300 focus:border-black focus:ring-0 p-3 text-sm" required placeholder="Napisz co myślisz o tym produkcie..."></textarea></div>';
 
-                        comment_form(apply_filters('woocommerce_product_review_comment_form_args', $comment_form));
-                        ?>
-                    <?php endif; ?>
-                </div>
+                    comment_form(apply_filters('woocommerce_product_review_comment_form_args', $comment_form));
+                    ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
-</div>
+</details>
 
 <style>
 /* Custom Star Rating CSS */
@@ -161,7 +155,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 .star-rating-widget label {
     font-size: 1.5rem;
     line-height: 2rem;
-    color: #d1d5db !important; /* gray-300 with forced priority */
+    color: #d1d5db !important; /* gray-300 */
     cursor: pointer;
     transition: color 0.15s ease-in-out;
 }
@@ -178,9 +172,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 .star-rating-widget input:checked ~ label {
     color: #facc15 !important; /* yellow-400 */
 }
-</style>
 
-<style>
 /* Reviews List Styling */
 .commentlist {
     list-style: none;
@@ -255,25 +247,17 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
     line-height: 1.5;
     color: #374151;
 }
+
+/* Details Summary styling fixes */
+details > summary {
+    list-style: none;
+}
+details > summary::-webkit-details-marker {
+    display: none;
+}
 </style>
 
 <script>
-function toggleReviews() {
-    const content = document.getElementById('reviews-content');
-    const icon = document.getElementById('reviews-toggle-icon');
-    const button = document.querySelector('button[aria-controls="reviews-content"]');
-    
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        icon.textContent = '−'; // minus sign
-        button.setAttribute('aria-expanded', 'true');
-    } else {
-        content.classList.add('hidden');
-        icon.textContent = '+';
-        button.setAttribute('aria-expanded', 'false');
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('commentform');
     if (form) {

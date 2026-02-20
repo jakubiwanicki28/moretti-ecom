@@ -531,13 +531,14 @@ get_header(); ?>
                                     <p>Wysyłka w ciągu 24-48 godzin</p>
                                 </div>
                             </details>
+
+                            <!-- Opinie -->
+                            <?php if (comments_open() || get_comments_number()) : ?>
+                                <?php wc_get_template('single-product-reviews.php'); ?>
+                            <?php endif; ?>
                         </div>
 
-                        <?php if (comments_open() || get_comments_number()) : ?>
-                            <section id="moretti-reviews" class="product-reviews-custom mt-10">
-                                <?php wc_get_template('single-product-reviews.php'); ?>
-                            </section>
-                        <?php endif; ?>
+                        <!-- Removed old reviews section location -->
                         
                 </div>
             </div>
