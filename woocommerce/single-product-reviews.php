@@ -338,6 +338,12 @@ details > summary::-webkit-details-marker {
 </style>
 
 <script>
+function sendReviewDebugLog(payload) {
+    // #region agent log
+    fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d2e860'},body:JSON.stringify(payload)}).catch(()=>{});
+    // #endregion
+}
+
 function closeReviewModal() {
     document.getElementById('review-modal').classList.add('hidden');
     document.getElementById('review-modal').classList.remove('flex');
@@ -349,6 +355,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('review-modal');
     if (modal) {
         document.body.appendChild(modal);
+        sendReviewDebugLog({
+            sessionId: 'd2e860',
+            runId: 'pre-fix',
+            hypothesisId: 'H3',
+            location: 'woocommerce/single-product-reviews.php:356',
+            message: 'Modal moved to body',
+            data: {
+                parentTag: modal.parentElement ? modal.parentElement.tagName : null,
+                modalClass: modal.className,
+                viewportWidth: window.innerWidth
+            },
+            timestamp: Date.now()
+        });
+    }
+
+    const openTrigger = document.getElementById('open-review-modal');
+    if (openTrigger && modal) {
+        openTrigger.addEventListener('click', function() {
+            const centerX = Math.floor(window.innerWidth / 2);
+            const centerY = Math.floor(window.innerHeight / 2);
+            const stacked = document.elementsFromPoint(centerX, centerY).slice(0, 6).map((el) => ({
+                tag: el.tagName,
+                id: el.id || null,
+                className: (el.className || '').toString().slice(0, 120),
+                position: window.getComputedStyle(el).position,
+                zIndex: window.getComputedStyle(el).zIndex
+            }));
+            const relatedVisibleImages = Array.from(document.querySelectorAll('.related-products .slider-image')).slice(0, 6).map((el) => {
+                const style = window.getComputedStyle(el);
+                return {
+                    active: el.classList.contains('active'),
+                    display: style.display,
+                    visibility: style.visibility,
+                    opacity: style.opacity
+                };
+            });
+            sendReviewDebugLog({
+                sessionId: 'd2e860',
+                runId: 'pre-fix',
+                hypothesisId: 'H1',
+                location: 'woocommerce/single-product-reviews.php:385',
+                message: 'Modal opened snapshot',
+                data: {
+                    modalClass: modal.className,
+                    modalDisplay: window.getComputedStyle(modal).display,
+                    modalZ: window.getComputedStyle(modal).zIndex,
+                    relatedVisibleImages,
+                    stacked
+                },
+                timestamp: Date.now()
+            });
+        });
     }
 
     const form = document.getElementById('commentform');
@@ -366,5 +424,48 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeReviewModal();
     });
+
+    let loggedScroll = false;
+    document.addEventListener('scroll', function() {
+        if (loggedScroll) {
+            return;
+        }
+        if (!modal || !modal.classList.contains('flex') || window.innerWidth >= 768) {
+            return;
+        }
+        loggedScroll = true;
+        const controls = Array.from(document.querySelectorAll('.related-products .wishlist-toggle, .related-products .slider-arrow')).slice(0, 8).map((el) => {
+            const rect = el.getBoundingClientRect();
+            return {
+                className: (el.className || '').toString().slice(0, 120),
+                top: Math.round(rect.top),
+                left: Math.round(rect.left),
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                position: window.getComputedStyle(el).position,
+                zIndex: window.getComputedStyle(el).zIndex
+            };
+        });
+        const activeRelatedImage = document.querySelector('.related-products .slider-image.active img');
+        const activeImageStyle = activeRelatedImage ? window.getComputedStyle(activeRelatedImage) : null;
+        sendReviewDebugLog({
+            sessionId: 'd2e860',
+            runId: 'pre-fix',
+            hypothesisId: 'H2',
+            location: 'woocommerce/single-product-reviews.php:442',
+            message: 'Mobile scroll with open modal',
+            data: {
+                modalClass: modal.className,
+                modalContainerBg: window.getComputedStyle(modal.querySelector('.relative')).backgroundColor,
+                controls,
+                activeImage: activeImageStyle ? {
+                    display: activeImageStyle.display,
+                    visibility: activeImageStyle.visibility,
+                    opacity: activeImageStyle.opacity
+                } : null
+            },
+            timestamp: Date.now()
+        });
+    }, { passive: true });
 });
 </script>
