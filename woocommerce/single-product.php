@@ -137,6 +137,52 @@ get_header(); ?>
     .product-reviews-custom #review_form_wrapper {
         margin-top: 1.5rem;
     }
+    .product-reviews-custom #respond .comment-form {
+        display: grid;
+        gap: 14px;
+    }
+    .product-reviews-custom #respond label {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #2a2826;
+    }
+    .product-reviews-custom #respond input[type="text"],
+    .product-reviews-custom #respond input[type="email"],
+    .product-reviews-custom #respond select,
+    .product-reviews-custom #respond textarea {
+        width: 100%;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        color: #2a2826;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    .product-reviews-custom #respond textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+    .product-reviews-custom #respond .form-submit input[type="submit"] {
+        height: 48px;
+        padding: 0 24px;
+        border: 1px solid #2a2826;
+        background: #2a2826;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .product-reviews-custom #respond .comment-notes,
+    .product-reviews-custom #respond .logged-in-as {
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.4;
+    }
     @media (min-width: 768px) {
         .product-summary-custom {
             margin-left: auto !important;
@@ -489,8 +535,7 @@ get_header(); ?>
 
                         <?php if (comments_open() || get_comments_number()) : ?>
                             <section id="moretti-reviews" class="product-reviews-custom mt-10">
-                                <h2>Opinie (<?php echo esc_html((string) $review_count); ?>)</h2>
-                                <?php comments_template(); ?>
+                                <?php wc_get_template('single-product-reviews.php'); ?>
                             </section>
                         <?php endif; ?>
                         
