@@ -347,5 +347,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeReviewModal();
     });
+
+    // #region agent log
+    const modal = document.getElementById('review-modal');
+    if (modal) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const isVisible = !modal.classList.contains('hidden') || modal.classList.contains('flex') || window.getComputedStyle(modal).display !== 'none';
+                    fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'eff27a'},body:JSON.stringify({sessionId:'eff27a',location:'single-product-reviews.php',message:'Modal class changed',data:{newClasses:modal.className,isVisible:isVisible,stack:(new Error()).stack},timestamp:Date.now()})}).catch(()=>{});
+                }
+            });
+        });
+        observer.observe(modal, { attributes: true });
+        
+        // Initial check
+        const initialDisplay = window.getComputedStyle(modal).display;
+        fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'eff27a'},body:JSON.stringify({sessionId:'eff27a',location:'single-product-reviews.php',message:'Initial modal state',data:{display:initialDisplay,classes:modal.className},timestamp:Date.now()})}).catch(()=>{});
+    }
+    // #endregion
 });
 </script>
