@@ -22,7 +22,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
         <div class="flex items-center gap-4">
             <div id="open-review-modal" 
                  class="text-xl font-light hover:text-black transition-colors px-2 cursor-pointer"
-                 onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('review-modal').classList.add('flex'); document.getElementById('review-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';">
+                 onclick="event.preventDefault(); event.stopPropagation(); openReviewModal();">
                 +
             </div>
             <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 </details>
 
 <!-- Review Modal -->
-<div id="review-modal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-0 md:p-8 lg:p-12">
+<div id="review-modal" class="hidden fixed inset-0 z-[2147483647] items-center justify-center p-0 md:p-8 lg:p-12">
     <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeReviewModal()"></div>
     <div class="relative bg-white w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl md:rounded-xl shadow-2xl overflow-y-auto flex flex-col">
         <button type="button" 
@@ -317,6 +317,31 @@ details > summary::-webkit-details-marker {
 #review-modal.flex {
     display: flex !important;
 }
+body.review-modal-open {
+    overflow: hidden !important;
+}
+body.review-modal-open #review-modal {
+    z-index: 2147483647 !important;
+}
+body.review-modal-open #review-modal .absolute.inset-0 {
+    z-index: 0 !important;
+}
+body.review-modal-open #review-modal .relative {
+    z-index: 1 !important;
+}
+body.review-modal-open .related-products,
+body.review-modal-open .related-products * {
+    pointer-events: none !important;
+}
+body.review-modal-open .related-products .wishlist-toggle,
+body.review-modal-open .related-products .slider-arrow,
+body.review-modal-open .related-products .slider-dot,
+body.review-modal-open .related-products .product-heart,
+body.review-modal-open .related-products .quick-add,
+body.review-modal-open .related-products .quick-add-button {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
 @media (min-width: 768px) {
     #review-modal.flex {
         align-items: center;
@@ -344,9 +369,39 @@ function sendReviewDebugLog(payload) {
     // #endregion
 }
 
+function openReviewModal() {
+    const modal = document.getElementById('review-modal');
+    if (!modal) {
+        return;
+    }
+    modal.classList.add('flex');
+    modal.classList.remove('hidden');
+    document.body.classList.add('review-modal-open');
+    document.body.style.overflow = 'hidden';
+
+    sendReviewDebugLog({
+        sessionId: 'd2e860',
+        runId: 'pre-fix',
+        hypothesisId: 'H4',
+        location: 'woocommerce/single-product-reviews.php:371',
+        message: 'openReviewModal applied body lock',
+        data: {
+            modalClass: modal.className,
+            bodyClass: document.body.className,
+            modalZ: window.getComputedStyle(modal).zIndex
+        },
+        timestamp: Date.now()
+    });
+}
+
 function closeReviewModal() {
-    document.getElementById('review-modal').classList.add('hidden');
-    document.getElementById('review-modal').classList.remove('flex');
+    const modal = document.getElementById('review-modal');
+    if (!modal) {
+        return;
+    }
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.classList.remove('review-modal-open');
     document.body.style.overflow = '';
 }
 
