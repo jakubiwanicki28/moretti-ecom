@@ -22,37 +22,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
         <div class="flex items-center gap-4">
             <div id="open-review-modal" 
                  class="text-xl font-light hover:text-black transition-colors px-2 cursor-pointer"
-                 onclick="
-                 // #region agent log
-                 fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a60e27'},body:JSON.stringify({sessionId:'a60e27',location:'single-product-reviews.php:25',message:'Opening review modal',data:{
-                   modalId:'review-modal',
-                   userAgent:navigator.userAgent,
-                   parents: Array.from(document.getElementById('review-modal').parentElement.children).map(c => c.id || c.className),
-                   stackingContextCheck: (function() {
-                     let p = document.getElementById('review-modal').parentElement;
-                     let res = [];
-                     while(p) {
-                       let s = window.getComputedStyle(p);
-                       if(s.transform !== 'none' || s.opacity < 1 || s.filter !== 'none' || s.perspective !== 'none' || s.zIndex !== 'auto' || s.position !== 'static' || s.willChange !== 'auto' || s.contain !== 'none') {
-                         res.push({
-                           tag: p.tagName,
-                           class: p.className,
-                           id: p.id,
-                           z: s.zIndex,
-                           pos: s.position,
-                           t: s.transform,
-                           op: s.opacity,
-                           filt: s.filter,
-                           will: s.willChange
-                         });
-                       }
-                       p = p.parentElement;
-                     }
-                     return res;
-                   })()
-                 },timestamp:Date.now()})}).catch(()=>{});
-                 // #endregion
-                 event.preventDefault(); event.stopPropagation(); document.getElementById('review-modal').classList.add('flex'); document.getElementById('review-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';">
+                 onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('review-modal').classList.add('flex'); document.getElementById('review-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';">
                 +
             </div>
             <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,15 +326,18 @@ details > summary::-webkit-details-marker {
 
 <script>
 function closeReviewModal() {
-    // #region agent log
-    fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a60e27'},body:JSON.stringify({sessionId:'a60e27',location:'single-product-reviews.php:330',message:'Closing review modal',data:{},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
     document.getElementById('review-modal').classList.add('hidden');
     document.getElementById('review-modal').classList.remove('flex');
     document.body.style.overflow = '';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // MOVE MODAL TO BODY TO FIX STACKING CONTEXT ISSUES
+    const modal = document.getElementById('review-modal');
+    if (modal) {
+        document.body.appendChild(modal);
+    }
+
     const form = document.getElementById('commentform');
     if (form) {
         form.addEventListener('submit', function(e) {
