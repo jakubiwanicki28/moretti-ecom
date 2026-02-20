@@ -534,7 +534,7 @@ get_header(); ?>
 
                             <!-- Opinie -->
                             <?php if (comments_open() || get_comments_number()) : ?>
-                                <?php wc_get_template('single-product-reviews.php'); ?>
+                                <?php comments_template(); ?>
                             <?php endif; ?>
                         </div>
 
