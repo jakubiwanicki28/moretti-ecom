@@ -70,9 +70,9 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 </details>
 
 <!-- Review Modal -->
-<div id="review-modal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-0 md:p-6">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewModal()"></div>
-    <div class="relative bg-white w-full h-full md:h-auto md:max-w-2xl shadow-2xl overflow-y-auto flex flex-col">
+<div id="review-modal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-0 md:p-8 lg:p-12">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+    <div class="relative bg-white w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl md:rounded-xl shadow-2xl overflow-y-auto flex flex-col">
         <button type="button" 
                 class="absolute top-4 right-4 md:top-6 md:right-6 text-3xl font-light text-gray-400 hover:text-black transition-colors z-10"
                 onclick="closeReviewModal()">
@@ -315,7 +315,20 @@ details > summary::-webkit-details-marker {
     display: none;
 }
 #review-modal.flex {
-    display: flex;
+    display: flex !important;
+}
+@media (min-width: 768px) {
+    #review-modal.flex {
+        align-items: center;
+        justify-content: center;
+    }
+    #review-modal .relative {
+        height: auto !important;
+        max-height: 85vh !important;
+        max-width: 672px !important;
+        margin: auto !important;
+        border-radius: 1.5rem !important;
+    }
 }
 @media (max-width: 767px) {
     #review-modal .relative {
