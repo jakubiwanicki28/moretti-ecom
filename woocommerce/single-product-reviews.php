@@ -267,6 +267,42 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
     color: #4b5563;
 }
 
+/* Form Styling Fixes */
+#commentform .submit {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2em !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+#commentform .submit:hover {
+    background-color: #333333 !important;
+}
+
+/* Checkbox Styling */
+.comment-form-cookies-consent {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-top: 1rem !important;
+}
+.comment-form-cookies-consent input {
+    margin: 0 !important;
+}
+.comment-form-cookies-consent label {
+    font-size: 10px !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    color: #6b7280 !important;
+    line-height: 1.2 !important;
+}
+
 /* Details Summary styling */
 details > summary {
     list-style: none;
