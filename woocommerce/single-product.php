@@ -518,7 +518,7 @@ get_header(); ?>
                             </details>
                             
                             <!-- Dostawa i Zwroty -->
-                            <details class="border-t border-gray-200 pt-4 pb-4 border-b">
+                            <details class="border-t border-gray-200 pt-4">
                                 <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em]">
                                     <span>DOSTAWA I ZWROTY</span>
                                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
