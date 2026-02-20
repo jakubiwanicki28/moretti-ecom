@@ -559,9 +559,38 @@ get_header(); ?>
             </div>
 
             <!-- Related Products -->
-            <div class="related-products mt-20 md:mt-32">
+            <div class="related-products mt-20 md:mt-32" id="related-products-section">
                 <?php woocommerce_output_related_products(); ?>
             </div>
+            <script>
+            window.addEventListener('scroll', function() {
+              if (document.getElementById('review-modal').classList.contains('flex')) {
+                // #region agent log
+                const related = document.getElementById('related-products-section');
+                const modal = document.getElementById('review-modal');
+                const relRect = related.getBoundingClientRect();
+                const modRect = modal.getBoundingClientRect();
+                
+                // Only log if they overlap
+                if (relRect.top < modRect.bottom && relRect.bottom > modRect.top) {
+                  fetch('http://127.0.0.1:7891/ingest/dcf13279-3f4d-467c-82df-cbaa05cc56de',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a60e27'},body:JSON.stringify({sessionId:'a60e27',location:'single-product.php:565',message:'Overlap detected',data:{
+                    relatedStyles: {
+                      z: window.getComputedStyle(related).zIndex,
+                      pos: window.getComputedStyle(related).position,
+                      display: window.getComputedStyle(related).display,
+                      rect: relRect
+                    },
+                    modalStyles: {
+                      z: window.getComputedStyle(modal).zIndex,
+                      pos: window.getComputedStyle(modal).position,
+                      rect: modRect
+                    }
+                  },timestamp:Date.now()})}).catch(()=>{});
+                }
+                // #endregion
+              }
+            });
+            </script>
 
         </div> <!-- End single-product-main -->
         
