@@ -462,22 +462,37 @@ get_header(); ?>
                         </div>
                         
                         <!-- Meta (SKU, Kategorie) -->
-                        <div class="product-meta-custom border-t border-gray-200 pt-6 space-y-2 text-xs text-taupe-600">
+                        <div class="product-meta-custom border-t border-gray-200 pt-6 space-y-3">
                             <?php if (wc_product_sku_enabled() && ($product->get_sku() || $product->is_type('variable'))) : ?>
-                                <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-charcoal uppercase tracking-wider">SKU:</span>
+                                <div class="text-[10px] text-taupe-600 flex items-center gap-2">
+                                    <span class="font-bold text-charcoal uppercase tracking-[0.2em]">SKU:</span>
                                     <span class="sku"><?php echo $product->get_sku() ? $product->get_sku() : 'Brak'; ?></span>
                                 </div>
                             <?php endif; ?>
                             
-                            <?php echo wc_get_product_category_list($product->get_id(), ', ', '<div class="flex items-center gap-2"><span class="font-semibold text-charcoal uppercase tracking-wider">KATEGORIA:</span> ', '</div>'); ?>
+                            <div class="text-[10px] text-taupe-600 leading-relaxed">
+                                <span class="font-bold text-charcoal uppercase tracking-[0.2em] mr-1">KATEGORIA:</span>
+                                <span class="product-categories-list">
+                                    <?php echo wc_get_product_category_list($product->get_id(), ', '); ?>
+                                </span>
+                            </div>
                         </div>
+
+                        <style>
+                            .product-categories-list a {
+                                color: inherit;
+                                transition: color 0.2s;
+                            }
+                            .product-categories-list a:hover {
+                                color: #000;
+                            }
+                        </style>
                         
                         <!-- Additional Info Accordion -->
-                        <div class="product-accordion mt-8 space-y-3">
+                        <div class="product-accordion mt-8">
                             <!-- Opis -->
-                            <details class="border-t border-gray-200 pt-4" open>
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em]">
+                            <details class="border-t border-gray-200 py-4" open>
+                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
                                     <span>OPIS</span>
                                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -489,8 +504,8 @@ get_header(); ?>
                             </details>
                             
                             <!-- Rozmiar -->
-                            <details class="border-t border-gray-200 pt-4">
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em]">
+                            <details class="border-t border-gray-200 py-4">
+                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
                                     <span>WYMIARY I DOPASOWANIE</span>
                                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -503,8 +518,8 @@ get_header(); ?>
                             </details>
                             
                             <!-- Pielęgnacja -->
-                            <details class="border-t border-gray-200 pt-4">
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em]">
+                            <details class="border-t border-gray-200 py-4">
+                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
                                     <span>PIELĘGNACJA</span>
                                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -518,8 +533,8 @@ get_header(); ?>
                             </details>
                             
                             <!-- Dostawa i Zwroty -->
-                            <details class="border-t border-gray-200 pt-4">
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em]">
+                            <details class="border-t border-gray-200 py-4">
+                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
                                     <span>DOSTAWA I ZWROTY</span>
                                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>

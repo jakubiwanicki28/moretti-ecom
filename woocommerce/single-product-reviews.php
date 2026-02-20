@@ -16,16 +16,15 @@ if (!comments_open()) {
 $review_count = $product ? (int) $product->get_review_count() : 0;
 ?>
 
-<details id="reviews" class="woocommerce-Reviews border-t border-gray-200 pt-4 pb-4 border-b group">
+<details id="reviews" class="woocommerce-Reviews border-t border-gray-200 py-4 border-b group">
     <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
         <span>Opinie (<?php echo $review_count; ?>)</span>
         <div class="flex items-center gap-4">
-            <button type="button" 
-                    id="open-review-modal"
-                    class="text-lg font-light hover:text-black transition-colors px-2"
-                    onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('review-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';">
+            <div id="open-review-modal" 
+                 class="text-xl font-light hover:text-black transition-colors px-2 cursor-pointer"
+                 onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('review-modal').classList.add('flex'); document.getElementById('review-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden';">
                 +
-            </button>
+            </div>
             <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
@@ -71,16 +70,16 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 </details>
 
 <!-- Review Modal -->
-<div id="review-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeReviewModal()"></div>
-    <div class="relative bg-white w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+<div id="review-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+    <div class="relative bg-white w-full h-full md:h-auto md:max-w-2xl shadow-2xl overflow-y-auto">
         <button type="button" 
-                class="absolute top-4 right-4 text-2xl font-light text-gray-400 hover:text-black transition-colors"
+                class="absolute top-6 right-6 text-3xl font-light text-gray-400 hover:text-black transition-colors z-10"
                 onclick="closeReviewModal()">
             ×
         </button>
         
-        <div class="p-8 md:p-12">
+        <div class="p-8 md:p-12 mt-12 md:mt-0">
             <div id="review_form_wrapper">
                 <div id="review_form">
                     <?php
@@ -312,14 +311,23 @@ details > summary::-webkit-details-marker {
 }
 
 /* Modal styles */
-#review-modal.hidden {
+#review-modal {
     display: none;
+}
+#review-modal.flex {
+    display: flex;
+}
+@media (max-width: 767px) {
+    #review-modal .relative {
+        padding-top: 2rem;
+    }
 }
 </style>
 
 <script>
 function closeReviewModal() {
     document.getElementById('review-modal').classList.add('hidden');
+    document.getElementById('review-modal').classList.remove('flex');
     document.body.style.overflow = '';
 }
 

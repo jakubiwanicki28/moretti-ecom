@@ -355,12 +355,6 @@
             <ul class="space-y-6">
                 <li><a href="<?php echo esc_url(home_url('/#nowosci')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Nowości</a></li>
                 <li><a href="<?php echo esc_url(home_url('/#klasyki')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Klasyki i Hity</a></li>
-                <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
-                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Portfele męskie</a></li>
-                <?php endif; ?>
-                <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
-                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Portfele damskie</a></li>
-                <?php endif; ?>
                 <?php if (class_exists('WooCommerce')) : ?>
                     <li><a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Ulubione</a></li>
                 <?php endif; ?>
