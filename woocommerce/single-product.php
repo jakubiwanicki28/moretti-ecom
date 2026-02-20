@@ -85,6 +85,34 @@ get_header(); ?>
         background: #2a2826;
         color: #fff;
     }
+    .product-mvp-status {
+        margin-bottom: 1.75rem;
+    }
+    .product-mvp-status-list {
+        display: grid;
+        gap: 0.8rem;
+    }
+    .product-mvp-status-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #2a2826;
+        line-height: 1.4;
+    }
+    .product-mvp-status-item svg {
+        width: 18px;
+        height: 18px;
+        color: #6b7280;
+        flex: 0 0 auto;
+    }
+    .product-mvp-status-item.is-available {
+        color: #15803d;
+        font-weight: 500;
+    }
+    .product-mvp-status-item.is-available svg {
+        color: #15803d;
+    }
     .product-reviews-custom {
         border-top: 1px solid #e5e7eb;
         padding-top: 2rem;
@@ -194,6 +222,10 @@ get_header(); ?>
         .product-lowest-price-note {
             font-size: 13px;
             margin-bottom: 16px;
+        }
+        .product-mvp-status-item {
+            font-size: 13px;
+            gap: 8px;
         }
         .product-actions-row {
             gap: 10px;
@@ -327,11 +359,12 @@ get_header(); ?>
                         </div>
 
                         <?php
-                        $lowest_price = function_exists('moretti_get_lowest_price_last_30_days') ? moretti_get_lowest_price_last_30_days($product) : null;
-                        if ($lowest_price && $product->is_on_sale()) :
+                        $current_price_value = (float) $product->get_price();
+                        if ($current_price_value > 0) :
+                            $lowest_price_mvp = wc_get_price_to_display($product, array('price' => $current_price_value));
                         ?>
                             <div class="product-lowest-price-note">
-                                Najniższa cena z 30 dni przed obniżką: <?php echo wp_kses_post(wc_price($lowest_price)); ?>
+                                Najniższa cena z 30 dni przed obniżką: <?php echo wp_kses_post(wc_price($lowest_price_mvp)); ?>
                             </div>
                         <?php endif; ?>
                         
@@ -358,6 +391,28 @@ get_header(); ?>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                 </svg>
                             </button>
+                        </div>
+
+                        <?php
+                        $base_ts = current_time('timestamp');
+                        $ship_date = wp_date('d.m', strtotime('+1 day', $base_ts));
+                        $delivery_date = wp_date('d.m', strtotime('+3 days', $base_ts));
+                        ?>
+                        <div class="product-mvp-status">
+                            <div class="product-mvp-status-list">
+                                <div class="product-mvp-status-item is-available">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Produkt dostępny
+                                </div>
+                                <div class="product-mvp-status-item">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Kup teraz, wysyłka <?php echo esc_html($ship_date); ?>, u Ciebie <?php echo esc_html($delivery_date); ?>
+                                </div>
+                                <div class="product-mvp-status-item">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h15l3 4v6a2 2 0 01-2 2h-1a2 2 0 01-4 0H9a2 2 0 01-4 0H4a1 1 0 01-1-1V7zm16 4h-4V9h2.5L19 11z"></path></svg>
+                                    Darmowa dostawa od 250 zł
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Meta (SKU, Kategorie) -->
