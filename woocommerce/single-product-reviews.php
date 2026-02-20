@@ -150,18 +150,24 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
     gap: 0.25rem;
 }
 .star-rating-widget input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    pointer-events: none;
 }
 .star-rating-widget label {
     font-size: 1.5rem;
     line-height: 2rem;
-    color: #d1d5db; /* gray-300 */
+    color: #d1d5db !important; /* gray-300 with forced priority */
     cursor: pointer;
     transition: color 0.15s ease-in-out;
 }
 /* When hovering the container, keep unhovered stars gray */
 .star-rating-widget:hover label {
-    color: #d1d5db; 
+    color: #d1d5db !important; 
 }
 /* Highlight hovered star and all following siblings (previous in visual order) */
 .star-rating-widget label:hover,
@@ -170,7 +176,7 @@ $review_count = $product ? (int) $product->get_review_count() : 0;
 }
 /* Keep selected stars highlighted */
 .star-rating-widget input:checked ~ label {
-    color: #facc15; /* yellow-400 */
+    color: #facc15 !important; /* yellow-400 */
 }
 </style>
 
@@ -267,4 +273,29 @@ function toggleReviews() {
         button.setAttribute('aria-expanded', 'false');
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('commentform');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Check if rating is selected
+            const ratingInputs = form.querySelectorAll('input[name="rating"]');
+            if (ratingInputs.length > 0) {
+                const checked = form.querySelector('input[name="rating"]:checked');
+                if (!checked) {
+                    e.preventDefault();
+                    alert('Proszę wybrać ocenę (gwiazdki).');
+                    const widget = document.querySelector('.star-rating-widget');
+                    if (widget) {
+                        widget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Highlight widget
+                        widget.style.outline = '2px solid #ef4444';
+                        widget.style.borderRadius = '4px';
+                        setTimeout(() => { widget.style.outline = 'none'; }, 2000);
+                    }
+                }
+            }
+        });
+    }
+});
 </script>
