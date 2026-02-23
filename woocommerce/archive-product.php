@@ -549,7 +549,7 @@ $show_category_filter = $is_shop_root_view;
                                 $image_count = count($all_images);
                                 ?>
                                 
-                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>">
+                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -910,29 +910,8 @@ $show_category_filter = $is_shop_root_view;
     }
 
     .shop-page-wittchen .product-image {
-        height: auto !important;
-        aspect-ratio: auto !important;
+        aspect-ratio: 3 / 4 !important;
         background: #f7f5f2;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .shop-page-wittchen .product-image-slide {
-        display: none;
-        width: 100%;
-        height: auto;
-    }
-
-    .shop-page-wittchen .product-image-slide.active {
-        display: block;
-        position: relative;
-    }
-
-    .shop-page-wittchen .product-image img {
-        height: auto !important;
-        width: 100% !important;
-        object-fit: contain !important;
-        display: block !important;
     }
 
     .shop-page-wittchen .product-info {

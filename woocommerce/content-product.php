@@ -39,7 +39,7 @@ if ($is_home_carousel) :
     <li <?php wc_product_class('group relative', $product); ?>>
         <div class="product-card bg-white moretti-card-43">
             <div class="product-image-wrapper">
-                <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>">
+                <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                     <?php if ($image_count > 0) : ?>
                         <?php foreach ($all_images as $index => $image_id) : ?>
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
@@ -132,7 +132,7 @@ endif;
             $has_multiple_images = count($all_images) > 1;
             ?>
             
-                        <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="height: auto;">
+            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="aspect-ratio: 3 / 4;">
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
