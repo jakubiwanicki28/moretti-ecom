@@ -571,3 +571,176 @@ function moretti_custom_mobile_product_css() {
     <?php
 }
 add_action('wp_head', 'moretti_custom_mobile_product_css');
+
+/**
+ * Meta key for custom first image in homepage product carousels.
+ */
+function moretti_homepage_carousel_image_meta_key() {
+    return '_moretti_homepage_carousel_image_id';
+}
+
+/**
+ * Resolve homepage carousel custom image ID for a product.
+ */
+function moretti_get_product_homepage_carousel_image_id($product_id) {
+    $image_id = (int) get_post_meta((int) $product_id, moretti_homepage_carousel_image_meta_key(), true);
+
+    if ($image_id <= 0 || !wp_attachment_is_image($image_id)) {
+        return 0;
+    }
+
+    return $image_id;
+}
+
+/**
+ * Add product metabox for custom homepage carousel image.
+ */
+function moretti_add_product_homepage_carousel_image_metabox() {
+    add_meta_box(
+        'moretti_homepage_carousel_image',
+        __('Homepage Carousel Image', 'moretti-theme'),
+        'moretti_render_product_homepage_carousel_image_metabox',
+        'product',
+        'side',
+        'default'
+    );
+}
+add_action('add_meta_boxes', 'moretti_add_product_homepage_carousel_image_metabox');
+
+/**
+ * Render product metabox with media picker.
+ */
+function moretti_render_product_homepage_carousel_image_metabox($post) {
+    $image_id = moretti_get_product_homepage_carousel_image_id($post->ID);
+    $image_src = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+
+    wp_nonce_field('moretti_save_homepage_carousel_image', 'moretti_homepage_carousel_image_nonce');
+    ?>
+    <p style="margin-top:0;">
+        <?php esc_html_e('Optional: first slide image shown only in homepage carousels.', 'moretti-theme'); ?>
+    </p>
+    <div id="moretti-homepage-carousel-image-preview" style="margin-bottom:10px;">
+        <?php if ($image_src) : ?>
+            <img src="<?php echo esc_url($image_src); ?>" alt="" style="display:block;max-width:100%;height:auto;border:1px solid #e5e7eb;">
+        <?php endif; ?>
+    </div>
+    <input type="hidden" id="moretti_homepage_carousel_image_id" name="moretti_homepage_carousel_image_id" value="<?php echo esc_attr($image_id); ?>">
+    <p style="display:flex;gap:6px;">
+        <button type="button" class="button button-secondary" id="moretti-homepage-carousel-image-select">
+            <?php esc_html_e('Set image', 'moretti-theme'); ?>
+        </button>
+        <button type="button" class="button" id="moretti-homepage-carousel-image-remove" <?php disabled(!$image_id); ?>>
+            <?php esc_html_e('Remove', 'moretti-theme'); ?>
+        </button>
+    </p>
+    <?php
+}
+
+/**
+ * Save product homepage carousel image.
+ */
+function moretti_save_product_homepage_carousel_image($post_id) {
+    if (!isset($_POST['moretti_homepage_carousel_image_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['moretti_homepage_carousel_image_nonce'])), 'moretti_save_homepage_carousel_image')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (!isset($_POST['moretti_homepage_carousel_image_id'])) {
+        delete_post_meta($post_id, moretti_homepage_carousel_image_meta_key());
+        return;
+    }
+
+    $image_id = absint(wp_unslash($_POST['moretti_homepage_carousel_image_id']));
+    if ($image_id > 0 && wp_attachment_is_image($image_id)) {
+        update_post_meta($post_id, moretti_homepage_carousel_image_meta_key(), $image_id);
+    } else {
+        delete_post_meta($post_id, moretti_homepage_carousel_image_meta_key());
+    }
+}
+add_action('save_post_product', 'moretti_save_product_homepage_carousel_image');
+
+/**
+ * Enqueue media picker script for the product metabox.
+ */
+function moretti_admin_enqueue_homepage_carousel_image_metabox($hook) {
+    if (($hook !== 'post.php' && $hook !== 'post-new.php') || !isset($_GET['post_type']) && !isset($_GET['post'])) {
+        return;
+    }
+
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'product') {
+        return;
+    }
+
+    wp_enqueue_media();
+}
+add_action('admin_enqueue_scripts', 'moretti_admin_enqueue_homepage_carousel_image_metabox');
+
+/**
+ * Print inline JS for product homepage carousel image picker.
+ */
+function moretti_admin_print_homepage_carousel_image_script() {
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'product') {
+        return;
+    }
+    ?>
+    <script>
+    (function($) {
+        let mediaFrame;
+        const imageInput = $('#moretti_homepage_carousel_image_id');
+        const preview = $('#moretti-homepage-carousel-image-preview');
+        const removeButton = $('#moretti-homepage-carousel-image-remove');
+
+        function setPreview(url) {
+            if (!url) {
+                preview.empty();
+                removeButton.prop('disabled', true);
+                return;
+            }
+
+            preview.html('<img src="' + url + '" alt="" style="display:block;max-width:100%;height:auto;border:1px solid #e5e7eb;">');
+            removeButton.prop('disabled', false);
+        }
+
+        $('#moretti-homepage-carousel-image-select').on('click', function(e) {
+            e.preventDefault();
+
+            if (mediaFrame) {
+                mediaFrame.open();
+                return;
+            }
+
+            mediaFrame = wp.media({
+                title: 'Wybierz zdjęcie pierwszego slajdu',
+                library: { type: 'image' },
+                button: { text: 'Użyj zdjęcia' },
+                multiple: false
+            });
+
+            mediaFrame.on('select', function() {
+                const attachment = mediaFrame.state().get('selection').first().toJSON();
+                imageInput.val(attachment.id);
+                setPreview(attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url);
+            });
+
+            mediaFrame.open();
+        });
+
+        removeButton.on('click', function(e) {
+            e.preventDefault();
+            imageInput.val('');
+            setPreview('');
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+add_action('admin_footer', 'moretti_admin_print_homepage_carousel_image_script');

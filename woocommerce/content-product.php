@@ -23,15 +23,23 @@ if (empty($product) || !$product->is_visible()) {
             // Get product gallery images
             $gallery_image_ids = $product->get_gallery_image_ids();
             $main_image_id = $product->get_image_id();
-            
-            // Combine main image + gallery images
+
+            // Homepage carousel can use dedicated first image per product.
+            $is_home_carousel = (bool) get_query_var('moretti_home_carousel', false);
+            $homepage_first_image_id = $is_home_carousel ? moretti_get_product_homepage_carousel_image_id($product->get_id()) : 0;
+
+            // Combine custom homepage image + main image + gallery images.
             $all_images = array();
+            if ($homepage_first_image_id) {
+                $all_images[] = $homepage_first_image_id;
+            }
             if ($main_image_id) {
                 $all_images[] = $main_image_id;
             }
             if (!empty($gallery_image_ids)) {
                 $all_images = array_merge($all_images, $gallery_image_ids);
             }
+            $all_images = array_values(array_unique(array_filter(array_map('absint', $all_images))));
             
             // Only show slider if there are 2+ images
             $has_multiple_images = count($all_images) > 1;

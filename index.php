@@ -42,6 +42,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
             <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
                 <div class="relative overflow-hidden">
                     <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 2rem;">
+                        <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
                             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
                                 <div class="home-carousel-item flex-shrink-0">
@@ -53,6 +54,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                         <?php else : ?>
                             <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
                         <?php endif; ?>
+                        <?php set_query_var('moretti_home_carousel', false); ?>
                     </div>
                 </div>
             </div>
