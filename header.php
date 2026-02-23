@@ -108,6 +108,135 @@
             visibility: visible !important;
             opacity: 1 !important;
         }
+
+        /* Desktop mega menu and page dimmer */
+        @media (min-width: 768px) {
+            #desktop-mega-nav {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: 80 !important;
+            }
+
+            #desktop-mega-nav .desktop-nav-list {
+                display: flex;
+                align-items: center;
+                gap: 44px;
+            }
+
+            #desktop-mega-nav .menu-item-with-mega {
+                position: relative;
+                list-style: none;
+            }
+
+            #desktop-mega-nav .menu-link {
+                display: inline-flex;
+                align-items: center;
+                height: 64px;
+                font-size: 13px;
+                line-height: 1;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                font-weight: 500;
+                color: #2a2826;
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            #desktop-mega-nav .menu-link:hover,
+            #desktop-mega-nav .menu-item-with-mega.is-open .menu-link {
+                color: #8f8275;
+            }
+
+            #desktop-mega-nav .mega-menu-panel {
+                position: absolute;
+                top: calc(100% + 4px);
+                left: 50%;
+                transform: translateX(-50%) translateY(8px);
+                background: #ffffff;
+                border: 1px solid #ece9e4;
+                min-width: 620px;
+                padding: 28px 30px;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+                box-shadow: 0 24px 40px rgba(17, 17, 17, 0.12);
+            }
+
+            #desktop-mega-nav .mega-menu-panel.mega-menu-panel--narrow {
+                min-width: 320px;
+                max-width: 360px;
+                padding: 24px 24px;
+            }
+
+            #desktop-mega-nav .menu-item-with-mega.is-open .mega-menu-panel {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            #desktop-mega-nav .mega-menu-columns {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 26px;
+            }
+
+            #desktop-mega-nav .mega-menu-columns.single-column {
+                grid-template-columns: minmax(0, 1fr);
+                min-width: 320px;
+            }
+
+            #desktop-mega-nav .mega-menu-heading {
+                display: block;
+                margin-bottom: 12px;
+                font-size: 12px;
+                line-height: 1.2;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                font-weight: 700;
+                color: #2a2826;
+            }
+
+            #desktop-mega-nav .mega-menu-list {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            #desktop-mega-nav .mega-menu-list li + li {
+                margin-top: 8px;
+            }
+
+            #desktop-mega-nav .mega-menu-list a {
+                color: #2a2826;
+                text-decoration: none;
+                font-size: 14px;
+                line-height: 1.35;
+                transition: color 0.2s ease;
+            }
+
+            #desktop-mega-nav .mega-menu-list a:hover {
+                color: #8f8275;
+            }
+        }
+
+        #moretti-mega-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 17, 17, 0.44);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 40;
+        }
+
+        body.moretti-mega-menu-open #moretti-mega-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
     <script>
         // Brutal force fix for empty cart
@@ -181,7 +310,7 @@
             </div>
 
             <!-- Desktop Navigation (ONLY DESKTOP) -->
-            <nav class="hidden md:flex items-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+            <nav id="desktop-mega-nav" class="hidden md:flex items-center">
                 <?php
                 $mens_term = get_term_by('slug', 'dzial-meski', 'product_cat');
                 if (!$mens_term) {
@@ -192,16 +321,113 @@
                 if (!$womens_term) {
                     $womens_term = get_term_by('slug', 'portfele-damskie', 'product_cat');
                 }
+
+                $mens_children = array();
+                if ($mens_term && !is_wp_error($mens_term)) {
+                    $mens_children = get_terms(array(
+                        'taxonomy' => 'product_cat',
+                        'hide_empty' => true,
+                        'parent' => $mens_term->term_id,
+                        'orderby' => 'name',
+                        'order' => 'ASC',
+                    ));
+                    if (is_wp_error($mens_children)) {
+                        $mens_children = array();
+                    }
+                }
+
+                $womens_children = array();
+                if ($womens_term && !is_wp_error($womens_term)) {
+                    $womens_children = get_terms(array(
+                        'taxonomy' => 'product_cat',
+                        'hide_empty' => true,
+                        'parent' => $womens_term->term_id,
+                        'orderby' => 'name',
+                        'order' => 'ASC',
+                    ));
+                    if (is_wp_error($womens_children)) {
+                        $womens_children = array();
+                    }
+                }
                 ?>
-                <ul class="flex space-x-12 items-center">
-                    <li><a href="<?php echo esc_url(home_url('/')); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Start</a></li>
+                <ul class="desktop-nav-list">
                     <?php if (class_exists('WooCommerce')) : ?>
-                        <li><a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Sklep</a></li>
+                        <li class="menu-item-with-mega">
+                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="menu-link">Sklep</a>
+                            <div class="mega-menu-panel">
+                                <div class="mega-menu-columns">
+                                    <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
+                                        <div>
+                                            <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
+                                            <ul class="mega-menu-list">
+                                                <?php if (!empty($mens_children)) : ?>
+                                                    <?php foreach ($mens_children as $term) : ?>
+                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
+                                                    <?php endforeach; ?>
+                                                <?php else : ?>
+                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
+                                        <div>
+                                            <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
+                                            <ul class="mega-menu-list">
+                                                <?php if (!empty($womens_children)) : ?>
+                                                    <?php foreach ($womens_children as $term) : ?>
+                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
+                                                    <?php endforeach; ?>
+                                                <?php else : ?>
+                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </li>
                         <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
-                            <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Portfele męskie</a></li>
+                            <li class="menu-item-with-mega">
+                                <a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="menu-link"><?php echo esc_html($mens_term->name); ?></a>
+                                <div class="mega-menu-panel mega-menu-panel--narrow">
+                                    <div class="mega-menu-columns single-column">
+                                        <div>
+                                            <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
+                                            <ul class="mega-menu-list">
+                                                <?php if (!empty($mens_children)) : ?>
+                                                    <?php foreach ($mens_children as $term) : ?>
+                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
+                                                    <?php endforeach; ?>
+                                                <?php else : ?>
+                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
                         <?php endif; ?>
                         <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
-                            <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="text-sm text-charcoal hover:text-taupe-600 transition-colors uppercase tracking-[0.2em] font-medium">Portfele damskie</a></li>
+                            <li class="menu-item-with-mega">
+                                <a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="menu-link"><?php echo esc_html($womens_term->name); ?></a>
+                                <div class="mega-menu-panel mega-menu-panel--narrow">
+                                    <div class="mega-menu-columns single-column">
+                                        <div>
+                                            <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
+                                            <ul class="mega-menu-list">
+                                                <?php if (!empty($womens_children)) : ?>
+                                                    <?php foreach ($womens_children as $term) : ?>
+                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
+                                                    <?php endforeach; ?>
+                                                <?php else : ?>
+                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
                         <?php endif; ?>
                     <?php endif; ?>
                 </ul>
@@ -411,3 +637,71 @@
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/50 z-[190] hidden"></div>
 </header>
+<div id="moretti-mega-overlay" aria-hidden="true"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var desktopNav = document.getElementById('desktop-mega-nav');
+        if (!desktopNav) {
+            return;
+        }
+
+        var menuItems = desktopNav.querySelectorAll('.menu-item-with-mega');
+        if (!menuItems.length) {
+            return;
+        }
+
+        var closeTimer = null;
+
+        var closeAllMenus = function() {
+            menuItems.forEach(function(item) {
+                item.classList.remove('is-open');
+            });
+            document.body.classList.remove('moretti-mega-menu-open');
+        };
+
+        var openMenu = function(item) {
+            menuItems.forEach(function(menuItem) {
+                if (menuItem !== item) {
+                    menuItem.classList.remove('is-open');
+                }
+            });
+            item.classList.add('is-open');
+            document.body.classList.add('moretti-mega-menu-open');
+        };
+
+        menuItems.forEach(function(item) {
+            item.addEventListener('mouseenter', function() {
+                if (closeTimer) {
+                    window.clearTimeout(closeTimer);
+                }
+                openMenu(item);
+            });
+
+            item.addEventListener('focusin', function() {
+                if (closeTimer) {
+                    window.clearTimeout(closeTimer);
+                }
+                openMenu(item);
+            });
+        });
+
+        desktopNav.addEventListener('mouseleave', function() {
+            closeTimer = window.setTimeout(closeAllMenus, 80);
+        });
+
+        desktopNav.addEventListener('focusout', function() {
+            closeTimer = window.setTimeout(function() {
+                if (!desktopNav.contains(document.activeElement)) {
+                    closeAllMenus();
+                }
+            }, 80);
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 768) {
+                closeAllMenus();
+            }
+        });
+    });
+</script>

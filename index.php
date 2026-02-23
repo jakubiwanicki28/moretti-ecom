@@ -64,15 +64,80 @@ if (!function_exists('moretti_render_home_carousel_section')) {
 
 get_header(); ?>
 
-<!-- 1. HERO SECTION (Screenshot 1) -->
-<section class="relative h-[80vh] flex items-center overflow-hidden bg-gray-100">
-    <div class="absolute inset-0 z-0">
-        <img src="<?php echo get_template_directory_uri(); ?>/images/Baner strona www Large.jpeg" 
-             class="w-full h-full object-cover" 
-             alt="Luxury Wallets">
-        <div class="absolute inset-0 bg-black/15"></div>
+<?php
+$hero_banner_dir_path = trailingslashit(get_template_directory()) . 'images/banners/';
+$hero_banner_dir_url = trailingslashit(get_template_directory_uri()) . 'images/banners/';
+$hero_banners = array();
+
+if (is_dir($hero_banner_dir_path)) {
+    $hero_banner_entries = scandir($hero_banner_dir_path);
+
+    if ($hero_banner_entries !== false) {
+        foreach ($hero_banner_entries as $hero_banner_entry) {
+            if ($hero_banner_entry === '.' || $hero_banner_entry === '..') {
+                continue;
+            }
+
+            $hero_banner_full_path = $hero_banner_dir_path . $hero_banner_entry;
+            if (!is_file($hero_banner_full_path)) {
+                continue;
+            }
+
+            if (preg_match('/^([0-9]+)\.[^.]+$/i', $hero_banner_entry, $hero_banner_match) !== 1) {
+                continue;
+            }
+
+            $hero_banners[] = array(
+                'order' => (int) $hero_banner_match[1],
+                'name'  => $hero_banner_entry,
+            );
+        }
+    }
+}
+
+if (!empty($hero_banners)) {
+    usort($hero_banners, static function ($banner_a, $banner_b) {
+        if ($banner_a['order'] === $banner_b['order']) {
+            return strnatcasecmp($banner_a['name'], $banner_b['name']);
+        }
+
+        return $banner_a['order'] <=> $banner_b['order'];
+    });
+} else {
+    $hero_banners[] = array(
+        'order' => 1,
+        'name'  => 'Baner strona www Large.jpeg',
+    );
+}
+
+$hero_banners_count = count($hero_banners);
+?>
+<!-- 1. HERO SECTION (Dynamic banner carousel) -->
+<section id="moretti-home-hero" class="relative h-[80vh] overflow-hidden bg-gray-100">
+    <div class="moretti-hero-track-wrap absolute inset-0 z-0">
+        <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
+            <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
+                <?php
+                $hero_banner_name = $hero_banner['name'];
+                $hero_banner_src = $hero_banner_dir_url . rawurlencode($hero_banner_name);
+                if (!file_exists($hero_banner_dir_path . $hero_banner_name)) {
+                    $hero_banner_src = get_template_directory_uri() . '/images/Baner strona www Large.jpeg';
+                }
+                ?>
+                <div class="moretti-hero-slide" style="position: relative; min-width: 100%; height: 100%;">
+                    <img
+                        src="<?php echo esc_url($hero_banner_src); ?>"
+                        alt="<?php echo esc_attr(sprintf('Baner %d', $hero_banner_index + 1)); ?>"
+                        class="w-full h-full object-cover"
+                        <?php echo $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>
+                    >
+                    <div class="absolute inset-0 bg-black/15"></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
-    <div class="container mx-auto px-4 relative z-10 text-white">
+
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center">
         <div class="max-w-2xl">
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-none mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I STYL
@@ -80,21 +145,103 @@ get_header(); ?>
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
             </p>
-            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" 
-               class="inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all">
+            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all">
                 KUP TERAZ
             </a>
         </div>
     </div>
-    
-    <!-- Hero Slider Dots -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3">
-        <span class="w-2 h-2 rounded-full bg-white"></span>
-        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-    </div>
+
+    <?php if ($hero_banners_count > 1) : ?>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20" id="moretti-hero-dots">
+            <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
+                <button
+                    type="button"
+                    class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
+                    data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
+                    aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
+                    style="width: 8px; height: 8px; border: 0; border-radius: 999px; background: <?php echo $hero_banner_dot_index === 0 ? '#ffffff' : 'rgba(255, 255, 255, 0.42)'; ?>; cursor: pointer; transition: transform 0.25s ease, background-color 0.25s ease; padding: 0;"
+                ></button>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var heroSection = document.getElementById('moretti-home-hero');
+    if (!heroSection) {
+        return;
+    }
+
+    var track = heroSection.querySelector('.moretti-hero-track');
+    var dots = heroSection.querySelectorAll('.moretti-hero-dot');
+    var totalSlides = <?php echo (int) $hero_banners_count; ?>;
+
+    if (!track || totalSlides <= 1) {
+        return;
+    }
+
+    var currentSlide = 0;
+    var intervalId = null;
+
+    var updateDots = function() {
+        dots.forEach(function(dot, dotIndex) {
+            var isActive = dotIndex === currentSlide;
+            dot.classList.toggle('is-active', isActive);
+            dot.style.background = isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.42)';
+            dot.style.transform = isActive ? 'scale(1.4)' : 'scale(1)';
+        });
+    };
+
+    var goToSlide = function(targetSlide) {
+        currentSlide = (targetSlide + totalSlides) % totalSlides;
+        track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+        updateDots();
+    };
+
+    var goToNextSlide = function() {
+        goToSlide(currentSlide + 1);
+    };
+
+    var stopAutoplay = function() {
+        if (intervalId !== null) {
+            window.clearInterval(intervalId);
+            intervalId = null;
+        }
+    };
+
+    var startAutoplay = function() {
+        stopAutoplay();
+        intervalId = window.setInterval(goToNextSlide, 5000);
+    };
+
+    dots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+            var requestedSlide = parseInt(dot.getAttribute('data-slide-index'), 10);
+            if (!Number.isNaN(requestedSlide)) {
+                goToSlide(requestedSlide);
+                startAutoplay();
+            }
+        });
+    });
+
+    heroSection.addEventListener('mouseenter', stopAutoplay);
+    heroSection.addEventListener('mouseleave', startAutoplay);
+    heroSection.addEventListener('focusin', stopAutoplay);
+    heroSection.addEventListener('focusout', startAutoplay);
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stopAutoplay();
+            return;
+        }
+
+        startAutoplay();
+    });
+
+    goToSlide(0);
+    startAutoplay();
+});
+</script>
 
 <!-- 2. NOWOŚCI -->
 <?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'py-20 overflow-hidden bg-white'); ?>
@@ -408,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const getVisibleItems = () => {
             if (window.innerWidth >= 1024) return 4;
             if (window.innerWidth >= 640) return 2;
-            return 1;
+            return 2;
         };
 
         const getMaxIndex = () => Math.max(0, items.length - getVisibleItems());
