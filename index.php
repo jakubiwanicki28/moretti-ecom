@@ -376,16 +376,94 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <style>
-#okazje .product-card,
-#okazje .product-info {
-    background: #f3f4f6 !important;
+/* ===== Homepage carousel consistency ===== */
+#nowosci .home-carousel-item,
+#klasyki .home-carousel-item,
+#okazje .home-carousel-item {
+    display: flex;
 }
 
-#okazje .product-image-slider {
-    background: #f9fafb !important;
+#nowosci .home-carousel-item .product,
+#klasyki .home-carousel-item .product,
+#okazje .home-carousel-item .product {
+    width: 100%;
+    margin: 0 !important;
+}
+
+#nowosci .home-carousel-item .product-card,
+#klasyki .home-carousel-item .product-card,
+#okazje .home-carousel-item .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+    background: transparent !important;
+}
+
+#nowosci .home-carousel-item .product-image-slider,
+#klasyki .home-carousel-item .product-image-slider,
+#okazje .home-carousel-item .product-image-slider {
+    margin-bottom: 0 !important;
+    background: #f7f5f2 !important;
+}
+
+#nowosci .home-carousel-item .slider-images-wrapper,
+#klasyki .home-carousel-item .slider-images-wrapper,
+#okazje .home-carousel-item .slider-images-wrapper {
+    aspect-ratio: 3 / 4 !important;
+}
+
+/* Keep full product visible inside card container across homepage */
+#nowosci .home-carousel-item .slider-image img,
+#klasyki .home-carousel-item .slider-image img,
+#okazje .home-carousel-item .slider-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: #f7f5f2;
+}
+
+#nowosci .home-carousel-item .product-info,
+#klasyki .home-carousel-item .product-info,
+#okazje .home-carousel-item .product-info {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+#nowosci .home-carousel-item .product-name,
+#klasyki .home-carousel-item .product-name,
+#okazje .home-carousel-item .product-name {
+    margin: 0 0 4px !important;
+    min-height: 34px;
+}
+
+#nowosci .home-carousel-item .product-price,
+#klasyki .home-carousel-item .product-price,
+#okazje .home-carousel-item .product-price {
+    margin: 0 !important;
+}
+
+/* Featured product section image should also fit container height consistently */
+#featured-slider .slider-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: #f7f5f2;
 }
 
 @media (max-width: 767px) {
+    #nowosci .home-carousel-item .slider-images-wrapper,
+    #klasyki .home-carousel-item .slider-images-wrapper,
+    #okazje .home-carousel-item .slider-images-wrapper {
+        aspect-ratio: 3 / 4 !important;
+    }
+
+    #nowosci .home-carousel-item .product-name,
+    #klasyki .home-carousel-item .product-name,
+    #okazje .home-carousel-item .product-name {
+        min-height: 30px;
+    }
+
     #home-featured-product {
         padding: 2rem 1rem !important;
     }
@@ -404,12 +482,6 @@ document.addEventListener('DOMContentLoaded', function() {
         height: auto !important;
         aspect-ratio: 1 / 1 !important;
         overflow: hidden !important;
-    }
-
-    #featured-slider .slider-image img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
     }
 
     #home-featured-prev-btn,
