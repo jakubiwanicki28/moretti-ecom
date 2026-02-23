@@ -204,16 +204,16 @@ endif;
         </div>
 
         <!-- Product Info -->
-        <div class="product-info text-left">
+        <div class="product-info text-left pt-2 flex flex-col gap-0">
             <!-- Product Title -->
-            <h2 class="text-xs md:text-sm font-medium text-charcoal mb-1 hover:text-taupe-600 transition-colors leading-snug">
+            <h2 class="text-xs md:text-sm font-bold text-charcoal mb-0.5 hover:text-taupe-600 transition-colors leading-tight">
                 <a href="<?php the_permalink(); ?>">
                     <?php the_title(); ?>
                 </a>
             </h2>
 
             <!-- Product Price -->
-            <div class="product-price text-sm md:text-base text-charcoal font-semibold mb-3">
+            <div class="product-price text-sm md:text-base text-charcoal font-semibold mb-0 mt-0">
                 <?php echo $product->get_price_html(); ?>
             </div>
 

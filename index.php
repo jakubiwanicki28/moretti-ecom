@@ -392,13 +392,34 @@ document.addEventListener('DOMContentLoaded', function() {
     margin: 0 !important;
 }
 
+#nowosci .home-carousel-item ul.products,
+#klasyki .home-carousel-item ul.products,
+#okazje .home-carousel-item ul.products {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#nowosci .home-carousel-item ul.products li.product,
+#klasyki .home-carousel-item ul.products li.product,
+#okazje .home-carousel-item ul.products li.product {
+    float: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    clear: none !important;
+    list-style: none !important;
+}
+
 #nowosci .home-carousel-item .product-card,
 #klasyki .home-carousel-item .product-card,
 #okazje .home-carousel-item .product-card {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 8px;
+    gap: 4px;
     background: transparent !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -409,12 +430,14 @@ document.addEventListener('DOMContentLoaded', function() {
 #klasyki .home-carousel-item .product-image-wrapper,
 #okazje .home-carousel-item .product-image-wrapper {
     position: relative;
+    width: 100%;
 }
 
 #nowosci .home-carousel-item .product-image,
 #klasyki .home-carousel-item .product-image,
 #okazje .home-carousel-item .product-image {
     position: relative;
+    width: 100%;
     aspect-ratio: 3 / 4 !important;
     overflow: hidden;
     background: #f7f5f2 !important;
@@ -440,10 +463,19 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .product-image img,
 #klasyki .home-carousel-item .product-image img,
 #okazje .home-carousel-item .product-image img {
+    display: block;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     background: #f7f5f2 !important;
+}
+
+#nowosci .home-carousel-item .product-image-slide > a,
+#klasyki .home-carousel-item .product-image-slide > a,
+#okazje .home-carousel-item .product-image-slide > a {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 #nowosci .home-carousel-item .image-nav,
@@ -551,21 +583,21 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .product-info,
 #klasyki .home-carousel-item .product-info,
 #okazje .home-carousel-item .product-info {
-    padding: 0 8px 12px !important;
+    padding: 10px 8px 12px !important;
     background: transparent !important;
     text-align: left !important;
     align-items: flex-start !important;
-    gap: 4px !important;
+    gap: 0px !important;
 }
 
 #nowosci .home-carousel-item .product-name,
 #klasyki .home-carousel-item .product-name,
 #okazje .home-carousel-item .product-name {
-    margin: 0 0 4px !important;
-    min-height: 34px;
+    margin: 0 0 10px !important;
+    min-height: auto;
     font-size: 12px !important;
-    line-height: 1.35;
-    font-weight: 400;
+    line-height: 1.1;
+    font-weight: 700 !important;
     text-transform: none;
 }
 
@@ -574,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #okazje .home-carousel-item .product-price {
     margin: 0 !important;
     font-size: 20px !important;
-    line-height: 1.15;
+    line-height: 1.0;
     font-weight: 600;
 }
 
