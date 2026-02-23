@@ -413,13 +413,13 @@ document.addEventListener('DOMContentLoaded', function() {
     aspect-ratio: 3 / 4 !important;
 }
 
-/* Keep full product visible inside card container across homepage */
+/* Match shop grid behavior: fill height, crop side overflow */
 #nowosci .home-carousel-item .slider-image img,
 #klasyki .home-carousel-item .slider-image img,
 #okazje .home-carousel-item .slider-image img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     background: #f7f5f2;
 }
 
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #featured-slider .slider-image img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     background: #f7f5f2;
 }
 
