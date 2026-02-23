@@ -913,11 +913,26 @@ $show_category_filter = $is_shop_root_view;
         height: auto !important;
         aspect-ratio: auto !important;
         background: #f7f5f2;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shop-page-wittchen .product-image-slide {
+        display: none;
+        width: 100%;
+        height: auto;
+    }
+
+    .shop-page-wittchen .product-image-slide.active {
+        display: block;
+        position: relative;
     }
 
     .shop-page-wittchen .product-image img {
         height: auto !important;
+        width: 100% !important;
         object-fit: contain !important;
+        display: block !important;
     }
 
     .shop-page-wittchen .product-info {

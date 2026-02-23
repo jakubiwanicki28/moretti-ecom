@@ -447,18 +447,18 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .product-image-slide,
 #klasyki .home-carousel-item .product-image-slide,
 #okazje .home-carousel-item .product-image-slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
+    display: none;
+    width: 100%;
+    height: auto;
     transition: opacity 0.3s ease;
-    pointer-events: none;
 }
 
 #nowosci .home-carousel-item .product-image-slide.active,
 #klasyki .home-carousel-item .product-image-slide.active,
 #okazje .home-carousel-item .product-image-slide.active {
+    display: block;
+    position: relative;
     opacity: 1;
-    pointer-events: auto;
 }
 
 #nowosci .home-carousel-item .product-image img,

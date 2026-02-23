@@ -132,7 +132,7 @@ endif;
             $has_multiple_images = count($all_images) > 1;
             ?>
             
-            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link">
+                        <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="height: auto;">
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
