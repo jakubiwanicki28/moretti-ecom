@@ -221,6 +221,23 @@
             #desktop-mega-nav .mega-menu-list a:hover {
                 color: #8f8275;
             }
+
+            #desktop-mega-nav .mega-menu-group + .mega-menu-group {
+                margin-top: 18px;
+                padding-top: 14px;
+                border-top: 1px solid #ece9e4;
+            }
+
+            #desktop-mega-nav .mega-menu-subheading {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 10px;
+                line-height: 1.2;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: #8f8275;
+                font-weight: 700;
+            }
         }
 
         #moretti-mega-overlay {
@@ -322,33 +339,77 @@
                     $womens_term = get_term_by('slug', 'portfele-damskie', 'product_cat');
                 }
 
-                $mens_children = array();
-                if ($mens_term && !is_wp_error($mens_term)) {
-                    $mens_children = get_terms(array(
-                        'taxonomy' => 'product_cat',
-                        'hide_empty' => true,
-                        'parent' => $mens_term->term_id,
-                        'orderby' => 'name',
-                        'order' => 'ASC',
-                    ));
-                    if (is_wp_error($mens_children)) {
-                        $mens_children = array();
-                    }
-                }
+                $department_term_ids = array_filter(array(
+                    ($mens_term && !is_wp_error($mens_term)) ? (int) $mens_term->term_id : 0,
+                    ($womens_term && !is_wp_error($womens_term)) ? (int) $womens_term->term_id : 0,
+                ));
+                $default_product_cat_id = (int) get_option('default_product_cat');
 
-                $womens_children = array();
-                if ($womens_term && !is_wp_error($womens_term)) {
-                    $womens_children = get_terms(array(
+                $build_department_menu_data = function($department_term) use ($department_term_ids, $default_product_cat_id) {
+                    $data = array(
+                        'categories' => array(),
+                        'colors' => array(),
+                    );
+
+                    if (!$department_term || is_wp_error($department_term)) {
+                        return $data;
+                    }
+
+                    $children = get_terms(array(
                         'taxonomy' => 'product_cat',
                         'hide_empty' => true,
-                        'parent' => $womens_term->term_id,
+                        'parent' => $department_term->term_id,
                         'orderby' => 'name',
                         'order' => 'ASC',
                     ));
-                    if (is_wp_error($womens_children)) {
-                        $womens_children = array();
+                    if (!is_wp_error($children) && !empty($children)) {
+                        $data['categories'] = $children;
                     }
-                }
+
+                    $product_ids = get_objects_in_term((int) $department_term->term_id, 'product_cat');
+                    if (is_wp_error($product_ids) || empty($product_ids)) {
+                        return $data;
+                    }
+
+                    if (empty($data['categories'])) {
+                        $related_categories = wp_get_object_terms($product_ids, 'product_cat', array(
+                            'hide_empty' => true,
+                            'orderby' => 'count',
+                            'order' => 'DESC',
+                        ));
+
+                        if (!is_wp_error($related_categories) && !empty($related_categories)) {
+                            $excluded_ids = array_merge(
+                                $department_term_ids,
+                                array($default_product_cat_id, (int) $department_term->term_id)
+                            );
+                            $excluded_ids = array_map('intval', array_filter($excluded_ids));
+
+                            foreach ($related_categories as $related_term) {
+                                if (in_array((int) $related_term->term_id, $excluded_ids, true)) {
+                                    continue;
+                                }
+                                $data['categories'][] = $related_term;
+                            }
+                        }
+                    }
+
+                    if (taxonomy_exists('pa_kolor')) {
+                        $colors = wp_get_object_terms($product_ids, 'pa_kolor', array(
+                            'hide_empty' => true,
+                            'orderby' => 'name',
+                            'order' => 'ASC',
+                        ));
+                        if (!is_wp_error($colors) && !empty($colors)) {
+                            $data['colors'] = array_slice($colors, 0, 10);
+                        }
+                    }
+
+                    return $data;
+                };
+
+                $mens_menu_data = $build_department_menu_data($mens_term);
+                $womens_menu_data = $build_department_menu_data($womens_term);
                 ?>
                 <ul class="desktop-nav-list">
                     <?php if (class_exists('WooCommerce')) : ?>
@@ -359,29 +420,49 @@
                                     <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
                                         <div>
                                             <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
-                                            <ul class="mega-menu-list">
-                                                <?php if (!empty($mens_children)) : ?>
-                                                    <?php foreach ($mens_children as $term) : ?>
+                                            <div class="mega-menu-group">
+                                                <span class="mega-menu-subheading">Kategorie</span>
+                                                <ul class="mega-menu-list">
+                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
+                                                    <?php foreach ($mens_menu_data['categories'] as $term) : ?>
                                                         <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
                                                     <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
-                                                <?php endif; ?>
-                                            </ul>
+                                                </ul>
+                                            </div>
+                                            <?php if (!empty($mens_menu_data['colors'])) : ?>
+                                                <div class="mega-menu-group">
+                                                    <span class="mega-menu-subheading">Kolory</span>
+                                                    <ul class="mega-menu-list">
+                                                        <?php foreach ($mens_menu_data['colors'] as $color_term) : ?>
+                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($mens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
                                     <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
                                         <div>
                                             <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
-                                            <ul class="mega-menu-list">
-                                                <?php if (!empty($womens_children)) : ?>
-                                                    <?php foreach ($womens_children as $term) : ?>
+                                            <div class="mega-menu-group">
+                                                <span class="mega-menu-subheading">Kategorie</span>
+                                                <ul class="mega-menu-list">
+                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
+                                                    <?php foreach ($womens_menu_data['categories'] as $term) : ?>
                                                         <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
                                                     <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
-                                                <?php endif; ?>
-                                            </ul>
+                                                </ul>
+                                            </div>
+                                            <?php if (!empty($womens_menu_data['colors'])) : ?>
+                                                <div class="mega-menu-group">
+                                                    <span class="mega-menu-subheading">Kolory</span>
+                                                    <ul class="mega-menu-list">
+                                                        <?php foreach ($womens_menu_data['colors'] as $color_term) : ?>
+                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($womens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -394,15 +475,25 @@
                                     <div class="mega-menu-columns single-column">
                                         <div>
                                             <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
-                                            <ul class="mega-menu-list">
-                                                <?php if (!empty($mens_children)) : ?>
-                                                    <?php foreach ($mens_children as $term) : ?>
+                                            <div class="mega-menu-group">
+                                                <span class="mega-menu-subheading">Kategorie</span>
+                                                <ul class="mega-menu-list">
+                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
+                                                    <?php foreach ($mens_menu_data['categories'] as $term) : ?>
                                                         <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
                                                     <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
-                                                <?php endif; ?>
-                                            </ul>
+                                                </ul>
+                                            </div>
+                                            <?php if (!empty($mens_menu_data['colors'])) : ?>
+                                                <div class="mega-menu-group">
+                                                    <span class="mega-menu-subheading">Kolory</span>
+                                                    <ul class="mega-menu-list">
+                                                        <?php foreach ($mens_menu_data['colors'] as $color_term) : ?>
+                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($mens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -415,15 +506,25 @@
                                     <div class="mega-menu-columns single-column">
                                         <div>
                                             <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
-                                            <ul class="mega-menu-list">
-                                                <?php if (!empty($womens_children)) : ?>
-                                                    <?php foreach ($womens_children as $term) : ?>
+                                            <div class="mega-menu-group">
+                                                <span class="mega-menu-subheading">Kategorie</span>
+                                                <ul class="mega-menu-list">
+                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
+                                                    <?php foreach ($womens_menu_data['categories'] as $term) : ?>
                                                         <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
                                                     <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
-                                                <?php endif; ?>
-                                            </ul>
+                                                </ul>
+                                            </div>
+                                            <?php if (!empty($womens_menu_data['colors'])) : ?>
+                                                <div class="mega-menu-group">
+                                                    <span class="mega-menu-subheading">Kolory</span>
+                                                    <ul class="mega-menu-list">
+                                                        <?php foreach ($womens_menu_data['colors'] as $color_term) : ?>
+                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($womens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
