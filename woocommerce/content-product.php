@@ -13,6 +13,94 @@ global $product;
 if (empty($product) || !$product->is_visible()) {
     return;
 }
+
+$is_home_carousel = (bool) get_query_var('moretti_home_carousel', false);
+
+if ($is_home_carousel) :
+    $gallery_image_ids = $product->get_gallery_image_ids();
+    $main_image_id = $product->get_image_id();
+    $homepage_first_image_id = moretti_get_product_homepage_carousel_image_id($product->get_id());
+
+    // Keep homepage-selected lead image while using shop card mechanics.
+    $all_images = array();
+    if ($homepage_first_image_id) {
+        $all_images[] = $homepage_first_image_id;
+    }
+    if ($main_image_id) {
+        $all_images[] = $main_image_id;
+    }
+    if (!empty($gallery_image_ids)) {
+        $all_images = array_merge($all_images, $gallery_image_ids);
+    }
+    $all_images = array_values(array_unique(array_filter(array_map('absint', $all_images))));
+    $image_count = count($all_images);
+    $has_gallery = $image_count > 1;
+    ?>
+    <li <?php wc_product_class('group relative', $product); ?>>
+        <div class="product-card bg-white moretti-card-43">
+            <div class="product-image-wrapper">
+                <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
+                    <?php if ($image_count > 0) : ?>
+                        <?php foreach ($all_images as $index => $image_id) : ?>
+                            <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
+                                <a href="<?php the_permalink(); ?>">
+                                    <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile'); ?>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+
+                        <?php if ($image_count > 1) : ?>
+                            <button class="image-nav image-prev" aria-label="Poprzednie zdjęcie">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <button class="image-nav image-next" aria-label="Następne zdjęcie">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                            <div class="image-dots">
+                                <?php for ($i = 0; $i < $image_count; $i++) : ?>
+                                    <span class="image-dot <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($i); ?>"></span>
+                                <?php endfor; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <button
+                            type="button"
+                            class="wishlist-toggle image-wishlist product-heart"
+                            data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                            aria-label="Dodaj do ulubionych"
+                            aria-pressed="false"
+                        >
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </button>
+                    <?php else : ?>
+                        <a href="<?php the_permalink(); ?>">
+                            <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" alt="Placeholder">
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="product-info">
+                <h3 class="product-name">
+                    <a href="<?php the_permalink(); ?>">
+                        <?php the_title(); ?>
+                    </a>
+                </h3>
+                <div class="product-price">
+                    <?php echo $product->get_price_html(); ?>
+                </div>
+            </div>
+        </div>
+    </li>
+    <?php
+    return;
+endif;
 ?>
 <li <?php wc_product_class('group relative', $product); ?>>
     <div class="product-card bg-white moretti-card-43">
@@ -25,8 +113,7 @@ if (empty($product) || !$product->is_visible()) {
             $main_image_id = $product->get_image_id();
 
             // Homepage carousel can use dedicated first image per product.
-            $is_home_carousel = (bool) get_query_var('moretti_home_carousel', false);
-            $homepage_first_image_id = $is_home_carousel ? moretti_get_product_homepage_carousel_image_id($product->get_id()) : 0;
+            $homepage_first_image_id = 0;
 
             // Combine custom homepage image + main image + gallery images.
             $all_images = array();

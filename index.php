@@ -400,29 +400,152 @@ document.addEventListener('DOMContentLoaded', function() {
     height: 100%;
     gap: 8px;
     background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
 }
 
-#nowosci .home-carousel-item .product-image-slider,
-#klasyki .home-carousel-item .product-image-slider,
-#okazje .home-carousel-item .product-image-slider {
-    margin-bottom: 0 !important;
+#nowosci .home-carousel-item .product-image-wrapper,
+#klasyki .home-carousel-item .product-image-wrapper,
+#okazje .home-carousel-item .product-image-wrapper {
+    position: relative;
+}
+
+#nowosci .home-carousel-item .product-image,
+#klasyki .home-carousel-item .product-image,
+#okazje .home-carousel-item .product-image {
+    position: relative;
+    aspect-ratio: 3 / 4 !important;
+    overflow: hidden;
     background: #f7f5f2 !important;
 }
 
-#nowosci .home-carousel-item .slider-images-wrapper,
-#klasyki .home-carousel-item .slider-images-wrapper,
-#okazje .home-carousel-item .slider-images-wrapper {
-    aspect-ratio: 3 / 4 !important;
+#nowosci .home-carousel-item .product-image-slide,
+#klasyki .home-carousel-item .product-image-slide,
+#okazje .home-carousel-item .product-image-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
-/* Match shop grid behavior: fill height, crop side overflow */
-#nowosci .home-carousel-item .slider-image img,
-#klasyki .home-carousel-item .slider-image img,
-#okazje .home-carousel-item .slider-image img {
+#nowosci .home-carousel-item .product-image-slide.active,
+#klasyki .home-carousel-item .product-image-slide.active,
+#okazje .home-carousel-item .product-image-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#nowosci .home-carousel-item .product-image img,
+#klasyki .home-carousel-item .product-image img,
+#okazje .home-carousel-item .product-image img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    background: #f7f5f2;
+    background: #f7f5f2 !important;
+}
+
+#nowosci .home-carousel-item .image-nav,
+#klasyki .home-carousel-item .image-nav,
+#okazje .home-carousel-item .image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 2;
+}
+
+#nowosci .home-carousel-item .image-prev,
+#klasyki .home-carousel-item .image-prev,
+#okazje .home-carousel-item .image-prev {
+    left: 8px;
+}
+
+#nowosci .home-carousel-item .image-next,
+#klasyki .home-carousel-item .image-next,
+#okazje .home-carousel-item .image-next {
+    right: 8px;
+}
+
+#nowosci .home-carousel-item .product-card:hover .image-nav,
+#klasyki .home-carousel-item .product-card:hover .image-nav,
+#okazje .home-carousel-item .product-card:hover .image-nav {
+    opacity: 1;
+}
+
+#nowosci .home-carousel-item .image-dots,
+#klasyki .home-carousel-item .image-dots,
+#okazje .home-carousel-item .image-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#nowosci .home-carousel-item .product-card:hover .image-dots,
+#klasyki .home-carousel-item .product-card:hover .image-dots,
+#okazje .home-carousel-item .product-card:hover .image-dots {
+    opacity: 1;
+}
+
+#nowosci .home-carousel-item .image-dot,
+#klasyki .home-carousel-item .image-dot,
+#okazje .home-carousel-item .image-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#nowosci .home-carousel-item .image-dot.active,
+#klasyki .home-carousel-item .image-dot.active,
+#okazje .home-carousel-item .image-dot.active {
+    background: #ffffff;
+    width: 20px;
+    border-radius: 3px;
+}
+
+#nowosci .home-carousel-item .product-heart,
+#klasyki .home-carousel-item .product-heart,
+#okazje .home-carousel-item .product-heart {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: all 0.3s;
+    z-index: 3;
+}
+
+#nowosci .home-carousel-item .product-card:hover .product-heart,
+#klasyki .home-carousel-item .product-card:hover .product-heart,
+#okazje .home-carousel-item .product-card:hover .product-heart {
+    opacity: 1;
 }
 
 #nowosci .home-carousel-item .product-info,
@@ -431,6 +554,8 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 0 8px 12px !important;
     background: transparent !important;
     text-align: left !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
 }
 
 #nowosci .home-carousel-item .product-name,
@@ -438,12 +563,34 @@ document.addEventListener('DOMContentLoaded', function() {
 #okazje .home-carousel-item .product-name {
     margin: 0 0 4px !important;
     min-height: 34px;
+    font-size: 12px !important;
+    line-height: 1.35;
+    font-weight: 400;
+    text-transform: none;
 }
 
 #nowosci .home-carousel-item .product-price,
 #klasyki .home-carousel-item .product-price,
 #okazje .home-carousel-item .product-price {
     margin: 0 !important;
+    font-size: 20px !important;
+    line-height: 1.15;
+    font-weight: 600;
+}
+
+#nowosci .home-carousel-item .product-price del,
+#klasyki .home-carousel-item .product-price del,
+#okazje .home-carousel-item .product-price del {
+    font-size: 12px;
+    color: #8f8275;
+    margin-right: 6px;
+    font-weight: 400;
+}
+
+#nowosci .home-carousel-item .product-price ins,
+#klasyki .home-carousel-item .product-price ins,
+#okazje .home-carousel-item .product-price ins {
+    text-decoration: none;
 }
 
 /* Featured product section image should also fit container height consistently */
@@ -464,9 +611,9 @@ document.addEventListener('DOMContentLoaded', function() {
         min-height: 280px;
     }
 
-    #nowosci .home-carousel-item .slider-images-wrapper,
-    #klasyki .home-carousel-item .slider-images-wrapper,
-    #okazje .home-carousel-item .slider-images-wrapper {
+    #nowosci .home-carousel-item .product-image,
+    #klasyki .home-carousel-item .product-image,
+    #okazje .home-carousel-item .product-image {
         aspect-ratio: 3 / 4 !important;
     }
 
@@ -474,6 +621,25 @@ document.addEventListener('DOMContentLoaded', function() {
     #klasyki .home-carousel-item .product-name,
     #okazje .home-carousel-item .product-name {
         min-height: 30px;
+    }
+
+    #nowosci .home-carousel-item .product-price,
+    #klasyki .home-carousel-item .product-price,
+    #okazje .home-carousel-item .product-price {
+        font-size: 16px !important;
+    }
+
+    #nowosci .home-carousel-item .image-nav,
+    #klasyki .home-carousel-item .image-nav,
+    #okazje .home-carousel-item .image-nav {
+        display: none !important;
+    }
+
+    #nowosci .home-carousel-item .image-dots,
+    #klasyki .home-carousel-item .image-dots,
+    #okazje .home-carousel-item .image-dots {
+        opacity: 1 !important;
+        bottom: 8px;
     }
 
     #home-featured-product {
@@ -737,6 +903,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
         window.addEventListener('resize', updateCarousel);
         updateCarousel();
+    });
+
+    const homeCards = document.querySelectorAll('#nowosci .product-card, #klasyki .product-card, #okazje .product-card');
+
+    homeCards.forEach((card) => {
+        if (card.dataset.homeSliderInitialized === 'true') {
+            return;
+        }
+
+        const slides = card.querySelectorAll('.product-image-slide');
+        const prevBtn = card.querySelector('.image-prev');
+        const nextBtn = card.querySelector('.image-next');
+        const dots = card.querySelectorAll('.image-dot');
+
+        if (slides.length <= 1) {
+            card.dataset.homeSliderInitialized = 'true';
+            return;
+        }
+
+        let currentIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const showSlide = (index) => {
+            slides.forEach((slide) => slide.classList.remove('active'));
+            dots.forEach((dot) => dot.classList.remove('active'));
+
+            slides[index].classList.add('active');
+            if (dots[index]) {
+                dots[index].classList.add('active');
+            }
+            currentIndex = index;
+        };
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                showSlide(newIndex);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                showSlide(newIndex);
+            });
+        }
+
+        dots.forEach((dot) => {
+            dot.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetIndex = parseInt(dot.dataset.index || '0', 10);
+                showSlide(Number.isNaN(targetIndex) ? 0 : targetIndex);
+            });
+        });
+
+        card.addEventListener('touchstart', (event) => {
+            if (!event.changedTouches || event.changedTouches.length === 0) {
+                return;
+            }
+            touchStartX = event.changedTouches[0].screenX;
+            touchEndX = touchStartX;
+        }, { passive: true });
+
+        card.addEventListener('touchend', (event) => {
+            if (!event.changedTouches || event.changedTouches.length === 0) {
+                return;
+            }
+            touchEndX = event.changedTouches[0].screenX;
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                showSlide(newIndex);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                showSlide(newIndex);
+            }
+        }, { passive: true });
+
+        card.dataset.homeSliderInitialized = 'true';
     });
 });
 </script>
