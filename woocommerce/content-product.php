@@ -45,8 +45,7 @@ if (empty($product) || !$product->is_visible()) {
             $has_multiple_images = count($all_images) > 1;
             ?>
             
-            <?php $card_aspect_ratio = $is_home_carousel ? '1 / 1' : '3 / 4'; ?>
-            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="aspect-ratio: <?php echo esc_attr($card_aspect_ratio); ?>;">
+            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="aspect-ratio: 3 / 4;">
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">

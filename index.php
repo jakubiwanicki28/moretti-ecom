@@ -25,7 +25,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
         $loop = new WP_Query($query_args);
         ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
-            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
+            <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
                 <div class="flex justify-between items-end pb-4 border-b border-charcoal">
                     <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter"><?php echo esc_html($title); ?></h2>
                     <div class="flex gap-4">
@@ -39,9 +39,9 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                 </div>
             </div>
 
-            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem;">
+            <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem;">
                 <div class="relative overflow-hidden">
-                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 1.25rem;">
+                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 14px;">
                         <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
                             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .slider-images-wrapper,
 #klasyki .home-carousel-item .slider-images-wrapper,
 #okazje .home-carousel-item .slider-images-wrapper {
-    aspect-ratio: 1 / 1 !important;
+    aspect-ratio: 3 / 4 !important;
 }
 
 /* Match shop grid behavior: fill height, crop side overflow */
@@ -428,8 +428,9 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .product-info,
 #klasyki .home-carousel-item .product-info,
 #okazje .home-carousel-item .product-info {
-    padding: 0 !important;
+    padding: 0 8px 12px !important;
     background: transparent !important;
+    text-align: left !important;
 }
 
 #nowosci .home-carousel-item .product-name,
@@ -466,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
     #nowosci .home-carousel-item .slider-images-wrapper,
     #klasyki .home-carousel-item .slider-images-wrapper,
     #okazje .home-carousel-item .slider-images-wrapper {
-        aspect-ratio: 1 / 1 !important;
+        aspect-ratio: 3 / 4 !important;
     }
 
     #nowosci .home-carousel-item .product-name,
@@ -634,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let dragDelta = 0;
         let verticalDelta = 0;
         let isDragging = false;
-        const gap = 32;
+        let gap = 14;
         const swipeThreshold = 50;
 
         const getVisibleItems = () => {
@@ -649,6 +650,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const visibleItems = getVisibleItems();
             const container = track.parentElement;
             if (!container) return;
+            const computedGap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap || '14');
+            gap = Number.isNaN(computedGap) ? 14 : computedGap;
 
             itemWidth = (container.offsetWidth - (gap * (visibleItems - 1))) / visibleItems;
             items.forEach((item) => {
