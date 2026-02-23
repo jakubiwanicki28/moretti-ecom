@@ -25,7 +25,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
         $loop = new WP_Query($query_args);
         ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
-            <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem; margin-bottom: 3rem;">
+            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
                 <div class="flex justify-between items-end pb-4 border-b border-charcoal">
                     <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter"><?php echo esc_html($title); ?></h2>
                     <div class="flex gap-4">
@@ -39,9 +39,9 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                 </div>
             </div>
 
-            <div style="max-width: 1700px; margin: 0 auto; padding: 0 1rem;">
+            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem;">
                 <div class="relative overflow-hidden">
-                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 2rem;">
+                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 1.25rem;">
                         <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
                             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
@@ -259,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
 -->
 
 <!-- 4. GENDER SPLIT / CATEGORIES (Screenshot 3) -->
-<section class="grid grid-cols-1 md:grid-cols-2 h-[80vh] divide-y md:divide-y-0 md:divide-x divide-white/10">
+<section style="max-width: 1260px; margin: 0 auto; padding: 0 1rem 4rem;">
+<div id="home-gender-split-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 overflow-hidden" style="height: clamp(420px, 72vh, 860px);">
     <!-- Men -->
     <div class="relative group overflow-hidden flex items-center justify-center">
         <img src="<?php echo get_template_directory_uri(); ?>/images/men-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niego">
@@ -278,6 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="/kategoria-produktu/portfele-damskie" class="text-xs font-bold text-white border-b-2 border-white pb-1 hover:opacity-70 transition-opacity">ZOBACZ WIĘCEJ</a>
         </div>
     </div>
+</div>
 </section>
 
 <!-- 5. KLASYKA I HITY -->
@@ -287,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
 <!-- 7. FEATURED DETAIL -->
-<section id="home-featured-product" style="max-width: 1700px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
+<section id="home-featured-product" style="max-width: 1260px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
     <?php
     // Get the specific featured product: Elegance Red
     $featured_product_name = 'Elegance Red - Portfel Damski';
@@ -410,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .slider-images-wrapper,
 #klasyki .home-carousel-item .slider-images-wrapper,
 #okazje .home-carousel-item .slider-images-wrapper {
-    aspect-ratio: 3 / 4 !important;
+    aspect-ratio: 1 / 1 !important;
 }
 
 /* Match shop grid behavior: fill height, crop side overflow */
@@ -452,10 +454,19 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 @media (max-width: 767px) {
+    /* Keep gender tiles visibly tall on mobile (single column stack). */
+    #home-gender-split-grid {
+        height: auto !important;
+    }
+
+    #home-gender-split-grid > div {
+        min-height: 280px;
+    }
+
     #nowosci .home-carousel-item .slider-images-wrapper,
     #klasyki .home-carousel-item .slider-images-wrapper,
     #okazje .home-carousel-item .slider-images-wrapper {
-        aspect-ratio: 3 / 4 !important;
+        aspect-ratio: 1 / 1 !important;
     }
 
     #nowosci .home-carousel-item .product-name,
