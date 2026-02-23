@@ -109,150 +109,208 @@
             opacity: 1 !important;
         }
 
-        /* Desktop mega menu and page dimmer */
-        @media (min-width: 768px) {
-            #desktop-mega-nav {
-                position: absolute !important;
-                left: 50% !important;
-                top: 50% !important;
-                transform: translate(-50%, -50%) !important;
-                z-index: 80 !important;
-            }
-
-            #desktop-mega-nav .desktop-nav-list {
-                display: flex;
-                align-items: center;
-                gap: 44px;
-            }
-
-            #desktop-mega-nav .menu-item-with-mega {
-                position: relative;
-                list-style: none;
-            }
-
-            #desktop-mega-nav .menu-link {
-                display: inline-flex;
-                align-items: center;
-                height: 64px;
-                font-size: 13px;
-                line-height: 1;
-                text-transform: uppercase;
-                letter-spacing: 0.2em;
-                font-weight: 500;
-                color: #2a2826;
-                text-decoration: none;
-                transition: color 0.2s ease;
-            }
-
-            #desktop-mega-nav .menu-link:hover,
-            #desktop-mega-nav .menu-item-with-mega.is-open .menu-link {
-                color: #8f8275;
-            }
-
-            #desktop-mega-nav .mega-menu-panel {
-                position: absolute;
-                top: calc(100% + 4px);
-                left: 50%;
-                transform: translateX(-50%) translateY(8px);
-                background: #ffffff;
-                border: 1px solid #ece9e4;
-                min-width: 620px;
-                padding: 28px 30px;
-                opacity: 0;
-                visibility: hidden;
-                pointer-events: none;
-                transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-                box-shadow: 0 24px 40px rgba(17, 17, 17, 0.12);
-            }
-
-            #desktop-mega-nav .mega-menu-panel.mega-menu-panel--narrow {
-                min-width: 320px;
-                max-width: 360px;
-                padding: 24px 24px;
-            }
-
-            #desktop-mega-nav .menu-item-with-mega.is-open .mega-menu-panel {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
-                transform: translateX(-50%) translateY(0);
-            }
-
-            #desktop-mega-nav .mega-menu-columns {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 26px;
-            }
-
-            #desktop-mega-nav .mega-menu-columns.single-column {
-                grid-template-columns: minmax(0, 1fr);
-                min-width: 320px;
-            }
-
-            #desktop-mega-nav .mega-menu-heading {
-                display: block;
-                margin-bottom: 12px;
-                font-size: 12px;
-                line-height: 1.2;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                font-weight: 700;
-                color: #2a2826;
-            }
-
-            #desktop-mega-nav .mega-menu-list {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
-
-            #desktop-mega-nav .mega-menu-list li + li {
-                margin-top: 8px;
-            }
-
-            #desktop-mega-nav .mega-menu-list a {
-                color: #2a2826;
-                text-decoration: none;
-                font-size: 14px;
-                line-height: 1.35;
-                transition: color 0.2s ease;
-            }
-
-            #desktop-mega-nav .mega-menu-list a:hover {
-                color: #8f8275;
-            }
-
-            #desktop-mega-nav .mega-menu-group + .mega-menu-group {
-                margin-top: 18px;
-                padding-top: 14px;
-                border-top: 1px solid #ece9e4;
-            }
-
-            #desktop-mega-nav .mega-menu-subheading {
-                display: block;
-                margin-bottom: 8px;
-                font-size: 10px;
-                line-height: 1.2;
-                letter-spacing: 0.16em;
-                text-transform: uppercase;
-                color: #8f8275;
-                font-weight: 700;
-            }
+        /* New desktop header inspired by Wittchen */
+        .moretti-header {
+            background: #fff;
+            border-bottom: 1px solid #ededed;
         }
 
-        #moretti-mega-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(17, 17, 17, 0.44);
+        .moretti-header-inner {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .moretti-header-top {
+            height: 60px;
+            display: grid;
+            grid-template-columns: 180px minmax(0, 1fr) 180px;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .moretti-logo {
+            font-size: 28px;
+            letter-spacing: 0.18em;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #111;
+            white-space: nowrap;
+        }
+
+        .moretti-logo-wrap .custom-logo-link {
+            display: inline-block;
+            max-width: 170px;
+            line-height: 0;
+        }
+
+        .moretti-logo-wrap .custom-logo {
+            max-height: 32px;
+            width: auto;
+        }
+
+        .moretti-header-search-form {
+            max-width: 560px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .moretti-header-search-wrap {
+            position: relative;
+        }
+
+        .moretti-header-search-wrap input[type="search"] {
+            width: 100%;
+            height: 36px;
+            border: 1px solid #e5e5e5;
+            padding: 0 40px 0 14px;
+            font-size: 12px;
+            color: #2a2826;
+            background: #fafafa;
+        }
+
+        .moretti-header-search-wrap button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #6b6b6b;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .moretti-header-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .moretti-header-icon {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a2826;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .moretti-header-bottom {
+            border-top: 1px solid #f1f1f1;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .moretti-header-cats {
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            position: relative;
+        }
+
+        .moretti-cat-item {
+            position: relative;
+            height: 36px;
+            display: flex;
+            align-items: center;
+        }
+
+        .moretti-cat-link {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: #2a2826;
+            text-decoration: none;
+            line-height: 1;
+            padding: 4px 0;
+            transition: color 0.2s ease;
+        }
+
+        .moretti-cat-link:hover {
+            color: #8f8275;
+        }
+
+        .moretti-cat-dropdown {
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid #ececec;
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.10);
+            padding: 14px 0;
+            z-index: 80;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.2s ease;
-            z-index: 40;
+            transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
         }
 
-        body.moretti-mega-menu-open #moretti-mega-overlay {
+        .moretti-cat-item:hover .moretti-cat-dropdown,
+        .moretti-cat-item:focus-within .moretti-cat-dropdown {
             opacity: 1;
+            visibility: visible;
             pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .moretti-cat-dropdown-title {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: #8f8275;
+            font-weight: 700;
+            padding: 0 16px;
+            margin: 10px 0 6px;
+        }
+
+        .moretti-cat-dropdown a {
+            display: block;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #2a2826;
+            text-decoration: none;
+            padding: 7px 16px;
+            letter-spacing: 0.01em;
+            text-transform: none;
+        }
+
+        .moretti-cat-dropdown a:hover {
+            background: #f7f7f7;
+        }
+
+        .moretti-cat-dropdown .moretti-cat-dropdown-all {
+            font-weight: 600;
+        }
+
+        @media (max-width: 767px) {
+            .moretti-header-inner {
+                padding: 0 12px;
+            }
+
+            .moretti-header-top {
+                grid-template-columns: 1fr auto 1fr;
+                height: 56px;
+                gap: 0;
+            }
+
+            .moretti-header-top .moretti-header-search-form,
+            .moretti-header-bottom {
+                display: none;
+            }
+
+            .moretti-logo {
+                font-size: 22px;
+                justify-self: center;
+            }
         }
     </style>
     <script>
@@ -283,29 +341,127 @@
 </div>
 <?php endif; ?>
 
-<header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-    <div style="max-width: 1700px; margin: 0 auto;">
-        <div class="flex items-center h-16 md:h-18 px-4" style="position: relative !important;">
-            
-            <!-- Left Icons (Hamburger + Search) -->
-            <div class="flex items-center md:hidden" style="position: absolute !important; left: 10px !important; top: 50% !important; transform: translateY(-50%) !important; z-index: 10 !important;">
-                <!-- Mobile Menu Button -->
-                <a 
-                    href="#mobile-nav" 
+<header class="moretti-header sticky top-0 z-50">
+    <?php
+    $shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
+    $resolve_header_category_link = static function(array $slugs, $fallback) {
+        foreach ($slugs as $slug) {
+            $term = get_term_by('slug', $slug, 'product_cat');
+            if ($term && !is_wp_error($term)) {
+                $term_link = get_term_link($term);
+                if (!is_wp_error($term_link)) {
+                    return $term_link;
+                }
+            }
+        }
+        return $fallback;
+    };
+
+    $resolve_header_category_term = static function(array $slugs) {
+        foreach ($slugs as $slug) {
+            $term = get_term_by('slug', $slug, 'product_cat');
+            if ($term && !is_wp_error($term)) {
+                return $term;
+            }
+        }
+        return null;
+    };
+
+    $build_header_panel_data = static function($term) {
+        $result = array(
+            'categories' => array(),
+            'colors' => array(),
+        );
+
+        if (!$term || is_wp_error($term)) {
+            return $result;
+        }
+
+        $children = get_terms(array(
+            'taxonomy' => 'product_cat',
+            'hide_empty' => true,
+            'parent' => (int) $term->term_id,
+            'orderby' => 'name',
+            'order' => 'ASC',
+        ));
+        if (!is_wp_error($children) && !empty($children)) {
+            $result['categories'] = $children;
+        }
+
+        $product_ids = get_objects_in_term((int) $term->term_id, 'product_cat');
+        if (is_wp_error($product_ids) || empty($product_ids)) {
+            return $result;
+        }
+
+        foreach (array('pa_color', 'pa_kolor', 'pa_colour') as $color_taxonomy) {
+            if (!taxonomy_exists($color_taxonomy)) {
+                continue;
+            }
+            $colors = wp_get_object_terms($product_ids, $color_taxonomy, array(
+                'hide_empty' => true,
+                'orderby' => 'name',
+                'order' => 'ASC',
+            ));
+            if (!is_wp_error($colors) && !empty($colors)) {
+                $result['colors'] = array_slice($colors, 0, 10);
+                break;
+            }
+        }
+
+        return $result;
+    };
+
+    $header_nav_items = array(
+        array(
+            'label' => 'Dla niej',
+            'term' => $resolve_header_category_term(array('portfele-damskie', 'dzial-damski', 'dla-niej')),
+        ),
+        array(
+            'label' => 'Dla niego',
+            'term' => $resolve_header_category_term(array('portfele-meskie', 'dzial-meski', 'dla-niego')),
+        ),
+        array(
+            'label' => 'Nowości',
+            'term' => $resolve_header_category_term(array('nowosci', 'nowosci-1', 'new-in')),
+        ),
+        array(
+            'label' => 'Klasyka i hity',
+            'term' => $resolve_header_category_term(array('klasyka-i-hity', 'klasyki-i-hity', 'hity')),
+        ),
+        array(
+            'label' => 'Okazje',
+            'term' => $resolve_header_category_term(array('okazje', 'promocje', 'sale')),
+        ),
+    );
+
+    foreach ($header_nav_items as &$header_nav_item) {
+        $term = $header_nav_item['term'];
+        $header_nav_item['url'] = ($term && !is_wp_error($term)) ? get_term_link($term) : $shop_url;
+        if (is_wp_error($header_nav_item['url'])) {
+            $header_nav_item['url'] = $shop_url;
+        }
+        $header_nav_item['panel'] = $build_header_panel_data($term);
+    }
+    unset($header_nav_item);
+    ?>
+    <div class="moretti-header-inner">
+        <div class="moretti-header-top">
+            <div class="flex items-center gap-1 md:hidden">
+                <a
+                    href="#mobile-nav"
                     id="mobile-menu-link"
                     class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600"
+                    aria-label="Menu"
                 >
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </a>
-
-                <!-- Search Icon -->
-                <a 
-                    href="#search" 
+                <a
+                    href="#search"
                     id="search-toggle-mobile"
-                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
-                    aria-label="Search"
+                    class="w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600"
+                    aria-label="Szukaj"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -313,265 +469,79 @@
                 </a>
             </div>
 
-            <!-- Logo (Center on mobile, Left on desktop) -->
-            <div class="flex-shrink-0 flex items-center justify-center md:justify-start absolute left-1/2 -translate-x-1/2 md:relative md:left-auto md:translate-x-0" style="max-width: 140px !important;">
+            <div>
                 <?php if (has_custom_logo()) : ?>
-                    <div class="max-w-[100px] md:max-w-none">
-                        <?php the_custom_logo(); ?>
-                    </div>
+                    <div class="moretti-logo-wrap"><?php the_custom_logo(); ?></div>
                 <?php else : ?>
-                    <a href="<?php echo esc_url(home_url('/')); ?>" class="text-lg md:text-2xl font-bold tracking-[0.3em] text-charcoal hover:text-taupe-700 transition-colors uppercase whitespace-nowrap">
-                        <?php echo get_bloginfo('name'); ?>
+                    <a href="<?php echo esc_url(home_url('/')); ?>" class="moretti-logo">
+                        <?php echo esc_html(get_bloginfo('name')); ?>
                     </a>
                 <?php endif; ?>
             </div>
 
-            <!-- Desktop Navigation (ONLY DESKTOP) -->
-            <nav id="desktop-mega-nav" class="hidden md:flex items-center">
-                <?php
-                $mens_term = get_term_by('slug', 'dzial-meski', 'product_cat');
-                if (!$mens_term) {
-                    $mens_term = get_term_by('slug', 'portfele-meskie', 'product_cat');
-                }
+            <form role="search" method="get" action="<?php echo esc_url($shop_url); ?>" class="moretti-header-search-form hidden md:block">
+                <div class="moretti-header-search-wrap">
+                    <input
+                        type="search"
+                        name="s"
+                        placeholder="Szukaj"
+                        value="<?php echo esc_attr(get_search_query()); ?>"
+                        autocomplete="off"
+                    />
+                    <input type="hidden" name="post_type" value="product" />
+                    <button type="submit" aria-label="Szukaj">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
 
-                $womens_term = get_term_by('slug', 'dzial-damski', 'product_cat');
-                if (!$womens_term) {
-                    $womens_term = get_term_by('slug', 'portfele-damskie', 'product_cat');
-                }
-
-                $department_term_ids = array_filter(array(
-                    ($mens_term && !is_wp_error($mens_term)) ? (int) $mens_term->term_id : 0,
-                    ($womens_term && !is_wp_error($womens_term)) ? (int) $womens_term->term_id : 0,
-                ));
-                $default_product_cat_id = (int) get_option('default_product_cat');
-
-                $build_department_menu_data = function($department_term) use ($department_term_ids, $default_product_cat_id) {
-                    $data = array(
-                        'categories' => array(),
-                        'colors' => array(),
-                    );
-
-                    if (!$department_term || is_wp_error($department_term)) {
-                        return $data;
-                    }
-
-                    $children = get_terms(array(
-                        'taxonomy' => 'product_cat',
-                        'hide_empty' => true,
-                        'parent' => $department_term->term_id,
-                        'orderby' => 'name',
-                        'order' => 'ASC',
-                    ));
-                    if (!is_wp_error($children) && !empty($children)) {
-                        $data['categories'] = $children;
-                    }
-
-                    $product_ids = get_objects_in_term((int) $department_term->term_id, 'product_cat');
-                    if (is_wp_error($product_ids) || empty($product_ids)) {
-                        return $data;
-                    }
-
-                    if (empty($data['categories'])) {
-                        $related_categories = wp_get_object_terms($product_ids, 'product_cat', array(
-                            'hide_empty' => true,
-                            'orderby' => 'count',
-                            'order' => 'DESC',
-                        ));
-
-                        if (!is_wp_error($related_categories) && !empty($related_categories)) {
-                            $excluded_ids = array_merge(
-                                $department_term_ids,
-                                array($default_product_cat_id, (int) $department_term->term_id)
-                            );
-                            $excluded_ids = array_map('intval', array_filter($excluded_ids));
-
-                            foreach ($related_categories as $related_term) {
-                                if (in_array((int) $related_term->term_id, $excluded_ids, true)) {
-                                    continue;
-                                }
-                                $data['categories'][] = $related_term;
-                            }
-                        }
-                    }
-
-                    if (taxonomy_exists('pa_kolor')) {
-                        $colors = wp_get_object_terms($product_ids, 'pa_kolor', array(
-                            'hide_empty' => true,
-                            'orderby' => 'name',
-                            'order' => 'ASC',
-                        ));
-                        if (!is_wp_error($colors) && !empty($colors)) {
-                            $data['colors'] = array_slice($colors, 0, 10);
-                        }
-                    }
-
-                    return $data;
-                };
-
-                $mens_menu_data = $build_department_menu_data($mens_term);
-                $womens_menu_data = $build_department_menu_data($womens_term);
-                ?>
-                <ul class="desktop-nav-list">
-                    <?php if (class_exists('WooCommerce')) : ?>
-                        <li class="menu-item-with-mega">
-                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="menu-link">Sklep</a>
-                            <div class="mega-menu-panel">
-                                <div class="mega-menu-columns">
-                                    <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
-                                        <div>
-                                            <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
-                                            <div class="mega-menu-group">
-                                                <span class="mega-menu-subheading">Kategorie</span>
-                                                <ul class="mega-menu-list">
-                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
-                                                    <?php foreach ($mens_menu_data['categories'] as $term) : ?>
-                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
-                                                    <?php endforeach; ?>
-                                                </ul>
-                                            </div>
-                                            <?php if (!empty($mens_menu_data['colors'])) : ?>
-                                                <div class="mega-menu-group">
-                                                    <span class="mega-menu-subheading">Kolory</span>
-                                                    <ul class="mega-menu-list">
-                                                        <?php foreach ($mens_menu_data['colors'] as $color_term) : ?>
-                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($mens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
-                                        <div>
-                                            <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
-                                            <div class="mega-menu-group">
-                                                <span class="mega-menu-subheading">Kategorie</span>
-                                                <ul class="mega-menu-list">
-                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
-                                                    <?php foreach ($womens_menu_data['categories'] as $term) : ?>
-                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
-                                                    <?php endforeach; ?>
-                                                </ul>
-                                            </div>
-                                            <?php if (!empty($womens_menu_data['colors'])) : ?>
-                                                <div class="mega-menu-group">
-                                                    <span class="mega-menu-subheading">Kolory</span>
-                                                    <ul class="mega-menu-list">
-                                                        <?php foreach ($womens_menu_data['colors'] as $color_term) : ?>
-                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($womens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </li>
-                        <?php if ($mens_term && !is_wp_error($mens_term)) : ?>
-                            <li class="menu-item-with-mega">
-                                <a href="<?php echo esc_url(get_term_link($mens_term)); ?>" class="menu-link"><?php echo esc_html($mens_term->name); ?></a>
-                                <div class="mega-menu-panel mega-menu-panel--narrow">
-                                    <div class="mega-menu-columns single-column">
-                                        <div>
-                                            <span class="mega-menu-heading"><?php echo esc_html($mens_term->name); ?></span>
-                                            <div class="mega-menu-group">
-                                                <span class="mega-menu-subheading">Kategorie</span>
-                                                <ul class="mega-menu-list">
-                                                    <li><a href="<?php echo esc_url(get_term_link($mens_term)); ?>">Wszystkie</a></li>
-                                                    <?php foreach ($mens_menu_data['categories'] as $term) : ?>
-                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
-                                                    <?php endforeach; ?>
-                                                </ul>
-                                            </div>
-                                            <?php if (!empty($mens_menu_data['colors'])) : ?>
-                                                <div class="mega-menu-group">
-                                                    <span class="mega-menu-subheading">Kolory</span>
-                                                    <ul class="mega-menu-list">
-                                                        <?php foreach ($mens_menu_data['colors'] as $color_term) : ?>
-                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($mens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        <?php endif; ?>
-                        <?php if ($womens_term && !is_wp_error($womens_term)) : ?>
-                            <li class="menu-item-with-mega">
-                                <a href="<?php echo esc_url(get_term_link($womens_term)); ?>" class="menu-link"><?php echo esc_html($womens_term->name); ?></a>
-                                <div class="mega-menu-panel mega-menu-panel--narrow">
-                                    <div class="mega-menu-columns single-column">
-                                        <div>
-                                            <span class="mega-menu-heading"><?php echo esc_html($womens_term->name); ?></span>
-                                            <div class="mega-menu-group">
-                                                <span class="mega-menu-subheading">Kategorie</span>
-                                                <ul class="mega-menu-list">
-                                                    <li><a href="<?php echo esc_url(get_term_link($womens_term)); ?>">Wszystkie</a></li>
-                                                    <?php foreach ($womens_menu_data['categories'] as $term) : ?>
-                                                        <li><a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a></li>
-                                                    <?php endforeach; ?>
-                                                </ul>
-                                            </div>
-                                            <?php if (!empty($womens_menu_data['colors'])) : ?>
-                                                <div class="mega-menu-group">
-                                                    <span class="mega-menu-subheading">Kolory</span>
-                                                    <ul class="mega-menu-list">
-                                                        <?php foreach ($womens_menu_data['colors'] as $color_term) : ?>
-                                                            <li><a href="<?php echo esc_url(add_query_arg('filter_kolor', $color_term->slug, get_term_link($womens_term))); ?>"><?php echo esc_html($color_term->name); ?></a></li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </ul>
-            </nav>
-
-            <!-- Right Icons (Desktop Search + Cart) -->
-            <div class="w-auto flex items-center justify-end space-x-1 md:space-x-4" style="position: absolute !important; right: 10px !important; top: 50% !important; transform: translateY(-50%) !important; z-index: 10 !important;">
-                <!-- Desktop Search Icon (Hidden on Mobile) -->
-                <a 
-                    href="#search" 
-                    id="search-toggle-desktop"
-                    class="hidden md:flex w-10 h-10 items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" 
-                    aria-label="Search"
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </a>
-
+            <div class="moretti-header-actions">
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <!-- Wishlist Icon with Counter -->
-                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="wishlist-header-link relative w-10 h-10 flex items-center justify-center text-charcoal hover:text-taupe-600 transition-colors" aria-label="Ulubione">
+                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', $shop_url)); ?>" class="moretti-header-icon wishlist-header-link" aria-label="Ulubione">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                         <span class="wishlist-count-header absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 hidden items-center justify-center rounded-full font-bold" data-wishlist-count>0</span>
                     </a>
 
-                    <!-- Cart Icon with Counter -->
-                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="relative text-charcoal hover:text-taupe-600 w-10 h-10 flex items-center justify-center transition-colors" aria-label="Shopping cart">
+                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="moretti-header-icon" aria-label="Koszyk">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
-                        <?php
-                        $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
-                        ?>
+                        <?php $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0; ?>
                         <?php if ($cart_count > 0) : ?>
-                            <span class="absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"><?php echo $cart_count; ?></span>
+                            <span class="absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"><?php echo (int) $cart_count; ?></span>
                         <?php endif; ?>
                     </a>
                 <?php endif; ?>
             </div>
         </div>
+    </div>
+    <div class="moretti-header-bottom hidden md:block">
+        <nav class="moretti-header-inner moretti-header-cats" aria-label="Kategorie glowne">
+            <?php foreach ($header_nav_items as $item) : ?>
+                <div class="moretti-cat-item">
+                    <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-link"><?php echo esc_html($item['label']); ?></a>
+                    <div class="moretti-cat-dropdown">
+                        <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-dropdown-all">Wszystko</a>
+                        <?php if (!empty($item['panel']['categories'])) : ?>
+                            <span class="moretti-cat-dropdown-title">Kategorie</span>
+                            <?php foreach ($item['panel']['categories'] as $category_term) : ?>
+                                <a href="<?php echo esc_url(get_term_link($category_term)); ?>"><?php echo esc_html($category_term->name); ?></a>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php if (!empty($item['panel']['colors'])) : ?>
+                            <span class="moretti-cat-dropdown-title">Kolory</span>
+                            <?php foreach ($item['panel']['colors'] as $color_term) : ?>
+                                <a href="<?php echo esc_url(add_query_arg('filter_color', $color_term->slug, $item['url'])); ?>"><?php echo esc_html($color_term->name); ?></a>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </nav>
     </div>
 
     <!-- Mobile Search Overlay - Full Screen -->
@@ -738,71 +708,3 @@
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/50 z-[190] hidden"></div>
 </header>
-<div id="moretti-mega-overlay" aria-hidden="true"></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var desktopNav = document.getElementById('desktop-mega-nav');
-        if (!desktopNav) {
-            return;
-        }
-
-        var menuItems = desktopNav.querySelectorAll('.menu-item-with-mega');
-        if (!menuItems.length) {
-            return;
-        }
-
-        var closeTimer = null;
-
-        var closeAllMenus = function() {
-            menuItems.forEach(function(item) {
-                item.classList.remove('is-open');
-            });
-            document.body.classList.remove('moretti-mega-menu-open');
-        };
-
-        var openMenu = function(item) {
-            menuItems.forEach(function(menuItem) {
-                if (menuItem !== item) {
-                    menuItem.classList.remove('is-open');
-                }
-            });
-            item.classList.add('is-open');
-            document.body.classList.add('moretti-mega-menu-open');
-        };
-
-        menuItems.forEach(function(item) {
-            item.addEventListener('mouseenter', function() {
-                if (closeTimer) {
-                    window.clearTimeout(closeTimer);
-                }
-                openMenu(item);
-            });
-
-            item.addEventListener('focusin', function() {
-                if (closeTimer) {
-                    window.clearTimeout(closeTimer);
-                }
-                openMenu(item);
-            });
-        });
-
-        desktopNav.addEventListener('mouseleave', function() {
-            closeTimer = window.setTimeout(closeAllMenus, 80);
-        });
-
-        desktopNav.addEventListener('focusout', function() {
-            closeTimer = window.setTimeout(function() {
-                if (!desktopNav.contains(document.activeElement)) {
-                    closeAllMenus();
-                }
-            }, 80);
-        });
-
-        window.addEventListener('resize', function() {
-            if (window.innerWidth < 768) {
-                closeAllMenus();
-            }
-        });
-    });
-</script>

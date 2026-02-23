@@ -81,6 +81,11 @@ $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
 
+// On category archive pages, hide/disable category-level extra filter layer.
+if (is_product_category()) {
+    $selected_size = '';
+}
+
 $wishlist_ids = array();
 if ($is_wishlist_view && isset($_COOKIE['moretti_wishlist'])) {
     $raw_cookie = rawurldecode(wp_unslash($_COOKIE['moretti_wishlist']));
@@ -210,9 +215,15 @@ if (is_product_category()) {
 } elseif ($is_wishlist_view) {
     $page_title = 'Ulubione';
 }
+
+// View logic:
+// - Category archive pages should hide category-level filter duplication.
+$is_shop_root_view = is_shop() && !is_product_category() && !$is_wishlist_view;
+$show_category_filter = $is_shop_root_view;
+
 ?>
 
-<div class="shop-page">
+<div class="shop-page shop-page-wittchen">
     <div class="shop-container">
         
         <!-- Sidebar -->
@@ -402,51 +413,118 @@ if (is_product_category()) {
             </nav>
             
             <!-- Top Bar -->
+            <?php
+            $sort_options = array(
+                'menu_order' => 'Sortuj',
+                'popularity' => 'Popularność',
+                'date' => 'Nowości',
+                'price' => 'Cena: rosnąco',
+                'price-desc' => 'Cena: malejąco',
+            );
+            ?>
             <div class="shop-topbar">
                 <div class="shop-title-wrap">
                     <h1 class="shop-title"><?php echo esc_html($page_title); ?></h1>
-                    <span class="shop-count"><?php echo $products->found_posts; ?> produktów</span>
                 </div>
-                
-                <div class="shop-actions">
-                    <!-- Filter Button -->
-                    <button type="button" class="action-btn action-filter" id="filter-toggle">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-                        </svg>
-                        Filtry
-                    </button>
-                    
-                    <!-- Sort Dropdown -->
-                    <div class="action-dropdown">
-                        <button type="button" class="action-btn action-sort" id="sort-toggle">
-                            <span id="sort-label">
-                                <?php
-                                $sort_options = array(
-                                    'menu_order' => 'Sortuj',
-                                    'popularity' => 'Popularność',
-                                    'date' => 'Nowości',
-                                    'price' => 'Cena: rosnąco',
-                                    'price-desc' => 'Cena: malejąco',
-                                );
-                                echo esc_html($sort_options[$orderby]);
-                                ?>
-                            </span>
-                            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="sort-arrow">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="dropdown-menu" id="sort-menu">
-                            <?php foreach ($sort_options as $key => $label) : ?>
-                                <a href="<?php echo esc_url(add_query_arg(array('orderby' => $key, 'paged' => false))); ?>" 
-                                   class="dropdown-item <?php echo $orderby === $key ? 'active' : ''; ?>"
-                                   data-value="<?php echo esc_attr($key); ?>">
-                                    <?php echo esc_html($label); ?>
+            </div>
+
+            <div class="shop-hero-banner">
+                <div class="shop-hero-banner-content">
+                    <p class="shop-hero-eyebrow">Limitowana oferta</p>
+                    <h2 class="shop-hero-title">Okazje na Dzień Kobiet</h2>
+                    <p class="shop-hero-subtitle">-30% na wybrane modele portfeli</p>
+                    <p class="shop-hero-copy">Oferta limitowana czasowo. Wybierz styl, który zostaje z Tobą na lata.</p>
+                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Zobacz kolekcję</a>
+                </div>
+            </div>
+
+            <div class="shop-filters-divider" aria-hidden="true"></div>
+
+            <div class="wittchen-filters-row">
+                <details class="wittchen-filter">
+                    <summary>Sortuj</summary>
+                    <div class="wittchen-filter-menu">
+                        <?php foreach ($sort_options as $key => $label) : ?>
+                            <a href="<?php echo esc_url(add_query_arg(array('orderby' => $key, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $orderby === $key ? 'is-active' : ''; ?>">
+                                <?php echo esc_html($label); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </details>
+
+                <?php
+                $colors = $moretti_get_filter_terms($color_taxonomy);
+                if (!empty($colors)) :
+                ?>
+                    <details class="wittchen-filter">
+                        <summary>Kolor<?php echo $selected_color !== '' ? ': ' . esc_html($selected_color) : ''; ?></summary>
+                        <div class="wittchen-filter-menu">
+                            <?php foreach ($colors as $color) : ?>
+                                <?php $is_active = ($selected_color === $color->slug); ?>
+                                <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'paged'))) : esc_url(add_query_arg(array('filter_color' => $color->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                    <?php echo esc_html($color->name); ?>
                                 </a>
                             <?php endforeach; ?>
                         </div>
+                    </details>
+                <?php endif; ?>
+
+                <?php
+                $materials = $moretti_get_filter_terms($material_taxonomy);
+                if (!empty($materials)) :
+                ?>
+                    <details class="wittchen-filter">
+                        <summary>Materiał<?php echo $selected_material !== '' ? ': ' . esc_html($selected_material) : ''; ?></summary>
+                        <div class="wittchen-filter-menu">
+                            <?php foreach ($materials as $material) : ?>
+                                <?php $is_active = ($selected_material === $material->slug); ?>
+                                <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_material', 'paged'))) : esc_url(add_query_arg(array('filter_material' => $material->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                    <?php echo esc_html($material->name); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </details>
+                <?php endif; ?>
+
+                <?php
+                if ($show_category_filter) :
+                    $sizes = $moretti_get_filter_terms($size_taxonomy);
+                    if (!empty($sizes)) :
+                ?>
+                        <details class="wittchen-filter">
+                            <summary>Kategoria</summary>
+                            <div class="wittchen-filter-menu">
+                                <?php foreach ($sizes as $size) : ?>
+                                    <?php $is_active = ($selected_size === $size->slug); ?>
+                                    <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_size', 'paged'))) : esc_url(add_query_arg(array('filter_size' => $size->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                        <?php echo esc_html($size->name); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                <?php
+                    endif;
+                endif;
+                ?>
+
+                <details class="wittchen-filter">
+                    <summary>Cena</summary>
+                    <div class="wittchen-filter-menu">
+                        <a href="<?php echo esc_url(add_query_arg(array('max_price' => 200, 'min_price' => false, 'paged' => false))); ?>" class="wittchen-filter-item">Do 200 zł</a>
+                        <a href="<?php echo esc_url(add_query_arg(array('min_price' => 200, 'max_price' => 500, 'paged' => false))); ?>" class="wittchen-filter-item">200-500 zł</a>
+                        <a href="<?php echo esc_url(add_query_arg(array('min_price' => 500, 'max_price' => false, 'paged' => false))); ?>" class="wittchen-filter-item">Powyżej 500 zł</a>
                     </div>
-                </div>
+                </details>
+
+                <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
+                    <a class="wittchen-reset" href="<?php echo esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'filter_material', 'filter_size', 'min_price', 'max_price', 'paged'))); ?>">
+                        Wyczyść filtry
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <div class="shop-count-row">
+                <span class="shop-count">Liczba produktów: <?php echo $products->found_posts; ?></span>
             </div>
 
             <!-- Products Grid -->
@@ -471,7 +549,7 @@ if (is_product_category()) {
                                 $image_count = count($all_images);
                                 ?>
                                 
-                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>">
+                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -562,6 +640,412 @@ if (is_product_category()) {
 <!-- Sidebar Overlay (Mobile) -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+<style>
+    .shop-page.shop-page-wittchen {
+        padding-top: 0;
+        padding-bottom: 18px;
+    }
+
+    .shop-page-wittchen .shop-container {
+        display: block;
+        max-width: 1260px;
+        margin: 0 auto;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .shop-page-wittchen .shop-sidebar,
+    .shop-page-wittchen .sidebar-overlay {
+        display: none !important;
+    }
+
+    .shop-page-wittchen .shop-main {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        gap: 0;
+    }
+
+    .shop-page-wittchen .shop-breadcrumbs {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 11px;
+        gap: 6px;
+    }
+
+    .shop-page-wittchen .shop-topbar {
+        border: none;
+        padding: 0;
+        margin-bottom: 15px;
+    }
+
+    .shop-page-wittchen .shop-title-wrap {
+        gap: 0;
+    }
+
+    .shop-page-wittchen .shop-title {
+        font-size: clamp(1.5rem, 2vw, 1.95rem);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: none;
+    }
+
+    .shop-page-wittchen .shop-count {
+        font-size: 12px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #5f554b;
+    }
+
+    .shop-page-wittchen .shop-hero-banner {
+        margin: 0 0 15px;
+        border: 1px solid #d6a1ab;
+        background: linear-gradient(95deg, #a4001a 0%, #b1001d 52%, #840015 100%);
+        overflow: hidden;
+        position: relative;
+        min-height: 175px;
+        display: flex;
+        align-items: center;
+    }
+
+    .shop-page-wittchen .shop-hero-banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+            repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.02) 0,
+                rgba(255, 255, 255, 0.02) 1px,
+                transparent 1px,
+                transparent 120px
+            );
+        pointer-events: none;
+    }
+
+    .shop-page-wittchen .shop-hero-banner-content {
+        position: relative;
+        z-index: 1;
+        padding: 22px 26px;
+        max-width: 760px;
+        color: #fff;
+    }
+
+    .shop-page-wittchen .shop-hero-eyebrow {
+        margin: 0 0 6px;
+        font-size: 11px;
+        line-height: 1;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #ffd5dc;
+    }
+
+    .shop-page-wittchen .shop-hero-title {
+        margin: 0 0 7px;
+        font-size: clamp(1.55rem, 2.8vw, 2.6rem);
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        color: #fff;
+    }
+
+    .shop-page-wittchen .shop-hero-subtitle {
+        margin: 0 0 6px;
+        font-size: clamp(1.02rem, 1.6vw, 1.42rem);
+        line-height: 1.2;
+        font-weight: 600;
+        color: #ffe8ec;
+    }
+
+    .shop-page-wittchen .shop-hero-copy {
+        margin: 0 0 12px;
+        font-size: 14px;
+        line-height: 1.35;
+        color: #ffd8df;
+        max-width: 620px;
+    }
+
+    .shop-page-wittchen .shop-hero-cta {
+        display: inline-block;
+        padding: 10px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .shop-page-wittchen .shop-hero-cta:hover {
+        background: #fff;
+        color: #930018;
+    }
+
+    .shop-page-wittchen .shop-filters-divider {
+        border-top: 1px solid #e7e7e7;
+        margin-bottom: 15px;
+    }
+
+    .shop-page-wittchen .wittchen-filters-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        padding: 0;
+    }
+
+    .shop-page-wittchen .shop-count-row {
+        margin-bottom: 4px;
+        font-size: 11px;
+    }
+
+    .shop-page-wittchen .wittchen-filter {
+        position: relative;
+    }
+
+    .shop-page-wittchen .wittchen-filter > summary {
+        list-style: none;
+        border: 1px solid #e1e1e1;
+        background: #fff;
+        padding: 9px 30px 9px 12px;
+        font-size: 11px;
+        cursor: pointer;
+        min-width: 106px;
+        position: relative;
+        line-height: 1;
+        color: #2a2826;
+    }
+
+    .shop-page-wittchen .wittchen-filter > summary::after {
+        content: "";
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        width: 7px;
+        height: 7px;
+        border-right: 1px solid #595959;
+        border-bottom: 1px solid #595959;
+        transform: translateY(-65%) rotate(45deg);
+        transition: transform 0.18s ease;
+    }
+
+    .shop-page-wittchen .wittchen-filter[open] > summary {
+        border-color: #c9c9c9;
+        background: #fbfbfb;
+    }
+
+    .shop-page-wittchen .wittchen-filter[open] > summary::after {
+        transform: translateY(-35%) rotate(225deg);
+    }
+
+    .shop-page-wittchen .wittchen-filter > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .shop-page-wittchen .wittchen-filter-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        min-width: 210px;
+        max-height: 320px;
+        overflow: auto;
+        border: 1px solid #e1e1e1;
+        background: #fff;
+        z-index: 60;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+        padding: 5px 0;
+    }
+
+    .shop-page-wittchen .wittchen-filter:not([open]) .wittchen-filter-menu {
+        display: none;
+    }
+
+    .shop-page-wittchen .wittchen-filter-item {
+        display: block;
+        color: #2a2826;
+        text-decoration: none;
+        font-size: 11px;
+        padding: 9px 12px;
+        white-space: nowrap;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .shop-page-wittchen .wittchen-filter-item:last-child {
+        border-bottom: none;
+    }
+
+    .shop-page-wittchen .wittchen-filter-item:hover,
+    .shop-page-wittchen .wittchen-filter-item.is-active {
+        background: #f3f3f3;
+    }
+
+    .shop-page-wittchen .wittchen-reset {
+        color: #2a2826;
+        font-size: 11px;
+        text-decoration: underline;
+        margin-left: 6px;
+    }
+
+    .shop-page-wittchen .products-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px 14px;
+    }
+
+    .shop-page-wittchen .product-card {
+        border: none;
+        background: transparent;
+        box-shadow: none !important;
+        gap: 8px;
+        border-radius: 0;
+        overflow: visible;
+    }
+
+    .shop-page-wittchen .product-card:hover {
+        box-shadow: none !important;
+    }
+
+    .shop-page-wittchen .product-image {
+        aspect-ratio: 3 / 4 !important;
+        background: #f7f5f2;
+    }
+
+    .shop-page-wittchen .product-info {
+        text-align: left;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 0 8px 12px;
+        background: transparent;
+    }
+
+    .shop-page-wittchen .product-name {
+        font-size: 12px;
+        font-weight: 400;
+        min-height: 34px;
+        text-transform: none;
+        line-height: 1.35;
+    }
+
+    .shop-page-wittchen .product-price {
+        font-size: 20px;
+        line-height: 1.15;
+        font-weight: 600;
+    }
+
+    .shop-page-wittchen .product-price del {
+        font-size: 12px;
+        color: #8f8275;
+        margin-right: 6px;
+        font-weight: 400;
+    }
+
+    .shop-page-wittchen .product-price ins {
+        text-decoration: none;
+    }
+
+    @media (max-width: 1023px) {
+        .shop-page-wittchen .shop-container {
+            max-width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .shop-page-wittchen .shop-main {
+            max-width: 100%;
+        }
+
+        .shop-page-wittchen .products-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 767px) {
+        .shop-page.shop-page-wittchen {
+            padding-top: 10px;
+        }
+
+        .shop-page-wittchen .shop-breadcrumbs {
+            margin-top: 12px;
+            margin-bottom: 10px;
+        }
+
+        .shop-page-wittchen .shop-topbar {
+            margin-bottom: 10px;
+        }
+
+        .shop-page-wittchen .shop-hero-banner {
+            margin-bottom: 10px;
+            min-height: 136px;
+        }
+
+        .shop-page-wittchen .shop-hero-banner-content {
+            padding: 16px 14px;
+        }
+
+        .shop-page-wittchen .shop-hero-eyebrow {
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+
+        .shop-page-wittchen .shop-hero-title {
+            font-size: 1.35rem;
+            margin-bottom: 4px;
+        }
+
+        .shop-page-wittchen .shop-hero-subtitle {
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+        }
+
+        .shop-page-wittchen .shop-hero-copy {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .shop-page-wittchen .shop-hero-cta {
+            font-size: 11px;
+            padding: 8px 12px;
+        }
+
+        .shop-page-wittchen .wittchen-filters-row {
+            gap: 6px;
+            margin-bottom: 6px;
+            padding: 4px 0;
+        }
+
+        .shop-page-wittchen .wittchen-filter > summary {
+            min-width: 102px;
+            padding: 9px 24px 9px 10px;
+        }
+
+        .shop-page-wittchen .wittchen-filter-menu {
+            min-width: 180px;
+            max-width: 86vw;
+        }
+
+        .shop-page-wittchen .products-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px 10px;
+        }
+
+        .shop-page-wittchen .product-price {
+            font-size: 16px;
+        }
+
+        .shop-page-wittchen .product-heart {
+            opacity: 1;
+        }
+
+        .shop-page-wittchen .image-nav {
+            display: none !important;
+        }
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Filter Toggle (Mobile)
@@ -594,20 +1078,35 @@ document.addEventListener('DOMContentLoaded', function() {
         overlay.addEventListener('click', closeSidebar);
     }
     
-    // Sort Dropdown
-    const sortToggle = document.getElementById('sort-toggle');
-    const sortMenu = document.getElementById('sort-menu');
-    
-    if (sortToggle && sortMenu) {
-        sortToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            sortMenu.classList.toggle('open');
+    // Wittchen-like filter behavior: only one open at a time
+    const filterDetails = Array.from(document.querySelectorAll('.wittchen-filter'));
+    const closeOtherFilters = (current = null) => {
+        filterDetails.forEach((item) => {
+            if (item !== current) {
+                item.removeAttribute('open');
+            }
         });
-        
-        document.addEventListener('click', function() {
-            sortMenu.classList.remove('open');
+    };
+
+    filterDetails.forEach((detail) => {
+        detail.addEventListener('toggle', () => {
+            if (detail.open) {
+                closeOtherFilters(detail);
+            }
         });
-    }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.wittchen-filter')) {
+            closeOtherFilters();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeOtherFilters();
+        }
+    });
     
     // Image Gallery Navigation
     document.querySelectorAll('.product-card').forEach(card => {

@@ -15,10 +15,10 @@ if (empty($product) || !$product->is_visible()) {
 }
 ?>
 <li <?php wc_product_class('group relative', $product); ?>>
-    <div class="product-card bg-white">
+    <div class="product-card bg-white moretti-card-43">
         
         <!-- Product Image with Gallery Slider -->
-        <div class="relative overflow-hidden bg-gray-50 mb-3 product-image-slider" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+        <div class="relative overflow-hidden bg-gray-50 mb-3 product-image-slider moretti-card-media" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
             <?php
             // Get product gallery images
             $gallery_image_ids = $product->get_gallery_image_ids();
@@ -45,17 +45,17 @@ if (empty($product) || !$product->is_visible()) {
             $has_multiple_images = count($all_images) > 1;
             ?>
             
-            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper">
+            <a href="<?php the_permalink(); ?>" class="block slider-images-wrapper moretti-card-media-link" style="aspect-ratio: 3 / 4;">
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
                             <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile', false, array(
-                                'class' => 'w-full h-auto object-cover aspect-square group-hover:opacity-90 transition-opacity'
+                                'class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity'
                             )); ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <?php echo woocommerce_get_product_thumbnail('moretti_home_tile', array('class' => 'w-full h-auto object-cover aspect-square group-hover:opacity-90 transition-opacity')); ?>
+                    <?php echo woocommerce_get_product_thumbnail('moretti_home_tile', array('class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity')); ?>
                 <?php endif; ?>
             </a>
 
@@ -117,16 +117,16 @@ if (empty($product) || !$product->is_visible()) {
         </div>
 
         <!-- Product Info -->
-        <div class="product-info text-center">
+        <div class="product-info text-left">
             <!-- Product Title -->
-            <h2 class="text-xs md:text-sm font-bold text-charcoal mb-2 hover:text-taupe-600 transition-colors uppercase tracking-wider leading-snug">
+            <h2 class="text-xs md:text-sm font-medium text-charcoal mb-1 hover:text-taupe-600 transition-colors leading-snug">
                 <a href="<?php the_permalink(); ?>">
                     <?php the_title(); ?>
                 </a>
             </h2>
 
             <!-- Product Price -->
-            <div class="product-price text-sm md:text-base text-charcoal font-bold mb-3">
+            <div class="product-price text-sm md:text-base text-charcoal font-semibold mb-3">
                 <?php echo $product->get_price_html(); ?>
             </div>
 
