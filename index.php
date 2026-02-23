@@ -438,7 +438,8 @@ document.addEventListener('DOMContentLoaded', function() {
 #okazje .home-carousel-item .product-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 3 / 4 !important;
+    height: auto !important;
+    aspect-ratio: auto !important;
     overflow: hidden;
     background: #f7f5f2 !important;
 }
@@ -465,8 +466,8 @@ document.addEventListener('DOMContentLoaded', function() {
 #okazje .home-carousel-item .product-image img {
     display: block;
     width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+    height: auto !important;
+    object-fit: contain !important;
     background: #f7f5f2 !important;
 }
 
@@ -633,21 +634,22 @@ document.addEventListener('DOMContentLoaded', function() {
     background: #f7f5f2;
 }
 
-@media (max-width: 767px) {
-    /* Keep gender tiles visibly tall on mobile (single column stack). */
-    #home-gender-split-grid {
-        height: auto !important;
-    }
+    @media (max-width: 767px) {
+        /* Keep gender tiles visibly tall on mobile (single column stack). */
+        #home-gender-split-grid {
+            height: auto !important;
+        }
 
-    #home-gender-split-grid > div {
-        min-height: 280px;
-    }
+        #home-gender-split-grid > div {
+            min-height: 280px;
+        }
 
-    #nowosci .home-carousel-item .product-image,
-    #klasyki .home-carousel-item .product-image,
-    #okazje .home-carousel-item .product-image {
-        aspect-ratio: 3 / 4 !important;
-    }
+        #nowosci .home-carousel-item .product-image,
+        #klasyki .home-carousel-item .product-image,
+        #okazje .home-carousel-item .product-image {
+            height: auto !important;
+            aspect-ratio: auto !important;
+        }
 
     #nowosci .home-carousel-item .product-name,
     #klasyki .home-carousel-item .product-name,

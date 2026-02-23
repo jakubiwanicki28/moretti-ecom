@@ -549,7 +549,7 @@ $show_category_filter = $is_shop_root_view;
                                 $image_count = count($all_images);
                                 ?>
                                 
-                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
+                                    <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>">
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -910,8 +910,14 @@ $show_category_filter = $is_shop_root_view;
     }
 
     .shop-page-wittchen .product-image {
-        aspect-ratio: 3 / 4 !important;
+        height: auto !important;
+        aspect-ratio: auto !important;
         background: #f7f5f2;
+    }
+
+    .shop-page-wittchen .product-image img {
+        height: auto !important;
+        object-fit: contain !important;
     }
 
     .shop-page-wittchen .product-info {
