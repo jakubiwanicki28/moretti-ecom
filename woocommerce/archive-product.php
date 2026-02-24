@@ -900,7 +900,7 @@ $show_category_filter = $is_shop_root_view;
         border: none;
         background: transparent;
         box-shadow: none !important;
-        gap: 8px;
+        gap: 4px;
         border-radius: 0;
         overflow: visible;
     }
@@ -911,28 +911,30 @@ $show_category_filter = $is_shop_root_view;
 
     .shop-page-wittchen .product-image {
         aspect-ratio: 3 / 4 !important;
-        background: #f7f5f2;
+        background: #f7f5f2 !important;
     }
 
     .shop-page-wittchen .product-info {
         text-align: left;
         align-items: flex-start;
-        gap: 4px;
-        padding: 0 8px 12px;
+        gap: 0px;
+        padding: 10px 8px 12px;
         background: transparent;
     }
 
     .shop-page-wittchen .product-name {
-        font-size: 12px;
-        font-weight: 400;
-        min-height: 34px;
+        margin: 0 0 10px !important;
+        min-height: auto;
+        font-size: 12px !important;
+        line-height: 1.1;
+        font-weight: 700 !important;
         text-transform: none;
-        line-height: 1.35;
     }
 
     .shop-page-wittchen .product-price {
-        font-size: 20px;
-        line-height: 1.15;
+        margin: 0 !important;
+        font-size: 20px !important;
+        line-height: 1.0;
         font-weight: 600;
     }
 
