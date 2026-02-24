@@ -416,9 +416,10 @@ document.addEventListener('DOMContentLoaded', function() {
 #nowosci .home-carousel-item .product-card,
 #klasyki .home-carousel-item .product-card,
 #okazje .home-carousel-item .product-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    height: auto !important;
     gap: 4px;
     background: transparent !important;
     border-radius: 0 !important;

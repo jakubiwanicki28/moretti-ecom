@@ -903,6 +903,15 @@ $show_category_filter = $is_shop_root_view;
         gap: 4px;
         border-radius: 0;
         overflow: visible;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        height: auto !important;
+    }
+
+    .shop-page-wittchen .product-image-wrapper {
+        width: 100% !important;
+        flex-shrink: 0 !important;
     }
 
     .shop-page-wittchen .product-card:hover {
@@ -910,8 +919,17 @@ $show_category_filter = $is_shop_root_view;
     }
 
     .shop-page-wittchen .product-image {
+        position: relative !important;
         aspect-ratio: 3 / 4 !important;
         background: #f7f5f2 !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .shop-page-wittchen .product-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
     }
 
     .shop-page-wittchen .product-info {
