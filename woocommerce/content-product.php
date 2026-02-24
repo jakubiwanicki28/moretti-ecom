@@ -44,7 +44,9 @@ if ($is_home_carousel) :
                         <?php foreach ($all_images as $index => $image_id) : ?>
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <a href="<?php the_permalink(); ?>">
-                                    <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile'); ?>
+                                    <?php echo wp_get_attachment_image($image_id, 'large', false, array(
+                                        'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity',
+                                    )); ?>
                                 </a>
                             </div>
                         <?php endforeach; ?>
@@ -136,13 +138,13 @@ endif;
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
-                            <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile', false, array(
-                                'class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity'
+                            <?php echo wp_get_attachment_image($image_id, 'large', false, array(
+                                'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity'
                             )); ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <?php echo woocommerce_get_product_thumbnail('moretti_home_tile', array('class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity')); ?>
+                    <?php echo woocommerce_get_product_thumbnail('large', array('class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity')); ?>
                 <?php endif; ?>
             </a>
 

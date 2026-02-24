@@ -554,7 +554,7 @@ $show_category_filter = $is_shop_root_view;
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
                                                     <a href="<?php echo esc_url(get_permalink()); ?>">
-                                                        <?php echo wp_get_attachment_image($image_id, 'moretti_home_tile'); ?>
+                                                        <?php echo wp_get_attachment_image($image_id, 'large'); ?>
                                                     </a>
                                                 </div>
                                             <?php endforeach; ?>
@@ -929,7 +929,8 @@ $show_category_filter = $is_shop_root_view;
     .shop-page-wittchen .product-image img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
+        object-position: center center !important;
     }
 
     .shop-page-wittchen .product-info {
