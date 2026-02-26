@@ -219,6 +219,21 @@
             text-decoration: none;
         }
 
+        .moretti-header-action-link {
+            width: auto;
+            gap: 6px;
+            padding: 0 2px;
+        }
+
+        .moretti-header-action-label {
+            display: inline-block;
+            font-size: 12px;
+            line-height: 1;
+            letter-spacing: 0.01em;
+            color: #2a2826;
+            white-space: nowrap;
+        }
+
         .moretti-header-bottom {
             border-top: 1px solid #f1f1f1;
             border-bottom: 1px solid #f1f1f1;
@@ -340,6 +355,17 @@
 
             .moretti-logo-link .moretti-logo-text {
                 font-size: 20px !important;
+            }
+
+            .moretti-header-action-link {
+                width: 36px;
+                height: 36px;
+                gap: 0;
+                padding: 0;
+            }
+
+            .moretti-header-action-label {
+                display: none;
             }
         }
     </style>
@@ -526,17 +552,19 @@
 
             <div class="moretti-header-actions">
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', $shop_url)); ?>" class="moretti-header-icon wishlist-header-link" aria-label="Ulubione">
+                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', $shop_url)); ?>" class="moretti-header-icon moretti-header-action-link wishlist-header-link" aria-label="Schowek">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
+                        <span class="moretti-header-action-label">Schowek</span>
                         <span class="wishlist-count-header absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 hidden items-center justify-center rounded-full font-bold" data-wishlist-count>0</span>
                     </a>
 
-                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="moretti-header-icon" aria-label="Koszyk">
+                    <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="moretti-header-icon moretti-header-action-link" aria-label="Koszyk">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
+                        <span class="moretti-header-action-label">Koszyk</span>
                         <?php $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0; ?>
                         <?php if ($cart_count > 0) : ?>
                             <span class="absolute top-1 right-1 bg-charcoal text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"><?php echo (int) $cart_count; ?></span>
