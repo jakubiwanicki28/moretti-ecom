@@ -14,6 +14,8 @@ require_once get_template_directory() . '/inc/theme-setup-data.php';
 
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {
+    update_option('blogname', 'Moretti - Ekskluzywne Portfele Premium');
+    update_option('blogdescription', 'Ponadczasowa Elegancja i Rzemiosło');
     update_option('woocommerce_currency', 'PLN');
     update_option('woocommerce_default_country', 'PL');
     update_option('woocommerce_price_num_decimals', 2);

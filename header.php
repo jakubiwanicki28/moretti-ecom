@@ -10,6 +10,25 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- FAVICON & METADATA -->
+    <link rel="icon" type="image/png" href="<?php echo get_template_directory_uri(); ?>/images/favicon.png">
+    <link rel="apple-touch-icon" href="<?php echo get_template_directory_uri(); ?>/images/favicon.png">
+    <meta name="description" content="Moretti - Ekskluzywne portfele skórzane i akcesoria premium. Ponadczasowa elegancja, najwyższej jakości rzemiosło i dbałość o każdy detal. Darmowa dostawa od 250 zł.">
+    
+    <!-- SOCIAL MEDIA (OPEN GRAPH) -->
+    <meta property="og:title" content="Moretti - Ekskluzywne Portfele Premium">
+    <meta property="og:description" content="Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.">
+    <meta property="og:image" content="<?php echo get_template_directory_uri(); ?>/images/moretti-logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo home_url(); ?>">
+
+    <!-- TWITTER CARDS -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Moretti - Ekskluzywne Portfele Premium">
+    <meta name="twitter:description" content="Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.">
+    <meta name="twitter:image" content="<?php echo get_template_directory_uri(); ?>/images/moretti-logo.png">
+
     <?php wp_head(); ?>
     <style>
         /* MORETTI PREMIUM CONTROLS */
@@ -308,8 +327,19 @@
             }
 
             .moretti-logo {
-                font-size: 22px;
-                justify-self: center;
+                display: none;
+            }
+
+            .moretti-logo-link {
+                gap: 8px !important;
+            }
+
+            .moretti-logo-link img {
+                height: 30px !important;
+            }
+
+            .moretti-logo-link .moretti-logo-text {
+                font-size: 20px !important;
             }
         }
     </style>
@@ -470,13 +500,10 @@
             </div>
 
             <div>
-                <?php if (has_custom_logo()) : ?>
-                    <div class="moretti-logo-wrap"><?php the_custom_logo(); ?></div>
-                <?php else : ?>
-                    <a href="<?php echo esc_url(home_url('/')); ?>" class="moretti-logo">
-                        <?php echo esc_html(get_bloginfo('name')); ?>
-                    </a>
-                <?php endif; ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="moretti-logo-link flex items-center no-underline" style="gap: 10px; display: flex; align-items: center; text-decoration: none;">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/moretti-logo.png" alt="Moretti" style="height: 38px; width: auto; display: block;">
+                    <span class="moretti-logo-text" style="font-size: 24px; letter-spacing: 0.15em; font-weight: 700; text-transform: uppercase; color: #111; line-height: 1; white-space: nowrap; font-family: sans-serif;">MORETTI</span>
+                </a>
             </div>
 
             <form role="search" method="get" action="<?php echo esc_url($shop_url); ?>" class="moretti-header-search-form hidden md:block">
