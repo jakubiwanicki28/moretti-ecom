@@ -499,7 +499,7 @@ get_header(); ?>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                     </svg>
                                 </summary>
-                                <div class="mt-4 text-taupe-700 text-sm leading-relaxed">
+                                <div class="mt-4 text-taupe-700 text-sm leading-relaxed product-accordion-content">
                                     <?php the_content(); ?>
                                 </div>
                             </details>

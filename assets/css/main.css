@@ -2455,6 +2455,31 @@ h1, h2, h3, h4 {
   color: rgb(118 106 93 / var(--tw-text-opacity, 1));
 }
 
+/* Keep Woo editor formatting readable in product accordion content. */
+
+.product-accordion-content p + p {
+  margin-top: 1rem;
+}
+
+.product-accordion-content ul,
+.product-accordion-content ol {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.product-accordion-content ul {
+  list-style: disc;
+}
+
+.product-accordion-content ol {
+  list-style: decimal;
+}
+
+.product-accordion-content li + li {
+  margin-top: 0.25rem;
+}
+
 .woocommerce div.product form.cart {
   margin-bottom: 1.5rem;
   display: block !important;

@@ -769,6 +769,29 @@
     @apply pb-6 text-sm text-taupe-600 leading-relaxed;
   }
 
+  /* Keep Woo editor formatting readable in product accordion content. */
+  .product-accordion-content p + p {
+    @apply mt-4;
+  }
+
+  .product-accordion-content ul,
+  .product-accordion-content ol {
+    margin: 0.75rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .product-accordion-content ul {
+    list-style: disc;
+  }
+
+  .product-accordion-content ol {
+    list-style: decimal;
+  }
+
+  .product-accordion-content li + li {
+    margin-top: 0.25rem;
+  }
+
   .woocommerce div.product form.cart {
     @apply mb-6 block;
     display: block !important;
