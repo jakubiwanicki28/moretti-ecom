@@ -8,13 +8,21 @@
 defined('ABSPATH') || exit;
 
 global $product;
+$is_home_carousel = (bool) get_query_var('moretti_home_carousel', false);
 
-// Ensure visibility.
-if (empty($product) || !$product->is_visible()) {
+// Guarantee product object in custom loops (homepage uses WP_Query).
+if (empty($product) && get_the_ID()) {
+    $product = wc_get_product(get_the_ID());
+}
+
+if (empty($product)) {
     return;
 }
 
-$is_home_carousel = (bool) get_query_var('moretti_home_carousel', false);
+// Keep WooCommerce visibility rules outside homepage custom carousels.
+if (!$is_home_carousel && !$product->is_visible()) {
+    return;
+}
 
 if ($is_home_carousel) :
     $gallery_image_ids = $product->get_gallery_image_ids();

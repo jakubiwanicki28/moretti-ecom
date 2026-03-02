@@ -24,7 +24,6 @@ if (!function_exists('moretti_render_home_carousel_section')) {
 
         $loop = new WP_Query($query_args);
         ?>
-        <?php $rendered_items = 0; ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
             <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
                 <div class="flex justify-between items-end pb-4 border-b border-charcoal">
@@ -46,21 +45,13 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                         <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
                             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-                                <?php
-                                $loop_product = wc_get_product(get_the_ID());
-                                if (!$loop_product || !$loop_product->is_visible()) {
-                                    continue;
-                                }
-                                $rendered_items++;
-                                ?>
                                 <div class="home-carousel-item flex-shrink-0">
                                     <ul class="products list-none m-0 p-0">
                                         <?php wc_get_template_part('content', 'product'); ?>
                                     </ul>
                                 </div>
                             <?php endwhile; ?>
-                        <?php endif; ?>
-                        <?php if ($rendered_items === 0) : ?>
+                        <?php else : ?>
                             <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
                         <?php endif; ?>
                         <?php set_query_var('moretti_home_carousel', false); ?>
