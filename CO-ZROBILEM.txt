@@ -45,11 +45,11 @@ NOWA STOPKA MA 4 KOLUMNY:
 │  O NAS        │ KONTAKT      │ REGULAMIN    │ INFORMACJE   │
 │  ─────────────│──────────────│──────────────│──────────────│
 │               │              │              │              │
-│  Lorem ipsum  │ Kaletnicza   │ Regulamin    │ Koszty       │
-│  placeholder  │ Warszawa     │ Prywatność   │ Zwroty       │
-│  (do edycji)  │ Email        │ Cookies      │ Reklamacje   │
-│               │ WhatsApp     │              │              │
-│               │ Godziny      │              │              │
+│  O NAS       │ KONTAKT      │ REGULAMIN    │ INFORMACJE   │
+│ (Moretti...) │ (Email/Tel)  │ (Linki)      │ (Linki)      │
+│              │              │              │              │
+│              │              │              │              │
+│              │              │              │              │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 
@@ -80,8 +80,8 @@ Jest w systemie ale nie jest widoczna publicznie.
    ────────────────────────────────────
    Edytuj plik: footer.php
    Znajdź linie z:
-     EMAIL@MORETTI.PL → zamień na prawdziwy email
-     WhatsApp: [NUMER] → wstaw numer telefonu
+     hurtportfelland@gmail.com
+     (+48) 725 538 100
 
 
 3. ZMIEŃ LOREM IPSUM W "O NAS"

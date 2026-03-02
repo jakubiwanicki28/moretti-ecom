@@ -51,11 +51,9 @@ Data wdrożenia: **11 lutego 2026**
 #### **Kolumna 2: KONTAKT**
 - Tytuł: "KONTAKT"
 - Zawartość:
-  - ul. Kaletnicza 15
-  - 00-001 Warszawa, PL
-  - EMAIL@MORETTI.PL
-  - WhatsApp: [NUMER] ← **DO UZUPEŁNIENIA**
-  - PON - PT: 09:00 — 17:00
+  - hurtportfelland@gmail.com
+  - (+48) 725 538 100
+  - Instagram: morettigalanteria
 
 #### **Kolumna 3: REGULAMIN**
 - Tytuł: "REGULAMIN"
@@ -111,8 +109,8 @@ docker exec moretti-wordpress wp eval-file setup-footer-pages.php --allow-root
 
 Znajdź i zamień:
 ```html
-<p style="margin: 0 0 6px 0;">EMAIL@MORETTI.PL</p>
-<p style="margin: 0 0 6px 0;">WhatsApp: [NUMER]</p>
+<p style="margin: 0 0 6px 0;">hurtportfelland@gmail.com</p>
+<p style="margin: 0 0 6px 0;">TEL: (+48) 725 538 100</p>
 ```
 
 Na rzeczywiste dane:
