@@ -39,8 +39,8 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                 </div>
             </div>
 
-            <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem;">
-                <div class="relative overflow-hidden">
+            <div class="home-carousel-shell" style="width: 100%; padding-left: max(1rem, calc((100vw - 1180px) / 2 + 1rem)); padding-right: 0;">
+                <div class="home-carousel-viewport relative overflow-hidden">
                     <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 14px;">
                         <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
@@ -379,6 +379,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 /* ===== Homepage carousel consistency ===== */
+.home-carousel-shell {
+    overflow-x: hidden;
+    overflow-x: clip;
+}
+
+.home-carousel-viewport {
+    overflow: hidden;
+    padding-right: 1rem;
+}
+
+.home-carousel-track {
+    touch-action: pan-y;
+}
+
 #nowosci .home-carousel-item,
 #klasyki .home-carousel-item,
 #okazje .home-carousel-item {
@@ -819,6 +833,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     carousels.forEach((track) => {
         const section = track.closest('section');
+        const viewport = track.parentElement;
         const prev = section ? section.querySelector('.home-carousel-prev') : null;
         const next = section ? section.querySelector('.home-carousel-next') : null;
         const items = Array.from(track.children).filter((child) => child.classList.contains('home-carousel-item'));
@@ -835,9 +850,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let verticalDelta = 0;
         let isDragging = false;
         let gap = 14;
+        let wheelAccumulator = 0;
+        let wheelLocked = false;
         const swipeThreshold = 50;
+        const wheelThreshold = 30;
 
         const getVisibleItems = () => {
+            if (window.innerWidth >= 1920) return 6;
+            if (window.innerWidth >= 1600) return 5;
             if (window.innerWidth >= 1024) return 4;
             if (window.innerWidth >= 640) return 2;
             return 2;
@@ -876,6 +896,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         prev.addEventListener('click', movePrev);
         next.addEventListener('click', moveNext);
+
+        if (viewport) {
+            viewport.addEventListener('wheel', (event) => {
+                const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+                wheelAccumulator += dominantDelta;
+
+                if (Math.abs(wheelAccumulator) < wheelThreshold || wheelLocked) {
+                    return;
+                }
+
+                event.preventDefault();
+                wheelLocked = true;
+
+                if (wheelAccumulator > 0) {
+                    moveNext();
+                } else {
+                    movePrev();
+                }
+
+                wheelAccumulator = 0;
+                window.setTimeout(() => {
+                    wheelLocked = false;
+                }, 220);
+            }, { passive: false });
+        }
 
         const onDragStart = (clientX, clientY = 0) => {
             isDragging = true;
