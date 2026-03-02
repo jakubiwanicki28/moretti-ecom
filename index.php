@@ -387,10 +387,19 @@ document.addEventListener('DOMContentLoaded', function() {
 .home-carousel-viewport {
     overflow: hidden;
     padding-right: 1rem;
+    cursor: grab;
 }
 
 .home-carousel-track {
     touch-action: pan-y;
+}
+
+.home-carousel-viewport.is-dragging {
+    cursor: grabbing;
+}
+
+.home-carousel-item {
+    flex: 0 0 auto;
 }
 
 #nowosci .home-carousel-item,
@@ -838,12 +847,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const next = section ? section.querySelector('.home-carousel-next') : null;
         const items = Array.from(track.children).filter((child) => child.classList.contains('home-carousel-item'));
 
-        if (!prev || !next || items.length === 0) {
+        if (!prev || !next || !viewport || items.length === 0) {
             return;
         }
 
         let index = 0;
         let itemWidth = 0;
+        let step = 0;
+        let maxOffset = 0;
         let dragStartX = 0;
         let dragStartY = 0;
         let dragDelta = 0;
@@ -855,72 +866,111 @@ document.addEventListener('DOMContentLoaded', function() {
         const swipeThreshold = 50;
         const wheelThreshold = 30;
 
-        const getVisibleItems = () => {
-            if (window.innerWidth >= 1920) return 6;
-            if (window.innerWidth >= 1600) return 5;
-            if (window.innerWidth >= 1024) return 4;
-            if (window.innerWidth >= 640) return 2;
-            return 2;
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+        const getItemWidth = () => {
+            if (window.innerWidth >= 1800) return 320;
+            if (window.innerWidth >= 1440) return 300;
+            if (window.innerWidth >= 1200) return 280;
+            if (window.innerWidth >= 992) return 250;
+            if (window.innerWidth >= 768) return 220;
+            return 170;
         };
 
-        const getMaxIndex = () => Math.max(0, items.length - getVisibleItems());
+        const getGap = () => (window.innerWidth < 768 ? 10 : 14);
+
+        const getLastIndex = () => {
+            if (step <= 0) {
+                return 0;
+            }
+
+            return Math.ceil(maxOffset / step);
+        };
+
+        const syncArrows = () => {
+            const disabled = maxOffset <= 0;
+            prev.disabled = disabled;
+            next.disabled = disabled;
+            prev.style.opacity = disabled ? '0.35' : '1';
+            next.style.opacity = disabled ? '0.35' : '1';
+            prev.style.cursor = disabled ? 'not-allowed' : 'pointer';
+            next.style.cursor = disabled ? 'not-allowed' : 'pointer';
+        };
+
+        const applyTransformFromIndex = () => {
+            const lastIndex = getLastIndex();
+            index = clamp(index, 0, lastIndex);
+
+            const targetOffset = Math.min(index * step, maxOffset);
+            if (step > 0) {
+                index = Math.round(targetOffset / step);
+            }
+
+            track.style.transform = `translateX(-${targetOffset}px)`;
+        };
 
         const updateCarousel = () => {
-            const visibleItems = getVisibleItems();
-            const container = track.parentElement;
-            if (!container) return;
-            const computedGap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap || '14');
-            gap = Number.isNaN(computedGap) ? 14 : computedGap;
+            gap = getGap();
+            itemWidth = getItemWidth();
+            step = itemWidth + gap;
 
-            itemWidth = (container.offsetWidth - (gap * (visibleItems - 1))) / visibleItems;
+            track.style.gap = `${gap}px`;
             items.forEach((item) => {
                 item.style.width = `${itemWidth}px`;
             });
 
-            index = Math.min(index, getMaxIndex());
-            const offset = index * (itemWidth + gap);
-            track.style.transform = `translateX(-${offset}px)`;
+            const trackWidth = (items.length * step) - gap;
+            maxOffset = Math.max(0, trackWidth - viewport.offsetWidth);
+
+            applyTransformFromIndex();
+            syncArrows();
         };
 
         const moveNext = () => {
-            const maxIndex = getMaxIndex();
-            index = index < maxIndex ? index + 1 : 0;
-            updateCarousel();
+            if (maxOffset <= 0) {
+                return;
+            }
+
+            const currentOffset = Math.min(index * step, maxOffset);
+            index = currentOffset >= maxOffset - 1 ? 0 : index + 1;
+            applyTransformFromIndex();
         };
 
         const movePrev = () => {
-            const maxIndex = getMaxIndex();
-            index = index > 0 ? index - 1 : maxIndex;
-            updateCarousel();
+            if (maxOffset <= 0) {
+                return;
+            }
+
+            const currentOffset = Math.min(index * step, maxOffset);
+            index = currentOffset <= 1 ? getLastIndex() : index - 1;
+            applyTransformFromIndex();
         };
 
         prev.addEventListener('click', movePrev);
         next.addEventListener('click', moveNext);
 
-        if (viewport) {
-            viewport.addEventListener('wheel', (event) => {
-                const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-                wheelAccumulator += dominantDelta;
+        viewport.addEventListener('wheel', (event) => {
+            const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+            wheelAccumulator += dominantDelta;
 
-                if (Math.abs(wheelAccumulator) < wheelThreshold || wheelLocked) {
-                    return;
-                }
+            if (Math.abs(wheelAccumulator) < wheelThreshold || wheelLocked) {
+                return;
+            }
 
-                event.preventDefault();
-                wheelLocked = true;
+            event.preventDefault();
+            wheelLocked = true;
 
-                if (wheelAccumulator > 0) {
-                    moveNext();
-                } else {
-                    movePrev();
-                }
+            if (wheelAccumulator > 0) {
+                moveNext();
+            } else {
+                movePrev();
+            }
 
-                wheelAccumulator = 0;
-                window.setTimeout(() => {
-                    wheelLocked = false;
-                }, 220);
-            }, { passive: false });
-        }
+            wheelAccumulator = 0;
+            window.setTimeout(() => {
+                wheelLocked = false;
+            }, 220);
+        }, { passive: false });
 
         const onDragStart = (clientX, clientY = 0) => {
             isDragging = true;
@@ -928,6 +978,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dragStartY = clientY;
             dragDelta = 0;
             verticalDelta = 0;
+            viewport.classList.add('is-dragging');
         };
 
         const onDragMove = (clientX, clientY = 0) => {
@@ -939,8 +990,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const onDragEnd = () => {
             if (!isDragging) return;
             isDragging = false;
+            viewport.classList.remove('is-dragging');
 
-            if (Math.abs(dragDelta) >= swipeThreshold) {
+            if (Math.abs(dragDelta) >= swipeThreshold && Math.abs(dragDelta) > Math.abs(verticalDelta)) {
                 if (dragDelta < 0) {
                     moveNext();
                 } else {
