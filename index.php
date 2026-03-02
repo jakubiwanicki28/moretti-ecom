@@ -21,7 +21,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
 
         $query_args = array(
             'post_type'      => 'product',
-            'posts_per_page' => 10,
+            'posts_per_page' => 5,
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'product_cat',
@@ -281,8 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 </section>
 
-<!-- 5. KLASYKA I HITY -->
-<?php moretti_render_home_carousel_section('klasyki', 'KLASYKA I HITY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
+<!-- 5. BESTSELLERY -->
+<?php moretti_render_home_carousel_section('klasyki', 'BESTSELLERY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
 
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
