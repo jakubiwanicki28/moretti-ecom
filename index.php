@@ -10,9 +10,18 @@ if (!function_exists('moretti_render_home_carousel_section')) {
      * Render homepage product carousel section by WooCommerce category slug.
      */
     function moretti_render_home_carousel_section($section_id, $title, $category_slug, $section_classes = 'py-20 overflow-hidden bg-white') {
+        $category_term = get_term_by('slug', $category_slug, 'product_cat');
+        $category_url = get_permalink(wc_get_page_id('shop'));
+        if ($category_term && !is_wp_error($category_term)) {
+            $category_link = get_term_link($category_term);
+            if (!is_wp_error($category_link)) {
+                $category_url = $category_link;
+            }
+        }
+
         $query_args = array(
             'post_type'      => 'product',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'product_cat',
@@ -25,37 +34,27 @@ if (!function_exists('moretti_render_home_carousel_section')) {
         $loop = new WP_Query($query_args);
         ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
-            <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
-                <div class="flex justify-between items-end pb-4 border-b border-charcoal">
+            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem;">
+                <div class="flex justify-between items-end mb-6">
                     <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter"><?php echo esc_html($title); ?></h2>
-                    <div class="flex gap-4">
-                        <button class="home-carousel-prev w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all" aria-label="<?php echo esc_attr(sprintf('%s poprzednie', $title)); ?>">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <button class="home-carousel-next w-12 h-12 flex items-center justify-center border border-gray-200 hover:bg-charcoal hover:text-white transition-all" aria-label="<?php echo esc_attr(sprintf('%s następne', $title)); ?>">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path></svg>
-                        </button>
-                    </div>
+                    <a href="<?php echo esc_url($category_url); ?>" class="inline-flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] border border-charcoal text-charcoal px-4 py-2 hover:bg-charcoal hover:text-white transition-colors">
+                        Pokaż więcej
+                    </a>
                 </div>
-            </div>
-
-            <div class="home-carousel-shell" style="width: 100%; padding-left: max(1rem, calc((100vw - 1180px) / 2 + 1rem)); padding-right: 0;">
-                <div class="home-carousel-viewport relative overflow-hidden">
-                    <div class="home-carousel-track flex transition-transform duration-700 ease-in-out" style="gap: 14px;">
-                        <?php set_query_var('moretti_home_carousel', true); ?>
-                        <?php if ($loop->have_posts()) : ?>
-                            <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-                                <div class="home-carousel-item flex-shrink-0">
-                                    <ul class="products list-none m-0 p-0">
-                                        <?php wc_get_template_part('content', 'product'); ?>
-                                    </ul>
-                                </div>
-                            <?php endwhile; ?>
-                        <?php else : ?>
-                            <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
-                        <?php endif; ?>
-                        <?php set_query_var('moretti_home_carousel', false); ?>
-                    </div>
+                <div class="home-products-grid">
+                    <?php set_query_var('moretti_home_carousel', true); ?>
+                    <?php if ($loop->have_posts()) : ?>
+                        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+                            <div class="home-products-item">
+                                <ul class="products list-none m-0 p-0">
+                                    <?php wc_get_template_part('content', 'product'); ?>
+                                </ul>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else : ?>
+                        <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
+                    <?php endif; ?>
+                    <?php set_query_var('moretti_home_carousel', false); ?>
                 </div>
             </div>
         </section>
@@ -393,55 +392,26 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <style>
-/* ===== Homepage carousel consistency ===== */
-.home-carousel-shell {
-    overflow-x: hidden;
-    overflow-x: clip;
+/* ===== Homepage product sections (no carousel) ===== */
+.home-products-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px 14px;
 }
 
-.home-carousel-viewport {
-    overflow: hidden;
-    padding-right: 1rem;
-    cursor: grab;
-}
-
-.home-carousel-track {
-    touch-action: pan-y;
-}
-
-.home-carousel-viewport.is-dragging {
-    cursor: grabbing;
-}
-
-.home-carousel-item {
-    flex: 0 0 auto;
-}
-
-#nowosci .home-carousel-item,
-#klasyki .home-carousel-item,
-#okazje .home-carousel-item {
-    display: flex;
-}
-
-#nowosci .home-carousel-item .product,
-#klasyki .home-carousel-item .product,
-#okazje .home-carousel-item .product {
+.home-products-item .product {
     width: 100%;
     margin: 0 !important;
 }
 
-#nowosci .home-carousel-item ul.products,
-#klasyki .home-carousel-item ul.products,
-#okazje .home-carousel-item ul.products {
+.home-products-item ul.products {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-#nowosci .home-carousel-item ul.products li.product,
-#klasyki .home-carousel-item ul.products li.product,
-#okazje .home-carousel-item ul.products li.product {
+.home-products-item ul.products li.product {
     float: none !important;
     width: 100% !important;
     max-width: none !important;
@@ -451,9 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
     list-style: none !important;
 }
 
-#nowosci .home-carousel-item .product-card,
-#klasyki .home-carousel-item .product-card,
-#okazje .home-carousel-item .product-card {
+.home-products-item .product-card {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
@@ -465,16 +433,12 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: visible !important;
 }
 
-#nowosci .home-carousel-item .product-image-wrapper,
-#klasyki .home-carousel-item .product-image-wrapper,
-#okazje .home-carousel-item .product-image-wrapper {
+.home-products-item .product-image-wrapper {
     position: relative;
     width: 100%;
 }
 
-#nowosci .home-carousel-item .product-image,
-#klasyki .home-carousel-item .product-image,
-#okazje .home-carousel-item .product-image {
+.home-products-item .product-image {
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 4 !important;
@@ -482,9 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
     background: #f7f5f2 !important;
 }
 
-#nowosci .home-carousel-item .product-image-slide,
-#klasyki .home-carousel-item .product-image-slide,
-#okazje .home-carousel-item .product-image-slide {
+.home-products-item .product-image-slide {
     position: absolute;
     inset: 0;
     opacity: 0;
@@ -492,16 +454,12 @@ document.addEventListener('DOMContentLoaded', function() {
     pointer-events: none;
 }
 
-#nowosci .home-carousel-item .product-image-slide.active,
-#klasyki .home-carousel-item .product-image-slide.active,
-#okazje .home-carousel-item .product-image-slide.active {
+.home-products-item .product-image-slide.active {
     opacity: 1;
     pointer-events: auto;
 }
 
-#nowosci .home-carousel-item .product-image img,
-#klasyki .home-carousel-item .product-image img,
-#okazje .home-carousel-item .product-image img {
+.home-products-item .product-image img {
     display: block;
     width: 100% !important;
     height: 100% !important;
@@ -510,17 +468,13 @@ document.addEventListener('DOMContentLoaded', function() {
     background: #f7f5f2 !important;
 }
 
-#nowosci .home-carousel-item .product-image-slide > a,
-#klasyki .home-carousel-item .product-image-slide > a,
-#okazje .home-carousel-item .product-image-slide > a {
+.home-products-item .product-image-slide > a {
     display: block;
     width: 100%;
     height: 100%;
 }
 
-#nowosci .home-carousel-item .image-nav,
-#klasyki .home-carousel-item .image-nav,
-#okazje .home-carousel-item .image-nav {
+.home-products-item .image-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -538,27 +492,19 @@ document.addEventListener('DOMContentLoaded', function() {
     z-index: 2;
 }
 
-#nowosci .home-carousel-item .image-prev,
-#klasyki .home-carousel-item .image-prev,
-#okazje .home-carousel-item .image-prev {
+.home-products-item .image-prev {
     left: 8px;
 }
 
-#nowosci .home-carousel-item .image-next,
-#klasyki .home-carousel-item .image-next,
-#okazje .home-carousel-item .image-next {
+.home-products-item .image-next {
     right: 8px;
 }
 
-#nowosci .home-carousel-item .product-card:hover .image-nav,
-#klasyki .home-carousel-item .product-card:hover .image-nav,
-#okazje .home-carousel-item .product-card:hover .image-nav {
+.home-products-item .product-card:hover .image-nav {
     opacity: 1;
 }
 
-#nowosci .home-carousel-item .image-dots,
-#klasyki .home-carousel-item .image-dots,
-#okazje .home-carousel-item .image-dots {
+.home-products-item .image-dots {
     position: absolute;
     bottom: 12px;
     left: 50%;
@@ -570,15 +516,11 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: opacity 0.3s;
 }
 
-#nowosci .home-carousel-item .product-card:hover .image-dots,
-#klasyki .home-carousel-item .product-card:hover .image-dots,
-#okazje .home-carousel-item .product-card:hover .image-dots {
+.home-products-item .product-card:hover .image-dots {
     opacity: 1;
 }
 
-#nowosci .home-carousel-item .image-dot,
-#klasyki .home-carousel-item .image-dot,
-#okazje .home-carousel-item .image-dot {
+.home-products-item .image-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -587,17 +529,13 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: all 0.2s;
 }
 
-#nowosci .home-carousel-item .image-dot.active,
-#klasyki .home-carousel-item .image-dot.active,
-#okazje .home-carousel-item .image-dot.active {
+.home-products-item .image-dot.active {
     background: #ffffff;
     width: 20px;
     border-radius: 3px;
 }
 
-#nowosci .home-carousel-item .product-heart,
-#klasyki .home-carousel-item .product-heart,
-#okazje .home-carousel-item .product-heart {
+.home-products-item .product-heart {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -614,15 +552,11 @@ document.addEventListener('DOMContentLoaded', function() {
     z-index: 3;
 }
 
-#nowosci .home-carousel-item .product-card:hover .product-heart,
-#klasyki .home-carousel-item .product-card:hover .product-heart,
-#okazje .home-carousel-item .product-card:hover .product-heart {
+.home-products-item .product-card:hover .product-heart {
     opacity: 1;
 }
 
-#nowosci .home-carousel-item .product-info,
-#klasyki .home-carousel-item .product-info,
-#okazje .home-carousel-item .product-info {
+.home-products-item .product-info {
     padding: 10px 8px 12px !important;
     background: transparent !important;
     text-align: left !important;
@@ -630,9 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
     gap: 0px !important;
 }
 
-#nowosci .home-carousel-item .product-name,
-#klasyki .home-carousel-item .product-name,
-#okazje .home-carousel-item .product-name {
+.home-products-item .product-name {
     margin: 0 0 10px !important;
     min-height: auto;
     font-size: 12px !important;
@@ -641,28 +573,34 @@ document.addEventListener('DOMContentLoaded', function() {
     text-transform: none;
 }
 
-#nowosci .home-carousel-item .product-price,
-#klasyki .home-carousel-item .product-price,
-#okazje .home-carousel-item .product-price {
+.home-products-item .product-price {
     margin: 0 !important;
     font-size: 20px !important;
     line-height: 1.0;
     font-weight: 600;
 }
 
-#nowosci .home-carousel-item .product-price del,
-#klasyki .home-carousel-item .product-price del,
-#okazje .home-carousel-item .product-price del {
+.home-products-item .product-price del {
     font-size: 12px;
     color: #8f8275;
     margin-right: 6px;
     font-weight: 400;
 }
 
-#nowosci .home-carousel-item .product-price ins,
-#klasyki .home-carousel-item .product-price ins,
-#okazje .home-carousel-item .product-price ins {
+.home-products-item .product-price ins {
     text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+    .home-products-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .home-products-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 /* Featured product section image should also fit container height consistently */
@@ -683,33 +621,28 @@ document.addEventListener('DOMContentLoaded', function() {
         min-height: 280px;
     }
 
-    #nowosci .home-carousel-item .product-image,
-    #klasyki .home-carousel-item .product-image,
-    #okazje .home-carousel-item .product-image {
+    .home-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px 10px;
+    }
+
+    .home-products-item .product-image {
         aspect-ratio: 3 / 4 !important;
     }
 
-    #nowosci .home-carousel-item .product-name,
-    #klasyki .home-carousel-item .product-name,
-    #okazje .home-carousel-item .product-name {
+    .home-products-item .product-name {
         min-height: 30px;
     }
 
-    #nowosci .home-carousel-item .product-price,
-    #klasyki .home-carousel-item .product-price,
-    #okazje .home-carousel-item .product-price {
+    .home-products-item .product-price {
         font-size: 16px !important;
     }
 
-    #nowosci .home-carousel-item .image-nav,
-    #klasyki .home-carousel-item .image-nav,
-    #okazje .home-carousel-item .image-nav {
+    .home-products-item .image-nav {
         display: none !important;
     }
 
-    #nowosci .home-carousel-item .image-dots,
-    #klasyki .home-carousel-item .image-dots,
-    #okazje .home-carousel-item .image-dots {
+    .home-products-item .image-dots {
         opacity: 1 !important;
         bottom: 8px;
     }
