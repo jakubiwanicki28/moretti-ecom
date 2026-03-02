@@ -24,6 +24,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
 
         $loop = new WP_Query($query_args);
         ?>
+        <?php $rendered_items = 0; ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
             <div style="max-width: 1180px; margin: 0 auto; padding: 0 1rem; margin-bottom: 2.25rem;">
                 <div class="flex justify-between items-end pb-4 border-b border-charcoal">
@@ -45,13 +46,21 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                         <?php set_query_var('moretti_home_carousel', true); ?>
                         <?php if ($loop->have_posts()) : ?>
                             <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+                                <?php
+                                $loop_product = wc_get_product(get_the_ID());
+                                if (!$loop_product || !$loop_product->is_visible()) {
+                                    continue;
+                                }
+                                $rendered_items++;
+                                ?>
                                 <div class="home-carousel-item flex-shrink-0">
                                     <ul class="products list-none m-0 p-0">
                                         <?php wc_get_template_part('content', 'product'); ?>
                                     </ul>
                                 </div>
                             <?php endwhile; ?>
-                        <?php else : ?>
+                        <?php endif; ?>
+                        <?php if ($rendered_items === 0) : ?>
                             <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
                         <?php endif; ?>
                         <?php set_query_var('moretti_home_carousel', false); ?>
@@ -315,6 +324,10 @@ document.addEventListener('DOMContentLoaded', function() {
         $product_id = get_the_ID();
         $gallery_ids = $product->get_gallery_image_ids();
         $main_image_id = $product->get_image_id();
+        $featured_placeholder_src = wc_placeholder_img_src();
+        if (empty($featured_placeholder_src)) {
+            $featured_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
+        }
         
         // Combine main image + gallery and keep only images that resolve to valid URLs.
         $all_images = array_values(array_unique(array_filter(array_map('absint', array_merge(array($main_image_id), $gallery_ids)))));
@@ -342,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <?php endforeach; ?>
                     <?php else : ?>
                         <div class="slider-image" data-index="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease; overflow: hidden;">
-                            <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" style="width: 100%; height: 100%; object-fit: contain; background: #f7f5f2;" alt="<?php echo esc_attr(get_the_title()); ?>">
+                            <img src="<?php echo esc_url($featured_placeholder_src); ?>" style="width: 100%; height: 100%; object-fit: contain; background: #f7f5f2;" alt="<?php echo esc_attr(get_the_title()); ?>">
                         </div>
                     <?php endif; ?>
                 </div>

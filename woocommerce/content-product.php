@@ -20,6 +20,10 @@ if ($is_home_carousel) :
     $gallery_image_ids = $product->get_gallery_image_ids();
     $main_image_id = $product->get_image_id();
     $homepage_first_image_id = moretti_get_product_homepage_carousel_image_id($product->get_id());
+    $home_placeholder_src = wc_placeholder_img_src();
+    if (empty($home_placeholder_src)) {
+        $home_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
+    }
 
     // Keep homepage-selected lead image while using shop card mechanics.
     $all_images = array();
@@ -79,7 +83,7 @@ if ($is_home_carousel) :
                         <div class="product-image-slide active" data-index="0">
                             <a href="<?php the_permalink(); ?>">
                                 <img
-                                    src="<?php echo esc_url(wc_placeholder_img_src()); ?>"
+                                    src="<?php echo esc_url($home_placeholder_src); ?>"
                                     alt="<?php echo esc_attr(get_the_title()); ?>"
                                     class="w-full h-full object-contain group-hover:opacity-90 transition-opacity"
                                 >
