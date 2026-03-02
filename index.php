@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <!-- 5. KLASYKA I HITY -->
-<?php moretti_render_home_carousel_section('klasyki', 'KLASYKA I HITY', 'klasyka-i-hity', 'py-20 overflow-hidden bg-white'); ?>
+<?php moretti_render_home_carousel_section('klasyki', 'KLASYKA I HITY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
 
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
