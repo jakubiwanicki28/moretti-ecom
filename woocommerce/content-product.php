@@ -33,7 +33,13 @@ if ($is_home_carousel) :
         $all_images = array_merge($all_images, $gallery_image_ids);
     }
     $all_images = array_values(array_unique(array_filter(array_map('absint', $all_images))));
-    $image_count = count($all_images);
+    $valid_image_ids = array();
+    foreach ($all_images as $candidate_image_id) {
+        if (wp_get_attachment_image_url($candidate_image_id, 'large')) {
+            $valid_image_ids[] = $candidate_image_id;
+        }
+    }
+    $image_count = count($valid_image_ids);
     $has_gallery = $image_count > 1;
     ?>
     <li <?php wc_product_class('group relative', $product); ?>>
@@ -41,7 +47,7 @@ if ($is_home_carousel) :
             <div class="product-image-wrapper">
                 <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                     <?php if ($image_count > 0) : ?>
-                        <?php foreach ($all_images as $index => $image_id) : ?>
+                        <?php foreach ($valid_image_ids as $index => $image_id) : ?>
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <a href="<?php the_permalink(); ?>">
                                     <?php echo wp_get_attachment_image($image_id, 'large', false, array(
@@ -69,22 +75,28 @@ if ($is_home_carousel) :
                             </div>
                         <?php endif; ?>
 
-                        <button
-                            type="button"
-                            class="wishlist-toggle image-wishlist product-heart"
-                            data-product-id="<?php echo esc_attr($product->get_id()); ?>"
-                            aria-label="Dodaj do ulubionych"
-                            aria-pressed="false"
-                        >
-                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
                     <?php else : ?>
-                        <a href="<?php the_permalink(); ?>">
-                            <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" alt="Placeholder">
-                        </a>
+                        <div class="product-image-slide active" data-index="0">
+                            <a href="<?php the_permalink(); ?>">
+                                <img
+                                    src="<?php echo esc_url(wc_placeholder_img_src('woocommerce_single')); ?>"
+                                    alt="<?php echo esc_attr(get_the_title()); ?>"
+                                    class="w-full h-full object-contain group-hover:opacity-90 transition-opacity"
+                                >
+                            </a>
+                        </div>
                     <?php endif; ?>
+                    <button
+                        type="button"
+                        class="wishlist-toggle image-wishlist product-heart"
+                        data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                        aria-label="Dodaj do ulubionych"
+                        aria-pressed="false"
+                    >
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
 

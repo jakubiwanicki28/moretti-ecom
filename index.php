@@ -316,24 +316,35 @@ document.addEventListener('DOMContentLoaded', function() {
         $gallery_ids = $product->get_gallery_image_ids();
         $main_image_id = $product->get_image_id();
         
-        // Combine main image + gallery
-        $all_images = array_filter(array_merge(array($main_image_id), $gallery_ids));
+        // Combine main image + gallery and keep only images that resolve to valid URLs.
+        $all_images = array_values(array_unique(array_filter(array_map('absint', array_merge(array($main_image_id), $gallery_ids)))));
+        $slider_images = array();
+        foreach ($all_images as $image_id) {
+            if (wp_get_attachment_image_url($image_id, 'large')) {
+                $slider_images[] = $image_id;
+            }
+        }
         // Limit to 3 images for the slider
-        $slider_images = array_slice($all_images, 0, 3);
+        $slider_images = array_slice($slider_images, 0, 3);
     ?>
     <div id="home-featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         <!-- Image Slider Column -->
         <div id="home-featured-media-col" style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
             <div id="featured-slider" style="position: relative; width: 100%; max-width: 600px; height: 550px; overflow: visible;">
                 <div style="height: 100%; position: relative;">
-                    <?php foreach ($slider_images as $index => $image_id) : 
-                        $image_url = wp_get_attachment_image_url($image_id, 'large');
-                        if (!$image_url) continue;
-                    ?>
-                        <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease; overflow: hidden;">
-                            <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php the_title(); ?>">
+                    <?php if (!empty($slider_images)) : ?>
+                        <?php foreach ($slider_images as $index => $image_id) :
+                            $image_url = wp_get_attachment_image_url($image_id, 'large');
+                        ?>
+                            <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease; overflow: hidden;">
+                                <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php the_title(); ?>">
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <div class="slider-image" data-index="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease; overflow: hidden;">
+                            <img src="<?php echo esc_url(wc_placeholder_img_src('woocommerce_single')); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php echo esc_attr(get_the_title()); ?>">
                         </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
 
                 <?php if (count($slider_images) > 1) : ?>
