@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <?php endforeach; ?>
                     <?php else : ?>
                         <div class="slider-image" data-index="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease; overflow: hidden;">
-                            <img src="<?php echo esc_url(wc_placeholder_img_src('woocommerce_single')); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php echo esc_attr(get_the_title()); ?>">
+                            <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" style="width: 100%; height: 100%; object-fit: contain; background: #f7f5f2;" alt="<?php echo esc_attr(get_the_title()); ?>">
                         </div>
                     <?php endif; ?>
                 </div>
@@ -501,7 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
     display: block;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
+    object-position: center center !important;
     background: #f7f5f2 !important;
 }
 

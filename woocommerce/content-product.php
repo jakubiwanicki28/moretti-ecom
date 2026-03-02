@@ -79,7 +79,7 @@ if ($is_home_carousel) :
                         <div class="product-image-slide active" data-index="0">
                             <a href="<?php the_permalink(); ?>">
                                 <img
-                                    src="<?php echo esc_url(wc_placeholder_img_src('woocommerce_single')); ?>"
+                                    src="<?php echo esc_url(wc_placeholder_img_src()); ?>"
                                     alt="<?php echo esc_attr(get_the_title()); ?>"
                                     class="w-full h-full object-contain group-hover:opacity-90 transition-opacity"
                                 >
