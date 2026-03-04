@@ -434,7 +434,11 @@
         return null;
     };
 
-    $build_header_panel_data = static function($term) {
+    $header_color_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
+        ? moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'), '', 'color')
+        : 'pa_color';
+
+    $build_header_panel_data = static function($term) use ($header_color_taxonomy) {
         $result = array(
             'categories' => array(),
             'colors' => array(),
@@ -460,18 +464,14 @@
             return $result;
         }
 
-        foreach (array('pa_color', 'pa_kolor', 'pa_colour') as $color_taxonomy) {
-            if (!taxonomy_exists($color_taxonomy)) {
-                continue;
-            }
-            $colors = wp_get_object_terms($product_ids, $color_taxonomy, array(
+        if ($header_color_taxonomy && taxonomy_exists($header_color_taxonomy)) {
+            $colors = wp_get_object_terms($product_ids, $header_color_taxonomy, array(
                 'hide_empty' => true,
                 'orderby' => 'name',
                 'order' => 'ASC',
             ));
             if (!is_wp_error($colors) && !empty($colors)) {
                 $result['colors'] = array_slice($colors, 0, 10);
-                break;
             }
         }
 

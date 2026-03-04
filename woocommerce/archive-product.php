@@ -10,44 +10,22 @@ defined('ABSPATH') || exit;
 
 get_header();
 
-/**
- * Resolve attribute taxonomy slug defensively.
- * Supports legacy imports where attribute names changed (e.g. color vs kolor).
- */
-$moretti_resolve_attribute_taxonomy = static function (array $candidates) {
-    foreach ($candidates as $taxonomy) {
-        if (taxonomy_exists($taxonomy)) {
-            return $taxonomy;
-        }
-    }
-    // Fallback: resolve from WooCommerce attribute registry by attribute name.
-    if (function_exists('wc_get_attribute_taxonomies') && function_exists('wc_attribute_taxonomy_name')) {
-        $attribute_taxonomies = wc_get_attribute_taxonomies();
-        if (!empty($attribute_taxonomies) && !is_wp_error($attribute_taxonomies)) {
-            foreach ($attribute_taxonomies as $attribute_taxonomy) {
-                if (empty($attribute_taxonomy->attribute_name)) {
-                    continue;
-                }
-                $candidate_name = sanitize_title($attribute_taxonomy->attribute_name);
-                foreach ($candidates as $candidate) {
-                    $candidate_name_only = sanitize_title(str_replace('pa_', '', $candidate));
-                    if ($candidate_name === $candidate_name_only) {
-                        $resolved = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
-                        if (taxonomy_exists($resolved)) {
-                            return $resolved;
-                        }
-                    }
-                }
-            }
-        }
-    }
+$requested_color_slug = '';
+if (isset($_GET['filter_color'])) {
+    $requested_color_slug = sanitize_title(wp_unslash($_GET['filter_color']));
+} elseif (isset($_GET['filter_kolor'])) {
+    $requested_color_slug = sanitize_title(wp_unslash($_GET['filter_kolor']));
+}
 
-    return '';
-};
-
-$color_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'));
-$material_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materials', 'pa_materiaal'));
-$size_taxonomy = $moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'));
+$color_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
+    ? moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'), $requested_color_slug, 'color')
+    : 'pa_color';
+$material_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
+    ? moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materials', 'pa_materiaal'), '', 'material')
+    : 'pa_material';
+$size_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
+    ? moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'), '', 'wielkosc')
+    : 'pa_wielkosc';
 
 $moretti_get_filter_terms = static function ($taxonomy) {
     if (!$taxonomy || !taxonomy_exists($taxonomy)) {
@@ -69,17 +47,36 @@ $moretti_get_filter_terms = static function ($taxonomy) {
     return is_wp_error($terms) ? array() : $terms;
 };
 
-$selected_color = '';
-if (isset($_GET['filter_color'])) {
-    $selected_color = sanitize_title(wp_unslash($_GET['filter_color']));
-} elseif (isset($_GET['filter_kolor'])) {
-    // Backward compatibility for old query parameter.
-    $selected_color = sanitize_title(wp_unslash($_GET['filter_kolor']));
-}
+$selected_color = $requested_color_slug;
 
 $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
+$selected_color_label = $selected_color;
+if ($selected_color !== '') {
+    $color_taxonomies_for_lookup = array_values(array_unique(array_filter(array(
+        $color_taxonomy,
+        'pa_color',
+        'pa_kolor',
+        'pa_colour',
+    ))));
+
+    foreach ($color_taxonomies_for_lookup as $lookup_taxonomy) {
+        if (!taxonomy_exists($lookup_taxonomy)) {
+            continue;
+        }
+        $selected_color_term = get_term_by('slug', $selected_color, $lookup_taxonomy);
+        if ($selected_color_term && !is_wp_error($selected_color_term) && !empty($selected_color_term->name)) {
+            $selected_color_label = $selected_color_term->name;
+            break;
+        }
+    }
+
+    if ($selected_color_label === $selected_color) {
+        // Final safety fallback: avoid displaying raw slug in UI.
+        $selected_color_label = ucwords(str_replace('-', ' ', $selected_color));
+    }
+}
 
 // On category archive pages, hide/disable category-level extra filter layer.
 if (is_product_category()) {
@@ -457,7 +454,7 @@ $show_category_filter = $is_shop_root_view;
                 if (!empty($colors)) :
                 ?>
                     <details class="wittchen-filter">
-                        <summary>Kolor<?php echo $selected_color !== '' ? ': ' . esc_html($selected_color) : ''; ?></summary>
+                        <summary>Kolor<?php echo $selected_color !== '' ? ': ' . esc_html($selected_color_label) : ''; ?></summary>
                         <div class="wittchen-filter-menu">
                             <?php foreach ($colors as $color) : ?>
                                 <?php $is_active = ($selected_color === $color->slug); ?>

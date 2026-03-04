@@ -136,6 +136,82 @@ function moretti_default_menu() {
     echo '</ul>';
 }
 
+/**
+ * Resolve active WooCommerce attribute taxonomy with safe fallbacks.
+ *
+ * @param array  $candidates            Candidate taxonomy slugs (e.g. pa_color, pa_kolor).
+ * @param string $preferred_term_slug   Optional selected term slug from URL.
+ * @param string $preferred_attr_name   Optional Woo attribute name (without pa_ prefix), e.g. color.
+ * @return string
+ */
+function moretti_resolve_attribute_taxonomy(array $candidates, $preferred_term_slug = '', $preferred_attr_name = '') {
+    $resolved_taxonomies = array();
+
+    // Canonical Woo attribute taxonomy (if known) should always be preferred first.
+    if (
+        $preferred_attr_name !== '' &&
+        function_exists('wc_attribute_taxonomy_name')
+    ) {
+        $canonical_taxonomy = wc_attribute_taxonomy_name(sanitize_title($preferred_attr_name));
+        if ($canonical_taxonomy && taxonomy_exists($canonical_taxonomy)) {
+            $resolved_taxonomies[] = $canonical_taxonomy;
+        }
+    }
+
+    foreach ($candidates as $taxonomy) {
+        if (taxonomy_exists($taxonomy)) {
+            $resolved_taxonomies[] = $taxonomy;
+        }
+    }
+
+    // Fallback by matching candidate names against Woo attribute registry.
+    if (function_exists('wc_get_attribute_taxonomies') && function_exists('wc_attribute_taxonomy_name')) {
+        $attribute_taxonomies = wc_get_attribute_taxonomies();
+        if (!empty($attribute_taxonomies) && !is_wp_error($attribute_taxonomies)) {
+            foreach ($attribute_taxonomies as $attribute_taxonomy) {
+                if (empty($attribute_taxonomy->attribute_name)) {
+                    continue;
+                }
+                $attribute_name = sanitize_title($attribute_taxonomy->attribute_name);
+                foreach ($candidates as $candidate) {
+                    $candidate_name = sanitize_title(str_replace('pa_', '', $candidate));
+                    if ($attribute_name === $candidate_name) {
+                        $resolved = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
+                        if (taxonomy_exists($resolved)) {
+                            $resolved_taxonomies[] = $resolved;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $resolved_taxonomies = array_values(array_unique(array_filter($resolved_taxonomies)));
+    if (empty($resolved_taxonomies)) {
+        return '';
+    }
+
+    if ($preferred_term_slug !== '') {
+        $matched_taxonomy = '';
+        $matched_count = -1;
+        foreach ($resolved_taxonomies as $taxonomy) {
+            $matched_term = get_term_by('slug', $preferred_term_slug, $taxonomy);
+            if ($matched_term && !is_wp_error($matched_term)) {
+                $term_count = isset($matched_term->count) ? (int) $matched_term->count : 0;
+                if ($term_count > $matched_count) {
+                    $matched_count = $term_count;
+                    $matched_taxonomy = $taxonomy;
+                }
+            }
+        }
+        if ($matched_taxonomy !== '') {
+            return $matched_taxonomy;
+        }
+    }
+
+    return $resolved_taxonomies[0];
+}
+
 // Helper function to get hex color from name
 function moretti_get_color_hex($color_name) {
     $color_name = strtolower($color_name);
