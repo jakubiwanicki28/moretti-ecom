@@ -52,6 +52,43 @@ $selected_color = $requested_color_slug;
 $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
+
+$moretti_current_query_args = array();
+if ($selected_color !== '') {
+    $moretti_current_query_args['filter_color'] = $selected_color;
+}
+if ($selected_material !== '') {
+    $moretti_current_query_args['filter_material'] = $selected_material;
+}
+if ($selected_size !== '') {
+    $moretti_current_query_args['filter_size'] = $selected_size;
+}
+if (isset($_GET['min_price']) && $_GET['min_price'] !== '') {
+    $moretti_current_query_args['min_price'] = sanitize_text_field(wp_unslash($_GET['min_price']));
+}
+if (isset($_GET['max_price']) && $_GET['max_price'] !== '') {
+    $moretti_current_query_args['max_price'] = sanitize_text_field(wp_unslash($_GET['max_price']));
+}
+if (isset($_GET['orderby']) && $_GET['orderby'] !== '') {
+    $moretti_current_query_args['orderby'] = sanitize_text_field(wp_unslash($_GET['orderby']));
+}
+if ($is_wishlist_view) {
+    $moretti_current_query_args['wishlist'] = '1';
+}
+
+$moretti_build_shop_url = static function ($overrides = array()) use ($moretti_current_query_args) {
+    $args = array_merge($moretti_current_query_args, $overrides);
+
+    foreach ($args as $key => $value) {
+        if ($value === false || $value === null || $value === '') {
+            unset($args[$key]);
+        }
+    }
+
+    $base_url = remove_query_arg(array_keys($moretti_current_query_args), get_pagenum_link(1));
+    return !empty($args) ? add_query_arg($args, $base_url) : $base_url;
+};
+
 $selected_color_label = $selected_color;
 if ($selected_color !== '') {
     $color_taxonomies_for_lookup = array_values(array_unique(array_filter(array(
@@ -277,7 +314,7 @@ $show_category_filter = $is_shop_root_view;
                     <?php foreach ($colors as $color) : 
                         $is_active = ($selected_color === $color->slug);
                     ?>
-                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'paged'))) : esc_url(add_query_arg(array('filter_color' => $color->slug, 'paged' => false))); ?>" 
+                        <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false))) : esc_url($moretti_build_shop_url(array('filter_color' => $color->slug, 'filter_kolor' => false))); ?>" 
                            class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
                             <?php echo esc_html($color->name); ?>
                         </a>
@@ -302,7 +339,7 @@ $show_category_filter = $is_shop_root_view;
                     <?php foreach ($materials as $material) :
                         $is_active = ($selected_material === $material->slug);
                     ?>
-                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_material', 'paged'))) : esc_url(add_query_arg(array('filter_material' => $material->slug, 'paged' => false))); ?>" 
+                        <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_material' => false))) : esc_url($moretti_build_shop_url(array('filter_material' => $material->slug))); ?>" 
                            class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
                             <?php echo esc_html($material->name); ?>
                         </a>
@@ -327,7 +364,7 @@ $show_category_filter = $is_shop_root_view;
                     <?php foreach ($sizes as $size) :
                         $is_active = ($selected_size === $size->slug);
                     ?>
-                        <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_size', 'paged'))) : esc_url(add_query_arg(array('filter_size' => $size->slug, 'paged' => false))); ?>" 
+                        <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_size' => false))) : esc_url($moretti_build_shop_url(array('filter_size' => $size->slug))); ?>" 
                            class="size-option <?php echo $is_active ? 'active' : ''; ?>">
                             <?php echo esc_html($size->name); ?>
                         </a>
@@ -344,7 +381,7 @@ $show_category_filter = $is_shop_root_view;
                     </svg>
                     Cena (PLN)
                 </h3>
-                <form method="get" class="price-form">
+                <form method="get" action="<?php echo esc_url(get_pagenum_link(1)); ?>" class="price-form">
                     <?php if ($selected_color !== '') : ?>
                         <input type="hidden" name="filter_color" value="<?php echo esc_attr($selected_color); ?>">
                     <?php endif; ?>
@@ -371,7 +408,7 @@ $show_category_filter = $is_shop_root_view;
             <!-- Clear Filters -->
             <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
             <div class="sidebar-block">
-                <a href="<?php echo esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'filter_material', 'filter_size', 'min_price', 'max_price', 'paged'))); ?>" class="clear-all-btn">
+                <a href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'min_price' => false, 'max_price' => false))); ?>" class="clear-all-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -442,7 +479,7 @@ $show_category_filter = $is_shop_root_view;
                     <summary>Sortuj</summary>
                     <div class="wittchen-filter-menu">
                         <?php foreach ($sort_options as $key => $label) : ?>
-                            <a href="<?php echo esc_url(add_query_arg(array('orderby' => $key, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $orderby === $key ? 'is-active' : ''; ?>">
+                            <a href="<?php echo esc_url($moretti_build_shop_url(array('orderby' => $key))); ?>" class="wittchen-filter-item <?php echo $orderby === $key ? 'is-active' : ''; ?>">
                                 <?php echo esc_html($label); ?>
                             </a>
                         <?php endforeach; ?>
@@ -458,7 +495,7 @@ $show_category_filter = $is_shop_root_view;
                         <div class="wittchen-filter-menu">
                             <?php foreach ($colors as $color) : ?>
                                 <?php $is_active = ($selected_color === $color->slug); ?>
-                                <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'paged'))) : esc_url(add_query_arg(array('filter_color' => $color->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false))) : esc_url($moretti_build_shop_url(array('filter_color' => $color->slug, 'filter_kolor' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
                                     <?php echo esc_html($color->name); ?>
                                 </a>
                             <?php endforeach; ?>
@@ -475,7 +512,7 @@ $show_category_filter = $is_shop_root_view;
                         <div class="wittchen-filter-menu">
                             <?php foreach ($materials as $material) : ?>
                                 <?php $is_active = ($selected_material === $material->slug); ?>
-                                <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_material', 'paged'))) : esc_url(add_query_arg(array('filter_material' => $material->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_material' => false))) : esc_url($moretti_build_shop_url(array('filter_material' => $material->slug))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
                                     <?php echo esc_html($material->name); ?>
                                 </a>
                             <?php endforeach; ?>
@@ -493,7 +530,7 @@ $show_category_filter = $is_shop_root_view;
                             <div class="wittchen-filter-menu">
                                 <?php foreach ($sizes as $size) : ?>
                                     <?php $is_active = ($selected_size === $size->slug); ?>
-                                    <a href="<?php echo $is_active ? esc_url(remove_query_arg(array('filter_size', 'paged'))) : esc_url(add_query_arg(array('filter_size' => $size->slug, 'paged' => false))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
+                                    <a href="<?php echo $is_active ? esc_url($moretti_build_shop_url(array('filter_size' => false))) : esc_url($moretti_build_shop_url(array('filter_size' => $size->slug))); ?>" class="wittchen-filter-item <?php echo $is_active ? 'is-active' : ''; ?>">
                                         <?php echo esc_html($size->name); ?>
                                     </a>
                                 <?php endforeach; ?>
@@ -507,14 +544,14 @@ $show_category_filter = $is_shop_root_view;
                 <details class="wittchen-filter">
                     <summary>Cena</summary>
                     <div class="wittchen-filter-menu">
-                        <a href="<?php echo esc_url(add_query_arg(array('max_price' => 200, 'min_price' => false, 'paged' => false))); ?>" class="wittchen-filter-item">Do 200 zł</a>
-                        <a href="<?php echo esc_url(add_query_arg(array('min_price' => 200, 'max_price' => 500, 'paged' => false))); ?>" class="wittchen-filter-item">200-500 zł</a>
-                        <a href="<?php echo esc_url(add_query_arg(array('min_price' => 500, 'max_price' => false, 'paged' => false))); ?>" class="wittchen-filter-item">Powyżej 500 zł</a>
+                        <a href="<?php echo esc_url($moretti_build_shop_url(array('max_price' => 200, 'min_price' => false))); ?>" class="wittchen-filter-item">Do 200 zł</a>
+                        <a href="<?php echo esc_url($moretti_build_shop_url(array('min_price' => 200, 'max_price' => 500))); ?>" class="wittchen-filter-item">200-500 zł</a>
+                        <a href="<?php echo esc_url($moretti_build_shop_url(array('min_price' => 500, 'max_price' => false))); ?>" class="wittchen-filter-item">Powyżej 500 zł</a>
                     </div>
                 </details>
 
                 <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
-                    <a class="wittchen-reset" href="<?php echo esc_url(remove_query_arg(array('filter_color', 'filter_kolor', 'filter_material', 'filter_size', 'min_price', 'max_price', 'paged'))); ?>">
+                    <a class="wittchen-reset" href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'min_price' => false, 'max_price' => false))); ?>">
                         Wyczyść filtry
                     </a>
                 <?php endif; ?>
