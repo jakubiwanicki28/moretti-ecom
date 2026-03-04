@@ -218,10 +218,12 @@ endif;
 
             <!-- Quick Add Button - Bottom Right -->
             <button 
-                class="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center bg-white text-charcoal hover:bg-charcoal hover:text-white transition-all rounded-full shadow-md opacity-0 group-hover:opacity-100"
+                class="add_to_cart_button ajax_add_to_cart absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center bg-white text-charcoal hover:bg-charcoal hover:text-white transition-all rounded-full shadow-md opacity-0 group-hover:opacity-100"
                 aria-label="Quick add to cart"
                 data-product-id="<?php echo esc_attr($product->get_id()); ?>"
-                onclick="morettiQuickAddToCart(<?php echo esc_js($product->get_id()); ?>); event.preventDefault();"
+                data-product-type="<?php echo esc_attr($product->get_type()); ?>"
+                data-product-url="<?php echo esc_url($product->get_permalink()); ?>"
+                onclick="morettiQuickAddToCart(<?php echo esc_js($product->get_id()); ?>, this); event.preventDefault();"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

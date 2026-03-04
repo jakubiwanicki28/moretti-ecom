@@ -248,54 +248,20 @@ function moretti_enqueue_assets() {
         true
     );
 
-    // Add inline script for AJAX
+    $wc_ajax_url = '';
+    if (class_exists('WC_AJAX')) {
+        $wc_ajax_url = WC_AJAX::get_endpoint('%%endpoint%%');
+    }
+
+    // Add inline script config
     wp_localize_script('moretti-main-script', 'morettiData', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('moretti-nonce'),
         'cartUrl' => wc_get_cart_url(),
+        'wcAjaxUrl' => $wc_ajax_url,
     ));
 }
 add_action('wp_enqueue_scripts', 'moretti_enqueue_assets');
-
-// AJAX: Quick add to cart
-function moretti_ajax_quick_add_to_cart() {
-    // Check nonce but be lenient in local dev if it fails
-    $nonce_valid = isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'moretti-nonce');
-    
-    $product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
-    $quantity = isset($_POST['quantity']) ? absint($_POST['quantity']) : 1;
-
-    if ($product_id <= 0) {
-        wp_send_json_error(array('message' => 'Nieprawidłowe ID produktu.'));
-    }
-
-    // Ensure WC is loaded
-    if (!function_exists('WC') || is_null(WC()->cart)) {
-        wp_send_json_error(array('message' => 'Błąd systemu koszyka. Spróbuj odświeżyć stronę.'));
-    }
-
-    // Check if product is variable
-    $product = wc_get_product($product_id);
-    if ($product && $product->is_type('variable')) {
-        wp_send_json_error(array(
-            'message' => 'Ten produkt ma warianty. Wybierz opcje na stronie produktu.',
-            'redirect' => get_permalink($product_id)
-        ));
-    }
-
-    $result = WC()->cart->add_to_cart($product_id, $quantity);
-
-    if ($result) {
-        wp_send_json_success(array(
-            'message' => 'Produkt dodany do koszyka',
-            'cart_count' => WC()->cart->get_cart_contents_count(),
-        ));
-    } else {
-        wp_send_json_error(array('message' => 'Nie udało się dodać produktu do koszyka.'));
-    }
-}
-add_action('wp_ajax_moretti_quick_add_to_cart', 'moretti_ajax_quick_add_to_cart');
-add_action('wp_ajax_nopriv_moretti_quick_add_to_cart', 'moretti_ajax_quick_add_to_cart');
 
 // AJAX: Get cart count
 function moretti_ajax_get_cart_count() {

@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div id="home-featured-cta-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <a id="home-featured-details-btn" href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
-                <button id="home-featured-cart-btn" onclick="morettiQuickAddToCart(<?php echo $product_id; ?>)" data-product-id="<?php echo $product_id; ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
+                <button id="home-featured-cart-btn" class="add_to_cart_button ajax_add_to_cart" onclick="morettiQuickAddToCart(<?php echo $product_id; ?>, this)" data-product-id="<?php echo $product_id; ?>" data-product-type="<?php echo esc_attr($product->get_type()); ?>" data-product-url="<?php echo esc_url($product->get_permalink()); ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
             </div>
         </div>
     </div>

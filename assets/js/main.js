@@ -481,70 +481,79 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Quick Add to Cart functionality
-function morettiQuickAddToCart(productId) {
-    // Show loading state
-    const button = document.querySelector(`button[data-product-id="${productId}"]`);
+// Quick Add to Cart functionality (native WooCommerce AJAX endpoint)
+function morettiQuickAddToCart(productId, triggerButton = null) {
+    const button = triggerButton || document.querySelector(`button[data-product-id="${productId}"]`);
+    if (!button) return;
+
+    if (button.dataset.productType === 'variable' && button.dataset.productUrl) {
+        window.location.href = button.dataset.productUrl;
+        return;
+    }
+
+    const wcAjaxTemplate =
+        (window.wc_add_to_cart_params && window.wc_add_to_cart_params.wc_ajax_url) ||
+        (window.morettiData && window.morettiData.wcAjaxUrl);
+    if (!wcAjaxTemplate) {
+        alert('Brak endpointu WooCommerce AJAX. Odśwież stronę i spróbuj ponownie.');
+        return;
+    }
+
+    const endpointUrl = wcAjaxTemplate.replace('%%endpoint%%', 'add_to_cart');
     const originalContent = button.innerHTML;
-    
     button.innerHTML = '<svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
     button.disabled = true;
 
-    // AJAX add to cart
-    const formData = new FormData();
-    formData.append('action', 'moretti_quick_add_to_cart');
-    formData.append('product_id', productId);
-    formData.append('quantity', 1);
-    formData.append('nonce', morettiData.nonce);
+    const payload = new URLSearchParams();
+    payload.append('product_id', String(productId));
+    payload.append('quantity', '1');
 
-    // Debug log
-    console.log('Adding to cart:', productId);
-
-    fetch(morettiData.ajaxUrl, {
+    fetch(endpointUrl, {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: payload.toString(),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Response:', data);
-        if (data.success) {
-            // Update cart count
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok (${response.status})`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            if (data && data.error && data.product_url) {
+                window.location.href = data.product_url;
+                return;
+            }
+
+            if (data && data.fragments && typeof data.fragments === 'object') {
+                Object.entries(data.fragments).forEach(([selector, html]) => {
+                    document.querySelectorAll(selector).forEach((element) => {
+                        element.innerHTML = html;
+                    });
+                });
+            }
+
             updateCartCount();
-            
-            // Show success state
             button.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-            
-            // Reset after 2 seconds
+
+            if (typeof jQuery !== 'undefined') {
+                jQuery(document.body).trigger('added_to_cart', [data.fragments || {}, data.cart_hash || '', jQuery(button)]);
+            }
+
             setTimeout(() => {
                 button.innerHTML = originalContent;
                 button.disabled = false;
             }, 2000);
-        } else {
-            // Show error
-            console.error('Add to cart failed:', data);
-            
-            // If it's a variable product, redirect to product page
-            if (data.data && data.data.redirect) {
-                window.location.href = data.data.redirect;
-                return;
-            }
-            
-            alert(data.data && data.data.message ? data.data.message : 'Nie udało się dodać produktu do koszyka. Spróbuj odświeżyć stronę.');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Wystąpił błąd połączenia. Spróbuj ponownie.');
             button.innerHTML = originalContent;
             button.disabled = false;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Wystąpił błąd połączenia. Spróbuj ponownie.');
-        button.innerHTML = originalContent;
-        button.disabled = false;
-    });
+        });
 }
 
 // Update cart count

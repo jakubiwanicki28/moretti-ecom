@@ -529,56 +529,14 @@ document.addEventListener('DOMContentLoaded', function() {
     addButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            const productId = this.dataset.productId;
-            const btn = this;
-            
-            btn.classList.add('loading');
-            btn.disabled = true;
-            
-            fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    action: 'moretti_quick_add_to_cart',
-                    product_id: productId,
-                    nonce: '<?php echo wp_create_nonce('moretti-nonce'); ?>'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                btn.classList.remove('loading');
-                
-                if (data.success) {
-                    btn.classList.add('added');
-                    
-                    setTimeout(() => {
-                        btn.classList.remove('added');
-                        btn.disabled = false;
-                    }, 2000);
-                    
-                    // Update cart count
-                    if (data.data && data.data.cart_count) {
-                        const cartCountEl = document.querySelector('header .absolute.top-1.right-1');
-                        if (cartCountEl) {
-                            cartCountEl.textContent = data.data.cart_count;
-                            if (!cartCountEl.classList.contains('flex')) {
-                                cartCountEl.style.display = 'flex';
-                            }
-                        }
-                    }
-                } else {
-                    btn.disabled = false;
-                    alert(data.data && data.data.message ? data.data.message : 'Błąd dodawania do koszyka');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                alert('Błąd połączenia. Spróbuj ponownie.');
-            });
+            const productId = parseInt(this.dataset.productId || '0', 10);
+            if (!Number.isInteger(productId) || productId <= 0) {
+                return;
+            }
+
+            if (typeof morettiQuickAddToCart === 'function') {
+                morettiQuickAddToCart(productId, this);
+            }
         });
     });
 });
