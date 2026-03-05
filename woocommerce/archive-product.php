@@ -53,6 +53,62 @@ $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
 
+$material_filter_taxonomy = $material_taxonomy;
+$materials = $moretti_get_filter_terms($material_filter_taxonomy);
+
+// Legacy fallback: in some catalogs material-like values live in product categories.
+if (count($materials) <= 1) {
+    $legacy_material_terms = get_terms(array(
+        'taxonomy' => 'product_cat',
+        'hide_empty' => true,
+        'orderby' => 'name',
+        'order' => 'ASC',
+    ));
+
+    if (!is_wp_error($legacy_material_terms) && !empty($legacy_material_terms)) {
+        $legacy_material_keywords = array('skora', 'wzor', 'wizytownik', 'material');
+        $legacy_filtered_terms = array();
+
+        foreach ($legacy_material_terms as $legacy_term) {
+            $haystack = sanitize_title(remove_accents($legacy_term->name . ' ' . $legacy_term->slug));
+            foreach ($legacy_material_keywords as $keyword) {
+                if (strpos($haystack, $keyword) !== false) {
+                    $legacy_filtered_terms[] = $legacy_term;
+                    break;
+                }
+            }
+        }
+
+        if (count($legacy_filtered_terms) >= 2) {
+            $material_filter_taxonomy = 'product_cat';
+            $materials = $legacy_filtered_terms;
+        }
+    }
+}
+
+$selected_material_taxonomy = '';
+if ($selected_material !== '') {
+    $material_lookup_taxonomies = array_values(array_unique(array_filter(array(
+        $material_filter_taxonomy,
+        $material_taxonomy,
+        'pa_material',
+        'pa_materials',
+        'pa_materiaal',
+        'product_cat',
+    ))));
+
+    foreach ($material_lookup_taxonomies as $lookup_taxonomy) {
+        if (!taxonomy_exists($lookup_taxonomy)) {
+            continue;
+        }
+        $selected_material_term = get_term_by('slug', $selected_material, $lookup_taxonomy);
+        if ($selected_material_term && !is_wp_error($selected_material_term)) {
+            $selected_material_taxonomy = $lookup_taxonomy;
+            break;
+        }
+    }
+}
+
 $moretti_current_query_args = array();
 if ($selected_color !== '') {
     $moretti_current_query_args['filter_color'] = $selected_color;
@@ -76,7 +132,24 @@ if ($is_wishlist_view) {
     $moretti_current_query_args['wishlist'] = '1';
 }
 
-$moretti_build_shop_url = static function ($overrides = array()) use ($moretti_current_query_args) {
+$moretti_known_query_args = array(
+    'filter_color',
+    'filter_kolor',
+    'filter_material',
+    'filter_size',
+    'min_price',
+    'max_price',
+    'orderby',
+    'wishlist',
+);
+
+$moretti_build_paged_shop_url = static function ($page = 1) use ($moretti_current_query_args) {
+    $page = max(1, (int) $page);
+    $base_url = get_pagenum_link($page);
+    return !empty($moretti_current_query_args) ? add_query_arg($moretti_current_query_args, $base_url) : $base_url;
+};
+
+$moretti_build_shop_url = static function ($overrides = array()) use ($moretti_current_query_args, $moretti_known_query_args) {
     $args = array_merge($moretti_current_query_args, $overrides);
 
     foreach ($args as $key => $value) {
@@ -85,7 +158,7 @@ $moretti_build_shop_url = static function ($overrides = array()) use ($moretti_c
         }
     }
 
-    $base_url = remove_query_arg(array_keys($moretti_current_query_args), get_pagenum_link(1));
+    $base_url = remove_query_arg($moretti_known_query_args, get_pagenum_link(1));
     return !empty($args) ? add_query_arg($args, $base_url) : $base_url;
 };
 
@@ -112,6 +185,31 @@ if ($selected_color !== '') {
     if ($selected_color_label === $selected_color) {
         // Final safety fallback: avoid displaying raw slug in UI.
         $selected_color_label = ucwords(str_replace('-', ' ', $selected_color));
+    }
+}
+
+$selected_material_label = $selected_material;
+if ($selected_material !== '') {
+    $material_label_lookup_taxonomies = array_values(array_unique(array_filter(array(
+        $selected_material_taxonomy,
+        $material_filter_taxonomy,
+        $material_taxonomy,
+        'product_cat',
+    ))));
+
+    foreach ($material_label_lookup_taxonomies as $lookup_taxonomy) {
+        if (!taxonomy_exists($lookup_taxonomy)) {
+            continue;
+        }
+        $selected_material_term = get_term_by('slug', $selected_material, $lookup_taxonomy);
+        if ($selected_material_term && !is_wp_error($selected_material_term) && !empty($selected_material_term->name)) {
+            $selected_material_label = $selected_material_term->name;
+            break;
+        }
+    }
+
+    if ($selected_material_label === $selected_material) {
+        $selected_material_label = ucwords(str_replace('-', ' ', $selected_material));
     }
 }
 
@@ -164,12 +262,18 @@ if (!$is_wishlist_view && $color_taxonomy && $selected_color !== '') {
     );
 }
 
-if (!$is_wishlist_view && $material_taxonomy && $selected_material !== '') {
-    $tax_query[] = array(
-        'taxonomy' => $material_taxonomy,
-        'field' => 'slug',
-        'terms' => $selected_material,
-    );
+if (!$is_wishlist_view && $selected_material !== '') {
+    $active_material_taxonomy = $selected_material_taxonomy !== '' ? $selected_material_taxonomy : $material_filter_taxonomy;
+    if (!$active_material_taxonomy || !taxonomy_exists($active_material_taxonomy)) {
+        $active_material_taxonomy = $material_taxonomy;
+    }
+    if ($active_material_taxonomy && taxonomy_exists($active_material_taxonomy)) {
+        $tax_query[] = array(
+            'taxonomy' => $active_material_taxonomy,
+            'field' => 'slug',
+            'terms' => $selected_material,
+        );
+    }
 }
 
 if (!$is_wishlist_view && $size_taxonomy && $selected_size !== '') {
@@ -325,7 +429,6 @@ $show_category_filter = $is_shop_root_view;
 
             <!-- Material Filter -->
             <?php
-            $materials = $moretti_get_filter_terms($material_taxonomy);
             if (!empty($materials) && !is_wp_error($materials)) :
             ?>
             <div class="sidebar-block">
@@ -504,11 +607,10 @@ $show_category_filter = $is_shop_root_view;
                 <?php endif; ?>
 
                 <?php
-                $materials = $moretti_get_filter_terms($material_taxonomy);
                 if (!empty($materials)) :
                 ?>
                     <details class="wittchen-filter">
-                        <summary>Materiał<?php echo $selected_material !== '' ? ': ' . esc_html($selected_material) : ''; ?></summary>
+                        <summary>Materiał<?php echo $selected_material !== '' ? ': ' . esc_html($selected_material_label) : ''; ?></summary>
                         <div class="wittchen-filter-menu">
                             <?php foreach ($materials as $material) : ?>
                                 <?php $is_active = ($selected_material === $material->slug); ?>
@@ -563,7 +665,7 @@ $show_category_filter = $is_shop_root_view;
 
             <!-- Products Grid -->
             <?php if ($products->have_posts()) : ?>
-                <div class="products-grid">
+                <div class="products-grid" id="products-grid">
                     <?php while ($products->have_posts()) : $products->the_post(); 
                         global $product; ?>
                         
@@ -645,7 +747,7 @@ $show_category_filter = $is_shop_root_view;
 
                 <!-- Pagination -->
                 <?php if ($products->max_num_pages > 1) : ?>
-                    <div class="shop-pagination">
+                    <div class="shop-pagination shop-pagination-fallback">
                         <?php
                         echo paginate_links(array(
                             'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
@@ -657,6 +759,20 @@ $show_category_filter = $is_shop_root_view;
                         ));
                         ?>
                     </div>
+                    <div
+                        class="shop-infinite-loader"
+                        id="shop-infinite-loader"
+                        role="status"
+                        aria-live="polite"
+                        data-current-page="<?php echo esc_attr((string) max(1, (int) $paged)); ?>"
+                        data-max-pages="<?php echo esc_attr((string) max(1, (int) $products->max_num_pages)); ?>"
+                        data-next-url="<?php echo esc_url($paged < $products->max_num_pages ? $moretti_build_paged_shop_url($paged + 1) : ''); ?>"
+                    >
+                        <span class="shop-infinite-spinner" id="shop-infinite-spinner" aria-hidden="true"></span>
+                        <span class="shop-infinite-text" id="shop-infinite-text">Przewiń, aby załadować więcej produktów</span>
+                        <button type="button" class="shop-infinite-retry" id="shop-infinite-retry" hidden>Spróbuj ponownie</button>
+                    </div>
+                    <div class="shop-infinite-sentinel" id="shop-infinite-sentinel" aria-hidden="true"></div>
                 <?php endif; ?>
 
             <?php else : ?>
@@ -925,6 +1041,60 @@ $show_category_filter = $is_shop_root_view;
         margin-left: 6px;
     }
 
+    .shop-infinite-ready .shop-page-wittchen .shop-pagination-fallback {
+        display: none;
+    }
+
+    .shop-page-wittchen .shop-infinite-loader {
+        margin: 20px auto 4px;
+        min-height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #5f554b;
+        font-size: 12px;
+    }
+
+    .shop-page-wittchen .shop-infinite-spinner {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 2px solid #d7d2cb;
+        border-top-color: #2a2826;
+        animation: moretti-spin 0.8s linear infinite;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .shop-page-wittchen .shop-infinite-loader.is-loading .shop-infinite-spinner {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .shop-page-wittchen .shop-infinite-sentinel {
+        width: 100%;
+        height: 1px;
+    }
+
+    .shop-page-wittchen .shop-infinite-retry {
+        border: 1px solid #cfc9c1;
+        background: #fff;
+        color: #2a2826;
+        padding: 5px 10px;
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .shop-page-wittchen .shop-infinite-retry:hover {
+        background: #f7f7f7;
+    }
+
+    @keyframes moretti-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
     .shop-page-wittchen .products-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 18px 14px;
@@ -1103,6 +1273,8 @@ $show_category_filter = $is_shop_root_view;
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    document.documentElement.classList.add('shop-infinite-ready');
+
     // Filter Toggle (Mobile)
     const filterToggle = document.getElementById('filter-toggle');
     const sidebar = document.getElementById('shop-sidebar');
@@ -1163,92 +1335,239 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Image Gallery Navigation
-    document.querySelectorAll('.product-card').forEach(card => {
+    const initProductCard = (card) => {
+        if (!card || card.dataset.morettiInit === '1') {
+            return;
+        }
+        card.dataset.morettiInit = '1';
+
         const slides = card.querySelectorAll('.product-image-slide');
         const prevBtn = card.querySelector('.image-prev');
         const nextBtn = card.querySelector('.image-next');
         const dots = card.querySelectorAll('.image-dot');
         
-        if (slides.length <= 1) return;
-        
-        let currentIndex = 0;
-        
-        function showSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
+        if (slides.length > 1) {
+            let currentIndex = 0;
             
-            slides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentIndex = index;
-        }
-        
-        // Touch/Swipe Support
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        card.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-        
-        card.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            if (touchEndX < touchStartX - swipeThreshold) {
-                // Swipe Left -> Next
-                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
-                showSlide(newIndex);
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                currentIndex = index;
             }
-            if (touchEndX > touchStartX + swipeThreshold) {
-                // Swipe Right -> Prev
-                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
-                showSlide(newIndex);
+
+            // Touch/Swipe Support
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            card.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            card.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const swipeThreshold = 50;
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe Left -> Next
+                    const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                    showSlide(newIndex);
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe Right -> Prev
+                    const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                    showSlide(newIndex);
+                }
+            }, { passive: true });
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+                    showSlide(newIndex);
+                });
             }
-        }
-        
-        if (prevBtn) {
-            prevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
-                showSlide(newIndex);
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+                    showSlide(newIndex);
+                });
+            }
+            
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSlide(parseInt(dot.dataset.index, 10));
+                });
             });
         }
-        
-        if (nextBtn) {
-            nextBtn.addEventListener('click', (e) => {
+
+        const quickAddButton = card.querySelector('.quick-add');
+        if (quickAddButton && quickAddButton.dataset.morettiInit !== '1') {
+            quickAddButton.dataset.morettiInit = '1';
+            quickAddButton.addEventListener('click', function(e) {
                 e.preventDefault();
-                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
-                showSlide(newIndex);
+                const productId = parseInt(this.dataset.productId || '0', 10);
+                if (!Number.isInteger(productId) || productId <= 0) {
+                    return;
+                }
+
+                if (typeof morettiQuickAddToCart === 'function') {
+                    morettiQuickAddToCart(productId, this);
+                }
             });
         }
-        
-        dots.forEach(dot => {
-            dot.addEventListener('click', (e) => {
-                e.preventDefault();
-                showSlide(parseInt(dot.dataset.index));
-            });
-        });
-    });
-    
-    // Quick Add to Cart
-    const addButtons = document.querySelectorAll('.quick-add');
-    addButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = parseInt(this.dataset.productId || '0', 10);
-            if (!Number.isInteger(productId) || productId <= 0) {
+    };
+
+    document.querySelectorAll('.product-card').forEach(initProductCard);
+
+    // Infinite scroll loading
+    const productsGrid = document.getElementById('products-grid');
+    const infiniteLoader = document.getElementById('shop-infinite-loader');
+    const infiniteText = document.getElementById('shop-infinite-text');
+    const infiniteSentinel = document.getElementById('shop-infinite-sentinel');
+    const infiniteRetry = document.getElementById('shop-infinite-retry');
+
+    if (productsGrid && infiniteLoader && infiniteText && infiniteSentinel) {
+        let currentPage = parseInt(infiniteLoader.dataset.currentPage || '1', 10);
+        let maxPages = parseInt(infiniteLoader.dataset.maxPages || '1', 10);
+        let nextUrl = infiniteLoader.dataset.nextUrl || '';
+        let isLoading = false;
+        let hasLoadError = false;
+        let observer = null;
+        const loadedPageUrls = new Set();
+        let fallbackScrollHandler = null;
+
+        const setInfiniteStatus = (status, message) => {
+            infiniteLoader.classList.toggle('is-loading', status === 'loading');
+            infiniteText.textContent = message;
+            if (infiniteRetry) {
+                infiniteRetry.hidden = status !== 'error';
+            }
+        };
+
+        const stopInfinite = (message) => {
+            setInfiniteStatus('idle', message);
+            if (observer) {
+                observer.disconnect();
+            }
+            if (fallbackScrollHandler) {
+                window.removeEventListener('scroll', fallbackScrollHandler);
+                fallbackScrollHandler = null;
+            }
+            if (infiniteSentinel.parentNode) {
+                infiniteSentinel.parentNode.removeChild(infiniteSentinel);
+            }
+        };
+
+        const loadNextPage = async () => {
+            if (isLoading || hasLoadError || !nextUrl || currentPage >= maxPages) {
                 return;
             }
 
-            if (typeof morettiQuickAddToCart === 'function') {
-                morettiQuickAddToCart(productId, this);
+            if (loadedPageUrls.has(nextUrl)) {
+                stopInfinite('Zatrzymano automatyczne ładowanie (wykryto pętlę stron).');
+                return;
             }
-        });
-    });
+
+            isLoading = true;
+            setInfiniteStatus('loading', 'Ładowanie produktów...');
+            const requestedUrl = nextUrl;
+
+            try {
+                const response = await fetch(requestedUrl, {
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Nie udało się pobrać kolejnej strony.');
+                }
+
+                const html = await response.text();
+                const parsedDoc = new DOMParser().parseFromString(html, 'text/html');
+                const nextGrid = parsedDoc.getElementById('products-grid');
+
+                if (!nextGrid) {
+                    throw new Error('Brak siatki produktów w odpowiedzi.');
+                }
+
+                const incomingCards = Array.from(nextGrid.querySelectorAll('.product-card'));
+                incomingCards.forEach((card) => {
+                    productsGrid.appendChild(card);
+                    initProductCard(card);
+                });
+
+                const incomingLoader = parsedDoc.getElementById('shop-infinite-loader');
+                if (incomingLoader) {
+                    currentPage = parseInt(incomingLoader.dataset.currentPage || String(currentPage + 1), 10);
+                    maxPages = parseInt(incomingLoader.dataset.maxPages || String(maxPages), 10);
+                    nextUrl = incomingLoader.dataset.nextUrl || '';
+                } else {
+                    currentPage += 1;
+                    nextUrl = '';
+                }
+                loadedPageUrls.add(requestedUrl);
+                hasLoadError = false;
+
+                infiniteLoader.dataset.currentPage = String(currentPage);
+                infiniteLoader.dataset.maxPages = String(maxPages);
+                infiniteLoader.dataset.nextUrl = nextUrl;
+
+                if (!nextUrl || currentPage >= maxPages) {
+                    stopInfinite('To już wszystkie produkty.');
+                } else {
+                    setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
+                }
+            } catch (error) {
+                hasLoadError = true;
+                setInfiniteStatus('error', 'Błąd ładowania. Kliknij "Spróbuj ponownie".');
+            } finally {
+                isLoading = false;
+            }
+        };
+
+        if (infiniteRetry) {
+            infiniteRetry.addEventListener('click', () => {
+                if (isLoading || !nextUrl) {
+                    return;
+                }
+                hasLoadError = false;
+                loadNextPage();
+            });
+        }
+
+        if (!nextUrl || currentPage >= maxPages) {
+            stopInfinite('To już wszystkie produkty.');
+            return;
+        }
+
+        if ('IntersectionObserver' in window) {
+            observer = new IntersectionObserver((entries) => {
+                const hasVisibleSentinel = entries.some((entry) => entry.isIntersecting);
+                if (hasVisibleSentinel && !hasLoadError) {
+                    loadNextPage();
+                }
+            }, {
+                rootMargin: '300px 0px 300px 0px'
+            });
+            observer.observe(infiniteSentinel);
+        } else {
+            // Fallback for very old browsers.
+            fallbackScrollHandler = () => {
+                const rect = infiniteSentinel.getBoundingClientRect();
+                if (rect.top <= window.innerHeight + 300 && !hasLoadError) {
+                    loadNextPage();
+                }
+            };
+            window.addEventListener('scroll', fallbackScrollHandler, { passive: true });
+        }
+    }
 });
 </script>
 
