@@ -120,6 +120,15 @@
   line-height: 1.75;
 }
 
+.moretti-legal-doc h1 {
+  margin: 0 0 1.25rem;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  text-transform: none;
+}
+
 .moretti-legal-doc h2 {
   margin: 2.25rem 0 0.9rem;
   font-size: 1.25rem;
@@ -146,6 +155,11 @@
   .moretti-legal-doc {
     font-size: 14px;
     line-height: 1.7;
+  }
+
+  .moretti-legal-doc h1 {
+    font-size: 1.55rem;
+    margin-bottom: 1rem;
   }
 
   .moretti-legal-doc h2 {
