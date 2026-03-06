@@ -153,15 +153,16 @@ $hero_banners_count = count($hero_banners);
     </div>
 
     <?php if ($hero_banners_count > 1) : ?>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20" id="moretti-hero-dots">
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1 z-40" id="moretti-hero-dots">
             <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
                 <button
                     type="button"
                     class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
                     data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
                     aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
-                    style="width: 8px; height: 8px; box-sizing: content-box; padding: 10px; background-clip: content-box; border: 0; border-radius: 999px; background: <?php echo $hero_banner_dot_index === 0 ? '#ffffff' : 'rgba(255, 255, 255, 0.42)'; ?>; cursor: pointer; transition: transform 0.25s ease, background-color 0.25s ease; margin: -10px -6px;"
-                ></button>
+                >
+                    <span class="moretti-hero-dot-core" aria-hidden="true"></span>
+                </button>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -175,7 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var track = heroSection.querySelector('.moretti-hero-track');
     var dots = heroSection.querySelectorAll('.moretti-hero-dot');
-    var dotsWrap = heroSection.querySelector('#moretti-hero-dots');
     var slides = heroSection.querySelectorAll('.moretti-hero-slide');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
     var AUTOPLAY_MS = 5000;
@@ -196,8 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var isActive = dotIndex === currentSlide;
             dot.classList.toggle('is-active', isActive);
             dot.setAttribute('aria-current', isActive ? 'true' : 'false');
-            dot.style.background = isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.42)';
-            dot.style.transform = isActive ? 'scale(1.4)' : 'scale(1)';
         });
     };
 
@@ -238,23 +236,16 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduleNextAutoplayTick();
     };
 
-    if (dotsWrap) {
-        var handleDotNavigation = function(event) {
-            var dot = event.target.closest('.moretti-hero-dot');
-            if (!dot) {
-                return;
-            }
+    dots.forEach(function(dot) {
+        dot.addEventListener('click', function(event) {
             var requestedSlide = parseInt(dot.getAttribute('data-slide-index'), 10);
             if (!Number.isNaN(requestedSlide)) {
                 event.preventDefault();
                 goToSlide(requestedSlide);
                 restartAutoplayFromNow();
             }
-        };
-
-        dotsWrap.addEventListener('click', handleDotNavigation);
-        dotsWrap.addEventListener('pointerup', handleDotNavigation);
-    }
+        });
+    });
 
     heroSection.addEventListener('mouseenter', function() {
         isPausedByInteraction = true;
@@ -459,6 +450,51 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <style>
+/* Hero slider dots: small visual, larger click area */
+#moretti-hero-dots {
+    pointer-events: auto;
+}
+
+#moretti-home-hero .moretti-hero-track-wrap {
+    pointer-events: none;
+}
+
+#moretti-hero-dots .moretti-hero-dot {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#moretti-hero-dots .moretti-hero-dot-core {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.42);
+    transform: scale(1);
+    transition: transform 0.25s ease, background-color 0.25s ease;
+    pointer-events: none;
+}
+
+#moretti-hero-dots .moretti-hero-dot.is-active .moretti-hero-dot-core {
+    background: #ffffff;
+    transform: scale(1.4);
+}
+
+#moretti-hero-dots .moretti-hero-dot:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
+}
+
 /* ===== Homepage product sections (no carousel) ===== */
 .home-products-grid {
     display: grid;
