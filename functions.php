@@ -345,6 +345,50 @@ function moretti_parse_sku_model_and_color($sku) {
 }
 
 /**
+ * Resolve product color from assigned color taxonomy term.
+ *
+ * @param int $product_id
+ * @return array{color_slug:string,color_label:string}
+ */
+function moretti_get_product_color_from_taxonomy($product_id) {
+    static $cache = array();
+
+    $product_id = (int) $product_id;
+    if ($product_id <= 0) {
+        return array('color_slug' => '', 'color_label' => '');
+    }
+
+    if (isset($cache[$product_id])) {
+        return $cache[$product_id];
+    }
+
+    $color_taxonomy = moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'), '', 'color');
+    if ($color_taxonomy === '' || !taxonomy_exists($color_taxonomy)) {
+        $cache[$product_id] = array('color_slug' => '', 'color_label' => '');
+        return $cache[$product_id];
+    }
+
+    $terms = get_the_terms($product_id, $color_taxonomy);
+    if (empty($terms) || is_wp_error($terms)) {
+        $cache[$product_id] = array('color_slug' => '', 'color_label' => '');
+        return $cache[$product_id];
+    }
+
+    $primary_term = reset($terms);
+    if (!$primary_term || empty($primary_term->name)) {
+        $cache[$product_id] = array('color_slug' => '', 'color_label' => '');
+        return $cache[$product_id];
+    }
+
+    $cache[$product_id] = array(
+        'color_slug' => moretti_normalize_color_key((string) $primary_term->slug !== '' ? $primary_term->slug : $primary_term->name),
+        'color_label' => (string) $primary_term->name,
+    );
+
+    return $cache[$product_id];
+}
+
+/**
  * Build color variants for product cards based on shared model parsed from SKU.
  *
  * @param int|WC_Product $product_or_id
@@ -399,6 +443,7 @@ function moretti_get_product_color_variants($product_or_id) {
         $model_product_ids_cache[$model] = !empty($query->posts) ? array_map('absint', $query->posts) : array();
     }
 
+    $color_map = moretti_color_swatch_hex_map();
     $variants = array();
     $seen_color_slugs = array();
     foreach ($model_product_ids_cache[$model] as $candidate_id) {
@@ -417,20 +462,41 @@ function moretti_get_product_color_variants($product_or_id) {
             continue;
         }
 
+        $resolved_color_slug = $candidate_parsed['color_slug'];
+        $resolved_color_label = $candidate_parsed['color_label'];
+
+        // Fallback 1: strip numeric prefix accidentally parsed from SKU tail.
+        if ($resolved_color_slug !== '' && !isset($color_map[$resolved_color_slug])) {
+            $trimmed_slug = preg_replace('/^[0-9]+-+/', '', $resolved_color_slug);
+            if (is_string($trimmed_slug) && $trimmed_slug !== '' && isset($color_map[$trimmed_slug])) {
+                $resolved_color_slug = $trimmed_slug;
+                $resolved_color_label = ucwords(str_replace('-', ' ', $trimmed_slug));
+            }
+        }
+
+        // Fallback 2: resolve color from taxonomy term if SKU parsing is not canonical.
+        if ($resolved_color_slug === '' || !isset($color_map[$resolved_color_slug])) {
+            $taxonomy_color = moretti_get_product_color_from_taxonomy((int) $candidate->get_id());
+            if (!empty($taxonomy_color['color_slug']) && isset($color_map[$taxonomy_color['color_slug']])) {
+                $resolved_color_slug = $taxonomy_color['color_slug'];
+                $resolved_color_label = $taxonomy_color['color_label'] !== '' ? $taxonomy_color['color_label'] : ucwords(str_replace('-', ' ', $resolved_color_slug));
+            }
+        }
+
         $candidate_is_current = (int) $candidate->get_id() === $product_id;
-        if (isset($seen_color_slugs[$candidate_parsed['color_slug']]) && !$candidate_is_current) {
+        if (isset($seen_color_slugs[$resolved_color_slug]) && !$candidate_is_current) {
             continue;
         }
-        $seen_color_slugs[$candidate_parsed['color_slug']] = true;
+        $seen_color_slugs[$resolved_color_slug] = true;
 
         $variants[] = array(
             'id' => (int) $candidate->get_id(),
             'url' => (string) get_permalink($candidate->get_id()),
             'sku' => $candidate_sku,
             'model' => $model,
-            'color_slug' => $candidate_parsed['color_slug'],
-            'color_label' => $candidate_parsed['color_label'],
-            'color_hex' => moretti_get_color_hex($candidate_parsed['color_slug']),
+            'color_slug' => $resolved_color_slug,
+            'color_label' => $resolved_color_label,
+            'color_hex' => moretti_get_color_hex($resolved_color_slug),
             'is_current' => $candidate_is_current,
         );
     }

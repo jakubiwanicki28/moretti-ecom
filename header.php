@@ -165,7 +165,7 @@
         }
 
         .moretti-logo-wrap .custom-logo {
-            max-height: 32px;
+            max-height: 38px;
             width: auto;
         }
 
@@ -360,7 +360,7 @@
             }
 
             .moretti-logo-link img {
-                height: 30px !important;
+                height: 36px !important;
             }
 
             .moretti-logo-link .moretti-logo-text {
@@ -538,7 +538,7 @@
 
             <div>
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="moretti-logo-link flex items-center no-underline" style="gap: 10px; display: flex; align-items: center; text-decoration: none;">
-                    <img src="<?php echo get_template_directory_uri(); ?>/images/moretti-logo.png" alt="Moretti" style="height: 38px; width: auto; display: block;">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/moretti-logo.png" alt="Moretti" style="height: 46px; width: auto; display: block;">
                     <span class="moretti-logo-text" style="font-size: 24px; letter-spacing: 0.15em; font-weight: 700; text-transform: uppercase; color: #111; line-height: 1; white-space: nowrap; font-family: sans-serif;">MORETTI</span>
                 </a>
             </div>

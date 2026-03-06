@@ -889,6 +889,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         aria-live="polite"
                         data-current-page="<?php echo esc_attr((string) max(1, (int) $paged)); ?>"
                         data-max-pages="<?php echo esc_attr((string) max(1, (int) $products->max_num_pages)); ?>"
+                        data-total-products="<?php echo esc_attr((string) max(0, (int) $products->found_posts)); ?>"
                         data-next-url="<?php echo esc_url($paged < $products->max_num_pages ? $moretti_build_paged_shop_url($paged + 1) : ''); ?>"
                     >
                         <span class="shop-infinite-spinner" id="shop-infinite-spinner" aria-hidden="true"></span>
@@ -1753,6 +1754,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (productsGrid && infiniteLoader && infiniteText && infiniteSentinel) {
         let currentPage = parseInt(infiniteLoader.dataset.currentPage || '1', 10);
         let maxPages = parseInt(infiniteLoader.dataset.maxPages || '1', 10);
+        const totalProducts = parseInt(infiniteLoader.dataset.totalProducts || '0', 10);
         let nextUrl = infiniteLoader.dataset.nextUrl || '';
         let isLoading = false;
         let hasLoadError = false;
@@ -1768,7 +1770,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        const stopInfinite = ({ message = '' } = {}) => {
+        const stopInfinite = ({ message = '', hideLoader = false } = {}) => {
             setInfiniteStatus('idle', message);
             if (observer) {
                 observer.disconnect();
@@ -1783,6 +1785,25 @@ document.addEventListener('DOMContentLoaded', function() {
             if (infiniteRetry) {
                 infiniteRetry.hidden = true;
             }
+            if (hideLoader) {
+                infiniteLoader.style.display = 'none';
+            }
+        };
+
+        const shouldHideByCount = () => {
+            if (!Number.isInteger(totalProducts) || totalProducts <= 0) {
+                return false;
+            }
+            const renderedCards = productsGrid.querySelectorAll('.product-card').length;
+            return renderedCards >= totalProducts;
+        };
+
+        const syncInfiniteVisibilityByCount = () => {
+            if (shouldHideByCount()) {
+                stopInfinite({ hideLoader: true });
+                return true;
+            }
+            return false;
         };
 
         const loadNextPage = async () => {
@@ -1822,13 +1843,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const incomingCards = Array.from(nextGrid.querySelectorAll('.product-card'));
                 if (incomingCards.length === 0) {
-                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    stopInfinite({ hideLoader: true });
                     return;
                 }
                 incomingCards.forEach((card) => {
                     productsGrid.appendChild(card);
                     initProductCard(card);
                 });
+
+                if (syncInfiniteVisibilityByCount()) {
+                    return;
+                }
 
                 const incomingLoader = parsedDoc.getElementById('shop-infinite-loader');
                 if (incomingLoader) {
@@ -1847,7 +1872,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 infiniteLoader.dataset.nextUrl = nextUrl;
 
                 if (!nextUrl || currentPage >= maxPages) {
-                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    stopInfinite({ hideLoader: true });
                 } else {
                     setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
                 }
@@ -1855,7 +1880,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const likelyReachedEnd = currentPage >= (maxPages - 1);
                 if (likelyReachedEnd) {
                     hasLoadError = false;
-                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    stopInfinite({ hideLoader: true });
                     return;
                 }
 
@@ -1876,8 +1901,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        if (syncInfiniteVisibilityByCount()) {
+            return;
+        }
+
         if (!nextUrl || currentPage >= maxPages) {
-            stopInfinite({ message: 'To już wszystkie produkty.' });
+            stopInfinite({ hideLoader: true });
             return;
         }
 

@@ -47,7 +47,7 @@
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Informacje</h4>
                 <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 14px;"><a href="/koszty-dostawy" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Koszty dostawy i metody płatności</a></li>
+                    <li style="margin-bottom: 14px;"><a href="/dostawa-i-platnosci" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Dostawa i płatności</a></li>
                     <li style="margin-bottom: 14px;"><a href="/zwroty" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Zwroty</a></li>
                     <li><a href="/reklamacje" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Reklamacje</a></li>
                 </ul>
