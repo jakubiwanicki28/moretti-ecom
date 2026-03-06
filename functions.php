@@ -825,6 +825,81 @@ function moretti_create_default_pages() {
 add_action('after_switch_theme', 'moretti_create_default_pages');
 
 /**
+ * Ensure legal/footer pages exist for storefront links.
+ * Runs once and only creates/publishes missing pages.
+ */
+function moretti_ensure_legal_pages_exist() {
+    if (get_option('moretti_legal_pages_seeded_v1')) {
+        return;
+    }
+
+    $pages = array(
+        'regulamin-sklepu' => array(
+            'title' => 'Regulamin sklepu',
+            'content' => '<h1>Regulamin sklepu</h1><p>Ogłoszenia, cenniki i informacje o produktach publikowane w sklepie mają charakter informacyjny i stanowią zaproszenie do zawarcia umowy. Administratorem sklepu jest LIDA DARIUSZ CAŁA (NIP 5261119292, REGON 015161906).</p><p>W sprawach nieuregulowanych niniejszym regulaminem zastosowanie mają przepisy prawa polskiego.</p>',
+        ),
+        'polityka-prywatnosci' => array(
+            'title' => 'Polityka prywatności',
+            'content' => '<h1>Polityka prywatności</h1><p>Sklep wykorzystuje pliki cookies i podobne technologie w celu prawidłowego działania serwisu, utrzymania sesji użytkownika, analityki oraz bezpieczeństwa.</p><p>Administratorem danych jest LIDA DARIUSZ CAŁA (NIP 5261119292, REGON 015161906).</p>',
+        ),
+        'polityka-plikow-cookies' => array(
+            'title' => 'Polityka Plików Cookies',
+            'content' => '<h1>Polityka Plików Cookies</h1><p>Pliki cookies wykorzystywane są do utrzymania sesji, dostosowania serwisu do preferencji użytkownika, analityki i zapewnienia bezpieczeństwa działania sklepu.</p>',
+        ),
+        'dostawa-i-platnosci' => array(
+            'title' => 'Dostawa i płatności',
+            'content' => '<h1>Dostawa i płatności</h1><ol><li>Wszystkie ceny towarów podawane są w PLN i zawierają podatek VAT.</li><li>Koszty dostawy prezentowane są na etapie składania zamówienia i zależą od wybranej metody.</li><li>Dostępne metody płatności: przedpłata, płatność online oraz inne metody udostępnione w checkout.</li></ol>',
+        ),
+        'zwroty' => array(
+            'title' => 'Zwroty',
+            'content' => '<h1>Zwroty</h1><p>Klient będący konsumentem może odstąpić od umowy zawartej na odległość na zasadach wynikających z obowiązujących przepisów prawa.</p>',
+        ),
+        'reklamacje' => array(
+            'title' => 'Reklamacje',
+            'content' => '<h1>Reklamacje</h1><p>Reklamacje można zgłaszać drogą mailową na adres kontaktowy sklepu wraz z opisem problemu i danymi zamówienia.</p>',
+        ),
+    );
+
+    foreach ($pages as $slug => $data) {
+        $existing_page = get_page_by_path($slug, OBJECT, 'page');
+        if ($existing_page instanceof WP_Post) {
+            if ($existing_page->post_status !== 'publish') {
+                wp_update_post(array(
+                    'ID' => $existing_page->ID,
+                    'post_status' => 'publish',
+                ));
+            }
+            continue;
+        }
+
+        wp_insert_post(array(
+            'post_title' => $data['title'],
+            'post_name' => $slug,
+            'post_content' => $data['content'],
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_author' => 1,
+        ));
+    }
+
+    // Backward-compatible alias page used by older footer links.
+    $legacy_delivery = get_page_by_path('koszty-dostawy', OBJECT, 'page');
+    if (!$legacy_delivery instanceof WP_Post) {
+        wp_insert_post(array(
+            'post_title' => 'Koszty dostawy i metody płatności',
+            'post_name' => 'koszty-dostawy',
+            'post_content' => '<p>Ta strona została przeniesiona. Aktualna treść: <a href="' . esc_url(home_url('/dostawa-i-platnosci/')) . '">Dostawa i płatności</a>.</p>',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_author' => 1,
+        ));
+    }
+
+    update_option('moretti_legal_pages_seeded_v1', 1, false);
+}
+add_action('init', 'moretti_ensure_legal_pages_exist', 25);
+
+/**
  * Custom CSS for mobile product page layout
  */
 function moretti_custom_mobile_product_css() {

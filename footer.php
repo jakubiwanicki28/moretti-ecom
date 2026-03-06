@@ -6,6 +6,22 @@
  */
 ?>
 
+<?php
+$moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
+    foreach ($slugs as $slug) {
+        $page = get_page_by_path($slug, OBJECT, 'page');
+        if ($page instanceof WP_Post && $page->post_status === 'publish') {
+            $permalink = get_permalink($page->ID);
+            if (!empty($permalink)) {
+                return $permalink;
+            }
+        }
+    }
+
+    return home_url($fallback);
+};
+?>
+
 <footer style="background-color: #ffffff; padding-top: 80px;">
     <div style="max-width: 1280px; margin: 0 auto; padding-left: 48px; padding-right: 48px;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 48px; padding-bottom: 64px;">
@@ -37,9 +53,9 @@
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Regulamin</h4>
                 <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 14px;"><a href="/regulamin-sklepu" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Regulamin sklepu</a></li>
-                    <li style="margin-bottom: 14px;"><a href="/polityka-prywatnosci" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka prywatności</a></li>
-                    <li><a href="/polityka-plikow-cookies" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka Plików Cookies</a></li>
+                    <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('regulamin-sklepu'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Regulamin sklepu</a></li>
+                    <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('polityka-prywatnosci'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka prywatności</a></li>
+                    <li><a href="<?php echo esc_url($moretti_footer_page_url(array('polityka-plikow-cookies', 'polityka-prywatnosci'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka Plików Cookies</a></li>
                 </ul>
             </div>
 
@@ -47,9 +63,9 @@
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Informacje</h4>
                 <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 14px;"><a href="/dostawa-i-platnosci" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Dostawa i płatności</a></li>
-                    <li style="margin-bottom: 14px;"><a href="/zwroty" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Zwroty</a></li>
-                    <li><a href="/reklamacje" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Reklamacje</a></li>
+                    <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('dostawa-i-platnosci', 'koszty-dostawy'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Dostawa i płatności</a></li>
+                    <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('zwroty'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Zwroty</a></li>
+                    <li><a href="<?php echo esc_url($moretti_footer_page_url(array('reklamacje'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Reklamacje</a></li>
                 </ul>
             </div>
         </div>
