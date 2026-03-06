@@ -1523,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        const stopInfinite = (message) => {
+        const stopInfinite = ({ message = '', hideLoader = false } = {}) => {
             setInfiniteStatus('idle', message);
             if (observer) {
                 observer.disconnect();
@@ -1535,6 +1535,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (infiniteSentinel.parentNode) {
                 infiniteSentinel.parentNode.removeChild(infiniteSentinel);
             }
+            if (hideLoader) {
+                infiniteLoader.style.display = 'none';
+            }
         };
 
         const loadNextPage = async () => {
@@ -1543,7 +1546,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (loadedPageUrls.has(nextUrl)) {
-                stopInfinite('Zatrzymano automatyczne ładowanie (wykryto pętlę stron).');
+                stopInfinite({ message: 'Zatrzymano automatyczne ładowanie (wykryto pętlę stron).' });
                 return;
             }
 
@@ -1594,7 +1597,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 infiniteLoader.dataset.nextUrl = nextUrl;
 
                 if (!nextUrl || currentPage >= maxPages) {
-                    stopInfinite('To już wszystkie produkty.');
+                    stopInfinite({ hideLoader: true });
                 } else {
                     setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
                 }
@@ -1617,7 +1620,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!nextUrl || currentPage >= maxPages) {
-            stopInfinite('To już wszystkie produkty.');
+            stopInfinite({ hideLoader: true });
             return;
         }
 

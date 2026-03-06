@@ -183,6 +183,42 @@ get_header(); ?>
         font-size: 13px;
         line-height: 1.4;
     }
+    .single-color-variants-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .single-color-variants {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .single-color-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(17, 17, 17, 0.3);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+        display: inline-block;
+        text-decoration: none;
+        transition: transform 0.15s ease;
+    }
+    .single-color-dot:hover {
+        transform: scale(1.08);
+    }
+    .single-color-dot:focus-visible {
+        outline: 2px solid #111111;
+        outline-offset: 2px;
+    }
+    .single-color-dot.is-current {
+        width: 18px;
+        height: 18px;
+        border-width: 2px;
+        border-color: #111111;
+        box-shadow: 0 0 0 2px #ffffff;
+    }
     @media (min-width: 768px) {
         .product-summary-custom {
             margin-left: auto !important;
@@ -281,6 +317,14 @@ get_header(); ?>
             width: 58px;
             min-width: 58px;
         }
+        .single-color-dot {
+            width: 15px;
+            height: 15px;
+        }
+        .single-color-dot.is-current {
+            width: 17px;
+            height: 17px;
+        }
         .product-reviews-custom h2 {
             font-size: 1.2rem;
             margin-bottom: 1rem;
@@ -349,7 +393,12 @@ get_header(); ?>
 
     <div class="single-product-wrapper bg-white py-8 md:py-12">
         
-        <?php global $product; ?>
+        <?php
+        global $product;
+        $single_color_variants = function_exists('moretti_get_product_color_variants')
+            ? moretti_get_product_color_variants($product)
+            : array();
+        ?>
         
         <div class="single-product-main mx-auto px-4 md:px-6 lg:px-8">
             
@@ -468,6 +517,25 @@ get_header(); ?>
                                 <div class="text-[10px] text-taupe-600 flex items-center gap-2">
                                     <span class="font-bold text-charcoal uppercase tracking-[0.2em]">SKU:</span>
                                     <span class="sku"><?php echo $product->get_sku() ? $product->get_sku() : 'Brak'; ?></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($single_color_variants)) : ?>
+                                <div class="text-[10px] text-taupe-600 single-color-variants-row">
+                                    <span class="font-bold text-charcoal uppercase tracking-[0.2em]">KOLORY:</span>
+                                    <div class="single-color-variants" aria-label="Dostępne warianty kolorystyczne">
+                                        <?php foreach ($single_color_variants as $variant) : ?>
+                                            <a
+                                                class="single-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                                                href="<?php echo esc_url($variant['url']); ?>"
+                                                style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
+                                                aria-label="<?php echo esc_attr($variant['color_label']); ?>"
+                                                title="<?php echo esc_attr($variant['color_label']); ?>"
+                                            >
+                                                <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
                             <?php endif; ?>
                             
