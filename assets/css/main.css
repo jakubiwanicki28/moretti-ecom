@@ -52,6 +52,65 @@
   --tw-contain-style:  ;
 }
 
+/* SKU color variants overlay */
+.sku-color-variants {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: calc(100% - 52px);
+  z-index: 12;
+}
+
+.sku-color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+  display: inline-block;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.sku-color-dot:hover {
+  transform: scale(1.08);
+}
+
+.sku-color-dot:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.sku-color-dot.is-current {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  border-color: #111111;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+@media (max-width: 767px) {
+  .sku-color-variants {
+    left: 8px;
+    bottom: 8px;
+    gap: 5px;
+    max-width: calc(100% - 44px);
+  }
+
+  .sku-color-dot {
+    width: 13px;
+    height: 13px;
+  }
+
+  .sku-color-dot.is-current {
+    width: 15px;
+    height: 15px;
+  }
+}
+
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;

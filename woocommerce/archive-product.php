@@ -683,6 +683,9 @@ $show_category_filter = $is_shop_root_view;
                                     $all_images = array_merge($all_images, $gallery_ids);
                                 }
                                 $image_count = count($all_images);
+                                $color_variants = function_exists('moretti_get_product_color_variants')
+                                    ? moretti_get_product_color_variants($product)
+                                    : array();
                                 ?>
                                 
                                     <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
@@ -723,6 +726,22 @@ $show_category_filter = $is_shop_root_view;
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                                 </svg>
                                             </button>
+
+                                            <?php if (!empty($color_variants)) : ?>
+                                                <div class="sku-color-variants" aria-label="Dostępne warianty kolorystyczne">
+                                                    <?php foreach ($color_variants as $variant) : ?>
+                                                        <a
+                                                            class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                                                            href="<?php echo esc_url($variant['url']); ?>"
+                                                            style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
+                                                            aria-label="<?php echo esc_attr($variant['color_label']); ?>"
+                                                            title="<?php echo esc_attr($variant['color_label']); ?>"
+                                                        >
+                                                            <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
+                                                        </a>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
                                         <?php else : ?>
                                             <a href="<?php echo esc_url(get_permalink()); ?>">
                                                 <img src="<?php echo esc_url(wc_placeholder_img_src()); ?>" alt="Placeholder">
@@ -1137,6 +1156,44 @@ $show_category_filter = $is_shop_root_view;
         object-position: center center !important;
     }
 
+    .shop-page-wittchen .sku-color-variants {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        z-index: 5;
+        max-width: calc(100% - 52px);
+    }
+
+    .shop-page-wittchen .sku-color-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(31, 29, 28, 0.3);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .shop-page-wittchen .sku-color-dot:hover {
+        transform: scale(1.08);
+    }
+
+    .shop-page-wittchen .sku-color-dot:focus-visible {
+        outline: 2px solid #111;
+        outline-offset: 2px;
+    }
+
+    .shop-page-wittchen .sku-color-dot.is-current {
+        width: 16px;
+        height: 16px;
+        border-width: 2px;
+        border-color: #111;
+        box-shadow: 0 0 0 2px #ffffff;
+    }
+
     .shop-page-wittchen .product-info {
         text-align: left;
         align-items: flex-start;
@@ -1259,6 +1316,23 @@ $show_category_filter = $is_shop_root_view;
 
         .shop-page-wittchen .product-price {
             font-size: 16px;
+        }
+
+        .shop-page-wittchen .sku-color-variants {
+            left: 8px;
+            bottom: 8px;
+            gap: 5px;
+            max-width: calc(100% - 44px);
+        }
+
+        .shop-page-wittchen .sku-color-dot {
+            width: 13px;
+            height: 13px;
+        }
+
+        .shop-page-wittchen .sku-color-dot.is-current {
+            width: 15px;
+            height: 15px;
         }
 
         .shop-page-wittchen .product-heart {

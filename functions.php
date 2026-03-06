@@ -214,37 +214,236 @@ function moretti_resolve_attribute_taxonomy(array $candidates, $preferred_term_s
 
 // Helper function to get hex color from name
 function moretti_get_color_hex($color_name) {
-    $color_name = strtolower($color_name);
-    $color_map = array(
-        'czarny' => '#000000',
-        'black' => '#000000',
-        'brązowy' => '#8B4513',
-        'brown' => '#8B4513',
-        'beżowy' => '#F5F5DC',
-        'beige' => '#F5F5DC',
-        'szary' => '#808080',
-        'gray' => '#808080',
-        'grey' => '#808080',
-        'biały' => '#FFFFFF',
-        'white' => '#FFFFFF',
-        'czerwony' => '#DC2626',
-        'red' => '#DC2626',
-        'niebieski' => '#3B82F6',
-        'blue' => '#3B82F6',
-        'granatowy' => '#000080',
-        'navy' => '#000080',
-        'cream' => '#f5f3ef',
-        'kremowy' => '#f5f3ef',
-        'taupe' => '#8f8275',
-    );
+    $normalized = moretti_normalize_color_key($color_name);
+    $color_map = moretti_color_swatch_hex_map();
 
-    foreach ($color_map as $name => $hex) {
-        if (strpos($color_name, $name) !== false) {
+    if ($normalized !== '' && isset($color_map[$normalized])) {
+        return $color_map[$normalized];
+    }
+
+    foreach ($color_map as $key => $hex) {
+        if ($normalized !== '' && strpos($normalized, $key) !== false) {
             return $hex;
         }
     }
 
-    return '#e5e7eb'; // Default gray
+    return '#d1d5db'; // Neutral fallback
+}
+
+/**
+ * Normalize color key from SKU/term name into slug-like value.
+ */
+function moretti_normalize_color_key($value) {
+    $value = is_string($value) ? $value : '';
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    $value = remove_accents($value);
+    $value = strtolower($value);
+    $value = str_replace('_', '-', $value);
+    $value = preg_replace('/\s+/', '-', $value);
+    $value = preg_replace('/[^a-z0-9-]+/', '', $value);
+    $value = preg_replace('/-+/', '-', $value);
+
+    return trim((string) $value, '-');
+}
+
+/**
+ * Fixed color swatch map for current known taxonomy values.
+ * Mapped by normalized slug/name instead of term IDs for portability.
+ */
+function moretti_color_swatch_hex_map() {
+    static $map = null;
+
+    if (is_array($map)) {
+        return $map;
+    }
+
+    $map = array(
+        'zielony' => '#1f7a3d',
+        'fioletowy' => '#6b46c1',
+        'bordowy' => '#6f1d36',
+        'jasny-braz' => '#b08457',
+        'ciemny-braz' => '#5b3a29',
+        'czerwony' => '#c81e1e',
+        'czarny' => '#111111',
+        'jasny-roz' => '#f4a3c3',
+        'szary' => '#7a7a7a',
+        'zloty' => '#caa23b',
+        'granatowy' => '#1e2a52',
+        // Compatibility aliases used in existing data.
+        'brazowy' => '#8b5e3c',
+        'bezowy' => '#e5d7b8',
+        'bialy' => '#ffffff',
+        'niebieski' => '#3b82f6',
+        'kremowy' => '#f5f3ef',
+        'taupe' => '#8f8275',
+        'black' => '#111111',
+        'brown' => '#8b5e3c',
+        'beige' => '#e5d7b8',
+        'gray' => '#7a7a7a',
+        'grey' => '#7a7a7a',
+        'white' => '#ffffff',
+        'red' => '#c81e1e',
+        'blue' => '#3b82f6',
+        'navy' => '#1e2a52',
+    );
+
+    return $map;
+}
+
+/**
+ * Parse SKU into model + color.
+ * Rule: model is everything before the last "-", color is everything after.
+ *
+ * @param string $sku
+ * @return array{model:string,color_raw:string,color_slug:string,color_label:string}
+ */
+function moretti_parse_sku_model_and_color($sku) {
+    static $cache = array();
+
+    $sku = is_string($sku) ? trim($sku) : '';
+    if ($sku === '') {
+        return array(
+            'model' => '',
+            'color_raw' => '',
+            'color_slug' => '',
+            'color_label' => '',
+        );
+    }
+
+    if (isset($cache[$sku])) {
+        return $cache[$sku];
+    }
+
+    $last_dash_pos = strrpos($sku, '-');
+    if ($last_dash_pos === false || $last_dash_pos <= 0 || $last_dash_pos >= (strlen($sku) - 1)) {
+        $cache[$sku] = array(
+            'model' => '',
+            'color_raw' => '',
+            'color_slug' => '',
+            'color_label' => '',
+        );
+        return $cache[$sku];
+    }
+
+    $model = trim(substr($sku, 0, $last_dash_pos));
+    $color_raw = trim(substr($sku, $last_dash_pos + 1));
+    $color_label = ucwords(str_replace(array('-', '_'), ' ', $color_raw));
+    $color_slug = moretti_normalize_color_key($color_raw);
+
+    $cache[$sku] = array(
+        'model' => $model,
+        'color_raw' => $color_raw,
+        'color_slug' => $color_slug,
+        'color_label' => $color_label,
+    );
+
+    return $cache[$sku];
+}
+
+/**
+ * Build color variants for product cards based on shared model parsed from SKU.
+ *
+ * @param int|WC_Product $product_or_id
+ * @return array<int,array{id:int,url:string,sku:string,model:string,color_slug:string,color_label:string,color_hex:string,is_current:bool}>
+ */
+function moretti_get_product_color_variants($product_or_id) {
+    static $variants_cache = array();
+    static $model_product_ids_cache = array();
+
+    if ($product_or_id instanceof WC_Product) {
+        $product = $product_or_id;
+    } else {
+        $product = wc_get_product((int) $product_or_id);
+    }
+
+    if (!$product instanceof WC_Product) {
+        return array();
+    }
+
+    $product_id = (int) $product->get_id();
+    if (isset($variants_cache[$product_id])) {
+        return $variants_cache[$product_id];
+    }
+
+    $sku = (string) $product->get_sku();
+    $parsed = moretti_parse_sku_model_and_color($sku);
+    if ($parsed['model'] === '' || $parsed['color_slug'] === '') {
+        $variants_cache[$product_id] = array();
+        return $variants_cache[$product_id];
+    }
+
+    $model = $parsed['model'];
+    if (!isset($model_product_ids_cache[$model])) {
+        $query = new WP_Query(array(
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'orderby' => array(
+                'menu_order' => 'ASC',
+                'title' => 'ASC',
+            ),
+            'meta_query' => array(
+                array(
+                    'key' => '_sku',
+                    'value' => $model . '-',
+                    'compare' => 'LIKE',
+                ),
+            ),
+        ));
+
+        $model_product_ids_cache[$model] = !empty($query->posts) ? array_map('absint', $query->posts) : array();
+    }
+
+    $variants = array();
+    $seen_color_slugs = array();
+    foreach ($model_product_ids_cache[$model] as $candidate_id) {
+        $candidate = wc_get_product($candidate_id);
+        if (!$candidate instanceof WC_Product) {
+            continue;
+        }
+
+        if ($candidate->get_catalog_visibility() === 'hidden') {
+            continue;
+        }
+
+        $candidate_sku = (string) $candidate->get_sku();
+        $candidate_parsed = moretti_parse_sku_model_and_color($candidate_sku);
+        if ($candidate_parsed['model'] !== $model || $candidate_parsed['color_slug'] === '') {
+            continue;
+        }
+
+        $candidate_is_current = (int) $candidate->get_id() === $product_id;
+        if (isset($seen_color_slugs[$candidate_parsed['color_slug']]) && !$candidate_is_current) {
+            continue;
+        }
+        $seen_color_slugs[$candidate_parsed['color_slug']] = true;
+
+        $variants[] = array(
+            'id' => (int) $candidate->get_id(),
+            'url' => (string) get_permalink($candidate->get_id()),
+            'sku' => $candidate_sku,
+            'model' => $model,
+            'color_slug' => $candidate_parsed['color_slug'],
+            'color_label' => $candidate_parsed['color_label'],
+            'color_hex' => moretti_get_color_hex($candidate_parsed['color_slug']),
+            'is_current' => $candidate_is_current,
+        );
+    }
+
+    usort($variants, static function ($a, $b) {
+        if ($a['is_current'] !== $b['is_current']) {
+            return $a['is_current'] ? -1 : 1;
+        }
+        return strnatcasecmp($a['color_label'], $b['color_label']);
+    });
+
+    $variants_cache[$product_id] = $variants;
+    return $variants_cache[$product_id];
 }
 
 /**

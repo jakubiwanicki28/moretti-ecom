@@ -19,6 +19,10 @@ if (empty($product)) {
     return;
 }
 
+$color_variants = function_exists('moretti_get_product_color_variants')
+    ? moretti_get_product_color_variants($product)
+    : array();
+
 // Keep WooCommerce visibility rules outside homepage custom carousels.
 if (!$is_home_carousel && !$product->is_visible()) {
     return;
@@ -109,6 +113,22 @@ if ($is_home_carousel) :
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                     </button>
+
+                    <?php if (!empty($color_variants)) : ?>
+                        <div class="sku-color-variants" aria-label="Dostępne warianty kolorystyczne">
+                            <?php foreach ($color_variants as $variant) : ?>
+                                <a
+                                    class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                                    href="<?php echo esc_url($variant['url']); ?>"
+                                    style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
+                                    aria-label="<?php echo esc_attr($variant['color_label']); ?>"
+                                    title="<?php echo esc_attr($variant['color_label']); ?>"
+                                >
+                                    <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -184,6 +204,22 @@ endif;
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
             </button>
+
+            <?php if (!empty($color_variants)) : ?>
+                <div class="sku-color-variants" aria-label="Dostępne warianty kolorystyczne">
+                    <?php foreach ($color_variants as $variant) : ?>
+                        <a
+                            class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                            href="<?php echo esc_url($variant['url']); ?>"
+                            style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
+                            aria-label="<?php echo esc_attr($variant['color_label']); ?>"
+                            title="<?php echo esc_attr($variant['color_label']); ?>"
+                        >
+                            <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
             
             <?php if ($has_multiple_images) : ?>
                 <!-- Previous Arrow -->
@@ -245,42 +281,6 @@ endif;
                 <?php echo $product->get_price_html(); ?>
             </div>
 
-            <!-- Color Swatches (if product has variations) -->
-            <?php if ($product->is_type('variable')) : ?>
-                <?php
-                $available_variations = $product->get_available_variations();
-                $color_attributes = array();
-                
-                // Get color attribute
-                foreach ($product->get_variation_attributes() as $attribute_name => $options) {
-                    if (stripos($attribute_name, 'color') !== false || stripos($attribute_name, 'colour') !== false) {
-                        $color_attributes = $options;
-                        break;
-                    }
-                }
-
-                if (!empty($color_attributes)) : ?>
-                    <div class="flex items-center gap-2 mt-2">
-                        <?php foreach ($color_attributes as $index => $color) : 
-                            if ($index >= 4) break; // Show max 4 colors
-                            
-                            // Try to map color names to hex values
-                            $color_hex = moretti_get_color_hex($color);
-                            ?>
-                            <button 
-                                class="w-5 h-5 rounded-full border border-gray-300 hover:border-charcoal transition-colors"
-                                style="background-color: <?php echo esc_attr($color_hex); ?>;"
-                                title="<?php echo esc_attr(ucfirst($color)); ?>"
-                                aria-label="<?php echo esc_attr(ucfirst($color)); ?>"
-                            ></button>
-                        <?php endforeach; ?>
-                        
-                        <?php if (count($color_attributes) > 4) : ?>
-                            <span class="text-xs text-taupe-600">+<?php echo count($color_attributes) - 4; ?></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            <?php endif; ?>
         </div>
 
     </div>
