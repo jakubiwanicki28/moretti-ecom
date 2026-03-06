@@ -320,20 +320,22 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="home-gender-split-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 overflow-hidden" style="height: clamp(420px, 72vh, 860px);">
     <!-- Men -->
     <div class="relative group overflow-hidden flex items-center justify-center">
+        <a href="https://www.morettifashion.com/kategoria-produktu/dzial-meski/" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niego"></a>
         <img src="<?php echo get_template_directory_uri(); ?>/images/men-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niego">
         <div class="absolute inset-0 bg-black/30"></div>
-        <div class="relative z-10 text-center">
+        <div class="relative z-20 text-center pointer-events-none">
             <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEGO</h2>
-            <a href="/kategoria-produktu/portfele-meskie" class="text-xs font-bold text-white border-b-2 border-white pb-1 hover:opacity-70 transition-opacity">ZOBACZ WIĘCEJ</a>
+            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
         </div>
     </div>
     <!-- Women -->
     <div class="relative group overflow-hidden flex items-center justify-center">
+        <a href="https://www.morettifashion.com/kategoria-produktu/dzial-damski/" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niej"></a>
         <img src="<?php echo get_template_directory_uri(); ?>/images/women-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niej">
         <div class="absolute inset-0 bg-black/30"></div>
-        <div class="relative z-10 text-center">
+        <div class="relative z-20 text-center pointer-events-none">
             <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEJ</h2>
-            <a href="/kategoria-produktu/portfele-damskie" class="text-xs font-bold text-white border-b-2 border-white pb-1 hover:opacity-70 transition-opacity">ZOBACZ WIĘCEJ</a>
+            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
         </div>
     </div>
 </div>

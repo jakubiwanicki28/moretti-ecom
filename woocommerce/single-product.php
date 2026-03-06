@@ -237,9 +237,9 @@ get_header(); ?>
     }
     .main-product-image-frame {
         width: 100% !important;
-        aspect-ratio: 1 / 1 !important;
-        border: 1px solid #f3f4f6 !important;
-        background: #ffffff !important;
+        aspect-ratio: 3 / 4 !important;
+        border: none !important;
+        background: transparent !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -254,9 +254,10 @@ get_header(); ?>
         position: absolute !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        width: 36px !important;
-        height: 36px !important;
-        border: 1px solid #e5e7eb !important;
+        width: 32px !important;
+        height: 32px !important;
+        border: none !important;
+        border-radius: 50% !important;
         background: rgba(255, 255, 255, 0.92) !important;
         color: #2a2826 !important;
         display: flex !important;
@@ -264,7 +265,9 @@ get_header(); ?>
         justify-content: center !important;
         cursor: pointer !important;
         z-index: 12 !important;
-        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14) !important;
+        opacity: 1 !important;
+        transition: background-color 0.2s ease !important;
     }
     .single-gallery-prev {
         left: 10px !important;
@@ -274,7 +277,6 @@ get_header(); ?>
     }
     .single-gallery-arrow:hover {
         background: #ffffff !important;
-        border-color: #d1d5db !important;
     }
     .product-thumbnails {
         display: flex !important;
@@ -301,7 +303,7 @@ get_header(); ?>
             padding-top: 1.5rem !important;
         }
         .main-product-image-el {
-            object-fit: cover !important;
+            object-fit: contain !important;
         }
         .product-summary-custom {
             margin-top: 1rem !important;
@@ -591,34 +593,6 @@ get_header(); ?>
                                 </summary>
                                 <div class="mt-4 text-taupe-700 text-sm leading-relaxed product-accordion-content">
                                     <?php the_content(); ?>
-                                </div>
-                            </details>
-                            
-                            <!-- Rozmiar -->
-                            <details class="border-t border-gray-200 py-4">
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
-                                    <span>WYMIARY I DOPASOWANIE</span>
-                                    <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </summary>
-                                <div class="mt-4 text-taupe-700 text-sm space-y-2">
-                                    <p>Nasz produkt został zaprojektowany z myślą o ergonomii i codziennym użytkowaniu.</p>
-                                    <p>Dokładne wymiary znajdziesz w specyfikacji technicznej produktu.</p>
-                                </div>
-                            </details>
-                            
-                            <!-- Pielęgnacja -->
-                            <details class="border-t border-gray-200 py-4">
-                                <summary class="cursor-pointer text-charcoal font-medium flex items-center justify-between text-xs uppercase tracking-[0.2em] list-none marker:content-none [&::-webkit-details-marker]:hidden">
-                                    <span>PIELĘGNACJA</span>
-                                    <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </summary>
-                                <div class="mt-4 text-taupe-700 text-sm space-y-2">
-                                    <p>Przygotowaliśmy pełny poradnik dotyczący czyszczenia i konserwacji portfeli ze skóry naturalnej.</p>
-                                    <p><a class="product-care-link" href="<?php echo esc_url($care_page_url); ?>">Przejdź do poradnika pielęgnacji</a></p>
                                 </div>
                             </details>
                             
