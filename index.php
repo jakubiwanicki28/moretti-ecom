@@ -176,18 +176,23 @@ document.addEventListener('DOMContentLoaded', function() {
     var track = heroSection.querySelector('.moretti-hero-track');
     var dots = heroSection.querySelectorAll('.moretti-hero-dot');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
+    var AUTOPLAY_MS = 5000;
 
     if (!track || totalSlides <= 1) {
         return;
     }
 
     var currentSlide = 0;
-    var intervalId = null;
+    var autoplayTimerId = null;
+    var isTabVisible = !document.hidden;
+    var isWindowFocused = document.hasFocus();
+    var isPausedByInteraction = false;
 
     var updateDots = function() {
         dots.forEach(function(dot, dotIndex) {
             var isActive = dotIndex === currentSlide;
             dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-current', isActive ? 'true' : 'false');
             dot.style.background = isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.42)';
             dot.style.transform = isActive ? 'scale(1.4)' : 'scale(1)';
         });
@@ -203,16 +208,31 @@ document.addEventListener('DOMContentLoaded', function() {
         goToSlide(currentSlide + 1);
     };
 
-    var stopAutoplay = function() {
-        if (intervalId !== null) {
-            window.clearInterval(intervalId);
-            intervalId = null;
+    var canAutoplay = function() {
+        return isTabVisible && isWindowFocused && !isPausedByInteraction;
+    };
+
+    var clearAutoplayTimer = function() {
+        if (autoplayTimerId !== null) {
+            window.clearTimeout(autoplayTimerId);
+            autoplayTimerId = null;
         }
     };
 
-    var startAutoplay = function() {
-        stopAutoplay();
-        intervalId = window.setInterval(goToNextSlide, 5000);
+    var scheduleNextAutoplayTick = function() {
+        clearAutoplayTimer();
+        if (!canAutoplay()) {
+            return;
+        }
+
+        autoplayTimerId = window.setTimeout(function() {
+            goToNextSlide();
+            scheduleNextAutoplayTick();
+        }, AUTOPLAY_MS);
+    };
+
+    var restartAutoplayFromNow = function() {
+        scheduleNextAutoplayTick();
     };
 
     dots.forEach(function(dot) {
@@ -220,27 +240,58 @@ document.addEventListener('DOMContentLoaded', function() {
             var requestedSlide = parseInt(dot.getAttribute('data-slide-index'), 10);
             if (!Number.isNaN(requestedSlide)) {
                 goToSlide(requestedSlide);
-                startAutoplay();
+                restartAutoplayFromNow();
             }
         });
     });
 
-    heroSection.addEventListener('mouseenter', stopAutoplay);
-    heroSection.addEventListener('mouseleave', startAutoplay);
-    heroSection.addEventListener('focusin', stopAutoplay);
-    heroSection.addEventListener('focusout', startAutoplay);
+    heroSection.addEventListener('mouseenter', function() {
+        isPausedByInteraction = true;
+        clearAutoplayTimer();
+    });
+
+    heroSection.addEventListener('mouseleave', function() {
+        isPausedByInteraction = false;
+        restartAutoplayFromNow();
+    });
+
+    heroSection.addEventListener('focusin', function() {
+        isPausedByInteraction = true;
+        clearAutoplayTimer();
+    });
+
+    heroSection.addEventListener('focusout', function() {
+        // focusout fires before the next focused element is set
+        window.setTimeout(function() {
+            var isFocusStillInsideHero = heroSection.contains(document.activeElement);
+            isPausedByInteraction = isFocusStillInsideHero;
+            if (!isPausedByInteraction) {
+                restartAutoplayFromNow();
+            }
+        }, 0);
+    });
 
     document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stopAutoplay();
+        isTabVisible = !document.hidden;
+        if (!isTabVisible) {
+            clearAutoplayTimer();
             return;
         }
+        restartAutoplayFromNow();
+    });
 
-        startAutoplay();
+    window.addEventListener('blur', function() {
+        isWindowFocused = false;
+        clearAutoplayTimer();
+    });
+
+    window.addEventListener('focus', function() {
+        isWindowFocused = true;
+        restartAutoplayFromNow();
     });
 
     goToSlide(0);
-    startAutoplay();
+    restartAutoplayFromNow();
 });
 </script>
 
