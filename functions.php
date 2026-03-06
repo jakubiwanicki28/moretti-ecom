@@ -829,7 +829,7 @@ add_action('after_switch_theme', 'moretti_create_default_pages');
  * Runs once and only creates/publishes missing pages.
  */
 function moretti_ensure_legal_pages_exist() {
-    if (get_option('moretti_legal_pages_seeded_v3')) {
+    if (get_option('moretti_legal_pages_seeded_v4')) {
         return;
     }
 
@@ -837,79 +837,97 @@ function moretti_ensure_legal_pages_exist() {
         'regulamin-sklepu' => array(
             'title' => 'Regulamin sklepu',
             'content' => '
-            <p>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie Hurtowni internetowej www.portfelland.pl, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy, w rozumieniu art. 71 Kodeksu Cywilnego.</p>
-            <p>Hurtownia LIDA NIP 5261119292 REGON 015161906 oferuje sprzedaż hurtową towarów za pośrednictwem strony dla kontrahentów prowadzących działalność gospodarczą.<br>Adres firmy:<br>LIDA DARIUSZ CAŁA<br>Nadrzeczna 14<br>GD Hala 5, Box A-07<br>05-552 Wólka Kosowska</p>
-            <p>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Hurtowni www.portfelland.pl nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń względem www.portfelland.pl. Kupujący składając zamówienie za pomocą mechanizmów dostępnych na stronach internetowych Hurtowni www.portfelland.pl, składa ofertę kupna określonego produktu na warunkach podanych w opisie produktu.</p>
-            <p>4. Minimalna wartość zamówienia hurtowego wynosi 1200 zł netto</p>
-            <p>5. W przypadku zakupu detalicznego konsument, który zawarł umowę na odległość lub poza lokalem przedsiębiorstwa, może w terminie 14 dni odstąpić od niej bez podawania przyczyny</p>
-            <h2>DANE OSOBOWE</h2>
-            <p>Podane przez Klientów dane osobowe Sprzedawca przetwarza zgodnie z obowiązującymi przepisami prawa, w tym zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych) (Dz.U. L 119 z 4.5.2016, dalej: „Rozporządzenie”). W szczególności:</p>
-            <p>Sprzedawca zapewnia, aby dane te były:</p>
-            <ol type="a">
-                <li>przetwarzane zgodnie z prawem, rzetelnie i w sposób przejrzysty dla Klientów i innych osób, których dane dotyczą;</li>
-                <li>zbierane w konkretnych, wyraźnych i prawnie uzasadnionych celach i nieprzetwarzane dalej w sposób niezgodny z tymi celami;</li>
-                <li>adekwatne, stosowne oraz ograniczone do tego, co niezbędne do celów, w których są przetwarzane;</li>
-                <li>prawidłowe i w razie potrzeby uaktualniane;</li>
-                <li>przechowywane w formie umożliwiającej identyfikację osoby, której dane dotyczą, przez okres nie dłuższy, niż jest to niezbędne do celów, w których dane te są przetwarzane;</li>
-                <li>przetwarzane w sposób zapewniający odpowiednie bezpieczeństwo danych osobowych, w tym ochronę przed niedozwolonym lub niezgodnym z prawem przetwarzaniem oraz przypadkową utratą, zniszczeniem lub uszkodzeniem, za pomocą odpowiednich środków technicznych lub organizacyjnych,</li>
-            </ol>
-            <p>Sprzedawca stosuje odpowiednie środki techniczne i organizacyjne, zapewniające ochronę przetwarzanych danych osobowych odpowiednią do charakteru, zakresu, kontekstu i celów przetwarzania oraz ryzyka naruszenia praw lub wolności osób fizycznych;</p>
-            <p>Sprzedawca zapewnia dostęp do danych osobowych i korzystanie z innych praw Klientom i innym osobom, których dane dotyczą, zgodnie z obowiązującymi w tym zakresie przepisami prawa.</p>
-            <p>Podstawą przetwarzania danych osobowych jest zgoda Klientów lub wystąpienie innej przesłanki uprawniającej do przetwarzania danych osobowych według Rozporządzenia.</p>
-            <p>Sprzedawca gwarantuje realizację uprawnień osób, których dane osobowe są przetwarzane na zasadach wynikających z odpowiednich przepisów, w tym osobom tym przysługuje:</p>
-            <ol>
-                <li>prawo wycofania zgody w sprawie przetwarzania danych osobowych;</li>
-                <li>prawo do informacji dotyczących ich danych osobowych;</li>
-                <li>prawo do kontroli przetwarzania danych, w tym ich uzupełniania, uaktualniania, prostowania, usuwania;</li>
-                <li>prawo do sprzeciwu wobec przetwarzania lub do ograniczenia przetwarzania;</li>
-                <li>prawo do skargi do organu nadzoru i korzystania z innych środków prawnych celem ochrony swoich praw.</li>
-            </ol>
-            <p>Osoba mająca dostęp do danych osobowych przetwarza je wyłącznie na podstawie upoważnienia Sprzedawcy lub umowy powierzenia przetwarzania danych osobowych i wyłącznie na polecenie Sprzedawcy.</p>
-            <p>Sprzedawca zapewnia, że nie udostępniania danych osobowych innym podmiotom aniżeli upoważnionym na podstawie właściwych przepisów prawa, chyba że wymaga tego prawo Unii Europejskiej lub prawo polskie.</p>
-            <h2>WŁASNOŚĆ INTELEKTUALNA</h2>
-            <p>Prawa do Serwisu oraz treści w nim zawartych należą do Sprzedawcy.</p>
-            <p>Adres strony, pod którym jest dostępny Sklep, a także zawartość strony internetowej https://portfelland.pl/ stanowią przedmiot prawa autorskiego i są chronione przez prawo autorskie oraz prawo własności intelektualnej.</p>
-            <p>Wszystkie logotypy, nazwy własne, projekty graficzne, filmy, teksty, formularze, skrypty, kody źródłowe, hasła, znaki towarowe, znaki serwisowe itp. są znakami zastrzeżonymi i należą do Sprzedawcy, producenta lub dystrybutora Towaru. Pobieranie, kopiowanie, modyfikowanie, reprodukowanie, przesyłanie lub dystrybuowanie jakichkolwiek treści ze strony https://jagar.com.pl/ bez zgody właściciela jest zabronione.</p>
-            <h2>POSTANOWIENIA KOŃCOWE</h2>
-            <p>W sprawach nieuregulowanych Regulaminem w stosunkach prawnych z Klientami zastosowanie mają odpowiednie przepisy powszechnie obowiązującego prawa.</p>
-            <p>Sprzedawca zastrzega sobie prawo wprowadzania zmian do Regulaminu z zastrzeżeniem, iż do umów zawartych przed zmianą Regulaminu stosuje się wersję Regulaminu obowiązującą w chwili złożenia Zamówienia. W przypadku Przedsiębiorcy uprzywilejowanego na prawach konsumenta konieczna jest uprzednie powiadomienie o zmianie Regulaminu z wyprzedzeniem 14 dni i umożliwienie rozwiązania Umowy w razie braku akceptacji zmian.</p>
-            <p>Wszelkie odstępstwa od Regulaminu wymagają formy pisemnej pod rygorem nieważności.</p>
-            <p>4. Sądem właściwym do rozstrzygnięcia sporu między stronami będzie sąd właściwy według siedziby Sprzedawcy.</p>
-            <p>5. Sprzedawca LIDA DARIUSZ CAŁA NIP 5261119292 REGON 015161906</p>',
+            <div class="moretti-legal-doc">
+                <h2>Postanowienia ogólne</h2>
+                <p>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie Hurtowni internetowej www.portfelland.pl, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy, w rozumieniu art. 71 Kodeksu Cywilnego.</p>
+                <p>Hurtownia LIDA NIP 5261119292 REGON 015161906 oferuje sprzedaż hurtową towarów za pośrednictwem strony dla kontrahentów prowadzących działalność gospodarczą.</p>
+                <p><strong>Adres firmy:</strong><br>LIDA DARIUSZ CAŁA<br>Nadrzeczna 14<br>GD Hala 5, Box A-07<br>05-552 Wólka Kosowska</p>
+                <p>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Hurtowni www.portfelland.pl nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń względem www.portfelland.pl. Kupujący składając zamówienie za pomocą mechanizmów dostępnych na stronach internetowych Hurtowni www.portfelland.pl, składa ofertę kupna określonego produktu na warunkach podanych w opisie produktu.</p>
+                <ol start="4">
+                    <li>Minimalna wartość zamówienia hurtowego wynosi 1200 zł netto.</li>
+                    <li>W przypadku zakupu detalicznego konsument, który zawarł umowę na odległość lub poza lokalem przedsiębiorstwa, może w terminie 14 dni odstąpić od niej bez podawania przyczyny.</li>
+                </ol>
+
+                <h2>Dane osobowe</h2>
+                <p>Podane przez Klientów dane osobowe Sprzedawca przetwarza zgodnie z obowiązującymi przepisami prawa, w tym zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych) (Dz.U. L 119 z 4.5.2016, dalej: „Rozporządzenie”). W szczególności:</p>
+                <p>Sprzedawca zapewnia, aby dane te były:</p>
+                <ol type="a">
+                    <li>przetwarzane zgodnie z prawem, rzetelnie i w sposób przejrzysty dla Klientów i innych osób, których dane dotyczą;</li>
+                    <li>zbierane w konkretnych, wyraźnych i prawnie uzasadnionych celach i nieprzetwarzane dalej w sposób niezgodny z tymi celami;</li>
+                    <li>adekwatne, stosowne oraz ograniczone do tego, co niezbędne do celów, w których są przetwarzane;</li>
+                    <li>prawidłowe i w razie potrzeby uaktualniane;</li>
+                    <li>przechowywane w formie umożliwiającej identyfikację osoby, której dane dotyczą, przez okres nie dłuższy, niż jest to niezbędne do celów, w których dane te są przetwarzane;</li>
+                    <li>przetwarzane w sposób zapewniający odpowiednie bezpieczeństwo danych osobowych, w tym ochronę przed niedozwolonym lub niezgodnym z prawem przetwarzaniem oraz przypadkową utratą, zniszczeniem lub uszkodzeniem, za pomocą odpowiednich środków technicznych lub organizacyjnych.</li>
+                </ol>
+                <p>Sprzedawca stosuje odpowiednie środki techniczne i organizacyjne, zapewniające ochronę przetwarzanych danych osobowych odpowiednią do charakteru, zakresu, kontekstu i celów przetwarzania oraz ryzyka naruszenia praw lub wolności osób fizycznych.</p>
+                <p>Sprzedawca zapewnia dostęp do danych osobowych i korzystanie z innych praw Klientom i innym osobom, których dane dotyczą, zgodnie z obowiązującymi w tym zakresie przepisami prawa.</p>
+                <p>Podstawą przetwarzania danych osobowych jest zgoda Klientów lub wystąpienie innej przesłanki uprawniającej do przetwarzania danych osobowych według Rozporządzenia.</p>
+                <p>Sprzedawca gwarantuje realizację uprawnień osób, których dane osobowe są przetwarzane na zasadach wynikających z odpowiednich przepisów, w tym osobom tym przysługuje:</p>
+                <ol>
+                    <li>prawo wycofania zgody w sprawie przetwarzania danych osobowych;</li>
+                    <li>prawo do informacji dotyczących ich danych osobowych;</li>
+                    <li>prawo do kontroli przetwarzania danych, w tym ich uzupełniania, uaktualniania, prostowania, usuwania;</li>
+                    <li>prawo do sprzeciwu wobec przetwarzania lub do ograniczenia przetwarzania;</li>
+                    <li>prawo do skargi do organu nadzoru i korzystania z innych środków prawnych celem ochrony swoich praw.</li>
+                </ol>
+                <p>Osoba mająca dostęp do danych osobowych przetwarza je wyłącznie na podstawie upoważnienia Sprzedawcy lub umowy powierzenia przetwarzania danych osobowych i wyłącznie na polecenie Sprzedawcy.</p>
+                <p>Sprzedawca zapewnia, że nie udostępniania danych osobowych innym podmiotom aniżeli upoważnionym na podstawie właściwych przepisów prawa, chyba że wymaga tego prawo Unii Europejskiej lub prawo polskie.</p>
+
+                <h2>Własność intelektualna</h2>
+                <p>Prawa do Serwisu oraz treści w nim zawartych należą do Sprzedawcy.</p>
+                <p>Adres strony, pod którym jest dostępny Sklep, a także zawartość strony internetowej https://portfelland.pl/ stanowią przedmiot prawa autorskiego i są chronione przez prawo autorskie oraz prawo własności intelektualnej.</p>
+                <p>Wszystkie logotypy, nazwy własne, projekty graficzne, filmy, teksty, formularze, skrypty, kody źródłowe, hasła, znaki towarowe, znaki serwisowe itp. są znakami zastrzeżonymi i należą do Sprzedawcy, producenta lub dystrybutora Towaru. Pobieranie, kopiowanie, modyfikowanie, reprodukowanie, przesyłanie lub dystrybuowanie jakichkolwiek treści ze strony https://jagar.com.pl/ bez zgody właściciela jest zabronione.</p>
+
+                <h2>Postanowienia końcowe</h2>
+                <p>W sprawach nieuregulowanych Regulaminem w stosunkach prawnych z Klientami zastosowanie mają odpowiednie przepisy powszechnie obowiązującego prawa.</p>
+                <p>Sprzedawca zastrzega sobie prawo wprowadzania zmian do Regulaminu z zastrzeżeniem, iż do umów zawartych przed zmianą Regulaminu stosuje się wersję Regulaminu obowiązującą w chwili złożenia Zamówienia. W przypadku Przedsiębiorcy uprzywilejowanego na prawach konsumenta konieczna jest uprzednie powiadomienie o zmianie Regulaminu z wyprzedzeniem 14 dni i umożliwienie rozwiązania Umowy w razie braku akceptacji zmian.</p>
+                <p>Wszelkie odstępstwa od Regulaminu wymagają formy pisemnej pod rygorem nieważności.</p>
+                <ol start="4">
+                    <li>Sądem właściwym do rozstrzygnięcia sporu między stronami będzie sąd właściwy według siedziby Sprzedawcy.</li>
+                    <li>Sprzedawca LIDA DARIUSZ CAŁA NIP 5261119292 REGON 015161906.</li>
+                </ol>
+            </div>',
         ),
         'polityka-prywatnosci' => array(
             'title' => 'Polityka prywatności',
             'content' => '
-            <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
-            <p><strong>Pliki typu Cookies umożliwiają:</strong></p>
-            <ul>
-                <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
-                <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
-                <li>tworzenie statystyk oglądalności podstron serwisu,</li>
-                <li>personalizacji przekazów marketingowych,</li>
-                <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
-            </ul>
-            <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu WITTCHEN do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
-            <p>Sklep Internetowy PORTFELLAND.PL znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
-            <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
-            <p><strong>Pliki typu Cookies umożliwiają:</strong></p>
-            <ul>
-                <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
-                <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
-                <li>tworzenie statystyk oglądalności podstron serwisu,</li>
-                <li>personalizacji przekazów marketingowych,</li>
-                <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
-            </ul>
-            <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu POERTFELLAND do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
-            <p>Sklep Internetowy PORTFELLAND znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
-            <p>Dane są usuwane w momencie zamknięcia przeglądarki (sesja) i wyszukiwaniach produktów nie póżniej jak 360 dni po czym są usuniete trwale</p>
-            <p>vvInformujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych.Informujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych..</p>',
-        ),
-        'polityka-plikow-cookies' => array(
-            'title' => 'Polityka Plików Cookies',
-            'content' => '
-            <h1>Polityka Plików Cookies</h1>
-            <p>Sklep internetowy Moretti wykorzystuje pliki cookies w celach technicznych, analitycznych, bezpieczeństwa i personalizacji. Szczegóły opisano w dokumencie <a href="' . esc_url(home_url('/polityka-prywatnosci/')) . '">Polityka prywatności</a>.</p>',
+            <div class="moretti-legal-doc">
+                <h2>Pliki cookies i podobne technologie</h2>
+                <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
+
+                <h2>Pliki typu Cookies umożliwiają</h2>
+                <ul>
+                    <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
+                    <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
+                    <li>tworzenie statystyk oglądalności podstron serwisu,</li>
+                    <li>personalizacji przekazów marketingowych,</li>
+                    <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
+                </ul>
+
+                <h2>Rodzaje cookies</h2>
+                <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu WITTCHEN do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
+                <p>Sklep Internetowy PORTFELLAND.PL znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
+
+                <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
+
+                <h2>Pliki typu Cookies umożliwiają</h2>
+                <ul>
+                    <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
+                    <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
+                    <li>tworzenie statystyk oglądalności podstron serwisu,</li>
+                    <li>personalizacji przekazów marketingowych,</li>
+                    <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
+                </ul>
+
+                <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu POERTFELLAND do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
+                <p>Sklep Internetowy PORTFELLAND znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
+
+                <h2>Okres przechowywania danych</h2>
+                <p>Dane są usuwane w momencie zamknięcia przeglądarki (sesja) i wyszukiwaniach produktów nie póżniej jak 360 dni po czym są usuniete trwale.</p>
+
+                <h2>Aktualizacje dokumentu</h2>
+                <p>vvInformujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych.Informujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych..</p>
+            </div>',
         ),
         'dostawa-i-platnosci' => array(
             'title' => 'Dostawa i płatności',
@@ -941,6 +959,7 @@ function moretti_ensure_legal_pages_exist() {
             wp_update_post(array(
                 'ID' => $existing_page->ID,
                 'post_title' => $data['title'],
+                'post_name' => $slug,
                 'post_content' => $data['content'],
                 'post_status' => 'publish',
             ));
@@ -969,7 +988,15 @@ function moretti_ensure_legal_pages_exist() {
         ));
     }
 
-    update_option('moretti_legal_pages_seeded_v3', 1, false);
+    $cookies_page = get_page_by_path('polityka-plikow-cookies', OBJECT, 'page');
+    if ($cookies_page instanceof WP_Post) {
+        wp_update_post(array(
+            'ID' => $cookies_page->ID,
+            'post_status' => 'draft',
+        ));
+    }
+
+    update_option('moretti_legal_pages_seeded_v4', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
 

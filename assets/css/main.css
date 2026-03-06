@@ -111,6 +111,49 @@
   }
 }
 
+/* Legal pages readability */
+.moretti-legal-doc {
+  max-width: 960px;
+  margin: 0 auto;
+  color: #2a2826;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.moretti-legal-doc h2 {
+  margin: 2.25rem 0 0.9rem;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.moretti-legal-doc p {
+  margin: 0.75rem 0;
+}
+
+.moretti-legal-doc ol,
+.moretti-legal-doc ul {
+  margin: 0.75rem 0 1rem 1.2rem;
+  padding-left: 1rem;
+}
+
+.moretti-legal-doc li {
+  margin: 0.4rem 0;
+}
+
+@media (max-width: 767px) {
+  .moretti-legal-doc {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .moretti-legal-doc h2 {
+    margin-top: 1.8rem;
+    font-size: 1.1rem;
+  }
+}
+
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;

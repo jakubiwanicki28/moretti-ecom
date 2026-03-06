@@ -54,8 +54,7 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Regulamin</h4>
                 <ul style="list-style: none; padding: 0; margin: 0;">
                     <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('regulamin-sklepu'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Regulamin sklepu</a></li>
-                    <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('polityka-prywatnosci'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka prywatności</a></li>
-                    <li><a href="<?php echo esc_url($moretti_footer_page_url(array('polityka-plikow-cookies', 'polityka-prywatnosci'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka Plików Cookies</a></li>
+                    <li><a href="<?php echo esc_url($moretti_footer_page_url(array('polityka-prywatnosci'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Polityka prywatności</a></li>
                 </ul>
             </div>
 
