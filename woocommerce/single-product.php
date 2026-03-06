@@ -234,8 +234,12 @@ get_header(); ?>
         .product-summary-custom {
             margin-left: auto !important;
         }
+        .single-product-main .product-images {
+            width: 120% !important;
+            max-width: 120% !important;
+        }
     }
-    .main-product-image-frame {
+    .woocommerce-product-gallery .main-product-image-frame {
         width: 100% !important;
         aspect-ratio: 3 / 4 !important;
         border: none !important;
@@ -245,7 +249,7 @@ get_header(); ?>
         justify-content: center !important;
         overflow: hidden !important;
     }
-    .main-product-image-el {
+    .woocommerce-product-gallery .main-product-image-el {
         width: 100% !important;
         height: 100% !important;
         object-fit: contain !important;
@@ -429,7 +433,7 @@ get_header(); ?>
                 </div>
             <?php endif; ?>
             
-            <div class="flex flex-col md:grid md:grid-cols-2 md:gap-12 lg:gap-20 items-start">
+            <div class="flex flex-col md:grid md:grid-cols-2 md:gap-12 lg:gap-20 items-start" style="grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);">
                 
                 <!-- Product Images -->
                 <div class="product-images w-full">
