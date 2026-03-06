@@ -160,7 +160,7 @@ $hero_banners_count = count($hero_banners);
                     class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
                     data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
                     aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
-                    style="width: 8px; height: 8px; border: 0; border-radius: 999px; background: <?php echo $hero_banner_dot_index === 0 ? '#ffffff' : 'rgba(255, 255, 255, 0.42)'; ?>; cursor: pointer; transition: transform 0.25s ease, background-color 0.25s ease; padding: 0;"
+                    style="width: 8px; height: 8px; box-sizing: content-box; padding: 10px; background-clip: content-box; border: 0; border-radius: 999px; background: <?php echo $hero_banner_dot_index === 0 ? '#ffffff' : 'rgba(255, 255, 255, 0.42)'; ?>; cursor: pointer; transition: transform 0.25s ease, background-color 0.25s ease; margin: -10px -6px;"
                 ></button>
             <?php endforeach; ?>
         </div>
@@ -301,14 +301,9 @@ document.addEventListener('DOMContentLoaded', function() {
         restartAutoplayFromNow();
     });
 
-    // Ensure geometry is explicit for consistent translate behavior on all browsers.
+    // Keep GPU transform optimization without forcing wrong slide geometry.
     if (slides.length > 0) {
-        track.style.width = (slides.length * 100) + '%';
         track.style.willChange = 'transform';
-        slides.forEach(function(slide) {
-            slide.style.flex = '0 0 100%';
-            slide.style.minWidth = '100%';
-        });
     }
 
     goToSlide(0);
