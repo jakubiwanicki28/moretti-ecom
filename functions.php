@@ -829,26 +829,98 @@ add_action('after_switch_theme', 'moretti_create_default_pages');
  * Runs once and only creates/publishes missing pages.
  */
 function moretti_ensure_legal_pages_exist() {
-    if (get_option('moretti_legal_pages_seeded_v1')) {
+    if (get_option('moretti_legal_pages_seeded_v2')) {
         return;
     }
 
     $pages = array(
         'regulamin-sklepu' => array(
             'title' => 'Regulamin sklepu',
-            'content' => '<h1>Regulamin sklepu</h1><p>Ogłoszenia, cenniki i informacje o produktach publikowane w sklepie mają charakter informacyjny i stanowią zaproszenie do zawarcia umowy. Administratorem sklepu jest LIDA DARIUSZ CAŁA (NIP 5261119292, REGON 015161906).</p><p>W sprawach nieuregulowanych niniejszym regulaminem zastosowanie mają przepisy prawa polskiego.</p>',
+            'content' => '
+            <h1>Regulamin</h1>
+            <ol>
+                <li>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie sklepu internetowego Moretti, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy w rozumieniu art. 71 Kodeksu cywilnego.</li>
+                <li>Sprzedawcą jest: <strong>LIDA DARIUSZ CAŁA</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>, adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska.</li>
+                <li>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Moretti nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń.</li>
+                <li>Minimalna wartość zamówienia hurtowego wynosi <strong>1200 zł netto</strong>.</li>
+                <li>W przypadku zakupu detalicznego konsument, który zawarł umowę na odległość lub poza lokalem przedsiębiorstwa, może w terminie 14 dni odstąpić od niej bez podawania przyczyny.</li>
+            </ol>
+            <h2>Dane osobowe</h2>
+            <ol>
+                <li>Podane przez Klientów dane osobowe Sprzedawca przetwarza zgodnie z obowiązującymi przepisami prawa, w tym zgodnie z RODO (Rozporządzenie Parlamentu Europejskiego i Rady (UE) 2016/679).</li>
+                <li>Sprzedawca zapewnia, aby dane były: przetwarzane zgodnie z prawem, rzetelnie i przejrzyście; zbierane w konkretnych celach; adekwatne; prawidłowe; przechowywane nie dłużej niż to konieczne; oraz odpowiednio zabezpieczone.</li>
+                <li>Sprzedawca stosuje odpowiednie środki techniczne i organizacyjne zapewniające ochronę danych osobowych odpowiednią do charakteru i zakresu przetwarzania.</li>
+                <li>Sprzedawca zapewnia dostęp do danych osobowych i realizację praw osób, których dane dotyczą, zgodnie z przepisami prawa.</li>
+                <li>Podstawą przetwarzania danych osobowych jest zgoda Klienta lub inna przesłanka dopuszczona przez przepisy prawa.</li>
+                <li>Osobie, której dane dotyczą, przysługuje w szczególności: prawo wycofania zgody, prawo do informacji, prawo do poprawiania i usunięcia danych, prawo do sprzeciwu/ograniczenia przetwarzania oraz prawo wniesienia skargi do organu nadzorczego.</li>
+                <li>Dane osobowe są przetwarzane wyłącznie przez osoby upoważnione przez Sprzedawcę lub podmioty działające na podstawie umowy powierzenia.</li>
+                <li>Sprzedawca nie udostępnia danych osobowych podmiotom nieuprawnionym, z wyjątkiem przypadków wynikających z przepisów prawa.</li>
+            </ol>
+            <h2>Własność intelektualna</h2>
+            <ol>
+                <li>Prawa do serwisu oraz treści w nim zawartych należą do Sprzedawcy.</li>
+                <li>Adres strony oraz jej zawartość stanowią przedmiot ochrony prawnej, w tym prawa autorskiego i praw własności intelektualnej.</li>
+                <li>Wszystkie logotypy, nazwy własne, projekty graficzne, teksty, skrypty i inne elementy serwisu są chronione prawem i nie mogą być kopiowane ani rozpowszechniane bez zgody uprawnionego.</li>
+            </ol>
+            <h2>Postanowienia końcowe</h2>
+            <ol>
+                <li>W sprawach nieuregulowanych regulaminem zastosowanie mają odpowiednie przepisy powszechnie obowiązującego prawa.</li>
+                <li>Sprzedawca zastrzega sobie prawo do wprowadzania zmian regulaminu, przy czym do umów zawartych przed zmianą stosuje się regulamin obowiązujący w chwili złożenia zamówienia.</li>
+                <li>Wszelkie odstępstwa od regulaminu wymagają formy pisemnej pod rygorem nieważności.</li>
+                <li>Sądem właściwym do rozstrzygania sporów jest sąd właściwy według siedziby Sprzedawcy, z uwzględnieniem przepisów chroniących konsumentów.</li>
+                <li>Sprzedawca: LIDA DARIUSZ CAŁA, NIP 5261119292, REGON 015161906.</li>
+            </ol>',
         ),
         'polityka-prywatnosci' => array(
             'title' => 'Polityka prywatności',
-            'content' => '<h1>Polityka prywatności</h1><p>Sklep wykorzystuje pliki cookies i podobne technologie w celu prawidłowego działania serwisu, utrzymania sesji użytkownika, analityki oraz bezpieczeństwa.</p><p>Administratorem danych jest LIDA DARIUSZ CAŁA (NIP 5261119292, REGON 015161906).</p>',
+            'content' => '
+            <h1>Polityka prywatności</h1>
+            <p>Strony internetowe Moretti wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki cookies są zapisywane na urządzeniu końcowym użytkownika (np. laptop, smartfon) przez przeglądarkę internetową.</p>
+            <p>Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisu i zwiększają jego wydajność poprzez zapisywanie informacji o sposobie korzystania z witryny.</p>
+            <h2>Pliki cookies umożliwiają:</h2>
+            <ul>
+                <li>utrzymanie sesji Klienta po zalogowaniu (brak potrzeby ponownego wpisywania loginu i hasła),</li>
+                <li>dostosowanie i optymalizację serwisu do potrzeb użytkowników,</li>
+                <li>tworzenie statystyk oglądalności podstron,</li>
+                <li>personalizację przekazów marketingowych,</li>
+                <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
+            </ul>
+            <h2>Rodzaje wykorzystywanych cookies</h2>
+            <ul>
+                <li><strong>Cookies sesyjne</strong> – pliki tymczasowe przechowywane od momentu wejścia do serwisu do momentu zamknięcia przeglądarki lub zakończenia sesji.</li>
+                <li><strong>Cookies trwałe</strong> – pliki przechowywane przez dłuższy czas, ułatwiające korzystanie z serwisu.</li>
+            </ul>
+            <h2>Okres przechowywania danych</h2>
+            <p>Dane przetwarzane z wykorzystaniem cookies usuwane są po zakończeniu sesji lub przechowywane przez okres niezbędny do realizacji celu, nie dłużej niż 360 dni, chyba że przepisy prawa wymagają dłuższego okresu.</p>
+            <h2>Zmiany polityki</h2>
+            <p>Dokument może być okresowo aktualizowany w związku ze zmianami przepisów prawa lub procedur bezpieczeństwa stosowanych przez Administratora.</p>
+            <h2>Administrator danych i kontakt</h2>
+            <p>Administratorem danych osobowych jest <strong>LIDA DARIUSZ CAŁA</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>.</p>
+            <p>Kontakt: <a href="mailto:hurtportfelland@gmail.com">hurtportfelland@gmail.com</a>, tel. <a href="tel:+48725538100">+48 725 538 100</a>.</p>',
         ),
         'polityka-plikow-cookies' => array(
             'title' => 'Polityka Plików Cookies',
-            'content' => '<h1>Polityka Plików Cookies</h1><p>Pliki cookies wykorzystywane są do utrzymania sesji, dostosowania serwisu do preferencji użytkownika, analityki i zapewnienia bezpieczeństwa działania sklepu.</p>',
+            'content' => '
+            <h1>Polityka Plików Cookies</h1>
+            <p>Sklep internetowy Moretti wykorzystuje pliki cookies w celach technicznych, analitycznych, bezpieczeństwa i personalizacji. Szczegóły opisano w dokumencie <a href="' . esc_url(home_url('/polityka-prywatnosci/')) . '">Polityka prywatności</a>.</p>',
         ),
         'dostawa-i-platnosci' => array(
             'title' => 'Dostawa i płatności',
-            'content' => '<h1>Dostawa i płatności</h1><ol><li>Wszystkie ceny towarów podawane są w PLN i zawierają podatek VAT.</li><li>Koszty dostawy prezentowane są na etapie składania zamówienia i zależą od wybranej metody.</li><li>Dostępne metody płatności: przedpłata, płatność online oraz inne metody udostępnione w checkout.</li></ol>',
+            'content' => '
+            <h1>Dostawa i płatności</h1>
+            <ol>
+                <li>Wszystkie ceny Towarów podawane w Sklepie są podawane w wartościach netto i brutto w złotych polskich (ceny zawierają podatek VAT). Cena Towaru nie uwzględnia kosztów dostawy. Cena podana w chwili złożenia Zamówienia jest wiążąca dla obu stron.</li>
+                <li>Koszty związane z dostawą Towaru (np. transport, dostarczenie, usługi pocztowe) i ewentualne inne koszty ponosi Klient. Wysokość tych kosztów może zależeć od wybranego sposobu dostawy. Informacja o kosztach jest przekazywana na etapie składania Zamówienia.</li>
+                <li>Klient może wybrać formę płatności:
+                    <ul>
+                        <li><strong>przedpłata</strong> – po złożeniu zamówienia Klient dokonuje wpłaty/przelewu; realizacja zamówienia następuje po zaksięgowaniu wpłaty,</li>
+                        <li><strong>za pobraniem</strong> – należność uiszczana jest przy odbiorze Towaru; realizacja po przyjęciu zamówienia,</li>
+                        <li><strong>płatność przy odbiorze osobistym</strong> (gotówka lub karta) – należność uiszczana jest bezpośrednio przy odbiorze osobistym.</li>
+                    </ul>
+                </li>
+                <li>Na każdy sprzedany Produkt Sklep wystawia dowód zakupu i doręcza go Klientowi.</li>
+                <li>Klient zobowiązany jest do zapłaty w terminie 7 dni od dnia zawarcia umowy sprzedaży, o ile wybrany sposób zapłaty nie wymaga zachowania innego terminu.</li>
+            </ol>',
         ),
         'zwroty' => array(
             'title' => 'Zwroty',
@@ -863,23 +935,22 @@ function moretti_ensure_legal_pages_exist() {
     foreach ($pages as $slug => $data) {
         $existing_page = get_page_by_path($slug, OBJECT, 'page');
         if ($existing_page instanceof WP_Post) {
-            if ($existing_page->post_status !== 'publish') {
-                wp_update_post(array(
-                    'ID' => $existing_page->ID,
-                    'post_status' => 'publish',
-                ));
-            }
-            continue;
+            wp_update_post(array(
+                'ID' => $existing_page->ID,
+                'post_title' => $data['title'],
+                'post_content' => $data['content'],
+                'post_status' => 'publish',
+            ));
+        } else {
+            wp_insert_post(array(
+                'post_title' => $data['title'],
+                'post_name' => $slug,
+                'post_content' => $data['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+                'post_author' => 1,
+            ));
         }
-
-        wp_insert_post(array(
-            'post_title' => $data['title'],
-            'post_name' => $slug,
-            'post_content' => $data['content'],
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_author' => 1,
-        ));
     }
 
     // Backward-compatible alias page used by older footer links.
@@ -895,7 +966,7 @@ function moretti_ensure_legal_pages_exist() {
         ));
     }
 
-    update_option('moretti_legal_pages_seeded_v1', 1, false);
+    update_option('moretti_legal_pages_seeded_v2', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
 
