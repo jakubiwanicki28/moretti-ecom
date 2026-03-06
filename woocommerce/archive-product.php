@@ -359,6 +359,61 @@ if (is_product_category()) {
 $is_shop_root_view = is_shop() && !is_product_category() && !$is_wishlist_view;
 $show_category_filter = $is_shop_root_view;
 
+// Dynamic price bounds for "Cena" slider filter.
+$price_floor = 0;
+$price_ceil = 2000;
+if (isset($GLOBALS['wpdb']) && $GLOBALS['wpdb'] instanceof wpdb) {
+    $price_bounds = $GLOBALS['wpdb']->get_row(
+        "SELECT
+            MIN(CAST(pm.meta_value AS DECIMAL(10,2))) AS min_price,
+            MAX(CAST(pm.meta_value AS DECIMAL(10,2))) AS max_price
+         FROM {$GLOBALS['wpdb']->postmeta} pm
+         INNER JOIN {$GLOBALS['wpdb']->posts} p ON p.ID = pm.post_id
+         WHERE pm.meta_key = '_price'
+           AND pm.meta_value <> ''
+           AND p.post_type = 'product'
+           AND p.post_status = 'publish'",
+        ARRAY_A
+    );
+
+    if (is_array($price_bounds)) {
+        $db_min = isset($price_bounds['min_price']) ? (float) $price_bounds['min_price'] : 0.0;
+        $db_max = isset($price_bounds['max_price']) ? (float) $price_bounds['max_price'] : 0.0;
+        if ($db_max > 0) {
+            $price_floor = (int) floor($db_min);
+            $price_ceil = (int) ceil($db_max);
+        }
+    }
+}
+
+if ($price_ceil <= $price_floor) {
+    $price_ceil = $price_floor + 100;
+}
+
+$selected_min_price = isset($_GET['min_price']) && $_GET['min_price'] !== ''
+    ? (int) floor((float) wp_unslash($_GET['min_price']))
+    : $price_floor;
+$selected_max_price = isset($_GET['max_price']) && $_GET['max_price'] !== ''
+    ? (int) ceil((float) wp_unslash($_GET['max_price']))
+    : $price_ceil;
+
+$selected_min_price = max($price_floor, min($selected_min_price, $price_ceil));
+$selected_max_price = max($price_floor, min($selected_max_price, $price_ceil));
+if ($selected_min_price > $selected_max_price) {
+    $tmp_price = $selected_min_price;
+    $selected_min_price = $selected_max_price;
+    $selected_max_price = $tmp_price;
+}
+
+$price_summary_label = 'Cena';
+if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
+    $price_summary_label = sprintf(
+        'Cena: %s-%s zł',
+        number_format_i18n($selected_min_price, 0),
+        number_format_i18n($selected_max_price, 0)
+    );
+}
+
 ?>
 
 <div class="shop-page shop-page-wittchen">
@@ -644,11 +699,60 @@ $show_category_filter = $is_shop_root_view;
                 ?>
 
                 <details class="wittchen-filter">
-                    <summary>Cena</summary>
+                    <summary><?php echo esc_html($price_summary_label); ?></summary>
                     <div class="wittchen-filter-menu">
-                        <a href="<?php echo esc_url($moretti_build_shop_url(array('max_price' => 200, 'min_price' => false))); ?>" class="wittchen-filter-item">Do 200 zł</a>
-                        <a href="<?php echo esc_url($moretti_build_shop_url(array('min_price' => 200, 'max_price' => 500))); ?>" class="wittchen-filter-item">200-500 zł</a>
-                        <a href="<?php echo esc_url($moretti_build_shop_url(array('min_price' => 500, 'max_price' => false))); ?>" class="wittchen-filter-item">Powyżej 500 zł</a>
+                        <form method="get" action="<?php echo esc_url(get_pagenum_link(1)); ?>" class="wittchen-price-form" data-role="price-filter-form">
+                            <?php if ($selected_color !== '') : ?>
+                                <input type="hidden" name="filter_color" value="<?php echo esc_attr($selected_color); ?>">
+                            <?php endif; ?>
+                            <?php if ($selected_material !== '') : ?>
+                                <input type="hidden" name="filter_material" value="<?php echo esc_attr($selected_material); ?>">
+                            <?php endif; ?>
+                            <?php if ($selected_size !== '') : ?>
+                                <input type="hidden" name="filter_size" value="<?php echo esc_attr($selected_size); ?>">
+                            <?php endif; ?>
+                            <?php if (!empty($orderby)) : ?>
+                                <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
+                            <?php endif; ?>
+                            <?php if ($is_wishlist_view) : ?>
+                                <input type="hidden" name="wishlist" value="1">
+                            <?php endif; ?>
+
+                            <div class="wittchen-price-values">
+                                <span data-role="min-value"><?php echo esc_html(number_format_i18n($selected_min_price, 0)); ?> zł</span>
+                                <span class="wittchen-price-separator">-</span>
+                                <span data-role="max-value"><?php echo esc_html(number_format_i18n($selected_max_price, 0)); ?> zł</span>
+                            </div>
+
+                            <div class="wittchen-price-range" data-role="range-wrap">
+                                <input
+                                    type="range"
+                                    min="<?php echo esc_attr($price_floor); ?>"
+                                    max="<?php echo esc_attr($price_ceil); ?>"
+                                    step="1"
+                                    value="<?php echo esc_attr($selected_min_price); ?>"
+                                    class="wittchen-price-range-input is-min"
+                                    data-role="min-range"
+                                >
+                                <input
+                                    type="range"
+                                    min="<?php echo esc_attr($price_floor); ?>"
+                                    max="<?php echo esc_attr($price_ceil); ?>"
+                                    step="1"
+                                    value="<?php echo esc_attr($selected_max_price); ?>"
+                                    class="wittchen-price-range-input is-max"
+                                    data-role="max-range"
+                                >
+                            </div>
+
+                            <input type="hidden" name="min_price" value="<?php echo esc_attr($selected_min_price); ?>" data-role="min-hidden">
+                            <input type="hidden" name="max_price" value="<?php echo esc_attr($selected_max_price); ?>" data-role="max-hidden">
+
+                            <div class="wittchen-price-actions">
+                                <button type="submit" class="wittchen-price-submit">Zastosuj</button>
+                                <a href="<?php echo esc_url($moretti_build_shop_url(array('min_price' => false, 'max_price' => false))); ?>" class="wittchen-price-clear">Wyczyść</a>
+                            </div>
+                        </form>
                     </div>
                 </details>
 
@@ -1053,6 +1157,98 @@ $show_category_filter = $is_shop_root_view;
         background: #f3f3f3;
     }
 
+    .shop-page-wittchen .wittchen-price-form {
+        padding: 12px;
+        min-width: 260px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .shop-page-wittchen .wittchen-price-values {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 11px;
+        color: #2a2826;
+        white-space: nowrap;
+    }
+
+    .shop-page-wittchen .wittchen-price-separator {
+        color: #8a8a8a;
+    }
+
+    .shop-page-wittchen .wittchen-price-range {
+        position: relative;
+        height: 20px;
+        background: linear-gradient(to right, #e5e7eb 0%, #2a2826 0%, #2a2826 100%, #e5e7eb 100%);
+        border-radius: 999px;
+    }
+
+    .shop-page-wittchen .wittchen-price-range-input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        margin: 0;
+        pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+    }
+
+    .shop-page-wittchen .wittchen-price-range-input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid #2a2826;
+        background: #fff;
+        pointer-events: auto;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    }
+
+    .shop-page-wittchen .wittchen-price-range-input::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid #2a2826;
+        background: #fff;
+        pointer-events: auto;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    }
+
+    .shop-page-wittchen .wittchen-price-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .shop-page-wittchen .wittchen-price-submit {
+        border: 1px solid #2a2826;
+        background: #2a2826;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .shop-page-wittchen .wittchen-price-submit:hover {
+        background: #1f1d1c;
+    }
+
+    .shop-page-wittchen .wittchen-price-clear {
+        font-size: 11px;
+        color: #2a2826;
+        text-decoration: underline;
+    }
+
     .shop-page-wittchen .wittchen-reset {
         color: #2a2826;
         font-size: 11px;
@@ -1408,6 +1604,55 @@ document.addEventListener('DOMContentLoaded', function() {
             closeOtherFilters();
         }
     });
+
+    const formatPrice = (value) => `${new Intl.NumberFormat('pl-PL').format(value)} zł`;
+    const updateRangeTrack = (wrap, minValue, maxValue, minLimit, maxLimit) => {
+        const spread = Math.max(1, maxLimit - minLimit);
+        const minPct = ((minValue - minLimit) / spread) * 100;
+        const maxPct = ((maxValue - minLimit) / spread) * 100;
+        wrap.style.background = `linear-gradient(to right, #e5e7eb 0%, #e5e7eb ${minPct}%, #2a2826 ${minPct}%, #2a2826 ${maxPct}%, #e5e7eb ${maxPct}%, #e5e7eb 100%)`;
+    };
+
+    document.querySelectorAll('[data-role="price-filter-form"]').forEach((form) => {
+        const minRange = form.querySelector('[data-role="min-range"]');
+        const maxRange = form.querySelector('[data-role="max-range"]');
+        const minHidden = form.querySelector('[data-role="min-hidden"]');
+        const maxHidden = form.querySelector('[data-role="max-hidden"]');
+        const minValueText = form.querySelector('[data-role="min-value"]');
+        const maxValueText = form.querySelector('[data-role="max-value"]');
+        const rangeWrap = form.querySelector('[data-role="range-wrap"]');
+        if (!minRange || !maxRange || !minHidden || !maxHidden || !minValueText || !maxValueText || !rangeWrap) {
+            return;
+        }
+
+        const minLimit = parseInt(minRange.min || '0', 10);
+        const maxLimit = parseInt(minRange.max || '0', 10);
+
+        const sync = (source) => {
+            let minValue = parseInt(minRange.value || String(minLimit), 10);
+            let maxValue = parseInt(maxRange.value || String(maxLimit), 10);
+
+            if (minValue > maxValue) {
+                if (source === 'min') {
+                    minValue = maxValue;
+                    minRange.value = String(minValue);
+                } else {
+                    maxValue = minValue;
+                    maxRange.value = String(maxValue);
+                }
+            }
+
+            minHidden.value = String(minValue);
+            maxHidden.value = String(maxValue);
+            minValueText.textContent = formatPrice(minValue);
+            maxValueText.textContent = formatPrice(maxValue);
+            updateRangeTrack(rangeWrap, minValue, maxValue, minLimit, maxLimit);
+        };
+
+        minRange.addEventListener('input', () => sync('min'));
+        maxRange.addEventListener('input', () => sync('max'));
+        sync();
+    });
     
     const initProductCard = (card) => {
         if (!card || card.dataset.morettiInit === '1') {
@@ -1523,7 +1768,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        const stopInfinite = ({ message = '', hideLoader = false } = {}) => {
+        const stopInfinite = ({ message = '' } = {}) => {
             setInfiniteStatus('idle', message);
             if (observer) {
                 observer.disconnect();
@@ -1535,8 +1780,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (infiniteSentinel.parentNode) {
                 infiniteSentinel.parentNode.removeChild(infiniteSentinel);
             }
-            if (hideLoader) {
-                infiniteLoader.style.display = 'none';
+            if (infiniteRetry) {
+                infiniteRetry.hidden = true;
             }
         };
 
@@ -1571,10 +1816,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nextGrid = parsedDoc.getElementById('products-grid');
 
                 if (!nextGrid) {
-                    throw new Error('Brak siatki produktów w odpowiedzi.');
+                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    return;
                 }
 
                 const incomingCards = Array.from(nextGrid.querySelectorAll('.product-card'));
+                if (incomingCards.length === 0) {
+                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    return;
+                }
                 incomingCards.forEach((card) => {
                     productsGrid.appendChild(card);
                     initProductCard(card);
@@ -1597,11 +1847,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 infiniteLoader.dataset.nextUrl = nextUrl;
 
                 if (!nextUrl || currentPage >= maxPages) {
-                    stopInfinite({ hideLoader: true });
+                    stopInfinite({ message: 'To już wszystkie produkty.' });
                 } else {
                     setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
                 }
             } catch (error) {
+                const likelyReachedEnd = currentPage >= (maxPages - 1);
+                if (likelyReachedEnd) {
+                    hasLoadError = false;
+                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    return;
+                }
+
                 hasLoadError = true;
                 setInfiniteStatus('error', 'Błąd ładowania. Kliknij "Spróbuj ponownie".');
             } finally {
@@ -1620,10 +1877,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!nextUrl || currentPage >= maxPages) {
-            stopInfinite({ hideLoader: true });
+            stopInfinite({ message: 'To już wszystkie produkty.' });
             return;
         }
 
+        const preloadDistance = Math.max(480, Math.round(window.innerHeight * 0.75));
         if ('IntersectionObserver' in window) {
             observer = new IntersectionObserver((entries) => {
                 const hasVisibleSentinel = entries.some((entry) => entry.isIntersecting);
@@ -1631,14 +1889,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     loadNextPage();
                 }
             }, {
-                rootMargin: '300px 0px 300px 0px'
+                rootMargin: preloadDistance + 'px 0px ' + preloadDistance + 'px 0px'
             });
             observer.observe(infiniteSentinel);
         } else {
             // Fallback for very old browsers.
             fallbackScrollHandler = () => {
                 const rect = infiniteSentinel.getBoundingClientRect();
-                if (rect.top <= window.innerHeight + 300 && !hasLoadError) {
+                if (rect.top <= window.innerHeight + preloadDistance && !hasLoadError) {
                     loadNextPage();
                 }
             };
