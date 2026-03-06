@@ -829,7 +829,7 @@ add_action('after_switch_theme', 'moretti_create_default_pages');
  * Runs once and only creates/publishes missing pages.
  */
 function moretti_ensure_legal_pages_exist() {
-    if (get_option('moretti_legal_pages_seeded_v2')) {
+    if (get_option('moretti_legal_pages_seeded_v3')) {
         return;
     }
 
@@ -837,66 +837,73 @@ function moretti_ensure_legal_pages_exist() {
         'regulamin-sklepu' => array(
             'title' => 'Regulamin sklepu',
             'content' => '
-            <h1>Regulamin</h1>
-            <ol>
-                <li>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie sklepu internetowego Moretti, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy w rozumieniu art. 71 Kodeksu cywilnego.</li>
-                <li>Sprzedawcą jest: <strong>LIDA DARIUSZ CAŁA</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>, adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska.</li>
-                <li>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Moretti nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń.</li>
-                <li>Minimalna wartość zamówienia hurtowego wynosi <strong>1200 zł netto</strong>.</li>
-                <li>W przypadku zakupu detalicznego konsument, który zawarł umowę na odległość lub poza lokalem przedsiębiorstwa, może w terminie 14 dni odstąpić od niej bez podawania przyczyny.</li>
+            <p>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie Hurtowni internetowej www.portfelland.pl, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy, w rozumieniu art. 71 Kodeksu Cywilnego.</p>
+            <p>Hurtownia LIDA NIP 5261119292 REGON 015161906 oferuje sprzedaż hurtową towarów za pośrednictwem strony dla kontrahentów prowadzących działalność gospodarczą.<br>Adres firmy:<br>LIDA DARIUSZ CAŁA<br>Nadrzeczna 14<br>GD Hala 5, Box A-07<br>05-552 Wólka Kosowska</p>
+            <p>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Hurtowni www.portfelland.pl nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń względem www.portfelland.pl. Kupujący składając zamówienie za pomocą mechanizmów dostępnych na stronach internetowych Hurtowni www.portfelland.pl, składa ofertę kupna określonego produktu na warunkach podanych w opisie produktu.</p>
+            <p>4. Minimalna wartość zamówienia hurtowego wynosi 1200 zł netto</p>
+            <p>5. W przypadku zakupu detalicznego konsument, który zawarł umowę na odległość lub poza lokalem przedsiębiorstwa, może w terminie 14 dni odstąpić od niej bez podawania przyczyny</p>
+            <h2>DANE OSOBOWE</h2>
+            <p>Podane przez Klientów dane osobowe Sprzedawca przetwarza zgodnie z obowiązującymi przepisami prawa, w tym zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych) (Dz.U. L 119 z 4.5.2016, dalej: „Rozporządzenie”). W szczególności:</p>
+            <p>Sprzedawca zapewnia, aby dane te były:</p>
+            <ol type="a">
+                <li>przetwarzane zgodnie z prawem, rzetelnie i w sposób przejrzysty dla Klientów i innych osób, których dane dotyczą;</li>
+                <li>zbierane w konkretnych, wyraźnych i prawnie uzasadnionych celach i nieprzetwarzane dalej w sposób niezgodny z tymi celami;</li>
+                <li>adekwatne, stosowne oraz ograniczone do tego, co niezbędne do celów, w których są przetwarzane;</li>
+                <li>prawidłowe i w razie potrzeby uaktualniane;</li>
+                <li>przechowywane w formie umożliwiającej identyfikację osoby, której dane dotyczą, przez okres nie dłuższy, niż jest to niezbędne do celów, w których dane te są przetwarzane;</li>
+                <li>przetwarzane w sposób zapewniający odpowiednie bezpieczeństwo danych osobowych, w tym ochronę przed niedozwolonym lub niezgodnym z prawem przetwarzaniem oraz przypadkową utratą, zniszczeniem lub uszkodzeniem, za pomocą odpowiednich środków technicznych lub organizacyjnych,</li>
             </ol>
-            <h2>Dane osobowe</h2>
+            <p>Sprzedawca stosuje odpowiednie środki techniczne i organizacyjne, zapewniające ochronę przetwarzanych danych osobowych odpowiednią do charakteru, zakresu, kontekstu i celów przetwarzania oraz ryzyka naruszenia praw lub wolności osób fizycznych;</p>
+            <p>Sprzedawca zapewnia dostęp do danych osobowych i korzystanie z innych praw Klientom i innym osobom, których dane dotyczą, zgodnie z obowiązującymi w tym zakresie przepisami prawa.</p>
+            <p>Podstawą przetwarzania danych osobowych jest zgoda Klientów lub wystąpienie innej przesłanki uprawniającej do przetwarzania danych osobowych według Rozporządzenia.</p>
+            <p>Sprzedawca gwarantuje realizację uprawnień osób, których dane osobowe są przetwarzane na zasadach wynikających z odpowiednich przepisów, w tym osobom tym przysługuje:</p>
             <ol>
-                <li>Podane przez Klientów dane osobowe Sprzedawca przetwarza zgodnie z obowiązującymi przepisami prawa, w tym zgodnie z RODO (Rozporządzenie Parlamentu Europejskiego i Rady (UE) 2016/679).</li>
-                <li>Sprzedawca zapewnia, aby dane były: przetwarzane zgodnie z prawem, rzetelnie i przejrzyście; zbierane w konkretnych celach; adekwatne; prawidłowe; przechowywane nie dłużej niż to konieczne; oraz odpowiednio zabezpieczone.</li>
-                <li>Sprzedawca stosuje odpowiednie środki techniczne i organizacyjne zapewniające ochronę danych osobowych odpowiednią do charakteru i zakresu przetwarzania.</li>
-                <li>Sprzedawca zapewnia dostęp do danych osobowych i realizację praw osób, których dane dotyczą, zgodnie z przepisami prawa.</li>
-                <li>Podstawą przetwarzania danych osobowych jest zgoda Klienta lub inna przesłanka dopuszczona przez przepisy prawa.</li>
-                <li>Osobie, której dane dotyczą, przysługuje w szczególności: prawo wycofania zgody, prawo do informacji, prawo do poprawiania i usunięcia danych, prawo do sprzeciwu/ograniczenia przetwarzania oraz prawo wniesienia skargi do organu nadzorczego.</li>
-                <li>Dane osobowe są przetwarzane wyłącznie przez osoby upoważnione przez Sprzedawcę lub podmioty działające na podstawie umowy powierzenia.</li>
-                <li>Sprzedawca nie udostępnia danych osobowych podmiotom nieuprawnionym, z wyjątkiem przypadków wynikających z przepisów prawa.</li>
+                <li>prawo wycofania zgody w sprawie przetwarzania danych osobowych;</li>
+                <li>prawo do informacji dotyczących ich danych osobowych;</li>
+                <li>prawo do kontroli przetwarzania danych, w tym ich uzupełniania, uaktualniania, prostowania, usuwania;</li>
+                <li>prawo do sprzeciwu wobec przetwarzania lub do ograniczenia przetwarzania;</li>
+                <li>prawo do skargi do organu nadzoru i korzystania z innych środków prawnych celem ochrony swoich praw.</li>
             </ol>
-            <h2>Własność intelektualna</h2>
-            <ol>
-                <li>Prawa do serwisu oraz treści w nim zawartych należą do Sprzedawcy.</li>
-                <li>Adres strony oraz jej zawartość stanowią przedmiot ochrony prawnej, w tym prawa autorskiego i praw własności intelektualnej.</li>
-                <li>Wszystkie logotypy, nazwy własne, projekty graficzne, teksty, skrypty i inne elementy serwisu są chronione prawem i nie mogą być kopiowane ani rozpowszechniane bez zgody uprawnionego.</li>
-            </ol>
-            <h2>Postanowienia końcowe</h2>
-            <ol>
-                <li>W sprawach nieuregulowanych regulaminem zastosowanie mają odpowiednie przepisy powszechnie obowiązującego prawa.</li>
-                <li>Sprzedawca zastrzega sobie prawo do wprowadzania zmian regulaminu, przy czym do umów zawartych przed zmianą stosuje się regulamin obowiązujący w chwili złożenia zamówienia.</li>
-                <li>Wszelkie odstępstwa od regulaminu wymagają formy pisemnej pod rygorem nieważności.</li>
-                <li>Sądem właściwym do rozstrzygania sporów jest sąd właściwy według siedziby Sprzedawcy, z uwzględnieniem przepisów chroniących konsumentów.</li>
-                <li>Sprzedawca: LIDA DARIUSZ CAŁA, NIP 5261119292, REGON 015161906.</li>
-            </ol>',
+            <p>Osoba mająca dostęp do danych osobowych przetwarza je wyłącznie na podstawie upoważnienia Sprzedawcy lub umowy powierzenia przetwarzania danych osobowych i wyłącznie na polecenie Sprzedawcy.</p>
+            <p>Sprzedawca zapewnia, że nie udostępniania danych osobowych innym podmiotom aniżeli upoważnionym na podstawie właściwych przepisów prawa, chyba że wymaga tego prawo Unii Europejskiej lub prawo polskie.</p>
+            <h2>WŁASNOŚĆ INTELEKTUALNA</h2>
+            <p>Prawa do Serwisu oraz treści w nim zawartych należą do Sprzedawcy.</p>
+            <p>Adres strony, pod którym jest dostępny Sklep, a także zawartość strony internetowej https://portfelland.pl/ stanowią przedmiot prawa autorskiego i są chronione przez prawo autorskie oraz prawo własności intelektualnej.</p>
+            <p>Wszystkie logotypy, nazwy własne, projekty graficzne, filmy, teksty, formularze, skrypty, kody źródłowe, hasła, znaki towarowe, znaki serwisowe itp. są znakami zastrzeżonymi i należą do Sprzedawcy, producenta lub dystrybutora Towaru. Pobieranie, kopiowanie, modyfikowanie, reprodukowanie, przesyłanie lub dystrybuowanie jakichkolwiek treści ze strony https://jagar.com.pl/ bez zgody właściciela jest zabronione.</p>
+            <h2>POSTANOWIENIA KOŃCOWE</h2>
+            <p>W sprawach nieuregulowanych Regulaminem w stosunkach prawnych z Klientami zastosowanie mają odpowiednie przepisy powszechnie obowiązującego prawa.</p>
+            <p>Sprzedawca zastrzega sobie prawo wprowadzania zmian do Regulaminu z zastrzeżeniem, iż do umów zawartych przed zmianą Regulaminu stosuje się wersję Regulaminu obowiązującą w chwili złożenia Zamówienia. W przypadku Przedsiębiorcy uprzywilejowanego na prawach konsumenta konieczna jest uprzednie powiadomienie o zmianie Regulaminu z wyprzedzeniem 14 dni i umożliwienie rozwiązania Umowy w razie braku akceptacji zmian.</p>
+            <p>Wszelkie odstępstwa od Regulaminu wymagają formy pisemnej pod rygorem nieważności.</p>
+            <p>4. Sądem właściwym do rozstrzygnięcia sporu między stronami będzie sąd właściwy według siedziby Sprzedawcy.</p>
+            <p>5. Sprzedawca LIDA DARIUSZ CAŁA NIP 5261119292 REGON 015161906</p>',
         ),
         'polityka-prywatnosci' => array(
             'title' => 'Polityka prywatności',
             'content' => '
-            <h1>Polityka prywatności</h1>
-            <p>Strony internetowe Moretti wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki cookies są zapisywane na urządzeniu końcowym użytkownika (np. laptop, smartfon) przez przeglądarkę internetową.</p>
-            <p>Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisu i zwiększają jego wydajność poprzez zapisywanie informacji o sposobie korzystania z witryny.</p>
-            <h2>Pliki cookies umożliwiają:</h2>
+            <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
+            <p><strong>Pliki typu Cookies umożliwiają:</strong></p>
             <ul>
-                <li>utrzymanie sesji Klienta po zalogowaniu (brak potrzeby ponownego wpisywania loginu i hasła),</li>
-                <li>dostosowanie i optymalizację serwisu do potrzeb użytkowników,</li>
-                <li>tworzenie statystyk oglądalności podstron,</li>
-                <li>personalizację przekazów marketingowych,</li>
+                <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
+                <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
+                <li>tworzenie statystyk oglądalności podstron serwisu,</li>
+                <li>personalizacji przekazów marketingowych,</li>
                 <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
             </ul>
-            <h2>Rodzaje wykorzystywanych cookies</h2>
+            <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu WITTCHEN do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
+            <p>Sklep Internetowy PORTFELLAND.PL znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
+            <p>Strony internetowe PORTFELLAND wykorzystują tzw. pliki cookies oraz inne technologie działające w analogiczny sposób. Pliki Cookies są plikami testowymi zapisującymi dane poprzez Państwa przeglądarkę na tzw. urządzeniu końcowym (laptopie, smartfonie itp.). Pliki cookies są niezbędne do prawidłowego funkcjonowania serwisów PORTFELLAND, a także zwiększają ich wydajność poprzez zapisywanie informacji o wykorzystywaniu serwisu przez jego użytkowników.</p>
+            <p><strong>Pliki typu Cookies umożliwiają:</strong></p>
             <ul>
-                <li><strong>Cookies sesyjne</strong> – pliki tymczasowe przechowywane od momentu wejścia do serwisu do momentu zamknięcia przeglądarki lub zakończenia sesji.</li>
-                <li><strong>Cookies trwałe</strong> – pliki przechowywane przez dłuższy czas, ułatwiające korzystanie z serwisu.</li>
+                <li>utrzymanie sesji Klienta (po zalogowaniu), dzięki której Klient nie musi na każdej podstronie serwisu ponownie wpisywać Loginu i Hasła,</li>
+                <li>dostosowanie i optymalizację serwisu do potrzeb Klientów oraz innych osób korzystających z serwisu,</li>
+                <li>tworzenie statystyk oglądalności podstron serwisu,</li>
+                <li>personalizacji przekazów marketingowych,</li>
+                <li>zapewnienie bezpieczeństwa i niezawodności działania serwisu.</li>
             </ul>
-            <h2>Okres przechowywania danych</h2>
-            <p>Dane przetwarzane z wykorzystaniem cookies usuwane są po zakończeniu sesji lub przechowywane przez okres niezbędny do realizacji celu, nie dłużej niż 360 dni, chyba że przepisy prawa wymagają dłuższego okresu.</p>
-            <h2>Zmiany polityki</h2>
-            <p>Dokument może być okresowo aktualizowany w związku ze zmianami przepisów prawa lub procedur bezpieczeństwa stosowanych przez Administratora.</p>
-            <h2>Administrator danych i kontakt</h2>
-            <p>Administratorem danych osobowych jest <strong>LIDA DARIUSZ CAŁA</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>.</p>
-            <p>Kontakt: <a href="mailto:hurtportfelland@gmail.com">hurtportfelland@gmail.com</a>, tel. <a href="tel:+48725538100">+48 725 538 100</a>.</p>',
+            <p>W serwisie wykorzystywane są Cookies Sesyjne (pliki tymczasowe przechowywane od momentu wejścia do serwisu POERTFELLAND do momentu zamknięcia przeglądarki, bądź jej sesji) oraz Cookies Trwałe/Stałe (pliki przechowywane przez dłuższy czas, które ułatwiają korzystanie z serwisu).</p>
+            <p>Sklep Internetowy PORTFELLAND znajdujący się pod adresem www.portfelland.com wykorzystuje następujące pliki cookies (zgodnie z poniższym zestawieniem):</p>
+            <p>Dane są usuwane w momencie zamknięcia przeglądarki (sesja) i wyszukiwaniach produktów nie póżniej jak 360 dni po czym są usuniete trwale</p>
+            <p>vvInformujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych.Informujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych..</p>',
         ),
         'polityka-plikow-cookies' => array(
             'title' => 'Polityka Plików Cookies',
@@ -907,20 +914,16 @@ function moretti_ensure_legal_pages_exist() {
         'dostawa-i-platnosci' => array(
             'title' => 'Dostawa i płatności',
             'content' => '
-            <h1>Dostawa i płatności</h1>
+            <p>Wszystkie ceny Towarów podawane w Sklepie są podawane w wartościach netto i brutto w złotych polskich (ceny zawierają podatek VAT). Cena Towaru nie uwzględnia kosztów, o których mowa w punkcie 2 poniżej. Cena Towaru podana w chwili złożenia przez Klienta Zamówienia jest wiążąca dla obu stron.</p>
+            <p>Koszty związane z dostawą Towaru (np. transport, dostarczenie, usługi pocztowe) i ewentualne inne koszty ponosi Klient. Wysokość tych kosztów może zależeć od wyboru Klienta co do sposobu dostawy Towaru. Informacja o wysokości tych kosztów jest przekazywana na etapie składania Zamówienia.</p>
+            <p>Klient może wybrać formę płatności:</p>
             <ol>
-                <li>Wszystkie ceny Towarów podawane w Sklepie są podawane w wartościach netto i brutto w złotych polskich (ceny zawierają podatek VAT). Cena Towaru nie uwzględnia kosztów dostawy. Cena podana w chwili złożenia Zamówienia jest wiążąca dla obu stron.</li>
-                <li>Koszty związane z dostawą Towaru (np. transport, dostarczenie, usługi pocztowe) i ewentualne inne koszty ponosi Klient. Wysokość tych kosztów może zależeć od wybranego sposobu dostawy. Informacja o kosztach jest przekazywana na etapie składania Zamówienia.</li>
-                <li>Klient może wybrać formę płatności:
-                    <ul>
-                        <li><strong>przedpłata</strong> – po złożeniu zamówienia Klient dokonuje wpłaty/przelewu; realizacja zamówienia następuje po zaksięgowaniu wpłaty,</li>
-                        <li><strong>za pobraniem</strong> – należność uiszczana jest przy odbiorze Towaru; realizacja po przyjęciu zamówienia,</li>
-                        <li><strong>płatność przy odbiorze osobistym</strong> (gotówka lub karta) – należność uiszczana jest bezpośrednio przy odbiorze osobistym.</li>
-                    </ul>
-                </li>
-                <li>Na każdy sprzedany Produkt Sklep wystawia dowód zakupu i doręcza go Klientowi.</li>
-                <li>Klient zobowiązany jest do zapłaty w terminie 7 dni od dnia zawarcia umowy sprzedaży, o ile wybrany sposób zapłaty nie wymaga zachowania innego terminu.</li>
-            </ol>',
+                <li>zapłata przed wysyłką Towaru (przedpłata). Po złożeniu Zamówienia Klient powinien wpłacić/przelać należność na rachunek bankowy Sklepu. Realizacja Zamówienia następuje po zaksięgowaniu wpłaty Klienta na rachunku bankowym Sklepu;</li>
+                <li>zapłata przy odbiorze Towaru (za pobraniem) – Klient uiszcza należność bezpośrednio przy odbiorze Towaru. Realizacja zamówienia następuje po przyjęciu Zamówienia.</li>
+                <li>zapłata przy osobistym odbiorze Towaru (gotówka lub płatność kartą) – Klient uiszcza należność bezpośrednio przy osobistym odbiorze Towaru w sklepie stacjonarnym Sprzedawcy. Realizacja zamówienia następuje po przyjęciu Zamówienia.</li>
+            </ol>
+            <p>Na każdy sprzedany Produkt Sklep wystawia dowód zakupu i doręcza go Klientowi.</p>
+            <p>Klient zobowiązany jest do zapłaty w terminie 7 dni od dnia zawarcia umowy sprzedaży, o ile wybrany sposób zapłaty nie wymaga zachowania innego terminu.</p>',
         ),
         'zwroty' => array(
             'title' => 'Zwroty',
@@ -966,7 +969,7 @@ function moretti_ensure_legal_pages_exist() {
         ));
     }
 
-    update_option('moretti_legal_pages_seeded_v2', 1, false);
+    update_option('moretti_legal_pages_seeded_v3', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
 
