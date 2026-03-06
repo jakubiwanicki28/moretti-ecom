@@ -234,10 +234,18 @@ get_header(); ?>
         .product-summary-custom {
             margin-left: auto !important;
         }
-        .single-product-main .product-images {
-            width: 120% !important;
-            max-width: 120% !important;
+        .single-product-main .single-product-row {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+            gap: clamp(24px, 4vw, 64px) !important;
+            align-items: start !important;
         }
+    }
+    .single-product-main .product-images,
+    .single-product-main .product-summary-custom {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
     }
     .woocommerce-product-gallery .main-product-image-frame {
         width: 100% !important;
@@ -305,6 +313,11 @@ get_header(); ?>
     @media (max-width: 767px) {
         .single-product-wrapper {
             padding-top: 1.5rem !important;
+        }
+        .single-product-main .single-product-row {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
         }
         .main-product-image-el {
             object-fit: contain !important;
@@ -420,7 +433,7 @@ get_header(); ?>
             : array();
         ?>
         
-        <div class="single-product-main mx-auto px-4 md:px-6 lg:px-8">
+        <div class="single-product-main mx-auto px-3 md:px-4 lg:px-5">
             
             <!-- Breadcrumbs -->
             <?php if (function_exists('woocommerce_breadcrumb')) : ?>
@@ -433,7 +446,7 @@ get_header(); ?>
                 </div>
             <?php endif; ?>
             
-            <div class="flex flex-col md:grid md:grid-cols-2 md:gap-12 lg:gap-20 items-start" style="grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);">
+            <div class="single-product-row flex flex-col md:grid md:grid-cols-2 items-start">
                 
                 <!-- Product Images -->
                 <div class="product-images w-full">
