@@ -175,6 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var track = heroSection.querySelector('.moretti-hero-track');
     var dots = heroSection.querySelectorAll('.moretti-hero-dot');
+    var dotsWrap = heroSection.querySelector('#moretti-hero-dots');
+    var slides = heroSection.querySelectorAll('.moretti-hero-slide');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
     var AUTOPLAY_MS = 5000;
 
@@ -185,7 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var currentSlide = 0;
     var autoplayTimerId = null;
     var isTabVisible = !document.hidden;
-    var isWindowFocused = document.hasFocus();
+    // Keep autoplay enabled from first paint; update via blur/focus events below.
+    var isWindowFocused = true;
     var isPausedByInteraction = false;
 
     var updateDots = function() {
@@ -200,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var goToSlide = function(targetSlide) {
         currentSlide = (targetSlide + totalSlides) % totalSlides;
-        track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+        track.style.transform = 'translate3d(-' + (currentSlide * 100) + '%, 0, 0)';
         updateDots();
     };
 
@@ -235,15 +238,23 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduleNextAutoplayTick();
     };
 
-    dots.forEach(function(dot) {
-        dot.addEventListener('click', function() {
+    if (dotsWrap) {
+        var handleDotNavigation = function(event) {
+            var dot = event.target.closest('.moretti-hero-dot');
+            if (!dot) {
+                return;
+            }
             var requestedSlide = parseInt(dot.getAttribute('data-slide-index'), 10);
             if (!Number.isNaN(requestedSlide)) {
+                event.preventDefault();
                 goToSlide(requestedSlide);
                 restartAutoplayFromNow();
             }
-        });
-    });
+        };
+
+        dotsWrap.addEventListener('click', handleDotNavigation);
+        dotsWrap.addEventListener('pointerup', handleDotNavigation);
+    }
 
     heroSection.addEventListener('mouseenter', function() {
         isPausedByInteraction = true;
@@ -289,6 +300,16 @@ document.addEventListener('DOMContentLoaded', function() {
         isWindowFocused = true;
         restartAutoplayFromNow();
     });
+
+    // Ensure geometry is explicit for consistent translate behavior on all browsers.
+    if (slides.length > 0) {
+        track.style.width = (slides.length * 100) + '%';
+        track.style.willChange = 'transform';
+        slides.forEach(function(slide) {
+            slide.style.flex = '0 0 100%';
+            slide.style.minWidth = '100%';
+        });
+    }
 
     goToSlide(0);
     restartAutoplayFromNow();
@@ -403,10 +424,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <?php if (count($slider_images) > 1) : ?>
                 <!-- Slider Arrows -->
-                <button id="home-featured-prev-btn" onclick="featuredSliderPrev()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; left: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                <button id="home-featured-prev-btn" class="home-featured-image-nav" onclick="featuredSliderPrev()" aria-label="Poprzednie zdjęcie">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <button id="home-featured-next-btn" onclick="featuredSliderNext()" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" style="position: absolute; right: -3rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.95); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; opacity: 0.7; transition: opacity 0.3s;">
+                <button id="home-featured-next-btn" class="home-featured-image-nav" onclick="featuredSliderNext()" aria-label="Następne zdjęcie">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
 
@@ -660,6 +681,45 @@ document.addEventListener('DOMContentLoaded', function() {
     height: 100% !important;
     object-fit: cover !important;
     background: #f7f5f2;
+}
+
+#featured-slider .home-featured-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    color: #2a2826;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+#featured-slider #home-featured-prev-btn {
+    left: 8px;
+}
+
+#featured-slider #home-featured-next-btn {
+    right: 8px;
+}
+
+#featured-slider:hover .home-featured-image-nav,
+#featured-slider:focus-within .home-featured-image-nav {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#featured-slider .home-featured-image-nav:hover {
+    background: #ffffff;
 }
 
 @media (max-width: 767px) {
