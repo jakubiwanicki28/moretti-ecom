@@ -829,7 +829,7 @@ add_action('after_switch_theme', 'moretti_create_default_pages');
  * Runs once and only creates/publishes missing pages.
  */
 function moretti_ensure_legal_pages_exist() {
-    if (get_option('moretti_legal_pages_seeded_v4')) {
+    if (get_option('moretti_legal_pages_seeded_v5')) {
         return;
     }
 
@@ -943,6 +943,58 @@ function moretti_ensure_legal_pages_exist() {
             <p>Na każdy sprzedany Produkt Sklep wystawia dowód zakupu i doręcza go Klientowi.</p>
             <p>Klient zobowiązany jest do zapłaty w terminie 7 dni od dnia zawarcia umowy sprzedaży, o ile wybrany sposób zapłaty nie wymaga zachowania innego terminu.</p>',
         ),
+        'pielegnacja-portfela' => array(
+            'title' => 'Pielęgnacja portfela',
+            'content' => '
+            <div class="moretti-legal-doc">
+                <h1>Jak dbać o portfel ze skóry naturalnej?</h1>
+                <p>Portfel ze skóry naturalnej to dodatek, który przy odpowiedniej pielęgnacji może zachować świetny wygląd przez lata. Naturalna skóra jest trwała, ale wymaga regularnej troski: delikatnego czyszczenia, ochrony przed wilgocią oraz właściwego przechowywania.</p>
+                <p>Poniżej znajdziesz praktyczne zasady, które pomogą utrzymać portfel w bardzo dobrej kondycji na co dzień.</p>
+
+                <h2>1. Codzienne użytkowanie</h2>
+                <p>Skóra naturalna jest odporna, ale nie jest niezniszczalna. Najczęściej uszkodzenia powstają przez kontakt z twardymi przedmiotami (klucze, metalowe elementy) oraz nadmierne wypychanie portfela.</p>
+                <ul>
+                    <li>noś portfel oddzielnie od ostrych przedmiotów,</li>
+                    <li>nie przeładowuj przegród kartami i paragonami,</li>
+                    <li>regularnie usuwaj zbędne rzeczy ze środka, aby uniknąć trwałych odkształceń.</li>
+                </ul>
+
+                <h2>2. Usuwanie zabrudzeń</h2>
+                <p>Do bieżącego czyszczenia zawsze używaj miękkiej, lekko wilgotnej ściereczki. Silne środki domowe mogą naruszyć strukturę skóry i pozostawić plamy.</p>
+                <ul>
+                    <li>najpierw usuń kurz i drobny brud suchą mikrofibrą,</li>
+                    <li>przy trudniejszych zabrudzeniach zastosuj preparat przeznaczony do konkretnego rodzaju skóry,</li>
+                    <li>unikaj mocnego tarcia oraz nadmiaru wody.</li>
+                </ul>
+
+                <h2>3. Konserwacja i odżywienie skóry</h2>
+                <p>Po oczyszczeniu warto wykonać konserwację, która zabezpieczy powierzchnię i ograniczy przesuszanie materiału.</p>
+                <ul>
+                    <li>stosuj dedykowane kremy i balsamy do wyrobów skórzanych,</li>
+                    <li>nakładaj małą ilość preparatu i poleruj miękką ściereczką,</li>
+                    <li>impregnację wykonuj regularnie, najlepiej raz na kilka miesięcy.</li>
+                </ul>
+
+                <h2>4. Pielęgnacja zależnie od typu wykończenia</h2>
+                <p>Różne rodzaje skór wymagają nieco innego podejścia.</p>
+                <ul>
+                    <li><strong>Skóra lakierowana:</strong> czyść delikatnie i używaj środków do skór lakierowanych; zwykle nie wymaga intensywnego natłuszczania.</li>
+                    <li><strong>Skóra fakturowana (np. saffiano):</strong> zazwyczaj wystarczy przetarcie wilgotną mikrofibrą i okresowe odświeżenie odpowiednim preparatem.</li>
+                    <li><strong>Skóra licowa:</strong> dobrze reaguje na regularne kremowanie i lekką impregnację.</li>
+                    <li><strong>Skóry o tłoczonej strukturze:</strong> pielęgnuj preparatami dedykowanymi do tego typu materiału, bez agresywnego szorowania.</li>
+                </ul>
+
+                <h2>5. Czego unikać</h2>
+                <ul>
+                    <li>długiego kontaktu z deszczem, śniegiem i silnym słońcem,</li>
+                    <li>suszenia na kaloryferze lub przy źródłach ciepła,</li>
+                    <li>przypadkowych detergentów i rozpuszczalników.</li>
+                </ul>
+
+                <h2>Podsumowanie</h2>
+                <p>Najlepsze efekty daje regularna, spokojna pielęgnacja: czyszczenie, odżywienie i ochrona. Dzięki temu portfel ze skóry naturalnej dłużej zachowuje kształt, kolor i elegancki wygląd.</p>
+            </div>',
+        ),
         'zwroty' => array(
             'title' => 'Zwroty',
             'content' => '<h1>Zwroty</h1><p>Klient będący konsumentem może odstąpić od umowy zawartej na odległość na zasadach wynikających z obowiązujących przepisów prawa.</p>',
@@ -996,7 +1048,7 @@ function moretti_ensure_legal_pages_exist() {
         ));
     }
 
-    update_option('moretti_legal_pages_seeded_v4', 1, false);
+    update_option('moretti_legal_pages_seeded_v5', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
 

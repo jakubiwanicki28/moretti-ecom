@@ -106,6 +106,17 @@ get_header(); ?>
         color: #6b7280;
         flex: 0 0 auto;
     }
+    .product-mvp-status-item .product-care-link {
+        color: #2a2826;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        text-decoration-thickness: 1px;
+        transition: color 0.2s ease;
+    }
+    .product-mvp-status-item .product-care-link:hover {
+        color: #000000;
+    }
     .product-mvp-status-item.is-available {
         color: #15803d;
         font-weight: 500;
@@ -309,6 +320,9 @@ get_header(); ?>
             font-size: 13px;
             gap: 8px;
         }
+        .product-mvp-status-item .product-care-link {
+            font-size: 13px;
+        }
         .product-actions-row {
             gap: 10px;
             margin-bottom: 1.5rem;
@@ -493,6 +507,10 @@ get_header(); ?>
                         $base_ts = current_time('timestamp');
                         $ship_date = wp_date('d.m', strtotime('+1 day', $base_ts));
                         $delivery_date = wp_date('d.m', strtotime('+3 days', $base_ts));
+                        $care_page = get_page_by_path('pielegnacja-portfela', OBJECT, 'page');
+                        $care_page_url = ($care_page instanceof WP_Post && $care_page->post_status === 'publish')
+                            ? get_permalink($care_page->ID)
+                            : home_url('/pielegnacja-portfela/');
                         ?>
                         <div class="product-mvp-status">
                             <div class="product-mvp-status-list">
@@ -507,6 +525,10 @@ get_header(); ?>
                                 <div class="product-mvp-status-item">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h15l3 4v6a2 2 0 01-2 2h-1a2 2 0 01-4 0H9a2 2 0 01-4 0H4a1 1 0 01-1-1V7zm16 4h-4V9h2.5L19 11z"></path></svg>
                                     Darmowa dostawa od 250 zł
+                                </div>
+                                <div class="product-mvp-status-item">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-4-8h8m-9 10h10a2 2 0 002-2V8l-4-4H7a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <a class="product-care-link" href="<?php echo esc_url($care_page_url); ?>">Pielęgnacja portfela ze skóry naturalnej</a>
                                 </div>
                             </div>
                         </div>
@@ -594,10 +616,9 @@ get_header(); ?>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                     </svg>
                                 </summary>
-                                <div class="mt-4 text-taupe-700 text-sm space-y-1">
-                                    <p>• Czyścić wyłącznie miękką szmatką</p>
-                                    <p>• Unikać nadmiernego kontaktu z wodą</p>
-                                    <p>• Przechowywać w suchym miejscu</p>
+                                <div class="mt-4 text-taupe-700 text-sm space-y-2">
+                                    <p>Przygotowaliśmy pełny poradnik dotyczący czyszczenia i konserwacji portfeli ze skóry naturalnej.</p>
+                                    <p><a class="product-care-link" href="<?php echo esc_url($care_page_url); ?>">Przejdź do poradnika pielęgnacji</a></p>
                                 </div>
                             </details>
                             
