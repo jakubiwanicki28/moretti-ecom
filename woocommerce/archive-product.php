@@ -623,7 +623,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
                     <p class="shop-hero-eyebrow">Limitowana oferta</p>
-                    <h2 class="shop-hero-title">Okazje bez okazji</h2>
+                    <h2 class="shop-hero-title">Okazje</h2>
                     <p class="shop-hero-subtitle">Wyjątkowe przeceny na wybrane modele portfeli</p>
                     <p class="shop-hero-copy">Skorzystaj z promocji i wybierz styl, który zostaje z Tobą na lata.</p>
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Zobacz kolekcję</a>
