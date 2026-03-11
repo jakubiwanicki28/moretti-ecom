@@ -1083,6 +1083,80 @@
   border-color: #2a2826 !important;
 }
 
+/* Cart + Checkout CTA contrast hardening */
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button,
+.woocommerce a.checkout-button.button,
+.woocommerce-page a.checkout-button.button,
+.woocommerce-checkout #payment #place_order,
+.woocommerce-checkout .place-order .button.alt {
+  display: inline-flex !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 50px !important;
+  border: 1px solid #111111 !important;
+  background: #111111 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  padding: 0.95rem 1.35rem !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:hover,
+.woocommerce a.checkout-button.button:hover,
+.woocommerce-page a.checkout-button.button:hover,
+.woocommerce-checkout #payment #place_order:hover,
+.woocommerce-checkout .place-order .button.alt:hover {
+  background: #2a2826 !important;
+  border-color: #2a2826 !important;
+  color: #ffffff !important;
+}
+
+.woocommerce-checkout #payment #place_order:focus-visible,
+.woocommerce a.checkout-button.button:focus-visible,
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible,
+.woocommerce a.button.wc-backward:focus-visible,
+.woocommerce-checkout a.wc-backward:focus-visible {
+  outline: 2px solid #111111 !important;
+  outline-offset: 2px !important;
+}
+
+.woocommerce-checkout #payment #place_order:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+
+.woocommerce a.button.wc-backward,
+.woocommerce-checkout a.wc-backward {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  border: 1px solid #111111 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 0.75rem 1.1rem !important;
+  border-radius: 0 !important;
+}
+
+.woocommerce a.button.wc-backward:hover,
+.woocommerce-checkout a.wc-backward:hover {
+  background: #111111 !important;
+  color: #ffffff !important;
+}
+
 @media (max-width: 767px) {
   .home-carousel-track {
     touch-action: pan-y;

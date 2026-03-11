@@ -623,9 +623,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
                     <p class="shop-hero-eyebrow">Limitowana oferta</p>
-                    <h2 class="shop-hero-title">Okazje na Dzień Kobiet</h2>
-                    <p class="shop-hero-subtitle">-30% na wybrane modele portfeli</p>
-                    <p class="shop-hero-copy">Oferta limitowana czasowo. Wybierz styl, który zostaje z Tobą na lata.</p>
+                    <h2 class="shop-hero-title">Okazje bez okazji</h2>
+                    <p class="shop-hero-subtitle">Wyjątkowe przeceny na wybrane modele portfeli</p>
+                    <p class="shop-hero-copy">Skorzystaj z promocji i wybierz styl, który zostaje z Tobą na lata.</p>
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Zobacz kolekcję</a>
                 </div>
             </div>
@@ -1761,12 +1761,22 @@ document.addEventListener('DOMContentLoaded', function() {
         let observer = null;
         const loadedPageUrls = new Set();
         let fallbackScrollHandler = null;
+        let proximityCheckHandler = null;
+        let proximityCheckRaf = null;
 
         const setInfiniteStatus = (status, message) => {
             infiniteLoader.classList.toggle('is-loading', status === 'loading');
             infiniteText.textContent = message;
             if (infiniteRetry) {
-                infiniteRetry.hidden = status !== 'error';
+                if (status === 'error') {
+                    infiniteRetry.hidden = false;
+                    infiniteRetry.textContent = 'Spróbuj ponownie';
+                } else if (status === 'idle' && nextUrl && currentPage < maxPages) {
+                    infiniteRetry.hidden = false;
+                    infiniteRetry.textContent = 'Załaduj więcej';
+                } else {
+                    infiniteRetry.hidden = true;
+                }
             }
         };
 
@@ -1778,6 +1788,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fallbackScrollHandler) {
                 window.removeEventListener('scroll', fallbackScrollHandler);
                 fallbackScrollHandler = null;
+            }
+            if (proximityCheckHandler) {
+                window.removeEventListener('scroll', proximityCheckHandler);
+                window.removeEventListener('resize', proximityCheckHandler);
+                proximityCheckHandler = null;
             }
             if (infiniteSentinel.parentNode) {
                 infiniteSentinel.parentNode.removeChild(infiniteSentinel);
@@ -1911,6 +1926,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const preloadDistance = Math.max(480, Math.round(window.innerHeight * 0.75));
+
+        const checkProximity = () => {
+            if (isLoading || hasLoadError || !nextUrl || currentPage >= maxPages) {
+                return;
+            }
+            const loaderRect = infiniteLoader.getBoundingClientRect();
+            const sentinelRect = infiniteSentinel.getBoundingClientRect();
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+
+            const loaderNearViewport = loaderRect.top <= viewportHeight + preloadDistance;
+            const sentinelNearViewport = sentinelRect.top <= viewportHeight + preloadDistance;
+
+            if ((loaderNearViewport || sentinelNearViewport) && !isLoading && !hasLoadError) {
+                loadNextPage();
+            }
+        };
+
+        proximityCheckHandler = () => {
+            if (proximityCheckRaf) {
+                cancelAnimationFrame(proximityCheckRaf);
+            }
+            proximityCheckRaf = requestAnimationFrame(checkProximity);
+        };
+
+        window.addEventListener('scroll', proximityCheckHandler, { passive: true });
+        window.addEventListener('resize', proximityCheckHandler);
+
         if ('IntersectionObserver' in window) {
             observer = new IntersectionObserver((entries) => {
                 const hasVisibleSentinel = entries.some((entry) => entry.isIntersecting);
@@ -1931,6 +1973,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             window.addEventListener('scroll', fallbackScrollHandler, { passive: true });
         }
+
+        // Initial proximity check in case user is already at bottom on load.
+        checkProximity();
     }
 });
 </script>

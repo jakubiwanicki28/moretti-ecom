@@ -38,7 +38,7 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Kontakt</h4>
                 <div style="font-size: 13px; color: #766a5d; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.9; font-weight: 500;">
-                    <p style="margin: 0 0 6px 0;">hurtportfelland@gmail.com</p>
+                    <p style="margin: 0 0 6px 0;">kontakt@morettifashion.com</p>
                     <p style="margin: 0 0 6px 0;">TEL: (+48) 725 538 100</p>
                     <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
                         <a href="https://www.instagram.com/morettigalanteria/" target="_blank" style="display: flex; align-items: center; gap: 10px; font-size: 11px; color: #2a2826; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">

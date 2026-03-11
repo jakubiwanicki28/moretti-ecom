@@ -21,7 +21,9 @@ if (!function_exists('moretti_render_home_carousel_section')) {
 
         $query_args = array(
             'post_type'      => 'product',
-            'posts_per_page' => 5,
+            // Fetch more products and then collapse color variants by SKU/model.
+            // We will only render up to 5 distinct models below.
+            'posts_per_page' => 30,
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'product_cat',
@@ -43,8 +45,46 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                 </div>
                 <div class="home-products-grid">
                     <?php set_query_var('moretti_home_carousel', true); ?>
+                    <?php
+                    $rendered_models = array();
+                    $rendered_count  = 0;
+                    $max_models      = 5;
+                    ?>
                     <?php if ($loop->have_posts()) : ?>
                         <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+                            <?php
+                            if ($rendered_count >= $max_models) {
+                                break;
+                            }
+
+                            $product = wc_get_product(get_the_ID());
+                            if ($product instanceof WC_Product) {
+                                $sku = (string) $product->get_sku();
+                            } else {
+                                $sku = '';
+                            }
+
+                            $model_key = '';
+                            if (function_exists('moretti_parse_sku_model_and_color') && $sku !== '') {
+                                $parsed = moretti_parse_sku_model_and_color($sku);
+                                if (!empty($parsed['model'])) {
+                                    $model_key = $parsed['model'];
+                                }
+                            }
+
+                            if ($model_key === '') {
+                                // Fallback: treat product ID as its own "model" when SKU/model is not available.
+                                $model_key = 'id-' . get_the_ID();
+                            }
+
+                            if (isset($rendered_models[$model_key])) {
+                                // Another color variant of a model already rendered in this section – skip.
+                                continue;
+                            }
+
+                            $rendered_models[$model_key] = true;
+                            $rendered_count++;
+                            ?>
                             <div class="home-products-item">
                                 <ul class="products list-none m-0 p-0">
                                     <?php wc_get_template_part('content', 'product'); ?>
@@ -347,26 +387,61 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
-<!-- 7. FEATURED DETAIL -->
+<!-- 7. VIDEO BREAK PLACEHOLDER BANNER -->
+<section id="home-video-break-banner" aria-label="Miejsce na nagrania promocyjne">
+    <div class="home-video-break-overlay" aria-hidden="true"></div>
+    <div class="home-video-break-inner">
+        <div class="home-video-break-copy">
+            <p class="home-video-break-kicker">Przestrzeń na content video</p>
+            <h2>Miejsce na Twoje nagrania</h2>
+            <p>Wstaw tutaj finalne ujęcia i animacje, aby dodać lekki przerywnik między sekcjami.</p>
+        </div>
+        <div class="home-video-break-placeholders" aria-label="Placeholdery pod nagrania">
+            <div class="home-video-break-card"><span>Placeholder 01</span></div>
+            <div class="home-video-break-card"><span>Placeholder 02</span></div>
+            <div class="home-video-break-card"><span>Placeholder 03</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. FEATURED DETAIL -->
 <section id="home-featured-product" style="max-width: 1260px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
     <?php
-    // Get the specific featured product: Elegance Red
-    $featured_product_name = 'Elegance Red - Portfel Damski';
-    $args = array(
-        'post_type' => 'product',
+    $featured_taxonomy = 'pa_strona-glowna';
+    $featured_term_slug = 'tak';
+
+    if (!taxonomy_exists($featured_taxonomy)) {
+        $featured_taxonomy = '';
+    }
+
+    $featured_args = array(
+        'post_type'      => 'product',
         'posts_per_page' => 1,
-        'title' => $featured_product_name
+        'orderby'        => 'rand',
+        'post_status'    => 'publish',
     );
-    $featured_loop = new WP_Query($args);
-    
-    // Fallback if not found by title
-    if (!$featured_loop->have_posts()) {
-        $args = array(
-            'post_type' => 'product',
-            'posts_per_page' => 1,
-            'orderby' => 'rand'
+
+    if ($featured_taxonomy !== '' && $featured_term_slug !== '') {
+        $featured_args['tax_query'] = array(
+            array(
+                'taxonomy' => $featured_taxonomy,
+                'field'    => 'slug',
+                'terms'    => $featured_term_slug,
+            ),
         );
-        $featured_loop = new WP_Query($args);
+    }
+
+    $featured_loop = new WP_Query($featured_args);
+
+    if (!$featured_loop->have_posts()) {
+        $fallback_args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => 1,
+            'orderby'        => 'rand',
+            'post_status'    => 'publish',
+        );
+
+        $featured_loop = new WP_Query($fallback_args);
     }
 
     if ($featured_loop->have_posts()) : $featured_loop->the_post();
@@ -393,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div id="home-featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         <!-- Image Slider Column -->
         <div id="home-featured-media-col" style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
-            <div id="featured-slider" style="position: relative; width: 100%; max-width: 600px; height: 550px; overflow: visible;">
+            <div id="featured-slider" style="position: relative; width: 100%; overflow: visible;">
                 <div style="height: 100%; position: relative;">
                     <?php if (!empty($slider_images)) : ?>
                         <?php foreach ($slider_images as $index => $image_id) :
@@ -696,9 +771,109 @@ document.addEventListener('DOMContentLoaded', function() {
     text-decoration: none;
 }
 
+#home-video-break-banner {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1f1d1b 0%, #2a2826 50%, #3b3834 100%);
+}
+
+#home-video-break-banner .home-video-break-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 44%),
+        radial-gradient(circle at 85% 70%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 42%);
+    pointer-events: none;
+}
+
+#home-video-break-banner .home-video-break-inner {
+    position: relative;
+    z-index: 1;
+    width: min(1260px, 100%);
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 2rem;
+    align-items: center;
+}
+
+#home-video-break-banner .home-video-break-copy {
+    color: #ffffff;
+}
+
+#home-video-break-banner .home-video-break-kicker {
+    margin: 0 0 0.9rem;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.82;
+}
+
+#home-video-break-banner .home-video-break-copy h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 3.3vw, 3.1rem);
+    line-height: 1.05;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+#home-video-break-banner .home-video-break-copy p {
+    margin: 0;
+    max-width: 460px;
+    color: rgba(255, 255, 255, 0.84);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+#home-video-break-banner .home-video-break-placeholders {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+#home-video-break-banner .home-video-break-card {
+    height: 360px;
+    border: 1px dashed rgba(255, 255, 255, 0.38);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    backdrop-filter: blur(1px);
+}
+
+#home-video-break-banner .home-video-break-card span {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
 @media (max-width: 1200px) {
     .home-products-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #home-video-break-banner .home-video-break-inner {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    #home-video-break-banner .home-video-break-copy p {
+        max-width: 100%;
+    }
+
+    #home-video-break-banner .home-video-break-card {
+        height: 220px;
     }
 }
 
@@ -708,11 +883,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-/* Featured product section image should also fit container height consistently */
+/* Featured product section image should respect portrait 3:4 ratio without cropping */
+#featured-slider {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 3 / 4;
+    height: auto;
+    overflow: hidden;
+}
+
 #featured-slider .slider-image img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     background: #f7f5f2;
 }
 
@@ -807,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
     #featured-slider {
         max-width: 100% !important;
         height: auto !important;
-        aspect-ratio: 1 / 1 !important;
+        aspect-ratio: 3 / 4 !important;
         overflow: hidden !important;
     }
 
@@ -833,6 +1016,14 @@ document.addEventListener('DOMContentLoaded', function() {
         margin-bottom: 1rem !important;
     }
 
+    #home-video-break-banner .home-video-break-placeholders {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #home-video-break-banner .home-video-break-card {
+        height: 180px;
+    }
+
     #home-featured-cta-row {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
@@ -845,6 +1036,10 @@ document.addEventListener('DOMContentLoaded', function() {
         width: 100% !important;
         text-align: center !important;
         padding: 1rem 0.6rem !important;
+    }
+
+    #home-video-break-banner .home-video-break-placeholders {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -1253,7 +1448,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 text-center">
         <div class="flex flex-col items-center">
             <svg class="w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-            <h3 class="font-bold uppercase text-sm mb-2">Darmowa Dostawa</h3>
+            <h3 class="font-bold uppercase text-sm mb-2">Darmowa Dostawa od 250 zł</h3>
             <p class="text-xs text-taupe-600">Dla wszystkich zamówień powyżej 250 zł</p>
         </div>
         <div class="flex flex-col items-center border-x border-gray-200">
@@ -1264,7 +1459,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="flex flex-col items-center">
             <svg class="w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path></svg>
             <h3 class="font-bold uppercase text-sm mb-2">Gwarancja Zwrotu</h3>
-            <p class="text-xs text-taupe-600">30 dni na darmowy zwrot towaru</p>
+            <p class="text-xs text-taupe-600">14 dni na zwrot towaru</p>
         </div>
     </div>
 

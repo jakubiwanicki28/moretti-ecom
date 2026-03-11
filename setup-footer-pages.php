@@ -96,7 +96,7 @@ $pages_to_create = array(
 
         <h2>Administrator danych</h2>
         <p>Administratorem danych jest <strong>LIDA DARIUSZ CAŁA</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>.</p>
-        <p>W razie pytań dotyczących prywatności prosimy o kontakt: <a href="mailto:hurtportfelland@gmail.com">hurtportfelland@gmail.com</a>, tel. <a href="tel:+48725538100">+48 725 538 100</a>.</p>'
+        <p>W razie pytań dotyczących prywatności prosimy o kontakt: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>, tel. <a href="tel:+48725538100">+48 725 538 100</a>.</p>'
     ),
     'polityka-plikow-cookies' => array(
         'title' => 'Polityka Plików Cookies',
@@ -137,7 +137,7 @@ $pages_to_create = array(
         <p>Każdy produkt Moretti objęty jest 2-letnią gwarancją.</p>
         <h2>Jak zgłosić reklamację?</h2>
         <ol>
-            <li>Wyślij zdjęcia wady na email@moretti.pl</li>
+            <li>Wyślij zdjęcia wady na kontakt@morettifashion.com</li>
             <li>Odeślij produkt na adres naszej pracowni</li>
             <li>Reklamacja zostanie rozpatrzona w ciągu 14 dni</li>
         </ol>'
