@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
-<!-- 7. VIDEO BREAK PLACEHOLDER BANNER -->
+<!-- 7. VIDEO BREAK PLACEHOLDER BANNER - HIDDEN BY USER REQUEST
 <section id="home-video-break-banner" aria-label="Miejsce na nagrania promocyjne">
     <div class="home-video-break-overlay" aria-hidden="true"></div>
     <div class="home-video-break-inner">
@@ -403,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </section>
+-->
 
 <!-- 8. FEATURED DETAIL -->
 <section id="home-featured-product" style="max-width: 1260px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">

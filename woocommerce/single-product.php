@@ -234,11 +234,16 @@ get_header(); ?>
         .product-summary-custom {
             margin-left: auto !important;
         }
+        .single-product-main .product-images {
+            max-width: 70% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
         .single-product-main .single-product-row {
             display: grid !important;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
             gap: clamp(24px, 4vw, 64px) !important;
-            align-items: start !important;
+            align-items: center !important;
         }
     }
     .single-product-main .product-images,
