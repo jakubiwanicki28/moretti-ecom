@@ -92,18 +92,71 @@ add_action('admin_init', 'moretti_register_attributes');
 /**
  * Na stronach "Portfele męskie" i "Portfele damskie" pokazuj też produkty z rodzica "Portfele",
  * dopóki nie przypiszesz produktów do tych podkategorii w WooCommerce.
+ * WooCommerce na archiwum kategorii używa filtra tax_query, nie pre_get_posts.
  */
-function moretti_include_parent_portfele_in_subcategory_archive($query) {
+function moretti_include_parent_portfele_in_subcategory_archive($tax_query, $query) {
+    if (!class_exists('WooCommerce') || is_admin()) {
+        return $tax_query;
+    }
+    if (!is_product_category()) {
+        return $tax_query;
+    }
+    $term = get_queried_object();
+    if (!($term instanceof WP_Term) || $term->taxonomy !== 'product_cat') {
+        return $tax_query;
+    }
+    $cat_slug = $term->slug;
+    if (!in_array($cat_slug, array('portfele-meskie', 'portfele-damskie'), true)) {
+        return $tax_query;
+    }
+    $parent = get_term_by('slug', 'portfele', 'product_cat');
+    if (!$parent || is_wp_error($parent)) {
+        return $tax_query;
+    }
+    return array(
+        'relation' => 'OR',
+        array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => array($cat_slug),
+        ),
+        array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => array('portfele'),
+        ),
+    );
+}
+add_filter('woocommerce_product_query_tax_query', 'moretti_include_parent_portfele_in_subcategory_archive', 10, 2);
+
+/**
+ * Fallback: na archiwum kategorii WooCommerce czasem modyfikuje główne zapytanie w pre_get_posts.
+ * Rozszerzamy tax_query o rodzica "portfele" gdy aktualna kategoria to portfele-meskie lub portfele-damskie.
+ */
+function moretti_pre_get_posts_include_parent_portfele($query) {
     if (!class_exists('WooCommerce') || !$query->is_main_query() || $query->is_admin()) {
         return;
     }
-    $cat_slug = $query->get('product_cat');
-    if (!is_string($cat_slug) || $cat_slug === '') {
-        if ($query->get('taxonomy') === 'product_cat') {
-            $cat_slug = $query->get('term');
+    $tax_query = $query->get('tax_query');
+    if (!is_array($tax_query)) {
+        return;
+    }
+    $cat_slug = null;
+    foreach ($tax_query as $clause) {
+        if (!is_array($clause) || isset($clause['relation'])) {
+            continue;
+        }
+        if (isset($clause['taxonomy']) && $clause['taxonomy'] === 'product_cat' && !empty($clause['terms'])) {
+            $terms = is_array($clause['terms']) ? $clause['terms'] : array($clause['terms']);
+            foreach ($terms as $t) {
+                if (in_array((string) $t, array('portfele-meskie', 'portfele-damskie'), true)) {
+                    $cat_slug = (string) $t;
+                    break 2;
+                }
+            }
         }
     }
-    if (!is_string($cat_slug) || $cat_slug === '' || !in_array($cat_slug, array('portfele-meskie', 'portfele-damskie'), true)) {
+    if ($cat_slug === null) {
         return;
     }
     $parent = get_term_by('slug', 'portfele', 'product_cat');
@@ -124,7 +177,7 @@ function moretti_include_parent_portfele_in_subcategory_archive($query) {
         ),
     ));
 }
-add_action('pre_get_posts', 'moretti_include_parent_portfele_in_subcategory_archive', 30);
+add_action('pre_get_posts', 'moretti_pre_get_posts_include_parent_portfele', 999);
 
 // Register navigation menus
 function moretti_theme_setup() {
