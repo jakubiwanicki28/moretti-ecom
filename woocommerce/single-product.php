@@ -268,15 +268,16 @@ get_header(); ?>
     .woocommerce-product-gallery .main-product-image-frame::before {
         content: "" !important;
         display: block !important;
-        padding-top: 133.333% !important; /* proporcje 4:3 w pionie (wysokość:szerokość) */
+        padding-top: 75% !important; /* STAŁE pole 4:3 (szerokość:wysokość) */
     }
     .woocommerce-product-gallery .main-product-image-el {
         position: absolute !important;
-        top: 0 !important;
+        top: 50% !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
+        transform: translate(-50%, -50%) !important;
+        height: 100% !important;
+        width: auto !important;
         max-width: 100% !important;
-        height: auto !important;
         object-fit: contain !important;
     }
     .single-gallery-arrow {
