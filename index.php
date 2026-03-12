@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
     pointer-events: auto;
 }
 
-/* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu, żeby żadna kropka nie była zasłonięta */
+/* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu; kropki i strzałki na środku na dole */
 .moretti-hero-controls-strip {
     position: absolute;
     bottom: 0;
@@ -622,16 +622,18 @@ document.addEventListener('DOMContentLoaded', function() {
     height: 80px;
     z-index: 9999;
     pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 2.5rem;
 }
 .moretti-hero-controls-strip #moretti-hero-controls {
     pointer-events: auto;
+    position: absolute;
+    left: 50%;
+    bottom: 2.5rem;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 #moretti-hero-controls {
-    position: relative;
     z-index: 1;
 }
 

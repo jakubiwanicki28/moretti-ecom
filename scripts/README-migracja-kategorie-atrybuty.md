@@ -38,3 +38,16 @@ Jeśli importer nie rozpoznaje "Nazwa atrybutu 4/5", w mapowaniu kolumn ustaw te
 
 - **Kolor** – nie zmieniamy; pozostaje w produktach.
 - Pozostałe kolumny (nazwa, cena, obrazy, SKU itd.) – nie są w pliku, więc import ich nie nadpisze.
+
+## Po imporcie: produkty się nie wyświetlają
+
+Importer WooCommerce przy aktualizacji istniejących produktów z CSV **bez kolumn „Opublikowano” i „Widoczność w katalogu”** może ustawić status na **Szkic** lub widoczność na **ukryty**. Wtedy strona sklepu i kategorie są puste, bo motyw pokazuje tylko produkty ze statusem **Opublikowany** i widoczne w katalogu.
+
+**Rozwiązanie (jednorazowo):** uruchom skrypt naprawczy `scripts/fix-product-visibility-after-import.php`:
+
+- W przeglądarce (zalogowany jako administrator):  
+  `https://twoja-domena.pl/wp-content/themes/moretti-theme/scripts/fix-product-visibility-after-import.php`
+- Lub przez WP-CLI:  
+  `wp eval-file wp-content/themes/moretti-theme/scripts/fix-product-visibility-after-import.php`
+
+Skrypt ustawia wszystkim produktom `post_status = publish` i `catalog_visibility = visible`. Po jego uruchomieniu odśwież stronę sklepu.
