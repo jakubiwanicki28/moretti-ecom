@@ -155,7 +155,7 @@ $hero_banners_count = count($hero_banners);
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
 <section id="moretti-home-hero" class="relative h-[80vh] overflow-hidden bg-gray-100">
-    <div class="moretti-hero-track-wrap absolute inset-0 z-0">
+    <div class="moretti-hero-track-wrap absolute inset-0 z-0 pointer-events-none">
         <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
                 <?php
