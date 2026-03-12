@@ -17,7 +17,7 @@ Kolumny wyjściowe:
 | Identyfikator | ID produktu – **matchowanie** przy imporcie. |
 | Kategorie | Kategorie po wyczyszczeniu (bez CROCO, PIÓRA, Skóra* itd.; Dział* → Portfele*). |
 | Nazwa atrybutu 1 / Wartości atrybutu 1 | Kolekcja (Croco, Pióra, Animals, Snake). |
-| Nazwa atrybutu 2 / Wartości atrybutu 2 | Materiał (Skóra lakierowana, Skóra matowa, Skóra naturalna). |
+| Nazwa atrybutu 2 / Wartości atrybutu 2 | Materiał – wykończenie: Skóra lakierowana | Skóra matowa. |
 
 ## Użycie skryptu
 
@@ -44,7 +44,24 @@ Jeśli nie podasz drugiego argumentu, wynik zapisze się obok pliku wejściowego
 4. Tryb: **Aktualizuj istniejące produkty** (po Identyfikatorze).
 5. Uruchom import. Sprawdź w **Produkty → Atrybuty → Kolekcja** (i Materiał), czy Liczba się zwiększyła.
 
-Jeśli w „Mapuj do pola” **nie ma** opcji „Nazwa atrybutu 1” / „Wartości atrybutu 1” (tylko jedno pole „Nazwa atrybutu”), importer nie obsługuje wielu atrybutów z tego pliku – wtedy użyj **Opcji B**.
+Jeśli w „Mapuj do pola” **nie ma** opcji „Nazwa atrybutu 1” / „Wartości atrybutu 1” (tylko jedno pole „Nazwa atrybutu”), masz dwie możliwości: **Opcja A2** (dwa osobne importy) albo **Opcja B** (skrypt PHP).
+
+### Opcja A2: Dwa osobne importy (Kolekcja, potem Materiał)
+
+Możesz zaimportować atrybuty **dwa razy**, używając osobnych plików – każdy z jedną parą kolumn „Nazwa atrybutu” / „Wartości atrybutu”, którą importer mapuje 1:1.
+
+**Pliki (w `scripts/` oraz w `~/Downloads/`):**
+
+- **`moretti-import-1-Kolekcja.csv`** – tylko atrybut Kolekcja (Croco, Pióra, Animals).
+- **`moretti-import-2-Material.csv`** – tylko atrybut Materiał (Skóra lakierowana).
+
+**Kolejność:**
+
+1. **WooCommerce → Produkty → Import** → wybierz **`moretti-import-1-Kolekcja.csv`**.
+2. Mapuj: **Identyfikator** → Identyfikator, **Nazwa atrybutu** → Nazwa atrybutu, **Wartości atrybutu** → Wartości atrybutu. Tryb: **Aktualizuj istniejące** (po Identyfikatorze). Uruchom import.
+3. Potem ten sam proces z **`moretti-import-2-Material.csv`** (mapowanie identyczne).
+
+Po pierwszym imporcie produkty mają Kolekcję; po drugim – także Materiał. Jeśli po drugim imporcie importer **nadpisze** atrybuty i zostanie tylko Materiał, użyj **Opcji B** (`?moretti_assign_kolekcja_material=1`) – skrypt uzupełni oba atrybuty z pełnego CSV.
 
 ### Opcja B: Skrypt PHP (gdy importer nie przypisuje termów)
 
@@ -55,6 +72,17 @@ Skrypt czyta ten sam CSV i **bezpośrednio** przypisuje termy Kolekcja/Materiał
 2. Jako administrator wejdź jednorazowo na:  
    `https://twoja-domena.pl/?moretti_assign_kolekcja_material=1`
 3. Pojawi się przekierowanie i komunikat typu „Zaktualizowano X produktów”. Odśwież **Produkty → Atrybuty → Kolekcja** (kolumna Liczba) i sklep.
+
+## Materiał (Skóra matowa / Skóra lakierowana)
+
+Atrybut Materiał oznacza **wykończenie** skóry: lakierowana albo matowa (wszystko to skóra naturalna). W CSV skrypt ustawia wartości z nazwy/opisu (np. "lakierowana" → Skóra lakierowana, "matowa" → Skóra matowa). Jeśli filtr pokazuje 0 produktów dla jednej z wartości, przypisz ją ręcznie w WooCommerce do odpowiednich produktów lub uzupełnij dane w eksporcie i uruchom migrację ponownie.
+
+## Portfele męskie – 0 produktów po imporcie
+
+Jeśli po imporcie CSV strona **Portfele męskie** pokazuje 0 produktów, prawdopodobnie importer nadpisał kategorie i produkty 997–1007 straciły przypisanie. Jednorazowe przywrócenie:
+
+- Wejdź jako admin: **`?moretti_restore_portfele_meskie=1`**  
+  Skrypt przypisze kategorię "Portfele męskie" (oraz "Portfele") do produktów o ID 997–1007. Inne kategorie tych produktów nie są usuwane.
 
 ## Co nie jest w CSV
 

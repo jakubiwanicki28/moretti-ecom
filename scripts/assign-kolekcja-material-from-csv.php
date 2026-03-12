@@ -79,14 +79,14 @@ while (($row = fgetcsv($handle, 0, ',')) !== false) {
             $errors[] = "Produkt {$pid}: nie znaleziono termu Kolekcja '{$kolekcja}'.";
         }
     }
-    if ($material !== '') {
-        $term = get_term_by('name', $material, $tax_material) ?: get_term_by('slug', sanitize_title($material), $tax_material);
-        if ($term && !is_wp_error($term)) {
-            wp_set_object_terms($pid, array((int) $term->term_id), $tax_material);
-            $done = true;
-        } else {
-            $errors[] = "Produkt {$pid}: nie znaleziono termu Materiał '{$material}'.";
-        }
+    // Materiał: tylko Skóra lakierowana / Skóra matowa (wszystko inne → matowa)
+    $material_value = (trim($material) === 'Skóra lakierowana') ? 'Skóra lakierowana' : 'Skóra matowa';
+    $term = get_term_by('name', $material_value, $tax_material) ?: get_term_by('slug', sanitize_title($material_value), $tax_material);
+    if ($term && !is_wp_error($term)) {
+        wp_set_object_terms($pid, array((int) $term->term_id), $tax_material);
+        $done = true;
+    } else {
+        $errors[] = "Produkt {$pid}: nie znaleziono termu Materiał '{$material_value}'.";
     }
     if ($done) {
         $updated++;

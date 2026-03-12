@@ -1474,6 +1474,22 @@ add_action('template_redirect', function () {
     exit;
 }, 5);
 
+/**
+ * Przywrócenie kategorii Portfele męskie dla produktów 997–1007.
+ * Wejdź: ?moretti_restore_portfele_meskie=1 (jako admin)
+ */
+add_action('template_redirect', function () {
+    if (!isset($_GET['moretti_restore_portfele_meskie']) || $_GET['moretti_restore_portfele_meskie'] !== '1' || !current_user_can('manage_woocommerce')) {
+        return;
+    }
+    $path = get_template_directory() . '/scripts/restore-portfele-meskie.php';
+    if (!is_readable($path)) {
+        return;
+    }
+    include $path;
+    exit;
+}, 5);
+
 add_action('wp_footer', function () {
     if (!current_user_can('manage_woocommerce')) {
         return;
@@ -1491,5 +1507,9 @@ add_action('wp_footer', function () {
         }
         $msg .= " Odśwież stronę atrybutów (Liczba) i sklep.";
         echo '<script>alert("' . esc_js($msg) . '");</script>';
+    }
+    if (isset($_GET['moretti_restore_meskie_done'])) {
+        $n = (int) $_GET['moretti_restore_meskie_done'];
+        echo '<script>alert("Portfele męskie: przypisano kategorię do ' . $n . ' produktów. Odśwież stronę kategorii.");</script>';
     }
 }, 20);

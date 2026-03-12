@@ -50,7 +50,16 @@ MATERIAL_MAP = {
     "Skóra Naturalna": "Skóra naturalna",
     "Skóra naturalna": "Skóra naturalna",
 }
+# Kolejność ma znaczenie: najpierw sprawdzamy bardziej specyficzne (naturalna, matowa), potem lakierowana
 NAZWA_MATERIAL = [
+    ("skóra naturalna", "Skóra naturalna"),
+    ("skora naturalna", "Skóra naturalna"),
+    ("naturalna skóra", "Skóra naturalna"),
+    ("naturalna skora", "Skóra naturalna"),
+    ("skóra matowa", "Skóra matowa"),
+    ("skora matowa", "Skóra matowa"),
+    ("matowa skóra", "Skóra matowa"),
+    ("matowa skora", "Skóra matowa"),
     ("lakierowana", "Skóra lakierowana"),
     ("lakierowan", "Skóra lakierowana"),
     ("matowa", "Skóra matowa"),
@@ -97,7 +106,7 @@ def get_kolekcja(row, headers, id_idx, cat_idx, sku_idx, name_idx, attr1_name_id
     return ""
 
 
-def get_material(row, headers, cat_idx, name_idx, attr2_name_idx, attr2_val_idx):
+def get_material(row, headers, cat_idx, name_idx, desc_idx, attr2_name_idx, attr2_val_idx):
     # 1) Już ustawione w atrybucie 2 jako Materiał
     if attr2_name_idx is not None and attr2_val_idx is not None and len(row) > max(attr2_name_idx, attr2_val_idx):
         if row[attr2_name_idx].strip() == "Materiał" and row[attr2_val_idx].strip():
@@ -109,7 +118,13 @@ def get_material(row, headers, cat_idx, name_idx, attr2_name_idx, attr2_val_idx)
             c = part.strip()
             if c in MATERIAL_MAP:
                 return MATERIAL_MAP[c]
-    # 3) Z nazwy
+    # 3) Z opisu (np. "skóra naturalna") – przed nazwą, żeby mieć kontekst
+    if desc_idx is not None and len(row) > desc_idx:
+        opis = (row[desc_idx] or "").lower()
+        for phrase, val in NAZWA_MATERIAL:
+            if phrase in opis:
+                return val
+    # 4) Z nazwy
     if name_idx is not None and len(row) > name_idx:
         nazwa = (row[name_idx] or "").lower()
         for phrase, val in NAZWA_MATERIAL:
@@ -135,6 +150,7 @@ def main():
         cat_idx = next((i for i, h in enumerate(headers) if h == "Kategorie"), None)
         sku_idx = next((i for i, h in enumerate(headers) if h == "SKU"), None)
         name_idx = next((i for i, h in enumerate(headers) if h == "Nazwa"), None)
+        desc_idx = next((i for i, h in enumerate(headers) if h == "Opis"), None)
         attr1_name_idx = next((i for i, h in enumerate(headers) if h == "Nazwa atrybutu 1"), None)
         attr1_val_idx = next((i for i, h in enumerate(headers) if h == "Wartości atrybutu 1"), None)
         attr2_name_idx = next((i for i, h in enumerate(headers) if h == "Nazwa atrybutu 2"), None)
@@ -163,7 +179,7 @@ def main():
                 new_cats.insert(0, "Portfele")
             kolekcja = get_kolekcja(row, headers, id_idx, cat_idx, sku_idx, name_idx,
                                     attr1_name_idx, attr1_val_idx, attr2_name_idx, attr2_val_idx)
-            material = get_material(row, headers, cat_idx, name_idx, attr2_name_idx, attr2_val_idx)
+            material = get_material(row, headers, cat_idx, name_idx, desc_idx, attr2_name_idx, attr2_val_idx)
 
             rows_out.append({
                 "Identyfikator": pid,

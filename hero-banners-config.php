@@ -17,7 +17,8 @@
  *     zielony | fioletowy | bordowy | jasny-braz | ciemny-braz | czerwony | czarny | ...
  *
  *   Materiał (uproszczona nazwa: materiał), param: filter_material
- *     skora-lakierowana | skora-matowa | skora-naturalna
+ *     skora-lakierowana | skora-matowa
+ *     (wykończenie: lakierowana vs matowa; wszystko to skóra naturalna)
  *
  *   Kategorie (product_cat), cta_category_slug
  *     portfele-meskie | portfele-damskie
@@ -29,7 +30,7 @@ return array(
     ),
     1 => array(
         'offset_x'    => 0,
-        'cta_filters' => array( 'filter_material' => 'skora-naturalna' ),
+        'cta_filters' => array( 'filter_material' => 'skora-matowa' ),
     ),
     2 => array(
         'offset_x'           => 0,
