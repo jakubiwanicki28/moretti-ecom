@@ -22,6 +22,7 @@ if (empty($product)) {
 $color_variants = function_exists('moretti_get_product_color_variants')
     ? moretti_get_product_color_variants($product)
     : array();
+$color_variants_count = is_array($color_variants) ? count($color_variants) : 0;
 
 // Keep WooCommerce visibility rules outside homepage custom carousels.
 if (!$is_home_carousel && !$product->is_visible()) {
@@ -127,6 +128,11 @@ if ($is_home_carousel) :
                                     <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
                                 </a>
                             <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($color_variants_count === 1) : ?>
+                        <div class="mt-2 text-[10px] md:text-xs font-medium uppercase tracking-[0.15em] text-charcoal/70">
+                            Tylko jeden kolor
                         </div>
                     <?php endif; ?>
                 </div>

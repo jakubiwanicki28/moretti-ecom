@@ -181,7 +181,7 @@ $hero_banners_count = count($hero_banners);
     <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center">
         <div class="max-w-2xl">
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-none mb-8 uppercase">
-                MORETTI FASHION<br>ELEGANCJA I STYL
+                MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
