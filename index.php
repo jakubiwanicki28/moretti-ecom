@@ -670,23 +670,32 @@ document.addEventListener('DOMContentLoaded', function() {
 @media (max-width: 767px) {
     #moretti-home-hero {
         height: auto;
-        min-height: 460px;
+        min-height: 0;
         padding-bottom: 3.5rem;
     }
 
+    /* Na mobile slider zachowuje się jak klasyczny blok nad treścią,
+       bez sztucznego przycinania wysokości sekcji. */
     #moretti-home-hero .moretti-hero-track-wrap {
-        position: absolute;
-        inset: 0;
-        height: 60%;
-        max-height: 420px;
+        position: relative;
+        inset: auto;
+        height: auto;
+        max-height: none;
+    }
+
+    #moretti-home-hero .moretti-hero-track {
+        height: auto !important;
     }
 
     #moretti-home-hero .moretti-hero-slide {
-        height: 100%;
+        height: auto;
     }
 
     #moretti-home-hero .moretti-hero-slide img {
-        object-position: top center;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        object-position: center top;
     }
 
     #moretti-home-hero .moretti-hero-arrow {
