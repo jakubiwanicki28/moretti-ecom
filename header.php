@@ -410,106 +410,100 @@
 
 <header class="moretti-header sticky top-0 z-50">
     <?php
-    $shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
-    $resolve_header_category_link = static function(array $slugs, $fallback) {
-        foreach ($slugs as $slug) {
-            $term = get_term_by('slug', $slug, 'product_cat');
-            if ($term && !is_wp_error($term)) {
-                $term_link = get_term_link($term);
-                if (!is_wp_error($term_link)) {
-                    return $term_link;
+    if (!function_exists('moretti_get_header_nav_items')) {
+        /**
+         * Build structured configuration for main header navigation.
+         *
+         * On start this focuses on wallets (portfele) for her/him and
+         * uses WooCommerce product_cat hierarchy for dropdown categories.
+         * It is intentionally data-driven so that future sections (paski, torby itd.)
+         * can be added by extending the config below.
+         *
+         * @return array<int,array{
+         *   label:string,
+         *   url:string,
+         *   term:WP_Term|null,
+         *   panel:array{categories:array<int,WP_Term>}
+         * }>
+         */
+        function moretti_get_header_nav_items() {
+            $shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
+    
+            $resolve_header_category_term = static function(array $slugs) {
+                foreach ($slugs as $slug) {
+                    $term = get_term_by('slug', $slug, 'product_cat');
+                    if ($term && !is_wp_error($term)) {
+                        return $term;
+                    }
                 }
+                return null;
+            };
+    
+            $build_header_panel_data = static function($term) {
+                $result = array(
+                    'categories' => array(),
+                );
+    
+                if (!$term || is_wp_error($term)) {
+                    return $result;
+                }
+    
+                $children = get_terms(array(
+                    'taxonomy'   => 'product_cat',
+                    'hide_empty' => true,
+                    'parent'     => (int) $term->term_id,
+                    'orderby'    => 'name',
+                    'order'      => 'ASC',
+                ));
+                if (!is_wp_error($children) && !empty($children)) {
+                    $result['categories'] = $children;
+                }
+    
+                return $result;
+            };
+    
+            // Core navigation items – currently all mapped to wallet-related categories.
+            $items = array(
+                array(
+                    'label'      => 'Dla niej',
+                    'term_slugs' => array('portfele-damskie', 'dzial-damski', 'dla-niej'),
+                ),
+                array(
+                    'label'      => 'Dla niego',
+                    'term_slugs' => array('portfele-meskie', 'dzial-meski', 'dla-niego'),
+                ),
+                array(
+                    'label'      => 'Nowości',
+                    'term_slugs' => array('nowosci', 'nowosci-1', 'new-in'),
+                ),
+                array(
+                    'label'      => 'Klasyka i hity',
+                    'term_slugs' => array('klasyka-i-hity', 'klasyki-i-hity', 'hity'),
+                ),
+                array(
+                    'label'      => 'Okazje',
+                    'term_slugs' => array('okazje', 'promocje', 'sale'),
+                ),
+            );
+    
+            foreach ($items as &$item) {
+                $term = $resolve_header_category_term($item['term_slugs']);
+                $item['term'] = $term;
+    
+                $url = ($term && !is_wp_error($term)) ? get_term_link($term) : $shop_url;
+                if (is_wp_error($url)) {
+                    $url = $shop_url;
+                }
+                $item['url'] = $url;
+                $item['panel'] = $build_header_panel_data($term);
             }
+            unset($item);
+    
+            return $items;
         }
-        return $fallback;
-    };
-
-    $resolve_header_category_term = static function(array $slugs) {
-        foreach ($slugs as $slug) {
-            $term = get_term_by('slug', $slug, 'product_cat');
-            if ($term && !is_wp_error($term)) {
-                return $term;
-            }
-        }
-        return null;
-    };
-
-    $header_color_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
-        ? moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'), '', 'color')
-        : 'pa_color';
-
-    $build_header_panel_data = static function($term) use ($header_color_taxonomy) {
-        $result = array(
-            'categories' => array(),
-            'colors' => array(),
-        );
-
-        if (!$term || is_wp_error($term)) {
-            return $result;
-        }
-
-        $children = get_terms(array(
-            'taxonomy' => 'product_cat',
-            'hide_empty' => true,
-            'parent' => (int) $term->term_id,
-            'orderby' => 'name',
-            'order' => 'ASC',
-        ));
-        if (!is_wp_error($children) && !empty($children)) {
-            $result['categories'] = $children;
-        }
-
-        $product_ids = get_objects_in_term((int) $term->term_id, 'product_cat');
-        if (is_wp_error($product_ids) || empty($product_ids)) {
-            return $result;
-        }
-
-        if ($header_color_taxonomy && taxonomy_exists($header_color_taxonomy)) {
-            $colors = wp_get_object_terms($product_ids, $header_color_taxonomy, array(
-                'hide_empty' => true,
-                'orderby' => 'name',
-                'order' => 'ASC',
-            ));
-            if (!is_wp_error($colors) && !empty($colors)) {
-                $result['colors'] = array_slice($colors, 0, 10);
-            }
-        }
-
-        return $result;
-    };
-
-    $header_nav_items = array(
-        array(
-            'label' => 'Dla niej',
-            'term' => $resolve_header_category_term(array('portfele-damskie', 'dzial-damski', 'dla-niej')),
-        ),
-        array(
-            'label' => 'Dla niego',
-            'term' => $resolve_header_category_term(array('portfele-meskie', 'dzial-meski', 'dla-niego')),
-        ),
-        array(
-            'label' => 'Nowości',
-            'term' => $resolve_header_category_term(array('nowosci', 'nowosci-1', 'new-in')),
-        ),
-        array(
-            'label' => 'Klasyka i hity',
-            'term' => $resolve_header_category_term(array('klasyka-i-hity', 'klasyki-i-hity', 'hity')),
-        ),
-        array(
-            'label' => 'Okazje',
-            'term' => $resolve_header_category_term(array('okazje', 'promocje', 'sale')),
-        ),
-    );
-
-    foreach ($header_nav_items as &$header_nav_item) {
-        $term = $header_nav_item['term'];
-        $header_nav_item['url'] = ($term && !is_wp_error($term)) ? get_term_link($term) : $shop_url;
-        if (is_wp_error($header_nav_item['url'])) {
-            $header_nav_item['url'] = $shop_url;
-        }
-        $header_nav_item['panel'] = $build_header_panel_data($term);
     }
-    unset($header_nav_item);
+    
+    $header_nav_items = moretti_get_header_nav_items();
     ?>
     <div class="moretti-header-inner">
         <div class="moretti-header-top">
@@ -600,12 +594,6 @@
                             <span class="moretti-cat-dropdown-title">Kategorie</span>
                             <?php foreach ($item['panel']['categories'] as $category_term) : ?>
                                 <a href="<?php echo esc_url(get_term_link($category_term)); ?>"><?php echo esc_html($category_term->name); ?></a>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                        <?php if (!empty($item['panel']['colors'])) : ?>
-                            <span class="moretti-cat-dropdown-title">Kolory</span>
-                            <?php foreach ($item['panel']['colors'] as $color_term) : ?>
-                                <a href="<?php echo esc_url(add_query_arg('filter_color', $color_term->slug, $item['url'])); ?>"><?php echo esc_html($color_term->name); ?></a>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
@@ -729,22 +717,32 @@
                 <!-- Divider -->
                 <li style="border-top: 1px solid #f3f4f6; margin: 16px 0 !important; padding-top: 16px;"></li>
                 
-                <!-- WooCommerce Categories -->
-                <?php
-                if (class_exists('WooCommerce')) {
-                    $categories = get_terms(array(
-                        'taxonomy' => 'product_cat',
-                        'hide_empty' => true,
-                        'exclude' => array(get_option('default_product_cat')),
-                    ));
-                    
-                    if (!empty($categories) && !is_wp_error($categories)) {
-                        foreach ($categories as $cat) {
-                            echo '<li><a href="' . esc_url(get_term_link($cat)) . '" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">' . esc_html($cat->name) . '</a></li>';
-                        }
-                    }
-                }
-                ?>
+                <!-- Primary navigation categories (synced with desktop header) -->
+                <?php foreach ($header_nav_items as $item) : ?>
+                    <li>
+                        <a
+                            href="<?php echo esc_url($item['url']); ?>"
+                            class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]"
+                        >
+                            <?php echo esc_html($item['label']); ?>
+                        </a>
+                        <?php if (!empty($item['panel']['categories'])) : ?>
+                            <ul class="mt-2 space-y-2">
+                                <?php foreach ($item['panel']['categories'] as $category_term) : ?>
+                                    <li>
+                                        <a
+                                            href="<?php echo esc_url(get_term_link($category_term)); ?>"
+                                            class="mobile-menu-link block text-sm text-charcoal tracking-[0.08em]"
+                                            style="text-transform: none; padding-left: 8px;"
+                                        >
+                                            <?php echo esc_html($category_term->name); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
                 
                 <!-- Divider -->
                 <li style="border-top: 1px solid #f3f4f6; margin: 16px 0 !important; padding-top: 16px;"></li>
