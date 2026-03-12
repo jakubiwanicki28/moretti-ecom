@@ -218,12 +218,12 @@ foreach ($hero_banners as $idx => $_b) {
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay pb-12 md:pb-0">
-        <div class="max-w-2xl">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay pb-[56px] md:pb-0">
+        <div class="w-fit max-w-2xl min-w-0">
             <h1 class="text-3xl md:text-7xl lg:text-8xl font-bold leading-none mb-3 md:mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
-            <p class="text-xs md:text-base max-w-md mb-6 md:mb-8 opacity-90 leading-relaxed">
+            <p class="text-xs md:text-base w-full max-w-full mb-6 md:mb-8 opacity-90 leading-relaxed break-words">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
             </p>
             <span class="moretti-hero-cta-wrap inline-block">
