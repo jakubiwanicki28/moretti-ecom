@@ -178,7 +178,7 @@ $hero_banners_count = count($hero_banners);
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center moretti-hero-text-overlay">
         <div class="max-w-2xl">
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-none mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
@@ -253,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var slides = heroSection.querySelectorAll('.moretti-hero-slide');
     var prevButton = heroSection.querySelector('#moretti-hero-prev');
     var nextButton = heroSection.querySelector('#moretti-hero-next');
+    var controlsContainer = heroSection.querySelector('#moretti-hero-controls');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
     var AUTOPLAY_MS = 5000;
 
@@ -316,16 +317,29 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduleNextAutoplayTick();
     };
 
-    dots.forEach(function(dot) {
-        dot.addEventListener('click', function(event) {
-            var requestedSlide = parseInt(dot.getAttribute('data-slide-index'), 10);
-            if (!Number.isNaN(requestedSlide)) {
+    /* Delegacja: jeden listener na kontenerze – każda kropka reaguje, bez przechwytywania przez overlay */
+    if (controlsContainer) {
+        controlsContainer.addEventListener('click', function(event) {
+            var el = event.target;
+            var dotButton = null;
+            while (el && el !== controlsContainer) {
+                if (el.classList && el.classList.contains('moretti-hero-dot')) {
+                    dotButton = el;
+                    break;
+                }
+                el = el.parentNode;
+            }
+            if (dotButton) {
                 event.preventDefault();
-                goToSlide(requestedSlide);
-                restartAutoplayFromNow();
+                event.stopPropagation();
+                var requestedSlide = parseInt(dotButton.getAttribute('data-slide-index'), 10);
+                if (!Number.isNaN(requestedSlide) && requestedSlide >= 0 && requestedSlide < totalSlides) {
+                    goToSlide(requestedSlide);
+                    restartAutoplayFromNow();
+                }
             }
         });
-    });
+    }
 
     if (prevButton) {
         prevButton.addEventListener('click', function(event) {
@@ -600,8 +614,19 @@ document.addEventListener('DOMContentLoaded', function() {
     position: relative;
 }
 
+/* Tekst nie przechwytuje kliknięć – tylko CTA ma pointer-events */
+.moretti-hero-text-overlay {
+    pointer-events: none;
+}
+.moretti-hero-text-overlay a,
+.moretti-hero-text-overlay button {
+    pointer-events: auto;
+}
+
 #moretti-hero-controls {
     pointer-events: auto;
+    position: relative;
+    z-index: 1000;
 }
 
 #moretti-home-hero .moretti-hero-track-wrap {
@@ -662,9 +687,16 @@ document.addEventListener('DOMContentLoaded', function() {
     outline-offset: 2px;
 }
 
+#moretti-hero-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
 #moretti-hero-dots .moretti-hero-dot {
-    width: 20px;
-    height: 20px;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
     border: 0;
     border-radius: 999px;
     background: transparent;
