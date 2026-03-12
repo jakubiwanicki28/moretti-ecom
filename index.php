@@ -193,17 +193,45 @@ $hero_banners_count = count($hero_banners);
     </div>
 
     <?php if ($hero_banners_count > 1) : ?>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1 z-40" id="moretti-hero-dots">
-            <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
-                <button
-                    type="button"
-                    class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
-                    data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
-                    aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
-                >
-                    <span class="moretti-hero-dot-core" aria-hidden="true"></span>
-                </button>
-            <?php endforeach; ?>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 z-40" id="moretti-hero-controls">
+            <button
+                type="button"
+                id="moretti-hero-prev"
+                class="moretti-hero-arrow"
+                aria-label="Poprzedni baner"
+            >
+                <span aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+            </button>
+
+            <div class="flex gap-1" id="moretti-hero-dots">
+                <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
+                    <button
+                        type="button"
+                        class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
+                        data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
+                        aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
+                    >
+                        <span class="moretti-hero-dot-core" aria-hidden="true"></span>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
+            <button
+                type="button"
+                id="moretti-hero-next"
+                class="moretti-hero-arrow"
+                aria-label="Następny baner"
+            >
+                <span aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+            </button>
         </div>
     <?php endif; ?>
 </section>
@@ -217,6 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var track = heroSection.querySelector('.moretti-hero-track');
     var dots = heroSection.querySelectorAll('.moretti-hero-dot');
     var slides = heroSection.querySelectorAll('.moretti-hero-slide');
+    var prevButton = heroSection.querySelector('#moretti-hero-prev');
+    var nextButton = heroSection.querySelector('#moretti-hero-next');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
     var AUTOPLAY_MS = 5000;
 
@@ -247,6 +277,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var goToNextSlide = function() {
         goToSlide(currentSlide + 1);
+    };
+
+    var goToPrevSlide = function() {
+        goToSlide(currentSlide - 1);
     };
 
     var canAutoplay = function() {
@@ -286,6 +320,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    if (prevButton) {
+        prevButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            goToPrevSlide();
+            restartAutoplayFromNow();
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            goToNextSlide();
+            restartAutoplayFromNow();
+        });
+    }
 
     heroSection.addEventListener('mouseenter', function() {
         isPausedByInteraction = true;
@@ -528,13 +578,40 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <style>
-/* Hero slider dots: small visual, larger click area */
-#moretti-hero-dots {
+/* Hero slider controls: arrows + dots */
+#moretti-hero-controls {
     pointer-events: auto;
 }
 
 #moretti-home-hero .moretti-hero-track-wrap {
     pointer-events: none;
+}
+
+#moretti-home-hero .moretti-hero-arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.9;
+}
+
+#moretti-home-hero .moretti-hero-arrow:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
+}
+
+#moretti-home-hero .moretti-hero-arrow:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
 }
 
 #moretti-hero-dots .moretti-hero-dot {
@@ -571,6 +648,14 @@ document.addEventListener('DOMContentLoaded', function() {
 #moretti-hero-dots .moretti-hero-dot:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.95);
     outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+    #moretti-home-hero .moretti-hero-arrow {
+        width: 24px;
+        height: 24px;
+        opacity: 0.85;
+    }
 }
 
 /* ===== Homepage product sections (no carousel) ===== */
