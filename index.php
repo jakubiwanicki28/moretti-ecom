@@ -223,6 +223,7 @@ foreach ($hero_banners as $idx => $_b) {
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
             </p>
+            <span class="moretti-hero-cta-wrap inline-block">
             <?php
             $shop_url = get_permalink(wc_get_page_id('shop'));
             foreach ($hero_banners as $cta_index => $cta_banner) :
@@ -233,6 +234,7 @@ foreach ($hero_banners as $idx => $_b) {
                 KUP TERAZ
             </a>
             <?php endforeach; ?>
+            </span>
         </div>
     </div>
 </section>
@@ -271,10 +273,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
+    var updateCta = function() {
+        var ctaLinks = heroSection.querySelectorAll('.moretti-hero-cta');
+        ctaLinks.forEach(function(a) {
+            var idx = parseInt(a.getAttribute('data-slide-index'), 10);
+            a.classList.toggle('moretti-hero-cta-hidden', idx !== currentSlide);
+        });
+    };
+
     var goToSlide = function(targetSlide) {
         currentSlide = (targetSlide + totalSlides) % totalSlides;
         track.style.transform = 'translate3d(-' + (currentSlide * 100) + '%, 0, 0)';
         updateDots();
+        updateCta();
     };
 
     var goToNextSlide = function() {
@@ -636,6 +647,15 @@ document.addEventListener('DOMContentLoaded', function() {
 .moretti-hero-text-overlay button {
     pointer-events: auto;
 }
+.moretti-hero-cta-wrap {
+    position: relative;
+}
+.moretti-hero-cta-wrap .moretti-hero-cta {
+    position: relative;
+}
+.moretti-hero-cta-wrap .moretti-hero-cta-hidden {
+    display: none !important;
+}
 
 /* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu; kropki i strzałki na środku na dole */
 .moretti-hero-controls-strip {
@@ -695,23 +715,23 @@ document.addEventListener('DOMContentLoaded', function() {
 #moretti-home-hero .moretti-hero-arrow {
     width: 22px;
     height: 22px;
-    border-radius: 999px;
+    border-radius: 0;
     border: 0;
     margin: 0;
     padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.3);
+    background: transparent;
     color: #ffffff;
     cursor: pointer;
     box-shadow: none;
-    transition: background-color 0.2s ease, opacity 0.2s ease;
+    transition: opacity 0.2s ease;
     opacity: 0.85;
 }
 
 #moretti-home-hero .moretti-hero-arrow:hover {
-    background: rgba(0, 0, 0, 0.6);
+    opacity: 1;
 }
 
 #moretti-home-hero .moretti-hero-arrow:focus-visible {
@@ -725,10 +745,10 @@ document.addEventListener('DOMContentLoaded', function() {
     gap: 0;
 }
 #moretti-hero-dots .moretti-hero-dot {
-    min-width: 28px;
-    min-height: 28px;
-    width: 28px;
-    height: 28px;
+    min-width: 16px;
+    min-height: 16px;
+    width: 16px;
+    height: 16px;
     border: 0;
     border-radius: 999px;
     background: transparent;
