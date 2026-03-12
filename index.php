@@ -223,9 +223,16 @@ foreach ($hero_banners as $idx => $_b) {
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
             </p>
-            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all">
+            <?php
+            $shop_url = get_permalink(wc_get_page_id('shop'));
+            foreach ($hero_banners as $cta_index => $cta_banner) :
+                $url = !empty($cta_banner['cta_url']) ? $cta_banner['cta_url'] : $shop_url;
+                $url = esc_url($url);
+            ?>
+            <a href="<?php echo $url; ?>" class="moretti-hero-cta inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all<?php echo $cta_index !== 0 ? ' moretti-hero-cta-hidden' : ''; ?>" data-slide-index="<?php echo (int) $cta_index; ?>">
                 KUP TERAZ
             </a>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
