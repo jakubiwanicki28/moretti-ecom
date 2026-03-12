@@ -21,7 +21,7 @@ $color_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
     ? moretti_resolve_attribute_taxonomy(array('pa_color', 'pa_kolor', 'pa_colour'), $requested_color_slug, 'color')
     : 'pa_color';
 $material_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
-    ? moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materials', 'pa_materiaal'), '', 'material')
+    ? moretti_resolve_attribute_taxonomy(array('pa_material', 'pa_materiał', 'pa_materials', 'pa_materiaal'), '', 'material')
     : 'pa_material';
 $size_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
     ? moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'), '', 'wielkosc')
@@ -96,6 +96,7 @@ if ($selected_material !== '') {
         $material_filter_taxonomy,
         $material_taxonomy,
         'pa_material',
+        'pa_materiał',
         'pa_materials',
         'pa_materiaal',
         'product_cat',
