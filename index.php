@@ -218,12 +218,12 @@ foreach ($hero_banners as $idx => $_b) {
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center moretti-hero-text-overlay">
-        <div class="max-w-2xl">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-none mb-8 uppercase">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay pb-20 md:pb-0">
+        <div class="max-w-2xl w-full">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-none mb-4 md:mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
-            <p class="text-xs md:text-sm max-w-md mb-8 opacity-90 leading-relaxed">
+            <p class="text-xs md:text-sm max-w-md mb-4 md:mb-8 opacity-90 leading-relaxed">
                 Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
             </p>
             <span class="moretti-hero-cta-wrap inline-block">
@@ -242,7 +242,7 @@ foreach ($hero_banners as $idx => $_b) {
                 }
                 $url = esc_url($url);
             ?>
-            <a href="<?php echo $url; ?>" class="moretti-hero-cta inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all<?php echo $cta_index !== 0 ? ' moretti-hero-cta-hidden' : ''; ?>" data-slide-index="<?php echo (int) $cta_index; ?>">
+            <a href="<?php echo $url; ?>" class="moretti-hero-cta inline-block bg-white text-charcoal px-8 py-3 md:px-12 md:py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all<?php echo $cta_index !== 0 ? ' moretti-hero-cta-hidden' : ''; ?>" data-slide-index="<?php echo (int) $cta_index; ?>">
                 KUP TERAZ
             </a>
             <?php endforeach; ?>
