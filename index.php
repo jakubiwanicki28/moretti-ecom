@@ -154,7 +154,7 @@ if (!empty($hero_banners)) {
 $hero_banners_count = count($hero_banners);
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
-<section id="moretti-home-hero" class="relative min-h-[28rem] md:h-[80vh] overflow-hidden bg-gray-100">
+<section id="moretti-home-hero" class="relative h-[80vh] overflow-hidden bg-gray-100">
     <div class="moretti-hero-track-wrap absolute inset-0 z-0 pointer-events-none">
         <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
@@ -178,9 +178,9 @@ $hero_banners_count = count($hero_banners);
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-start md:items-center pt-16 pb-10 md:pt-0 md:pb-0">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center">
         <div class="max-w-2xl">
-            <h1 class="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold leading-none mb-6 md:mb-8 uppercase">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-none mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
@@ -668,44 +668,10 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 @media (max-width: 767px) {
-    #moretti-home-hero {
-        height: auto;
-        min-height: 0;
-        padding-bottom: 3.5rem;
-    }
-
-    /* Na mobile slider zachowuje się jak klasyczny blok nad treścią,
-       bez sztucznego przycinania wysokości sekcji. */
-    #moretti-home-hero .moretti-hero-track-wrap {
-        position: relative;
-        inset: auto;
-        height: auto;
-        max-height: none;
-    }
-
-    #moretti-home-hero .moretti-hero-track {
-        height: auto !important;
-    }
-
-    #moretti-home-hero .moretti-hero-slide {
-        height: auto;
-    }
-
-    #moretti-home-hero .moretti-hero-slide img {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-        object-position: center top;
-    }
-
     #moretti-home-hero .moretti-hero-arrow {
         width: 24px;
         height: 24px;
         opacity: 0.85;
-    }
-
-    #moretti-hero-controls {
-        bottom: 1.75rem;
     }
 }
 
@@ -1082,11 +1048,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     #home-gender-split-grid > div {
-        min-height: 240px;
-    }
-
-    #home-gender-split-grid img {
-        object-position: center top;
+        min-height: 280px;
     }
 
     .home-products-grid {
