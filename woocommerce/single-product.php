@@ -254,17 +254,18 @@ get_header(); ?>
     }
     .woocommerce-product-gallery .main-product-image-frame {
         width: 100% !important;
-        aspect-ratio: 3 / 4 !important;
         border: none !important;
         background: transparent !important;
-        display: flex !important;
-        align-items: flex-start !important;
-        justify-content: center !important;
+        display: block !important;
         overflow: hidden !important;
     }
     .woocommerce-product-gallery .main-product-image-el {
-        width: 100% !important;
-        height: 100% !important;
+        display: block !important;
+        width: auto !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
         object-fit: contain !important;
         object-position: top center !important;
     }

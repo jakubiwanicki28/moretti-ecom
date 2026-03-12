@@ -37,11 +37,11 @@ foreach ($attachment_ids as $attachment_id) {
             $image_src = wp_get_attachment_image_src($main_image_id, 'large');
             $image_alt = get_post_meta($main_image_id, '_wp_attachment_image_alt', true);
             ?>
-            <div class="main-product-image-frame relative overflow-hidden flex items-center justify-center">
+            <div class="main-product-image-frame relative overflow-hidden">
                 <img 
                     src="<?php echo esc_url($image_src[0]); ?>" 
                     alt="<?php echo esc_attr($image_alt ? $image_alt : get_the_title()); ?>"
-                    class="main-product-image-el w-full h-full block object-contain"
+                    class="main-product-image-el"
                     id="moretti-main-img"
                 >
 
@@ -58,11 +58,11 @@ foreach ($attachment_ids as $attachment_id) {
         } else {
             $placeholder_src = wc_placeholder_img_src('woocommerce_single');
             ?>
-            <div class="main-product-image-frame relative overflow-hidden flex items-center justify-center">
+            <div class="main-product-image-frame relative overflow-hidden">
                 <img
                     src="<?php echo esc_url($placeholder_src); ?>"
                     alt="<?php echo esc_attr(get_the_title()); ?>"
-                    class="main-product-image-el w-full h-full block object-contain"
+                    class="main-product-image-el"
                     id="moretti-main-img"
                 >
             </div>
