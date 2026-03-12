@@ -243,7 +243,7 @@ get_header(); ?>
             display: grid !important;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
             gap: clamp(24px, 4vw, 64px) !important;
-            align-items: center !important;
+            align-items: flex-start !important;
         }
     }
     .single-product-main .product-images,
