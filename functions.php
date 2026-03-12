@@ -1439,6 +1439,24 @@ add_action('template_redirect', function () {
     exit;
 }, 5);
 
+/**
+ * Lista slugów dla CTA banerów hero (atrybuty + kategorie).
+ * Jako administrator wejdź na dowolną stronę: ?moretti_hero_slugs=1
+ * Skopiuj wyświetlone slugi do hero-banners-config.php.
+ */
+add_action('template_redirect', function () {
+    if (!isset($_GET['moretti_hero_slugs']) || $_GET['moretti_hero_slugs'] !== '1' || !current_user_can('manage_options')) {
+        return;
+    }
+    $path = get_template_directory() . '/scripts/hero-banner-cta-slugs.php';
+    if (!is_readable($path)) {
+        return;
+    }
+    header('Content-Type: text/plain; charset=utf-8');
+    include $path;
+    exit;
+}, 5);
+
 add_action('wp_footer', function () {
     if (!current_user_can('manage_woocommerce') || !isset($_GET['moretti_fix_done'])) {
         return;

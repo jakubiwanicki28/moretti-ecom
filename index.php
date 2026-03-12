@@ -158,10 +158,13 @@ $hero_config_path = trailingslashit(get_template_directory()) . 'hero-banners-co
 if (is_readable($hero_config_path)) {
     $hero_banners_config = (array) include $hero_config_path;
 }
+$hero_shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '';
 foreach ($hero_banners as $idx => $_b) {
     $cfg = isset($hero_banners_config[ $idx ]) ? $hero_banners_config[ $idx ] : array();
     $hero_banners[ $idx ]['offset_x'] = isset($cfg['offset_x']) ? (int) $cfg['offset_x'] : 0;
-    $hero_banners[ $idx ]['cta_url']  = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
+    $hero_banners[ $idx ]['cta_url'] = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
+    $hero_banners[ $idx ]['cta_filters'] = isset($cfg['cta_filters']) && is_array($cfg['cta_filters']) ? $cfg['cta_filters'] : array();
+    $hero_banners[ $idx ]['cta_category_slug'] = isset($cfg['cta_category_slug']) ? (string) $cfg['cta_category_slug'] : '';
 }
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
@@ -225,9 +228,18 @@ foreach ($hero_banners as $idx => $_b) {
             </p>
             <span class="moretti-hero-cta-wrap inline-block">
             <?php
-            $shop_url = get_permalink(wc_get_page_id('shop'));
+            $hero_shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '';
             foreach ($hero_banners as $cta_index => $cta_banner) :
-                $url = !empty($cta_banner['cta_url']) ? $cta_banner['cta_url'] : $shop_url;
+                if (!empty($cta_banner['cta_url'])) {
+                    $url = $cta_banner['cta_url'];
+                } elseif (!empty($cta_banner['cta_category_slug']) && taxonomy_exists('product_cat')) {
+                    $cat_term = get_term_by('slug', $cta_banner['cta_category_slug'], 'product_cat');
+                    $url = ($cat_term && !is_wp_error($cat_term)) ? get_term_link($cat_term) : $hero_shop_url;
+                } elseif (!empty($cta_banner['cta_filters']) && $hero_shop_url !== '') {
+                    $url = add_query_arg($cta_banner['cta_filters'], $hero_shop_url);
+                } else {
+                    $url = $hero_shop_url;
+                }
                 $url = esc_url($url);
             ?>
             <a href="<?php echo $url; ?>" class="moretti-hero-cta inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all<?php echo $cta_index !== 0 ? ' moretti-hero-cta-hidden' : ''; ?>" data-slide-index="<?php echo (int) $cta_index; ?>">
