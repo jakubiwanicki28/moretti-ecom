@@ -1877,7 +1877,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nextGrid = parsedDoc.getElementById('products-grid');
 
                 if (!nextGrid) {
-                    stopInfinite({ message: 'To już wszystkie produkty.' });
+                    stopInfinite({ hideLoader: true });
                     return;
                 }
 
@@ -1917,15 +1917,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
                 }
             } catch (error) {
-                const likelyReachedEnd = currentPage >= (maxPages - 1);
-                if (likelyReachedEnd) {
-                    hasLoadError = false;
-                    stopInfinite({ hideLoader: true });
-                    return;
-                }
-
-                hasLoadError = true;
-                setInfiniteStatus('error', 'Błąd ładowania. Kliknij "Spróbuj ponownie".');
+                // Nie wyświetlamy błędu użytkownikowi – brak kolejnych produktów lub błąd sieci = po prostu ukrywamy loader.
+                hasLoadError = false;
+                stopInfinite({ hideLoader: true });
             } finally {
                 isLoading = false;
             }
@@ -1950,7 +1944,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const preloadDistance = Math.max(480, Math.round(window.innerHeight * 0.75));
+        // Ładowanie tylko gdy końcówka grida pojawia się na ekranie (mały margines pod viewportem).
+        const preloadDistance = 200;
 
         const checkProximity = () => {
             if (isLoading || hasLoadError || !nextUrl || currentPage >= maxPages) {

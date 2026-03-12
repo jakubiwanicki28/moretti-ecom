@@ -479,7 +479,8 @@ function moretti_get_product_color_from_taxonomy($product_id) {
 }
 
 /**
- * Ensure the internal \"Strona Główna\" attribute stays hidden in navigation and archives.
+ * Atrybut "Strona Główna" (pa_strona-glowna): ukryty na froncie (nawigacja, archiwa),
+ * ale z włączonym UI w panelu, żeby można było edytować terminy (np. "tak") i przypisywać je produktom.
  */
 add_filter('woocommerce_taxonomy_args_pa_strona-glowna', static function($args) {
     if (!is_array($args)) {
@@ -487,7 +488,7 @@ add_filter('woocommerce_taxonomy_args_pa_strona-glowna', static function($args) 
     }
 
     $args['public'] = false;
-    $args['show_ui'] = false;
+    $args['show_ui'] = true;   // umożliwia edycję terminów w WooCommerce → Atrybuty → Konfiguruj taksonomie
     $args['show_in_nav_menus'] = false;
     $args['show_in_quick_edit'] = false;
     $args['meta_box_cb'] = false;
