@@ -155,6 +155,26 @@ $hero_banners_count = count($hero_banners);
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
 <section id="moretti-home-hero" class="relative overflow-hidden bg-gray-100">
+    <!-- Kontrolki jako pierwsze w DOM + osobny pas – nic ich nie zasłania -->
+    <?php if ($hero_banners_count > 1) : ?>
+    <div class="moretti-hero-controls-strip" id="moretti-hero-controls-strip" aria-hidden="true">
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2" id="moretti-hero-controls">
+            <button type="button" id="moretti-hero-prev" class="moretti-hero-arrow" aria-label="Poprzedni baner">
+                <span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </button>
+            <div class="flex gap-1" id="moretti-hero-dots">
+                <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
+                <button type="button" class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>" data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>" aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>">
+                    <span class="moretti-hero-dot-core" aria-hidden="true"></span>
+                </button>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" id="moretti-hero-next" class="moretti-hero-arrow" aria-label="Następny baner">
+                <span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </button>
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="moretti-hero-track-wrap absolute inset-0 z-0 pointer-events-none">
         <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
@@ -191,55 +211,6 @@ $hero_banners_count = count($hero_banners);
             </a>
         </div>
     </div>
-
-    <?php if ($hero_banners_count > 1) : ?>
-        <div
-            class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2"
-            id="moretti-hero-controls"
-            style="z-index: 1000; pointer-events: auto;"
-        >
-            <button
-                type="button"
-                id="moretti-hero-prev"
-                class="moretti-hero-arrow"
-                aria-label="Poprzedni baner"
-                onclick="if (window.morettiHeroPrev) { window.morettiHeroPrev(); }"
-            >
-                <span aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
-            </button>
-
-            <div class="flex gap-1" id="moretti-hero-dots">
-                <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
-                    <button
-                        type="button"
-                        class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>"
-                        data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>"
-                        aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>"
-                    >
-                        <span class="moretti-hero-dot-core" aria-hidden="true"></span>
-                    </button>
-                <?php endforeach; ?>
-            </div>
-
-            <button
-                type="button"
-                id="moretti-hero-next"
-                class="moretti-hero-arrow"
-                aria-label="Następny baner"
-                onclick="if (window.morettiHeroNext) { window.morettiHeroNext(); }"
-            >
-                <span aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
-            </button>
-        </div>
-    <?php endif; ?>
 </section>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -317,7 +288,26 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduleNextAutoplayTick();
     };
 
-    /* Delegacja: jeden listener na kontenerze – każda kropka reaguje, bez przechwytywania przez overlay */
+    /* Faza CAPTURE na sekcji – przechwytujemy klik w kropkę zanim cokolwiek innego (overlay, itp.) */
+    heroSection.addEventListener('click', function(event) {
+        var el = event.target;
+        while (el && el !== heroSection) {
+            if (el.classList && el.classList.contains('moretti-hero-dot')) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                var requestedSlide = parseInt(el.getAttribute('data-slide-index'), 10);
+                if (!Number.isNaN(requestedSlide) && requestedSlide >= 0 && requestedSlide < totalSlides) {
+                    goToSlide(requestedSlide);
+                    restartAutoplayFromNow();
+                }
+                return;
+            }
+            el = el.parentNode;
+        }
+    }, true);
+
+    /* Dodatkowa delegacja na kontenerze (bubble) na wypadek gdyby capture nie wystarczył */
     if (controlsContainer) {
         controlsContainer.addEventListener('click', function(event) {
             var el = event.target;
@@ -623,10 +613,26 @@ document.addEventListener('DOMContentLoaded', function() {
     pointer-events: auto;
 }
 
-#moretti-hero-controls {
+/* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu, żeby żadna kropka nie była zasłonięta */
+.moretti-hero-controls-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    z-index: 9999;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2.5rem;
+}
+.moretti-hero-controls-strip #moretti-hero-controls {
     pointer-events: auto;
+}
+#moretti-hero-controls {
     position: relative;
-    z-index: 1000;
+    z-index: 1;
 }
 
 #moretti-home-hero .moretti-hero-track-wrap {
