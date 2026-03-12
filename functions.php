@@ -1457,10 +1457,39 @@ add_action('template_redirect', function () {
     exit;
 }, 5);
 
-add_action('wp_footer', function () {
-    if (!current_user_can('manage_woocommerce') || !isset($_GET['moretti_fix_done'])) {
+/**
+ * Przypisanie Kolekcja + Materiał z CSV (bez importera).
+ * 1. Skopiuj moretti-migracja-kolekcja-material.csv do theme/scripts/
+ * 2. Wejdź: ?moretti_assign_kolekcja_material=1 (jako admin)
+ */
+add_action('template_redirect', function () {
+    if (!isset($_GET['moretti_assign_kolekcja_material']) || $_GET['moretti_assign_kolekcja_material'] !== '1' || !current_user_can('manage_woocommerce')) {
         return;
     }
-    $n = (int) $_GET['moretti_fix_done'];
-    echo '<script>alert("Naprawa widoczności: zaktualizowano ' . $n . ' produktów. Odśwież sklep.");</script>';
+    $path = get_template_directory() . '/scripts/assign-kolekcja-material-from-csv.php';
+    if (!is_readable($path)) {
+        return;
+    }
+    include $path;
+    exit;
+}, 5);
+
+add_action('wp_footer', function () {
+    if (!current_user_can('manage_woocommerce')) {
+        return;
+    }
+    if (isset($_GET['moretti_fix_done'])) {
+        $n = (int) $_GET['moretti_fix_done'];
+        echo '<script>alert("Naprawa widoczności: zaktualizowano ' . $n . ' produktów. Odśwież sklep.");</script>';
+    }
+    if (isset($_GET['moretti_assign_done'])) {
+        $n = (int) $_GET['moretti_assign_done'];
+        $e = (int) ($_GET['moretti_assign_errors'] ?? 0);
+        $msg = "Kolekcja/Materiał z CSV: zaktualizowano {$n} produktów.";
+        if ($e > 0) {
+            $msg .= " Błędów: {$e} (sprawdź konsolę lub logi).";
+        }
+        $msg .= " Odśwież stronę atrybutów (Liczba) i sklep.";
+        echo '<script>alert("' . esc_js($msg) . '");</script>';
+    }
 }, 20);

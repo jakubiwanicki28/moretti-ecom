@@ -919,6 +919,14 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             <?php else : ?>
                 <div class="shop-empty">
                     <p>Nie znaleziono produktów.</p>
+                    <?php
+                    $empty_attr_filter = ($selected_kolekcja !== '' || $selected_material !== '') && current_user_can('manage_options');
+                    if ($empty_attr_filter) :
+                    ?>
+                    <p class="shop-empty-hint" style="margin-top:0.75rem;font-size:0.9em;color:#666;">
+                        Filtrujesz po atrybucie (Kolekcja/Materiał). Żaden produkt nie ma przypisanego tego termu. Przypisz atrybut w <strong>WooCommerce → Produkty → Edytuj produkt → Atrybuty</strong> (Kolekcja / Materiał).
+                    </p>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             <?php wp_reset_postdata(); ?>
