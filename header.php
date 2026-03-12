@@ -263,6 +263,14 @@
             height: 36px;
             display: flex;
             align-items: center;
+            padding: 0 10px;
+            margin: 0 -10px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .moretti-cat-item:hover {
+            background: rgba(42, 40, 38, 0.06);
         }
 
         .moretti-cat-link {
@@ -273,11 +281,14 @@
             text-decoration: none;
             line-height: 1;
             padding: 4px 0;
-            transition: color 0.2s ease;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, font-weight 0.2s ease;
         }
 
-        .moretti-cat-link:hover {
-            color: #8f8275;
+        .moretti-cat-link:hover,
+        .moretti-cat-item:hover .moretti-cat-link {
+            color: #1a1816;
+            font-weight: 700;
+            border-bottom: 2px solid #2a2826;
         }
 
         .moretti-cat-dropdown {
@@ -462,15 +473,15 @@
                 return $result;
             };
     
-            // Core navigation items – currently all mapped to wallet-related categories.
+            // Core navigation items – slugi zgodne z kategoriami w WooCommerce (Portfele → portfele, Portfele damskie → portfele-damskie, Portfele męskie → portfele-meskie).
             $items = array(
                 array(
                     'label'      => 'Dla niej',
-                    'term_slugs' => array('portfele-damskie', 'dzial-damski', 'dla-niej'),
+                    'term_slugs' => array('portfele-damskie'),
                 ),
                 array(
                     'label'      => 'Dla niego',
-                    'term_slugs' => array('portfele-meskie', 'dzial-meski', 'dla-niego'),
+                    'term_slugs' => array('portfele-meskie'),
                 ),
                 array(
                     'label'      => 'Nowości',
