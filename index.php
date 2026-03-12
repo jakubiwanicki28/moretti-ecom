@@ -152,6 +152,17 @@ if (!empty($hero_banners)) {
 }
 
 $hero_banners_count = count($hero_banners);
+
+$hero_banners_config = array();
+$hero_config_path = trailingslashit(get_template_directory()) . 'hero-banners-config.php';
+if (is_readable($hero_config_path)) {
+    $hero_banners_config = (array) include $hero_config_path;
+}
+foreach ($hero_banners as $idx => $_b) {
+    $cfg = isset($hero_banners_config[ $idx ]) ? $hero_banners_config[ $idx ] : array();
+    $hero_banners[ $idx ]['offset_x'] = isset($cfg['offset_x']) ? (int) $cfg['offset_x'] : 0;
+    $hero_banners[ $idx ]['cta_url']  = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
+}
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
 <section id="moretti-home-hero" class="relative overflow-hidden bg-gray-100">
@@ -162,7 +173,7 @@ $hero_banners_count = count($hero_banners);
             <button type="button" id="moretti-hero-prev" class="moretti-hero-arrow" aria-label="Poprzedni baner">
                 <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
             </button>
-            <div class="flex gap-0.5" id="moretti-hero-dots">
+            <div class="flex" id="moretti-hero-dots">
                 <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
                 <button type="button" class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>" data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>" aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>">
                     <span class="moretti-hero-dot-core" aria-hidden="true"></span>
@@ -184,12 +195,18 @@ $hero_banners_count = count($hero_banners);
                 if (!file_exists($hero_banner_dir_path . $hero_banner_name)) {
                     $hero_banner_src = get_template_directory_uri() . '/images/Baner strona www Large.jpeg';
                 }
+                $offset_x = isset($hero_banner['offset_x']) ? (int) $hero_banner['offset_x'] : 0;
+                $img_style = '';
+                if ($offset_x !== 0) {
+                    $img_style = 'object-position: calc(50% + ' . $offset_x . 'px) center;';
+                }
                 ?>
                 <div class="moretti-hero-slide" style="position: relative; min-width: 100%; height: 100%;">
                     <img
                         src="<?php echo esc_url($hero_banner_src); ?>"
                         alt="<?php echo esc_attr(sprintf('Baner %d', $hero_banner_index + 1)); ?>"
                         class="w-full h-full object-cover"
+                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
                         <?php echo $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>
                     >
                     <div class="absolute inset-0 bg-black/15"></div>
@@ -681,13 +698,13 @@ document.addEventListener('DOMContentLoaded', function() {
     background: rgba(0, 0, 0, 0.3);
     color: #ffffff;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    box-shadow: none;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
     opacity: 0.85;
 }
 
 #moretti-home-hero .moretti-hero-arrow:hover {
     background: rgba(0, 0, 0, 0.6);
-    transform: translateY(-1px);
 }
 
 #moretti-home-hero .moretti-hero-arrow:focus-visible {
@@ -698,7 +715,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #moretti-hero-dots {
     display: inline-flex;
     align-items: center;
-    gap: 2px;
+    gap: 0;
 }
 #moretti-hero-dots .moretti-hero-dot {
     min-width: 28px;
