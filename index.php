@@ -218,8 +218,8 @@ foreach ($hero_banners as $idx => $_b) {
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay pb-[56px] md:pb-0">
-        <div class="w-fit max-w-2xl min-w-0">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay">
+        <div class="moretti-hero-text-block w-fit max-w-2xl min-w-0">
             <h1 class="text-3xl md:text-7xl lg:text-8xl font-bold leading-none mb-3 md:mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
@@ -667,6 +667,20 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .moretti-hero-cta-wrap .moretti-hero-cta-hidden {
     display: none !important;
+}
+
+/* Mobile: odstęp od dołu baneru (żeby nie zasłaniać kropek), jeden blok tekstu – akapit nie wystaje w prawo */
+@media (max-width: 767px) {
+    .moretti-hero-text-overlay {
+        padding-bottom: 56px;
+    }
+    .moretti-hero-text-block {
+        max-width: 100%;
+    }
+    .moretti-hero-text-block p {
+        max-width: 100%;
+        word-wrap: break-word;
+    }
 }
 
 /* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu; kropki i strzałki na środku na dole */
