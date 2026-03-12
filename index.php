@@ -193,7 +193,11 @@ $hero_banners_count = count($hero_banners);
     </div>
 
     <?php if ($hero_banners_count > 1) : ?>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 z-40" id="moretti-hero-controls">
+        <div
+            class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2"
+            id="moretti-hero-controls"
+            style="z-index: 1000; pointer-events: auto;"
+        >
             <button
                 type="button"
                 id="moretti-hero-prev"
