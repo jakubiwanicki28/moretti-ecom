@@ -199,6 +199,7 @@ $hero_banners_count = count($hero_banners);
                 id="moretti-hero-prev"
                 class="moretti-hero-arrow"
                 aria-label="Poprzedni baner"
+                onclick="if (window.morettiHeroPrev) { window.morettiHeroPrev(); }"
             >
                 <span aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -225,6 +226,7 @@ $hero_banners_count = count($hero_banners);
                 id="moretti-hero-next"
                 class="moretti-hero-arrow"
                 aria-label="Następny baner"
+                onclick="if (window.morettiHeroNext) { window.morettiHeroNext(); }"
             >
                 <span aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -336,6 +338,17 @@ document.addEventListener('DOMContentLoaded', function() {
             restartAutoplayFromNow();
         });
     }
+
+    // Expose minimal global helpers for inline handlers (extra safety for clickability).
+    window.morettiHeroPrev = function() {
+        goToPrevSlide();
+        restartAutoplayFromNow();
+    };
+
+    window.morettiHeroNext = function() {
+        goToNextSlide();
+        restartAutoplayFromNow();
+    };
 
     heroSection.addEventListener('mouseenter', function() {
         isPausedByInteraction = true;
