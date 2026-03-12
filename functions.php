@@ -1298,3 +1298,61 @@ function moretti_admin_print_homepage_carousel_image_script() {
     <?php
 }
 add_action('admin_footer', 'moretti_admin_print_homepage_carousel_image_script');
+
+/**
+ * Jednorazowa naprawa widoczności produktów po imporcie CSV (gdy importer ustawił status na Szkic).
+ * Wejdź na stronę (np. stronę główną) będąc zalogowanym jako administrator z parametrem:
+ *   ?moretti_fix_visibility=1
+ * Po wykonaniu nastąpi przekierowanie i komunikat.
+ */
+add_action('template_redirect', function () {
+    if (!isset($_GET['moretti_fix_visibility']) || $_GET['moretti_fix_visibility'] !== '1') {
+        return;
+    }
+    if (!current_user_can('manage_woocommerce')) {
+        return;
+    }
+    if (!class_exists('WooCommerce')) {
+        return;
+    }
+
+    $ids = get_posts(array(
+        'post_type'      => 'product',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ));
+
+    $updated = 0;
+    foreach ($ids as $product_id) {
+        $post = get_post($product_id);
+        $product = wc_get_product($product_id);
+        $changed = false;
+
+        if ($post->post_status !== 'publish') {
+            wp_update_post(array('ID' => $product_id, 'post_status' => 'publish'));
+            $changed = true;
+        }
+
+        if ($product && $product->get_catalog_visibility() !== 'visible') {
+            $product->set_catalog_visibility('visible');
+            $product->save();
+            $changed = true;
+        }
+
+        if ($changed) {
+            $updated++;
+        }
+    }
+
+    wp_safe_redirect(add_query_arg('moretti_fix_done', $updated, remove_query_arg(array('moretti_fix_visibility', 'moretti_fix_done'))));
+    exit;
+}, 5);
+
+add_action('wp_footer', function () {
+    if (!current_user_can('manage_woocommerce') || !isset($_GET['moretti_fix_done'])) {
+        return;
+    }
+    $n = (int) $_GET['moretti_fix_done'];
+    echo '<script>alert("Naprawa widoczności: zaktualizowano ' . $n . ' produktów. Odśwież sklep.");</script>';
+}, 20);

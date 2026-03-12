@@ -589,7 +589,7 @@
                 <div class="moretti-cat-item">
                     <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-link"><?php echo esc_html($item['label']); ?></a>
                     <div class="moretti-cat-dropdown">
-                        <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-dropdown-all">Wszystko</a>
+                        <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-dropdown-all"><?php echo ($item['term'] && !is_wp_error($item['term'])) ? esc_html($item['term']->name) : 'Wszystko'; ?></a>
                         <?php if (!empty($item['panel']['categories'])) : ?>
                             <span class="moretti-cat-dropdown-title">Kategorie</span>
                             <?php foreach ($item['panel']['categories'] as $category_term) : ?>
