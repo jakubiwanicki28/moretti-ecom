@@ -89,6 +89,43 @@ function moretti_register_attributes() {
 }
 add_action('admin_init', 'moretti_register_attributes');
 
+/**
+ * Na stronach "Portfele męskie" i "Portfele damskie" pokazuj też produkty z rodzica "Portfele",
+ * dopóki nie przypiszesz produktów do tych podkategorii w WooCommerce.
+ */
+function moretti_include_parent_portfele_in_subcategory_archive($query) {
+    if (!class_exists('WooCommerce') || !$query->is_main_query() || $query->is_admin()) {
+        return;
+    }
+    $cat_slug = $query->get('product_cat');
+    if (!is_string($cat_slug) || $cat_slug === '') {
+        if ($query->get('taxonomy') === 'product_cat') {
+            $cat_slug = $query->get('term');
+        }
+    }
+    if (!is_string($cat_slug) || $cat_slug === '' || !in_array($cat_slug, array('portfele-meskie', 'portfele-damskie'), true)) {
+        return;
+    }
+    $parent = get_term_by('slug', 'portfele', 'product_cat');
+    if (!$parent || is_wp_error($parent)) {
+        return;
+    }
+    $query->set('tax_query', array(
+        'relation' => 'OR',
+        array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => array($cat_slug),
+        ),
+        array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => array('portfele'),
+        ),
+    ));
+}
+add_action('pre_get_posts', 'moretti_include_parent_portfele_in_subcategory_archive', 30);
+
 // Register navigation menus
 function moretti_theme_setup() {
     add_theme_support('title-tag');
