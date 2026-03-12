@@ -180,7 +180,7 @@ $hero_banners_count = count($hero_banners);
 
     <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-start md:items-center pt-16 pb-10 md:pt-0 md:pb-0">
         <div class="max-w-2xl">
-            <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-none mb-6 uppercase">
+            <h1 class="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold leading-none mb-6 md:mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
             <p class="text-sm md:text-base max-w-md mb-8 opacity-90 leading-relaxed">
