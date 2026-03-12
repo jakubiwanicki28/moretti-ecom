@@ -154,7 +154,7 @@ if (!empty($hero_banners)) {
 $hero_banners_count = count($hero_banners);
 ?>
 <!-- 1. HERO SECTION (Dynamic banner carousel) -->
-<section id="moretti-home-hero" class="relative h-[80vh] overflow-hidden bg-gray-100">
+<section id="moretti-home-hero" class="relative overflow-hidden bg-gray-100">
     <div class="moretti-hero-track-wrap absolute inset-0 z-0 pointer-events-none">
         <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
@@ -596,12 +596,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 /* Hero slider controls: arrows + dots */
+#moretti-home-hero {
+    position: relative;
+}
+
 #moretti-hero-controls {
     pointer-events: auto;
 }
 
 #moretti-home-hero .moretti-hero-track-wrap {
     pointer-events: none;
+}
+
+@media (min-width: 768px) {
+    #moretti-home-hero {
+        aspect-ratio: 16 / 9;
+    }
+
+    #moretti-home-hero .moretti-hero-track-wrap {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-track {
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-slide {
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+    }
 }
 
 #moretti-home-hero .moretti-hero-arrow {
@@ -668,6 +699,31 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 @media (max-width: 767px) {
+    #moretti-home-hero {
+        aspect-ratio: 3 / 4;
+    }
+
+    #moretti-home-hero .moretti-hero-track-wrap {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-track {
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-slide {
+        height: 100%;
+    }
+
+    #moretti-home-hero .moretti-hero-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+    }
+
     #moretti-home-hero .moretti-hero-arrow {
         width: 24px;
         height: 24px;
