@@ -268,7 +268,7 @@ get_header(); ?>
     .woocommerce-product-gallery .main-product-image-frame::before {
         content: "" !important;
         display: block !important;
-        padding-top: 75% !important; /* wymuszamy pole 4:3 */
+        padding-top: 133.333% !important; /* proporcje 4:3 w pionie (wysokość:szerokość) */
     }
     .woocommerce-product-gallery .main-product-image-el {
         position: absolute !important;
