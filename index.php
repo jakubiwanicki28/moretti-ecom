@@ -158,11 +158,11 @@ $hero_banners_count = count($hero_banners);
     <!-- Kontrolki jako pierwsze w DOM + osobny pas – nic ich nie zasłania -->
     <?php if ($hero_banners_count > 1) : ?>
     <div class="moretti-hero-controls-strip" id="moretti-hero-controls-strip" aria-hidden="true">
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2" id="moretti-hero-controls">
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1" id="moretti-hero-controls">
             <button type="button" id="moretti-hero-prev" class="moretti-hero-arrow" aria-label="Poprzedni baner">
-                <span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
             </button>
-            <div class="flex gap-1" id="moretti-hero-dots">
+            <div class="flex gap-0.5" id="moretti-hero-dots">
                 <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
                 <button type="button" class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>" data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>" aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>">
                     <span class="moretti-hero-dot-core" aria-hidden="true"></span>
@@ -170,7 +170,7 @@ $hero_banners_count = count($hero_banners);
                 <?php endforeach; ?>
             </div>
             <button type="button" id="moretti-hero-next" class="moretti-hero-arrow" aria-label="Następny baner">
-                <span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
             </button>
         </div>
     </div>
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 56px;
     z-index: 9999;
     pointer-events: none;
 }
@@ -627,11 +627,11 @@ document.addEventListener('DOMContentLoaded', function() {
     pointer-events: auto;
     position: absolute;
     left: 50%;
-    bottom: 2.5rem;
+    bottom: 1rem;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 #moretti-hero-controls {
     z-index: 1;
@@ -669,8 +669,8 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 #moretti-home-hero .moretti-hero-arrow {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     border-radius: 999px;
     border: 0;
     margin: 0;
@@ -678,11 +678,11 @@ document.addEventListener('DOMContentLoaded', function() {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.3);
     color: #ffffff;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
-    opacity: 0.9;
+    opacity: 0.85;
 }
 
 #moretti-home-hero .moretti-hero-arrow:hover {
@@ -698,13 +698,13 @@ document.addEventListener('DOMContentLoaded', function() {
 #moretti-hero-dots {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 #moretti-hero-dots .moretti-hero-dot {
-    min-width: 44px;
-    min-height: 44px;
-    width: 44px;
-    height: 44px;
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
     border: 0;
     border-radius: 999px;
     background: transparent;
@@ -719,10 +719,10 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 #moretti-hero-dots .moretti-hero-dot-core {
-    width: 8px;
-    height: 8px;
+    width: 5px;
+    height: 5px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.42);
+    background: rgba(255, 255, 255, 0.4);
     transform: scale(1);
     transition: transform 0.25s ease, background-color 0.25s ease;
     pointer-events: none;
@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 #moretti-hero-dots .moretti-hero-dot.is-active .moretti-hero-dot-core {
     background: #ffffff;
-    transform: scale(1.4);
+    transform: scale(1.3);
 }
 
 #moretti-hero-dots .moretti-hero-dot:focus-visible {
