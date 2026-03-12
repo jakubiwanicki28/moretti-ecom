@@ -218,9 +218,9 @@ foreach ($hero_banners as $idx => $_b) {
         </div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-center moretti-hero-text-overlay">
+    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay pb-12 md:pb-0">
         <div class="max-w-2xl">
-            <h1 class="text-3xl md:text-7xl lg:text-8xl font-bold leading-none mb-6 md:mb-8 uppercase">
+            <h1 class="text-3xl md:text-7xl lg:text-8xl font-bold leading-none mb-3 md:mb-8 uppercase">
                 MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
             </h1>
             <p class="text-xs md:text-base max-w-md mb-6 md:mb-8 opacity-90 leading-relaxed">
