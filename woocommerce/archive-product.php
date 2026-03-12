@@ -26,6 +26,9 @@ $material_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
 $size_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
     ? moretti_resolve_attribute_taxonomy(array('pa_wielkosc', 'pa_size', 'pa_rozmiar'), '', 'wielkosc')
     : 'pa_wielkosc';
+$kolekcja_taxonomy = function_exists('moretti_resolve_attribute_taxonomy')
+    ? moretti_resolve_attribute_taxonomy(array('pa_kolekcja'), '', 'kolekcja')
+    : 'pa_kolekcja';
 
 $moretti_get_filter_terms = static function ($taxonomy) {
     if (!$taxonomy || !taxonomy_exists($taxonomy)) {
@@ -51,6 +54,7 @@ $selected_color = $requested_color_slug;
 
 $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
+$selected_kolekcja = isset($_GET['filter_kolekcja']) ? sanitize_title(wp_unslash($_GET['filter_kolekcja'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
 
 $material_filter_taxonomy = $material_taxonomy;
@@ -119,6 +123,9 @@ if ($selected_material !== '') {
 if ($selected_size !== '') {
     $moretti_current_query_args['filter_size'] = $selected_size;
 }
+if ($selected_kolekcja !== '') {
+    $moretti_current_query_args['filter_kolekcja'] = $selected_kolekcja;
+}
 if (isset($_GET['min_price']) && $_GET['min_price'] !== '') {
     $moretti_current_query_args['min_price'] = sanitize_text_field(wp_unslash($_GET['min_price']));
 }
@@ -137,6 +144,7 @@ $moretti_known_query_args = array(
     'filter_kolor',
     'filter_material',
     'filter_size',
+    'filter_kolekcja',
     'min_price',
     'max_price',
     'orderby',
@@ -281,6 +289,14 @@ if (!$is_wishlist_view && $size_taxonomy && $selected_size !== '') {
         'taxonomy' => $size_taxonomy,
         'field' => 'slug',
         'terms' => $selected_size,
+    );
+}
+
+if (!$is_wishlist_view && $kolekcja_taxonomy && taxonomy_exists($kolekcja_taxonomy) && $selected_kolekcja !== '') {
+    $tax_query[] = array(
+        'taxonomy' => $kolekcja_taxonomy,
+        'field' => 'slug',
+        'terms' => $selected_kolekcja,
     );
 }
 
