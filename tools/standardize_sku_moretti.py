@@ -16,21 +16,31 @@ def remove_accents(value: str) -> str:
 
 def slug_from_color(color_name: str) -> str:
     """
-    Build KOLOR_SLUG from human-readable color.
-    Example: 'Jasny Brąz' -> 'Jasny-Braz'
+    Legacy helper – no longer used for new SKU format.
+    Kept for reference; new SKUs use color_key_from_color instead.
     """
     color_name = (color_name or "").strip()
     if not color_name:
         return ""
 
     no_accents = remove_accents(color_name)
-    # Replace spaces and underscores with hyphens
-    slug = re.sub(r"[\\s_]+", "-", no_accents)
-    # Collapse multiple hyphens
-    slug = re.sub(r"-{2,}", "-", slug)
-    # Strip leading/trailing hyphens
-    slug = slug.strip("-")
+    slug = re.sub(r"\s+", " ", no_accents).strip()
     return slug
+
+
+def color_key_from_color(color_name: str) -> str:
+    """
+    Build COLOR_KEY for SKU tail: no spaces, no hyphens, no diacritics.
+    Example: 'Jasny Brąz' -> 'jasnybraz'
+    """
+    color_name = (color_name or "").strip()
+    if not color_name:
+        return ""
+
+    no_accents = remove_accents(color_name).lower()
+    # Keep only a-z and 0-9, drop everything else (spaces, hyphens, punctuation).
+    key = re.sub(r"[^a-z0-9]+", "", no_accents)
+    return key
 
 
 def parse_post_id_from_url(url: str) -> Optional[str]:
@@ -131,13 +141,13 @@ def build_master_map(master_path: str) -> Tuple[Dict[str, str], Dict[str, Any]]:
                     }
                 )
 
-            color_slug = slug_from_color(color_name)
+            color_key = color_key_from_color(color_name)
 
             # If we have an explicit final SKU, we could trust it, but we want
             # to normalize and ensure it is always BASE-COLOR_SLUG, without
             # CR_/PI_/CROCO- style prefixes.
-            if sku_base and color_slug:
-                final_sku = f"{sku_base}-{color_slug}"
+            if sku_base and color_key:
+                final_sku = f"{sku_base}-{color_key}"
             elif sku_final_raw:
                 # Fallback: try to strip any leading prefix up to first letter
                 tmp = sku_final_raw

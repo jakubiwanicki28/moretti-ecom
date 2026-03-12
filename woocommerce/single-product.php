@@ -258,7 +258,7 @@ get_header(); ?>
         border: none !important;
         background: transparent !important;
         display: flex !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         justify-content: center !important;
         overflow: hidden !important;
     }
@@ -266,6 +266,7 @@ get_header(); ?>
         width: 100% !important;
         height: 100% !important;
         object-fit: contain !important;
+        object-position: top center !important;
     }
     .single-gallery-arrow {
         position: absolute !important;
