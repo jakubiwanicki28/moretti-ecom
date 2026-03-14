@@ -597,6 +597,28 @@ get_header(); ?>
                                         <?php endforeach; ?>
                                     </div>
                                 </div>
+                                <?php
+                                if (!empty($_GET['moretti_debug_dots']) && $_GET['moretti_debug_dots'] === '1' && current_user_can('manage_woocommerce')) {
+                                    $current_sku = (string) $product->get_sku();
+                                    $parsed = function_exists('moretti_parse_sku_model_and_color') ? moretti_parse_sku_model_and_color($current_sku) : array('model' => '', 'color_raw' => '');
+                                    $model = $parsed['model'] ?? '';
+                                    echo '<div id="moretti-single-debug" style="position:fixed;right:0;top:80px;bottom:20px;width:min(360px,90vw);overflow:auto;padding:12px;background:#1a1a1a;color:#0f0;font:11px/1.4 monospace;border-radius:4px 0 0 4px;border-left:2px solid #0f0;z-index:999998;box-shadow:-4px 0 12px rgba(0,0,0,0.2);">';
+                                    echo '<strong>Diagnostyka kropek (?moretti_debug_dots=1)</strong><br>';
+                                    echo 'Bieżący produkt: SKU=<code>' . esc_html($current_sku) . '</code>, model=<code>' . esc_html($model) . '</code><br>';
+                                    echo 'Mechanika: warianty = produkty, których SKU zaczyna się od <code>' . esc_html($model) . '-</code>. Pierwsze zdjęcie = indeks 0 karuzeli (galeria, potem main).<br>';
+                                    if (empty($single_color_variants)) {
+                                        echo 'Brak wariantów – inne kolory muszą mieć SKU np. <code>' . esc_html($model) . '-czerwony</code> (ten sam prefix przed ostatnim myślnikiem).<br>';
+                                    } else {
+                                        echo 'Warianty (podgląd przy najechaniu działa tylko gdy first_image_url jest ustawiony):<br>';
+                                        foreach ($single_color_variants as $v) {
+                                            $ok = !empty($v['first_image_url']) ? 'OK' : 'BRAK URL';
+                                            $reason = empty($v['first_image_url']) && !empty($v['first_image_debug']) ? ' (' . esc_html($v['first_image_debug']) . ')' : '';
+                                            echo '• ID ' . (int) $v['id'] . ' SKU=' . esc_html($v['sku']) . ' ' . esc_html($v['color_label']) . ' → first_image_url: ' . esc_html($ok) . $reason . '<br>';
+                                        }
+                                    }
+                                    echo '</div>';
+                                }
+                                ?>
                             <?php endif; ?>
                             
                             <div class="text-[10px] text-taupe-600 leading-relaxed">

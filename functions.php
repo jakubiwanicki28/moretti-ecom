@@ -593,8 +593,27 @@ function moretti_get_product_color_variants($product_or_id) {
         }
         $seen_color_slugs[$resolved_color_slug] = true;
 
-        $first_image_id = $candidate->get_image_id();
-        $first_image_url = $first_image_id ? wp_get_attachment_image_url((int) $first_image_id, 'large') : '';
+        // Pierwsze zdjęcie z karuzeli (indeks 0), nie featured – ta sama kolejność co w gridzie: galeria, potem main
+        $gallery_ids = $candidate->get_gallery_image_ids();
+        $main_id = $candidate->get_image_id();
+        $carousel_order = array();
+        if (!empty($gallery_ids)) {
+            $carousel_order = array_map('absint', $gallery_ids);
+            if ($main_id && !in_array((int) $main_id, $carousel_order)) {
+                $carousel_order[] = (int) $main_id;
+            }
+        } else {
+            if ($main_id) {
+                $carousel_order[] = (int) $main_id;
+            }
+        }
+        $first_image_id = isset($carousel_order[0]) ? (int) $carousel_order[0] : 0;
+        $first_image_url = $first_image_id ? wp_get_attachment_image_url($first_image_id, 'large') : '';
+        $first_image_debug = '';
+        if (empty($first_image_url)) {
+            $gallery_count = is_array($gallery_ids) ? count($gallery_ids) : 0;
+            $first_image_debug = 'galeria=' . $gallery_count . ' main_id=' . (int) $main_id . ' first_id=' . $first_image_id;
+        }
 
         $variants[] = array(
             'id' => (int) $candidate->get_id(),
@@ -606,6 +625,7 @@ function moretti_get_product_color_variants($product_or_id) {
             'color_hex' => moretti_get_color_hex($resolved_color_slug),
             'is_current' => $candidate_is_current,
             'first_image_url' => $first_image_url ? (string) $first_image_url : '',
+            'first_image_debug' => $first_image_debug,
         );
     }
 
