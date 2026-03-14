@@ -150,18 +150,18 @@
     color: #fff;
 }
 
-/* Pozycje treści – horizontal (left|center|right) + vertical (top|center|bottom) */
-.mh2__content--left-top    { left: 0;   top: 0;    right: auto; bottom: auto; }
-.mh2__content--left-center { left: 0;   top: 50%;  right: auto; bottom: auto; transform: translateY(-50%); }
-.mh2__content--left-bottom { left: 0;   bottom: 0; right: auto; top: auto; }
+/* Pozycje treści – horizontal (left|center|right) + vertical (top|center|bottom). Offset: content_offset_x / content_offset_y w config. */
+.mh2__content--left-top    { left: 0;   top: 0;    right: auto; bottom: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--left-center { left: 0;   top: 50%;  right: auto; bottom: auto; transform: translateY(-50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--left-bottom { left: 0;   bottom: 0; right: auto; top: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
 
-.mh2__content--center-top    { left: 50%; top: 0;    right: auto; bottom: auto; transform: translateX(-50%); }
-.mh2__content--center-center { left: 50%; top: 50%;  right: auto; bottom: auto; transform: translate(-50%, -50%); }
-.mh2__content--center-bottom { left: 50%; bottom: 0; right: auto; top: auto; transform: translateX(-50%); }
+.mh2__content--center-top    { left: 50%; top: 0;    right: auto; bottom: auto; transform: translateX(-50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--center-center { left: 50%; top: 50%;  right: auto; bottom: auto; transform: translate(-50%, -50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--center-bottom { left: 50%; bottom: 0; right: auto; top: auto; transform: translateX(-50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
 
-.mh2__content--right-top    { right: 0; top: 0;    left: auto; bottom: auto; }
-.mh2__content--right-center { right: 0; top: 50%;  left: auto; bottom: auto; transform: translateY(-50%); }
-.mh2__content--right-bottom { right: 0; bottom: 0; left: auto; top: auto; }
+.mh2__content--right-top    { right: 0; top: 0;    left: auto; bottom: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--right-center { right: 0; top: 50%;  left: auto; bottom: auto; transform: translateY(-50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+.mh2__content--right-bottom { right: 0; bottom: 0; left: auto; top: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
 
 /* Strzałki */
 .mh2__arrow {

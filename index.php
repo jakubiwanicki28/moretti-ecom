@@ -192,6 +192,8 @@ $hero_shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_i
 foreach ($hero_banners as $idx => $_b) {
     $cfg = isset($hero_banners_config[ $idx ]) ? $hero_banners_config[ $idx ] : array();
     $hero_banners[ $idx ]['offset_x'] = isset($cfg['offset_x']) ? (int) $cfg['offset_x'] : 0;
+    $hero_banners[ $idx ]['content_offset_x'] = isset($cfg['content_offset_x']) ? (int) $cfg['content_offset_x'] : 0;
+    $hero_banners[ $idx ]['content_offset_y'] = isset($cfg['content_offset_y']) ? (int) $cfg['content_offset_y'] : 0;
     $hero_banners[ $idx ]['cta_url'] = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
     $hero_banners[ $idx ]['cta_filters'] = isset($cfg['cta_filters']) && is_array($cfg['cta_filters']) ? $cfg['cta_filters'] : array();
     $hero_banners[ $idx ]['cta_category_slug'] = isset($cfg['cta_category_slug']) ? (string) $cfg['cta_category_slug'] : '';
@@ -246,6 +248,9 @@ foreach ($hero_banners as $idx => $_b) {
                 $loading = $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
                 $text_pos = isset($hero_banner['text_position']) ? $hero_banner['text_position'] : 'left-center';
                 $pos_class = preg_match('/^(left|center|right)-(top|center|bottom)$/', $text_pos) ? 'mh2__content--' . $text_pos : 'mh2__content--left-center';
+                $cox = isset($hero_banner['content_offset_x']) ? (int) $hero_banner['content_offset_x'] : 0;
+                $coy = isset($hero_banner['content_offset_y']) ? (int) $hero_banner['content_offset_y'] : 0;
+                $content_style = ($cox !== 0 || $coy !== 0) ? ' style="--content-offset-x: ' . $cox . 'px; --content-offset-y: ' . $coy . 'px;"' : '';
                 if (!empty($hero_banner['cta_url'])) {
                     $slide_url = $hero_banner['cta_url'];
                 } elseif (!empty($hero_banner['cta_category_slug']) && taxonomy_exists('product_cat')) {
@@ -281,7 +286,7 @@ foreach ($hero_banners as $idx => $_b) {
                         </picture>
                     </div>
                     <?php endif; ?>
-                    <div class="mh2__content <?php echo esc_attr($pos_class); ?>">
+                    <div class="mh2__content <?php echo esc_attr($pos_class); ?>"<?php echo $content_style; ?>>
                         <?php if (!empty($hero_banner['title'])) : ?>
                         <h2 class="mh2__title"><?php echo wp_kses_post($hero_banner['title']); ?></h2>
                         <?php endif; ?>
@@ -549,11 +554,12 @@ foreach ($hero_banners as $idx => $_b) {
 
                 <?php if (count($slider_images) > 1) : ?>
                 <!-- Slider Arrows -->
+                <!-- Strzałki: lewy przycisk = w lewo (←), prawy = w prawo (→). Ścieżki zamienione względem typowego rysunku. -->
                 <button id="home-featured-prev-btn" class="home-featured-image-nav" onclick="featuredSliderPrev()" aria-label="Poprzednie zdjęcie">
-                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                 </button>
                 <button id="home-featured-next-btn" class="home-featured-image-nav" onclick="featuredSliderNext()" aria-label="Następne zdjęcie">
-                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                 </button>
 
                 <!-- Slider Dots -->
@@ -988,9 +994,14 @@ foreach ($hero_banners as $idx => $_b) {
 #featured-slider #home-featured-prev-btn {
     left: 8px;
 }
-
+#featured-slider #home-featured-prev-btn svg {
+    display: block;
+}
 #featured-slider #home-featured-next-btn {
     right: 8px;
+}
+#featured-slider #home-featured-next-btn svg {
+    display: block;
 }
 
 #featured-slider:hover .home-featured-image-nav,

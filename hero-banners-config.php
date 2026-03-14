@@ -20,8 +20,13 @@
  *
  * Indeks = kolejność slajdu (0, 1, 2, ...).
  *
- * offset_x            – przesunięcie zdjęcia w poziomie (px). Plus = w prawo, minus = w lewo. 0 = bez przesunięcia.
- * text_position       – pozycja bloku tekstu (patrz wyżej). Domyślnie 'left-center'.
+ * offset_x            – przesunięcie zdjęcia w poziomie, desktop (px). Plus = w prawo, minus = w lewo.
+ * offset_x_mobile     – (opcjonalnie) to samo dla mobile. Nie podane = użycie offset_x.
+ * content_offset_x    – (opcjonalnie) przesunięcie bloku tekstu+CTA w poziomie, desktop (px).
+ * content_offset_y    – (opcjonalnie) przesunięcie bloku tekstu+CTA w pionie, desktop (px).
+ * content_offset_x_mobile, content_offset_y_mobile – (opcjonalnie) to samo dla mobile.
+ * text_position       – pozycja bloku tekstu (desktop). left-top, left-center, … right-bottom.
+ * text_position_mobile – (opcjonalnie) pozycja bloku tekstu na mobile. Nie podane = text_position.
  * title               – tytuł slajdu (HTML). Pusty = brak tytułu.
  * subtitle            – podtytuł (HTML). Pusty = brak.
  * cta_text            – tekst przycisku. Domyślnie "KUP TERAZ".
