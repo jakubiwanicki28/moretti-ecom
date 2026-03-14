@@ -79,4 +79,13 @@ return array(
         'cta_text'      => 'KUP TERAZ',
         'cta_filters'   => array( 'filter_kolekcja' => 'croco' ),
     ),
+    4 => array(
+        'offset_x'      => 0,
+        'text_position' => 'left-center',
+        'title'         => 'Baner 5',
+        'subtitle'      => 'Test na remote – piąty slajd.',
+        'cta_text'      => 'KUP TERAZ',
+        'cta_url'       => '', // opcjonalnie: gotowy URL albo zostaw puste – wtedy cta_category_slug / cta_filters
+        'cta_category_slug' => '',
+    ),
 );
