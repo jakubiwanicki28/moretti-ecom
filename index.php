@@ -751,6 +751,10 @@ foreach ($hero_banners as $idx => $_b) {
     .home-products-item .product-card.has-hover-second-image .image-dots {
         display: none !important;
     }
+    .home-products-item .product-image .product-image-interior-hover-zone:hover ~ .image-nav,
+    .home-products-item .product-image .product-image-interior-hover-zone:hover ~ .image-dots {
+        display: flex !important;
+    }
     .home-products-item .product-card.has-hover-second-image .product-image-slide[data-index="0"] {
         opacity: 1;
     }

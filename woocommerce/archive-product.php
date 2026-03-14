@@ -1569,10 +1569,14 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         }
     }
 
-    /* Grid: hide arrows and dots; hover shows second image only over top zone (desktop only) */
+    /* Grid: hide arrows and dots by default; show them when hovering the interior zone */
     .shop-page-wittchen .products-grid .image-nav,
     .shop-page-wittchen .products-grid .image-dots {
         display: none !important;
+    }
+    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .image-nav,
+    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .image-dots {
+        display: flex !important;
     }
 
     .shop-page-wittchen .products-grid .product-image-interior-hover-zone {
