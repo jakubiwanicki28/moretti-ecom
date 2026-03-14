@@ -54,7 +54,7 @@
 return array(
     0 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-center',
+        'text_position' => 'left-bottom',
         'title'         => 'MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL',
         'subtitle'      => 'Odkryj naszą wyselekcjonowaną kolekcję portfeli premium.',
         'cta_text'      => 'KUP TERAZ',
@@ -62,7 +62,7 @@ return array(
     ),
     1 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-center',
+        'text_position' => 'left-bottom',
         'title'         => 'Skóra matowa',
         'subtitle'      => 'Wyjątkowe wykończenie w kolekcji.',
         'cta_text'      => 'KUP TERAZ',
@@ -70,7 +70,7 @@ return array(
     ),
     2 => array(
         'offset_x'           => 0,
-        'text_position'      => 'left-center',
+        'text_position'      => 'left-bottom',
         'title'             => 'Portfele męskie',
         'subtitle'          => 'Klasyka i elegancja.',
         'cta_text'           => 'KUP TERAZ',
@@ -78,7 +78,7 @@ return array(
     ),
     3 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-center',
+        'text_position' => 'left-bottom',
         'title'         => 'Kolekcja Croco',
         'subtitle'      => 'Odważny wzór w najlepszym wydaniu.',
         'cta_text'      => 'KUP TERAZ',
@@ -87,8 +87,8 @@ return array(
     4 => array(
         'offset_x'      => 0,
         'offset_x_mobile' => 0,           // opcjonalnie: kadr zdjęcia na mobile (px)
-        'text_position' => 'left-center',
-        'text_position_mobile' => 'left-center', // opcjonalnie: np. 'center-bottom' na mobile
+        'text_position' => 'left-bottom',
+        'text_position_mobile' => 'left-bottom', // góra/dół, nie środek
         'content_offset_x' => 0,
         'content_offset_y' => 0,
         'content_offset_x_mobile' => null, // opcjonalnie: px
