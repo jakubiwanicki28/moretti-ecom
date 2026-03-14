@@ -4408,7 +4408,7 @@ header a.text-base {
 
 .woocommerce-product-gallery .main-product-image-frame {
   width: 100% !important;
-  aspect-ratio: 1 / 1 !important;
+  aspect-ratio: 3 / 4 !important; /* portret 3:4, jak zdjęcia */
   border: 1px solid #f3f4f6 !important;
   background: #ffffff !important;
 }
@@ -4430,7 +4430,8 @@ header a.text-base {
 
 .woocommerce-product-gallery .thumbnail-item {
   width: 86px !important;
-  height: 86px !important;
+  aspect-ratio: 3 / 4 !important;
+  height: auto !important;
   border: 1px solid #e5e7eb !important;
   background: #ffffff !important;
   overflow: hidden !important;

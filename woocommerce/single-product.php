@@ -343,6 +343,14 @@ get_header(); ?>
             flex-direction: column !important;
             gap: 1rem !important;
         }
+        /* Mobilka: sztywne 3:4 portret – ani wyżej, ani inny ratio */
+        .woocommerce-product-gallery .main-product-image-frame {
+            aspect-ratio: 3 / 4 !important;
+            max-height: none !important;
+        }
+        .woocommerce-product-gallery .main-product-image-frame::before {
+            padding-top: 133.333% !important; /* 4/3 = 3:4 portret */
+        }
         .main-product-image-el {
             object-fit: contain !important;
         }
