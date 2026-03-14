@@ -678,6 +678,16 @@ function moretti_enqueue_assets() {
         filemtime(get_template_directory() . '/assets/css/main.css')
     );
 
+    // Hero slider (Wittchen-style, izolowany .mh2) – tylko na stronie głównej
+    if (is_front_page()) {
+        wp_enqueue_style(
+            'moretti-hero-slider',
+            get_template_directory_uri() . '/assets/css/hero-slider.css',
+            array('moretti-main-style'),
+            filemtime(get_template_directory() . '/assets/css/hero-slider.css')
+        );
+    }
+
     // Shop clean stylesheet (only on shop pages)
     if (is_shop() || is_product_taxonomy()) {
         wp_enqueue_style(

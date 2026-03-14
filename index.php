@@ -195,39 +195,41 @@ foreach ($hero_banners as $idx => $_b) {
     $hero_banners[ $idx ]['cta_url'] = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
     $hero_banners[ $idx ]['cta_filters'] = isset($cfg['cta_filters']) && is_array($cfg['cta_filters']) ? $cfg['cta_filters'] : array();
     $hero_banners[ $idx ]['cta_category_slug'] = isset($cfg['cta_category_slug']) ? (string) $cfg['cta_category_slug'] : '';
+    $hero_banners[ $idx ]['text_position'] = isset($cfg['text_position']) ? (string) $cfg['text_position'] : 'left-center';
+    $hero_banners[ $idx ]['title'] = isset($cfg['title']) ? (string) $cfg['title'] : '';
+    $hero_banners[ $idx ]['subtitle'] = isset($cfg['subtitle']) ? (string) $cfg['subtitle'] : '';
+    $hero_banners[ $idx ]['cta_text'] = isset($cfg['cta_text']) ? (string) $cfg['cta_text'] : 'KUP TERAZ';
+    $hero_banners[ $idx ]['overlay_desktop'] = isset($cfg['overlay_desktop']) ? (string) $cfg['overlay_desktop'] : '';
+    $hero_banners[ $idx ]['overlay_mobile'] = isset($cfg['overlay_mobile']) ? (string) $cfg['overlay_mobile'] : '';
 }
 ?>
-<!-- 1. HERO SECTION (Dynamic banner carousel) -->
-<section id="moretti-home-hero" class="relative overflow-hidden bg-gray-100">
-    <!-- Kontrolki jako pierwsze w DOM + osobny pas – nic ich nie zasłania -->
+<!-- 1. HERO SECTION (Wittchen-style, izolowany .mh2) -->
+<section id="moretti-home-hero" class="mh2">
     <?php if ($hero_banners_count > 1) : ?>
-    <div class="moretti-hero-controls-strip" id="moretti-hero-controls-strip" aria-hidden="true">
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1" id="moretti-hero-controls">
-            <button type="button" id="moretti-hero-prev" class="moretti-hero-arrow" aria-label="Poprzedni baner">
-                <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 19L8 12L15 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+    <div class="mh2__controls-strip" aria-hidden="true">
+        <div class="mh2__controls" id="moretti-hero-controls">
+            <button type="button" class="mh2__arrow" id="moretti-hero-prev" aria-label="Poprzedni baner">
+                <svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"/></svg>
             </button>
-            <div class="flex" id="moretti-hero-dots">
-                <?php foreach ($hero_banners as $hero_banner_dot_index => $hero_banner_dot) : ?>
-                <button type="button" class="moretti-hero-dot<?php echo $hero_banner_dot_index === 0 ? ' is-active' : ''; ?>" data-slide-index="<?php echo esc_attr($hero_banner_dot_index); ?>" aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $hero_banner_dot_index + 1)); ?>">
-                    <span class="moretti-hero-dot-core" aria-hidden="true"></span>
+            <div class="mh2__dots" id="moretti-hero-dots">
+                <?php foreach ($hero_banners as $di => $_) : ?>
+                <button type="button" class="mh2__dot<?php echo $di === 0 ? ' is-active' : ''; ?>" data-slide-index="<?php echo (int) $di; ?>" aria-label="<?php echo esc_attr(sprintf('Pokaż baner %d', $di + 1)); ?>">
+                    <span class="mh2__dot-core" aria-hidden="true"></span>
                 </button>
                 <?php endforeach; ?>
             </div>
-            <button type="button" id="moretti-hero-next" class="moretti-hero-arrow" aria-label="Następny baner">
-                <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5L16 12L9 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            <button type="button" class="mh2__arrow" id="moretti-hero-next" aria-label="Następny baner">
+                <svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.617 9.9238C10.8882 10.195 10.8882 10.6346 10.617 10.9058L1.80242 19.7204L10.617 28.535C10.8882 28.8062 10.8882 29.2459 10.617 29.517C10.3459 29.7882 9.90621 29.7882 9.63504 29.517L0.565919 20.4479C0.164146 20.0461 0.164146 19.3947 0.565919 18.993L9.63504 9.9238C9.90621 9.65263 10.3459 9.65263 10.617 9.9238Z" fill="currentColor"/></svg>
             </button>
         </div>
     </div>
     <?php endif; ?>
-    <div class="moretti-hero-track-wrap absolute inset-0 z-0 pointer-events-none">
-        <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
+    <div class="mh2__track-wrap">
+        <div class="mh2__track" id="moretti-hero-track">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
                 <?php
                 $offset_x = isset($hero_banner['offset_x']) ? (int) $hero_banner['offset_x'] : 0;
-                $img_style = '';
-                if ($offset_x !== 0) {
-                    $img_style = 'object-position: calc(50% + ' . $offset_x . 'px) center;';
-                }
+                $img_style = $offset_x !== 0 ? 'object-position: calc(50% + ' . $offset_x . 'px) center;' : '';
                 $fallback_src = get_template_directory_uri() . '/images/Baner strona www Large.jpeg';
                 $desktop_name = isset($hero_banner['desktop_name']) ? $hero_banner['desktop_name'] : $hero_banner['name'];
                 $mobile_name = isset($hero_banner['mobile_name']) ? $hero_banner['mobile_name'] : $hero_banner['name'];
@@ -242,278 +244,152 @@ foreach ($hero_banners as $idx => $_b) {
                 }
                 $alt = sprintf('Baner %d', $hero_banner_index + 1);
                 $loading = $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
+                $text_pos = isset($hero_banner['text_position']) ? $hero_banner['text_position'] : 'left-center';
+                $pos_class = preg_match('/^(left|center|right)-(top|center|bottom)$/', $text_pos) ? 'mh2__content--' . $text_pos : 'mh2__content--left-center';
+                if (!empty($hero_banner['cta_url'])) {
+                    $slide_url = $hero_banner['cta_url'];
+                } elseif (!empty($hero_banner['cta_category_slug']) && taxonomy_exists('product_cat')) {
+                    $cat_term = get_term_by('slug', $hero_banner['cta_category_slug'], 'product_cat');
+                    $slide_url = ($cat_term && !is_wp_error($cat_term)) ? get_term_link($cat_term) : $hero_shop_url;
+                } elseif (!empty($hero_banner['cta_filters']) && $hero_shop_url !== '') {
+                    $slide_url = add_query_arg($hero_banner['cta_filters'], $hero_shop_url);
+                } else {
+                    $slide_url = $hero_shop_url;
+                }
+                $slide_url = esc_url($slide_url);
+                $overlay_d = isset($hero_banner['overlay_desktop']) ? trim($hero_banner['overlay_desktop']) : '';
+                $overlay_m = isset($hero_banner['overlay_mobile']) ? trim($hero_banner['overlay_mobile']) : $overlay_d;
                 ?>
-                <div class="moretti-hero-slide" style="position: relative; min-width: 100%; height: 100%;">
-                    <?php if ($same_image) : ?>
-                    <img
-                        src="<?php echo esc_url($desktop_src); ?>"
-                        alt="<?php echo esc_attr($alt); ?>"
-                        class="w-full h-full object-cover"
-                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
-                        <?php echo $loading; ?>
-                    >
-                    <?php else : ?>
-                    <img
-                        src="<?php echo esc_url($desktop_src); ?>"
-                        alt="<?php echo esc_attr($alt); ?>"
-                        class="hidden md:block w-full h-full object-cover"
-                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
-                        <?php echo $loading; ?>
-                    >
-                    <img
-                        src="<?php echo esc_url($mobile_src); ?>"
-                        alt="<?php echo esc_attr($alt); ?>"
-                        class="md:hidden w-full h-full object-cover"
-                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
-                        <?php echo $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>
-                    >
+                <div class="mh2__slide" data-slide-index="<?php echo (int) $hero_banner_index; ?>">
+                    <div class="mh2__bg">
+                        <?php if ($same_image) : ?>
+                        <img src="<?php echo esc_url($desktop_src); ?>" alt="<?php echo esc_attr($alt); ?>" <?php if ($img_style) : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?> <?php echo $loading; ?>>
+                        <?php else : ?>
+                        <picture>
+                            <source srcset="<?php echo esc_url($desktop_src); ?>" media="(min-width: 768px)">
+                            <img src="<?php echo esc_url($mobile_src); ?>" alt="<?php echo esc_attr($alt); ?>" <?php if ($img_style) : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?> <?php echo $loading; ?>>
+                        </picture>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($overlay_d !== '' && file_exists($hero_banner_dir_path . $overlay_d)) : ?>
+                    <div class="mh2__overlay">
+                        <picture>
+                            <?php if ($overlay_m !== '' && $overlay_m !== $overlay_d && file_exists($hero_banner_dir_path . $overlay_m)) : ?>
+                            <source srcset="<?php echo esc_url($hero_banner_dir_url . rawurlencode($overlay_m)); ?>" media="(max-width: 767px)">
+                            <?php endif; ?>
+                            <img src="<?php echo esc_url($hero_banner_dir_url . rawurlencode($overlay_d)); ?>" alt="" decoding="async">
+                        </picture>
+                    </div>
                     <?php endif; ?>
-                    <div class="absolute inset-0 bg-black/15"></div>
+                    <div class="mh2__content <?php echo esc_attr($pos_class); ?>">
+                        <?php if (!empty($hero_banner['title'])) : ?>
+                        <h2 class="mh2__title"><?php echo wp_kses_post($hero_banner['title']); ?></h2>
+                        <?php endif; ?>
+                        <?php if (!empty($hero_banner['subtitle'])) : ?>
+                        <p class="mh2__subtitle"><?php echo wp_kses_post($hero_banner['subtitle']); ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($hero_banner['cta_text'])) : ?>
+                        <a href="<?php echo $slide_url; ?>" class="mh2__cta"><?php echo esc_html($hero_banner['cta_text']); ?></a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
-
-    <div class="container mx-auto px-4 relative z-10 text-white h-full flex items-end md:items-center moretti-hero-text-overlay">
-        <div class="moretti-hero-text-block w-fit max-w-2xl min-w-0">
-            <h1 class="text-3xl md:text-7xl lg:text-8xl font-bold leading-none mb-3 md:mb-8 uppercase">
-                MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL
-            </h1>
-            <p class="text-xs md:text-base w-full max-w-full mb-6 md:mb-8 opacity-90 leading-relaxed break-words">
-                Odkryj naszą wyselekcjonowaną kolekcję portfeli premium. Wyjątkowe rzemiosło, które towarzyszy Ci każdego dnia.
-            </p>
-            <span class="moretti-hero-cta-wrap inline-block">
-            <?php
-            $hero_shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '';
-            foreach ($hero_banners as $cta_index => $cta_banner) :
-                if (!empty($cta_banner['cta_url'])) {
-                    $url = $cta_banner['cta_url'];
-                } elseif (!empty($cta_banner['cta_category_slug']) && taxonomy_exists('product_cat')) {
-                    $cat_term = get_term_by('slug', $cta_banner['cta_category_slug'], 'product_cat');
-                    $url = ($cat_term && !is_wp_error($cat_term)) ? get_term_link($cat_term) : $hero_shop_url;
-                } elseif (!empty($cta_banner['cta_filters']) && $hero_shop_url !== '') {
-                    $url = add_query_arg($cta_banner['cta_filters'], $hero_shop_url);
-                } else {
-                    $url = $hero_shop_url;
-                }
-                $url = esc_url($url);
-            ?>
-            <a href="<?php echo $url; ?>" class="moretti-hero-cta inline-block bg-white text-charcoal px-12 py-4 text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all<?php echo $cta_index !== 0 ? ' moretti-hero-cta-hidden' : ''; ?>" data-slide-index="<?php echo (int) $cta_index; ?>">
-                KUP TERAZ
-            </a>
-            <?php endforeach; ?>
-            </span>
-        </div>
-    </div>
 </section>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     var heroSection = document.getElementById('moretti-home-hero');
-    if (!heroSection) {
-        return;
-    }
-
-    var track = heroSection.querySelector('.moretti-hero-track');
-    var dots = heroSection.querySelectorAll('.moretti-hero-dot');
-    var slides = heroSection.querySelectorAll('.moretti-hero-slide');
-    var prevButton = heroSection.querySelector('#moretti-hero-prev');
-    var nextButton = heroSection.querySelector('#moretti-hero-next');
-    var controlsContainer = heroSection.querySelector('#moretti-hero-controls');
+    if (!heroSection) return;
+    var track = heroSection.querySelector('.mh2__track');
+    var dots = heroSection.querySelectorAll('.mh2__dot');
+    var slides = heroSection.querySelectorAll('.mh2__slide');
+    var prevBtn = heroSection.querySelector('#moretti-hero-prev');
+    var nextBtn = heroSection.querySelector('#moretti-hero-next');
+    var controlsEl = heroSection.querySelector('.mh2__controls');
     var totalSlides = <?php echo (int) $hero_banners_count; ?>;
     var AUTOPLAY_MS = 5000;
-
-    if (!track || totalSlides <= 1) {
-        return;
-    }
+    if (!track || totalSlides <= 1) return;
 
     var currentSlide = 0;
     var autoplayTimerId = null;
     var isTabVisible = !document.hidden;
-    // Keep autoplay enabled from first paint; update via blur/focus events below.
     var isWindowFocused = true;
     var isPausedByInteraction = false;
 
-    var updateDots = function() {
-        dots.forEach(function(dot, dotIndex) {
-            var isActive = dotIndex === currentSlide;
-            dot.classList.toggle('is-active', isActive);
-            dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+    function updateDots() {
+        dots.forEach(function(dot, i) {
+            var active = i === currentSlide;
+            dot.classList.toggle('is-active', active);
+            dot.setAttribute('aria-current', active ? 'true' : 'false');
         });
-    };
+    }
 
-    var updateCta = function() {
-        var ctaLinks = heroSection.querySelectorAll('.moretti-hero-cta');
-        ctaLinks.forEach(function(a) {
-            var idx = parseInt(a.getAttribute('data-slide-index'), 10);
-            a.classList.toggle('moretti-hero-cta-hidden', idx !== currentSlide);
-        });
-    };
-
-    var goToSlide = function(targetSlide) {
-        currentSlide = (targetSlide + totalSlides) % totalSlides;
+    function goToSlide(target) {
+        currentSlide = (target + totalSlides) % totalSlides;
         track.style.transform = 'translate3d(-' + (currentSlide * 100) + '%, 0, 0)';
         updateDots();
-        updateCta();
-    };
+    }
 
-    var goToNextSlide = function() {
-        goToSlide(currentSlide + 1);
-    };
+    function clearTimer() {
+        if (autoplayTimerId) { clearTimeout(autoplayTimerId); autoplayTimerId = null; }
+    }
+    function scheduleAutoplay() {
+        clearTimer();
+        if (!isTabVisible || !isWindowFocused || isPausedByInteraction) return;
+        autoplayTimerId = setTimeout(function() { goToSlide(currentSlide + 1); scheduleAutoplay(); }, AUTOPLAY_MS);
+    }
 
-    var goToPrevSlide = function() {
-        goToSlide(currentSlide - 1);
-    };
-
-    var canAutoplay = function() {
-        return isTabVisible && isWindowFocused && !isPausedByInteraction;
-    };
-
-    var clearAutoplayTimer = function() {
-        if (autoplayTimerId !== null) {
-            window.clearTimeout(autoplayTimerId);
-            autoplayTimerId = null;
-        }
-    };
-
-    var scheduleNextAutoplayTick = function() {
-        clearAutoplayTimer();
-        if (!canAutoplay()) {
-            return;
-        }
-
-        autoplayTimerId = window.setTimeout(function() {
-            goToNextSlide();
-            scheduleNextAutoplayTick();
-        }, AUTOPLAY_MS);
-    };
-
-    var restartAutoplayFromNow = function() {
-        scheduleNextAutoplayTick();
-    };
-
-    /* Faza CAPTURE na sekcji – przechwytujemy klik w kropkę zanim cokolwiek innego (overlay, itp.) */
-    heroSection.addEventListener('click', function(event) {
-        var el = event.target;
+    heroSection.addEventListener('click', function(e) {
+        var el = e.target;
         while (el && el !== heroSection) {
-            if (el.classList && el.classList.contains('moretti-hero-dot')) {
-                event.preventDefault();
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-                var requestedSlide = parseInt(el.getAttribute('data-slide-index'), 10);
-                if (!Number.isNaN(requestedSlide) && requestedSlide >= 0 && requestedSlide < totalSlides) {
-                    goToSlide(requestedSlide);
-                    restartAutoplayFromNow();
-                }
+            if (el.classList && el.classList.contains('mh2__dot')) {
+                e.preventDefault(); e.stopPropagation();
+                var idx = parseInt(el.getAttribute('data-slide-index'), 10);
+                if (!isNaN(idx) && idx >= 0 && idx < totalSlides) { goToSlide(idx); scheduleAutoplay(); }
                 return;
             }
             el = el.parentNode;
         }
     }, true);
 
-    /* Dodatkowa delegacja na kontenerze (bubble) na wypadek gdyby capture nie wystarczył */
-    if (controlsContainer) {
-        controlsContainer.addEventListener('click', function(event) {
-            var el = event.target;
-            var dotButton = null;
-            while (el && el !== controlsContainer) {
-                if (el.classList && el.classList.contains('moretti-hero-dot')) {
-                    dotButton = el;
-                    break;
+    if (controlsEl) {
+        controlsEl.addEventListener('click', function(e) {
+            var el = e.target;
+            while (el && el !== controlsEl) {
+                if (el.classList && el.classList.contains('mh2__dot')) {
+                    e.preventDefault(); e.stopPropagation();
+                    var idx = parseInt(el.getAttribute('data-slide-index'), 10);
+                    if (!isNaN(idx) && idx >= 0 && idx < totalSlides) { goToSlide(idx); scheduleAutoplay(); }
+                    return;
                 }
                 el = el.parentNode;
             }
-            if (dotButton) {
-                event.preventDefault();
-                event.stopPropagation();
-                var requestedSlide = parseInt(dotButton.getAttribute('data-slide-index'), 10);
-                if (!Number.isNaN(requestedSlide) && requestedSlide >= 0 && requestedSlide < totalSlides) {
-                    goToSlide(requestedSlide);
-                    restartAutoplayFromNow();
-                }
-            }
         });
     }
+    if (prevBtn) prevBtn.addEventListener('click', function(e) { e.preventDefault(); goToSlide(currentSlide - 1); scheduleAutoplay(); });
+    if (nextBtn) nextBtn.addEventListener('click', function(e) { e.preventDefault(); goToSlide(currentSlide + 1); scheduleAutoplay(); });
 
-    if (prevButton) {
-        prevButton.addEventListener('click', function(event) {
-            event.preventDefault();
-            goToPrevSlide();
-            restartAutoplayFromNow();
-        });
-    }
-
-    if (nextButton) {
-        nextButton.addEventListener('click', function(event) {
-            event.preventDefault();
-            goToNextSlide();
-            restartAutoplayFromNow();
-        });
-    }
-
-    // Expose minimal global helpers for inline handlers (extra safety for clickability).
-    window.morettiHeroPrev = function() {
-        goToPrevSlide();
-        restartAutoplayFromNow();
-    };
-
-    window.morettiHeroNext = function() {
-        goToNextSlide();
-        restartAutoplayFromNow();
-    };
-
-    heroSection.addEventListener('mouseenter', function() {
-        isPausedByInteraction = true;
-        clearAutoplayTimer();
-    });
-
-    heroSection.addEventListener('mouseleave', function() {
-        isPausedByInteraction = false;
-        restartAutoplayFromNow();
-    });
-
-    heroSection.addEventListener('focusin', function() {
-        isPausedByInteraction = true;
-        clearAutoplayTimer();
-    });
-
+    heroSection.addEventListener('mouseenter', function() { isPausedByInteraction = true; clearTimer(); });
+    heroSection.addEventListener('mouseleave', function() { isPausedByInteraction = false; scheduleAutoplay(); });
+    heroSection.addEventListener('focusin', function() { isPausedByInteraction = true; clearTimer(); });
     heroSection.addEventListener('focusout', function() {
-        // focusout fires before the next focused element is set
-        window.setTimeout(function() {
-            var isFocusStillInsideHero = heroSection.contains(document.activeElement);
-            isPausedByInteraction = isFocusStillInsideHero;
-            if (!isPausedByInteraction) {
-                restartAutoplayFromNow();
-            }
+        setTimeout(function() {
+            isPausedByInteraction = heroSection.contains(document.activeElement);
+            if (!isPausedByInteraction) scheduleAutoplay();
         }, 0);
     });
-
     document.addEventListener('visibilitychange', function() {
         isTabVisible = !document.hidden;
-        if (!isTabVisible) {
-            clearAutoplayTimer();
-            return;
-        }
-        restartAutoplayFromNow();
+        if (!isTabVisible) clearTimer(); else scheduleAutoplay();
     });
+    window.addEventListener('blur', function() { isWindowFocused = false; clearTimer(); });
+    window.addEventListener('focus', function() { isWindowFocused = true; scheduleAutoplay(); });
 
-    window.addEventListener('blur', function() {
-        isWindowFocused = false;
-        clearAutoplayTimer();
-    });
-
-    window.addEventListener('focus', function() {
-        isWindowFocused = true;
-        restartAutoplayFromNow();
-    });
-
-    // Keep GPU transform optimization without forcing wrong slide geometry.
-    if (slides.length > 0) {
-        track.style.willChange = 'transform';
-    }
-
+    if (slides.length) track.style.willChange = 'transform';
     goToSlide(0);
-    restartAutoplayFromNow();
-});
+    scheduleAutoplay();
+})();
 </script>
 
 <!-- 2. NOWOŚCI -->
@@ -702,201 +578,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 
 <style>
-/* Hero slider controls: arrows + dots */
-#moretti-home-hero {
-    position: relative;
-}
-
-/* Tekst nie przechwytuje kliknięć – tylko CTA ma pointer-events */
-.moretti-hero-text-overlay {
-    pointer-events: none;
-}
-.moretti-hero-text-overlay a,
-.moretti-hero-text-overlay button {
-    pointer-events: auto;
-}
-.moretti-hero-cta-wrap {
-    position: relative;
-}
-.moretti-hero-cta-wrap .moretti-hero-cta {
-    position: relative;
-}
-.moretti-hero-cta-wrap .moretti-hero-cta-hidden {
-    display: none !important;
-}
-
-/* Mobile: odstęp od dołu baneru (żeby nie zasłaniać kropek), jeden blok tekstu – akapit nie wystaje w prawo */
-@media (max-width: 767px) {
-    .moretti-hero-text-overlay {
-        padding-bottom: 56px;
-    }
-    .moretti-hero-text-block {
-        max-width: 100%;
-    }
-    .moretti-hero-text-block p {
-        max-width: 100%;
-        word-wrap: break-word;
-    }
-}
-
-/* Pas na kontrolki – pierwszy w DOM, zawsze na wierzchu; kropki i strzałki na środku na dole */
-.moretti-hero-controls-strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    z-index: 9999;
-    pointer-events: none;
-}
-.moretti-hero-controls-strip #moretti-hero-controls {
-    pointer-events: auto;
-    position: absolute;
-    left: 50%;
-    bottom: 1rem;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-#moretti-hero-controls {
-    z-index: 1;
-}
-
-#moretti-home-hero .moretti-hero-track-wrap {
-    pointer-events: none;
-}
-
-@media (min-width: 768px) {
-    #moretti-home-hero {
-        aspect-ratio: 16 / 9;
-    }
-
-    #moretti-home-hero .moretti-hero-track-wrap {
-        position: absolute;
-        inset: 0;
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-track {
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-slide {
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center center;
-    }
-}
-
-#moretti-home-hero .moretti-hero-arrow {
-    width: 22px;
-    height: 22px;
-    border-radius: 0;
-    border: 0;
-    margin: 0;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    color: #ffffff;
-    cursor: pointer;
-    box-shadow: none;
-    transition: opacity 0.2s ease;
-    opacity: 0.85;
-}
-
-#moretti-home-hero .moretti-hero-arrow:hover {
-    opacity: 1;
-}
-
-#moretti-home-hero .moretti-hero-arrow:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.95);
-    outline-offset: 2px;
-}
-
-#moretti-hero-dots {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-}
-#moretti-hero-dots .moretti-hero-dot {
-    min-width: 16px;
-    min-height: 16px;
-    width: 16px;
-    height: 16px;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-#moretti-hero-dots .moretti-hero-dot-core {
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.4);
-    transform: scale(1);
-    transition: transform 0.25s ease, background-color 0.25s ease;
-    pointer-events: none;
-}
-
-#moretti-hero-dots .moretti-hero-dot.is-active .moretti-hero-dot-core {
-    background: #ffffff;
-    transform: scale(1.3);
-}
-
-#moretti-hero-dots .moretti-hero-dot:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.95);
-    outline-offset: 2px;
-}
-
-@media (max-width: 767px) {
-    #moretti-home-hero {
-        aspect-ratio: 3 / 4;
-    }
-
-    #moretti-home-hero .moretti-hero-track-wrap {
-        position: absolute;
-        inset: 0;
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-track {
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-slide {
-        height: 100%;
-    }
-
-    #moretti-home-hero .moretti-hero-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center center;
-    }
-
-    #moretti-home-hero .moretti-hero-arrow {
-        width: 24px;
-        height: 24px;
-        opacity: 0.85;
-    }
-}
-
 /* ===== Homepage product sections (no carousel) ===== */
 .home-products-grid {
     display: grid;
