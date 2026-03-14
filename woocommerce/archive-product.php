@@ -859,7 +859,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                                                             style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
                                                             aria-label="<?php echo esc_attr($variant['color_label']); ?>"
                                                             title="<?php echo esc_attr($variant['color_label']); ?>"
-                                                            <?php if (!empty($variant['first_image_url']) && empty($variant['is_current'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
+                                                            <?php if (!empty($variant['first_image_url'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
                                                         >
                                                             <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
                                                         </a>

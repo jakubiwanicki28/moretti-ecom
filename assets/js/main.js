@@ -299,29 +299,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Product cards: hover on color dot shows that variant's first image (grid + homepage)
-    document.querySelectorAll('.product-card .sku-color-dot[data-first-image-url]').forEach(function(dot) {
-        dot.addEventListener('mouseenter', function() {
-            const card = this.closest('.product-card');
-            const firstSlide = card && card.querySelector('.product-image-slide[data-index="0"]');
-            const img = firstSlide && firstSlide.querySelector('img');
-            const url = this.getAttribute('data-first-image-url');
-            if (!card || !img || !url) return;
-            if (!card.dataset.originalFirstImageSrc) {
-                card.dataset.originalFirstImageSrc = img.currentSrc || img.src;
-            }
-            img.src = url;
-            card.classList.add('is-showing-variant-preview');
-        });
-        dot.addEventListener('mouseleave', function() {
-            const card = this.closest('.product-card');
-            const firstSlide = card && card.querySelector('.product-image-slide[data-index="0"]');
-            const img = firstSlide && firstSlide.querySelector('img');
-            if (!card || !img) return;
-            if (card.dataset.originalFirstImageSrc) {
-                img.src = card.dataset.originalFirstImageSrc;
-            }
-            card.classList.remove('is-showing-variant-preview');
-        });
+    // Event delegation so it works for initial DOM and for infinite-scroll loaded cards
+    function getCardFirstImg(card) {
+        const slide = card.querySelector('.product-image-slide[data-index="0"]') || card.querySelector('.product-image-slide');
+        return slide ? slide.querySelector('img') : null;
+    }
+    function applyDotPreview(dot) {
+        const url = dot.getAttribute('data-first-image-url');
+        if (!url) return;
+        const card = dot.closest('.product-card');
+        const img = card && getCardFirstImg(card);
+        if (!card || !img) return;
+        if (!card.dataset.originalFirstImageSrc) {
+            card.dataset.originalFirstImageSrc = img.currentSrc || img.getAttribute('src') || img.src;
+        }
+        img.src = url;
+        card.classList.add('is-showing-variant-preview');
+    }
+    function clearDotPreview(dot) {
+        const card = dot.closest('.product-card');
+        const img = card && getCardFirstImg(card);
+        if (!card || !img) return;
+        if (card.dataset.originalFirstImageSrc) {
+            img.src = card.dataset.originalFirstImageSrc;
+        }
+        card.classList.remove('is-showing-variant-preview');
+    }
+    document.addEventListener('mouseover', function(e) {
+        const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
+        if (dot) applyDotPreview(dot);
+    });
+    document.addEventListener('mouseout', function(e) {
+        const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
+        if (!dot) return;
+        const card = dot.closest('.product-card');
+        const variants = card && card.querySelector('.sku-color-variants');
+        const stillInsideVariants = variants && variants.contains(e.relatedTarget);
+        if (!stillInsideVariants) clearDotPreview(dot);
     });
 
     // Single Product Validation
