@@ -12,30 +12,27 @@ global $product;
 $attachment_ids = $product->get_gallery_image_ids();
 $main_image_id = $product->get_image_id();
 
-// If featured image is missing, use first gallery image as main.
-if (!$main_image_id && !empty($attachment_ids)) {
-    $main_image_id = (int) $attachment_ids[0];
-}
-
+// Karuzela tylko z galerii – jak na gridzie, bez prowadzenia Featured. Kolejność: galeria, potem ewentualnie main.
 $gallery_nav_ids = array();
-if ($main_image_id) {
+if (!empty($attachment_ids)) {
+    $gallery_nav_ids = array_map('absint', $attachment_ids);
+    if ($main_image_id && !in_array((int) $main_image_id, $gallery_nav_ids, true)) {
+        $gallery_nav_ids[] = (int) $main_image_id;
+    }
+} elseif ($main_image_id) {
     $gallery_nav_ids[] = (int) $main_image_id;
 }
-foreach ($attachment_ids as $attachment_id) {
-    $attachment_id = (int) $attachment_id;
-    if (!in_array($attachment_id, $gallery_nav_ids, true)) {
-        $gallery_nav_ids[] = $attachment_id;
-    }
-}
+
+$first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
 ?>
 
 <div class="woocommerce-product-gallery">
-    <!-- Main Product Image -->
+    <!-- Main Product Image (pierwszy z karuzeli, nie Featured) -->
     <div class="main-product-image mb-6">
         <?php
-        if ($main_image_id) {
-            $image_src = wp_get_attachment_image_src($main_image_id, 'large');
-            $image_alt = get_post_meta($main_image_id, '_wp_attachment_image_alt', true);
+        if ($first_slide_id) {
+            $image_src = wp_get_attachment_image_src($first_slide_id, 'large');
+            $image_alt = get_post_meta($first_slide_id, '_wp_attachment_image_alt', true);
             ?>
             <div class="main-product-image-frame relative overflow-hidden">
                 <img 
@@ -71,9 +68,8 @@ foreach ($attachment_ids as $attachment_id) {
         ?>
     </div>
 
-    <!-- Gallery Thumbnails -->
+    <!-- Gallery Thumbnails (ta sama kolejność co karuzela: galeria, potem ewent. main) -->
     <?php
-    // Build unique thumbnails list: main image first, then gallery images.
     $thumb_ids = $gallery_nav_ids;
     ?>
     <?php if (!empty($thumb_ids)) : ?>
