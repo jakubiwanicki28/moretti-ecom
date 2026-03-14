@@ -140,11 +140,6 @@ if ($is_home_carousel) :
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
-                    <?php if ($color_variants_count === 1) : ?>
-                        <div class="mt-2 text-[10px] md:text-xs font-medium uppercase tracking-[0.15em] text-charcoal/70">
-                            Tylko jeden kolor
-                        </div>
-                    <?php endif; ?>
                 </div>
             </div>
 

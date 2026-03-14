@@ -223,9 +223,13 @@
     display: block;
 }
 
-/* Prawa strzałka = ta sama ikona, odbita w poziomie */
-.mh2__arrow--next .mh2__arrow-ico {
+/* Poprzedni (lewa strona) = strzałka w lewo; następny (prawa strona) = strzałka w prawo */
+.mh2__arrow:not(.mh2__arrow--next) .mh2__arrow-ico {
     transform: scaleX(-1);
+}
+
+.mh2__arrow--next .mh2__arrow-ico {
+    transform: none;
 }
 
 /* Kropki */
