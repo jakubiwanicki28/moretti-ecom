@@ -1603,25 +1603,18 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         z-index: 1;
     }
 
-    @media (hover: hover) {
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide[data-index="0"] {
-            opacity: 1;
-        }
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide[data-index="1"] {
-            opacity: 0;
-        }
-        .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .product-image-slide[data-index="0"] {
-            opacity: 0;
-        }
-        .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .product-image-slide[data-index="1"] {
-            opacity: 1;
-        }
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide[data-index="0"] {
-            opacity: 1;
-        }
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide[data-index="1"] {
-            opacity: 0;
-        }
+    /* Jedna karuzela: widoczność tylko z .active; hover = przejście na slajd 1 w JS */
+    .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide {
+        opacity: 0;
+    }
+    .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide.active {
+        opacity: 1;
+    }
+    .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide {
+        opacity: 0 !important;
+    }
+    .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide[data-index="0"] {
+        opacity: 1 !important;
     }
 </style>
 
@@ -1753,13 +1746,23 @@ document.addEventListener('DOMContentLoaded', function() {
             let currentIndex = 0;
             
             function showSlide(index) {
+                if (index < 0 || index >= slides.length) return;
                 slides.forEach(slide => slide.classList.remove('active'));
                 dots.forEach(dot => dot.classList.remove('active'));
-                
                 slides[index].classList.add('active');
-                dots[index].classList.add('active');
+                if (dots[index]) dots[index].classList.add('active');
                 currentIndex = index;
             }
+
+            const zone = card.querySelector('.product-image-interior-hover-zone');
+            if (zone) {
+                zone.addEventListener('mouseenter', function() {
+                    if (currentIndex === 0) showSlide(1);
+                });
+            }
+            card.addEventListener('mouseleave', function() {
+                showSlide(0);
+            });
 
             // Touch/Swipe Support
             let touchStartX = 0;
