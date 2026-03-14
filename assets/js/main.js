@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (morettiDotDebug) {
         var wrap = document.createElement('div');
         wrap.id = 'moretti-dots-debug';
-        wrap.setAttribute('style', 'position:fixed;right:0;top:80px;bottom:20px;width:min(360px,90vw);z-index:999999;background:#1a1a1a;color:#0f0;font:12px/1.4 monospace;padding:8px 12px;overflow:auto;border-left:2px solid #0f0;border-radius:4px 0 0 4px;box-shadow:-4px 0 12px rgba(0,0,0,0.2);');
+        wrap.setAttribute('style', 'position:fixed !important; left:auto !important; right:0 !important; top:80px !important; bottom:20px !important; width:min(360px,90vw) !important; z-index:999999; background:#1a1a1a; color:#0f0; font:12px/1.4 monospace; padding:8px 12px; overflow:auto; border-left:2px solid #0f0; border-radius:4px 0 0 4px; box-shadow:-4px 0 12px rgba(0,0,0,0.2);');
         wrap.innerHTML = '<strong>Moretti dots debug (?)</strong> Najechanie na kropkę zaktualizuje ten komunikat.';
         document.body.appendChild(wrap);
         var dotsCount = document.querySelectorAll('.sku-color-dot[data-first-image-url]').length;
