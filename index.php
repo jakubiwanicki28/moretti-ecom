@@ -110,6 +110,9 @@ $hero_banner_dir_path = trailingslashit(get_template_directory()) . 'images/bann
 $hero_banner_dir_url = trailingslashit(get_template_directory_uri()) . 'images/banners/';
 $hero_banners = array();
 
+// Zbierz pliki: legacy (N.ext), desktop_N.ext, mobile_N.ext
+$orders_map = array(); // order => [ 'desktop' => filename, 'mobile' => filename, 'legacy' => filename ]
+
 if (is_dir($hero_banner_dir_path)) {
     $hero_banner_entries = scandir($hero_banner_dir_path);
 
@@ -124,30 +127,57 @@ if (is_dir($hero_banner_dir_path)) {
                 continue;
             }
 
-            if (preg_match('/^([0-9]+)\.[^.]+$/i', $hero_banner_entry, $hero_banner_match) !== 1) {
+            $order = null;
+            $type = null;
+
+            if (preg_match('/^([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                $order = (int) $m[1];
+                $type = 'legacy';
+            } elseif (preg_match('/^desktop_([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                $order = (int) $m[1];
+                $type = 'desktop';
+            } elseif (preg_match('/^mobile_([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                $order = (int) $m[1];
+                $type = 'mobile';
+            }
+
+            if ($order === null || $type === null) {
                 continue;
             }
 
+            if (!isset($orders_map[ $order ])) {
+                $orders_map[ $order ] = array('desktop' => null, 'mobile' => null, 'legacy' => null);
+            }
+            $orders_map[ $order ][ $type ] = $hero_banner_entry;
+        }
+    }
+}
+
+if (!empty($orders_map)) {
+    ksort($orders_map, SORT_NUMERIC);
+    foreach ($orders_map as $order => $files) {
+        $legacy = isset($files['legacy']) ? $files['legacy'] : null;
+        $desktop = isset($files['desktop']) ? $files['desktop'] : null;
+        $mobile = isset($files['mobile']) ? $files['mobile'] : null;
+        $desktop_name = $desktop ?: $legacy;
+        $mobile_name = $mobile ?: $legacy;
+        if ($desktop_name || $mobile_name) {
             $hero_banners[] = array(
-                'order' => (int) $hero_banner_match[1],
-                'name'  => $hero_banner_entry,
+                'order'        => $order,
+                'name'         => $desktop_name ?: $mobile_name,
+                'desktop_name' => $desktop_name,
+                'mobile_name'  => $mobile_name,
             );
         }
     }
 }
 
-if (!empty($hero_banners)) {
-    usort($hero_banners, static function ($banner_a, $banner_b) {
-        if ($banner_a['order'] === $banner_b['order']) {
-            return strnatcasecmp($banner_a['name'], $banner_b['name']);
-        }
-
-        return $banner_a['order'] <=> $banner_b['order'];
-    });
-} else {
+if (empty($hero_banners)) {
     $hero_banners[] = array(
-        'order' => 1,
-        'name'  => 'Baner strona www Large.jpeg',
+        'order'        => 1,
+        'name'         => 'Baner strona www Large.jpeg',
+        'desktop_name' => 'Baner strona www Large.jpeg',
+        'mobile_name'  => 'Baner strona www Large.jpeg',
     );
 }
 
@@ -193,25 +223,51 @@ foreach ($hero_banners as $idx => $_b) {
         <div class="moretti-hero-track" style="display: flex; width: 100%; height: 100%; transition: transform 0.7s ease;">
             <?php foreach ($hero_banners as $hero_banner_index => $hero_banner) : ?>
                 <?php
-                $hero_banner_name = $hero_banner['name'];
-                $hero_banner_src = $hero_banner_dir_url . rawurlencode($hero_banner_name);
-                if (!file_exists($hero_banner_dir_path . $hero_banner_name)) {
-                    $hero_banner_src = get_template_directory_uri() . '/images/Baner strona www Large.jpeg';
-                }
                 $offset_x = isset($hero_banner['offset_x']) ? (int) $hero_banner['offset_x'] : 0;
                 $img_style = '';
                 if ($offset_x !== 0) {
                     $img_style = 'object-position: calc(50% + ' . $offset_x . 'px) center;';
                 }
+                $fallback_src = get_template_directory_uri() . '/images/Baner strona www Large.jpeg';
+                $desktop_name = isset($hero_banner['desktop_name']) ? $hero_banner['desktop_name'] : $hero_banner['name'];
+                $mobile_name = isset($hero_banner['mobile_name']) ? $hero_banner['mobile_name'] : $hero_banner['name'];
+                $same_image = ($desktop_name === $mobile_name);
+                $desktop_src = $hero_banner_dir_url . rawurlencode($desktop_name);
+                if (!file_exists($hero_banner_dir_path . $desktop_name)) {
+                    $desktop_src = $fallback_src;
+                }
+                $mobile_src = $hero_banner_dir_url . rawurlencode($mobile_name);
+                if (!file_exists($hero_banner_dir_path . $mobile_name)) {
+                    $mobile_src = $fallback_src;
+                }
+                $alt = sprintf('Baner %d', $hero_banner_index + 1);
+                $loading = $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
                 ?>
                 <div class="moretti-hero-slide" style="position: relative; min-width: 100%; height: 100%;">
+                    <?php if ($same_image) : ?>
                     <img
-                        src="<?php echo esc_url($hero_banner_src); ?>"
-                        alt="<?php echo esc_attr(sprintf('Baner %d', $hero_banner_index + 1)); ?>"
+                        src="<?php echo esc_url($desktop_src); ?>"
+                        alt="<?php echo esc_attr($alt); ?>"
                         class="w-full h-full object-cover"
+                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
+                        <?php echo $loading; ?>
+                    >
+                    <?php else : ?>
+                    <img
+                        src="<?php echo esc_url($desktop_src); ?>"
+                        alt="<?php echo esc_attr($alt); ?>"
+                        class="hidden md:block w-full h-full object-cover"
+                        <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
+                        <?php echo $loading; ?>
+                    >
+                    <img
+                        src="<?php echo esc_url($mobile_src); ?>"
+                        alt="<?php echo esc_attr($alt); ?>"
+                        class="md:hidden w-full h-full object-cover"
                         <?php if ($img_style !== '') : ?>style="<?php echo esc_attr($img_style); ?>"<?php endif; ?>
                         <?php echo $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>
                     >
+                    <?php endif; ?>
                     <div class="absolute inset-0 bg-black/15"></div>
                 </div>
             <?php endforeach; ?>

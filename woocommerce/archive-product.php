@@ -788,15 +788,10 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             <?php if ($products->have_posts()) : ?>
                 <div class="products-grid" id="products-grid">
                     <?php while ($products->have_posts()) : $products->the_post(); 
-                        global $product; ?>
-                        
-                        <article class="product-card" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                            <div class="product-image-wrapper">
-                                <?php
+                        global $product;
                                 $gallery_ids = $product->get_gallery_image_ids();
                                 $has_gallery = !empty($gallery_ids);
                                 $all_images = array();
-                                
                                 if (has_post_thumbnail()) {
                                     $all_images[] = get_post_thumbnail_id();
                                 }
@@ -808,7 +803,8 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                                     ? moretti_get_product_color_variants($product)
                                     : array();
                                 ?>
-                                
+                        <article class="product-card <?php echo $image_count > 1 ? 'has-hover-second-image' : ''; ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                            <div class="product-image-wrapper">
                                     <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
@@ -1563,6 +1559,27 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
         .shop-page-wittchen .image-nav {
             display: none !important;
+        }
+    }
+
+    /* Grid: hide arrows and dots; hover shows second image (desktop only) */
+    .shop-page-wittchen .products-grid .image-nav,
+    .shop-page-wittchen .products-grid .image-dots {
+        display: none !important;
+    }
+
+    @media (hover: hover) {
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide[data-index="0"] {
+            opacity: 1;
+        }
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide[data-index="1"] {
+            opacity: 0;
+        }
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image:hover .product-image-slide[data-index="0"] {
+            opacity: 0;
+        }
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image:hover .product-image-slide[data-index="1"] {
+            opacity: 1;
         }
     }
 </style>
