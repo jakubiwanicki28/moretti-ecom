@@ -332,7 +332,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         const card = dot.closest('.product-card');
-        const img = card && getCardFirstImg(card);
+        const firstSlide = card && (card.querySelector('.product-image-slide[data-index="0"]') || card.querySelector('.product-image-slide'));
+        const img = firstSlide ? firstSlide.querySelector('img') : null;
         if (!card) {
             morettiDotLog('applyDotPreview: nie znaleziono .product-card');
             return;
@@ -343,10 +344,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (!card.dataset.originalFirstImageSrc) {
             card.dataset.originalFirstImageSrc = img.currentSrc || img.getAttribute('src') || img.src;
+            card.dataset.originalSrcset = img.getAttribute('srcset') || '';
+            card.dataset.originalSizes = img.getAttribute('sizes') || '';
         }
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
         img.src = url;
+        if (firstSlide) {
+            firstSlide.style.setProperty('opacity', '1', 'important');
+            firstSlide.style.setProperty('visibility', 'visible', 'important');
+        }
+        var secondSlide = card.querySelector('.product-image-slide[data-index="1"]');
+        if (secondSlide) {
+            secondSlide.style.setProperty('opacity', '0', 'important');
+            secondSlide.style.setProperty('visibility', 'hidden', 'important');
+        }
         card.classList.add('is-showing-variant-preview');
-        morettiDotLog('Podmiana zdjęcia na wariant OK', url.substring(0, 60) + '…');
+        morettiDotLog('Podmiana zdjęcia (src+bez srcset)', url.substring(0, 50) + '…');
     }
     function clearDotPreview(dot) {
         const card = dot.closest('.product-card');
@@ -354,7 +368,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!card || !img) return;
         if (card.dataset.originalFirstImageSrc) {
             img.src = card.dataset.originalFirstImageSrc;
+            if (card.dataset.originalSrcset) img.setAttribute('srcset', card.dataset.originalSrcset);
+            else img.removeAttribute('srcset');
+            if (card.dataset.originalSizes) img.setAttribute('sizes', card.dataset.originalSizes);
+            else img.removeAttribute('sizes');
         }
+        card.querySelectorAll('.product-image-slide').forEach(function(slide) {
+            slide.style.removeProperty('opacity');
+            slide.style.removeProperty('visibility');
+        });
         card.classList.remove('is-showing-variant-preview');
         morettiDotLog('Przywrócono oryginalne zdjęcie');
     }
