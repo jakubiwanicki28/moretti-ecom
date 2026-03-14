@@ -523,7 +523,7 @@ function moretti_get_product_color_variants($product_or_id) {
 
     $sku = (string) $product->get_sku();
     $parsed = moretti_parse_sku_model_and_color($sku);
-    if ($parsed['model'] === '' || $parsed['color_slug'] === '') {
+    if ($parsed['model'] === '') {
         $variants_cache[$product_id] = array();
         return $variants_cache[$product_id];
     }
@@ -566,28 +566,24 @@ function moretti_get_product_color_variants($product_or_id) {
 
         $candidate_sku = (string) $candidate->get_sku();
         $candidate_parsed = moretti_parse_sku_model_and_color($candidate_sku);
-        if ($candidate_parsed['model'] !== $model || $candidate_parsed['color_slug'] === '') {
+        if ($candidate_parsed['model'] !== $model) {
             continue;
         }
 
-        $resolved_color_slug = $candidate_parsed['color_slug'];
-        $resolved_color_label = $candidate_parsed['color_label'];
-
-        // Fallback 1: strip numeric prefix accidentally parsed from SKU tail.
-        if ($resolved_color_slug !== '' && !isset($color_map[$resolved_color_slug])) {
-            $trimmed_slug = preg_replace('/^[0-9]+-+/', '', $resolved_color_slug);
-            if (is_string($trimmed_slug) && $trimmed_slug !== '' && isset($color_map[$trimmed_slug])) {
-                $resolved_color_slug = $trimmed_slug;
-                $resolved_color_label = ucwords(str_replace('-', ' ', $trimmed_slug));
-            }
-        }
-
-        // Fallback 2: resolve color from taxonomy term if SKU parsing is not canonical.
-        if ($resolved_color_slug === '' || !isset($color_map[$resolved_color_slug])) {
-            $taxonomy_color = moretti_get_product_color_from_taxonomy((int) $candidate->get_id());
-            if (!empty($taxonomy_color['color_slug']) && isset($color_map[$taxonomy_color['color_slug']])) {
-                $resolved_color_slug = $taxonomy_color['color_slug'];
-                $resolved_color_label = $taxonomy_color['color_label'] !== '' ? $taxonomy_color['color_label'] : ucwords(str_replace('-', ' ', $resolved_color_slug));
+        // Kropki i kolory działają stricte po atrybucie (taksonomia); meczowanie nadal po SKU (model).
+        $taxonomy_color = moretti_get_product_color_from_taxonomy((int) $candidate->get_id());
+        if (!empty($taxonomy_color['color_slug']) && isset($color_map[$taxonomy_color['color_slug']])) {
+            $resolved_color_slug = $taxonomy_color['color_slug'];
+            $resolved_color_label = $taxonomy_color['color_label'] !== '' ? $taxonomy_color['color_label'] : ucwords(str_replace('-', ' ', $resolved_color_slug));
+        } else {
+            $resolved_color_slug = $candidate_parsed['color_slug'];
+            $resolved_color_label = $candidate_parsed['color_label'];
+            if ($resolved_color_slug !== '' && !isset($color_map[$resolved_color_slug])) {
+                $trimmed_slug = preg_replace('/^[0-9]+-+/', '', $resolved_color_slug);
+                if (is_string($trimmed_slug) && $trimmed_slug !== '' && isset($color_map[$trimmed_slug])) {
+                    $resolved_color_slug = $trimmed_slug;
+                    $resolved_color_label = ucwords(str_replace('-', ' ', $trimmed_slug));
+                }
             }
         }
 
@@ -1486,6 +1482,23 @@ add_action('template_redirect', function () {
 }, 5);
 
 /**
+ * Przypisanie Kolor z CSV (bez importera).
+ * 1. Plik import-id-kolor.csv w katalogu głównym motywu.
+ * 2. Wejdź: ?moretti_assign_color=1 (jako admin)
+ */
+add_action('template_redirect', function () {
+    if (!isset($_GET['moretti_assign_color']) || $_GET['moretti_assign_color'] !== '1' || !current_user_can('manage_woocommerce')) {
+        return;
+    }
+    $path = get_template_directory() . '/scripts/assign-color-from-csv.php';
+    if (!is_readable($path)) {
+        return;
+    }
+    include $path;
+    exit;
+}, 5);
+
+/**
  * Przywrócenie kategorii Portfele męskie dla produktów 997–1007.
  * Wejdź: ?moretti_restore_portfele_meskie=1 (jako admin)
  */
@@ -1522,5 +1535,14 @@ add_action('wp_footer', function () {
     if (isset($_GET['moretti_restore_meskie_done'])) {
         $n = (int) $_GET['moretti_restore_meskie_done'];
         echo '<script>alert("Portfele męskie: przypisano kategorię do ' . $n . ' produktów. Odśwież stronę kategorii.");</script>';
+    }
+    if (isset($_GET['moretti_assign_color_done'])) {
+        $n = (int) $_GET['moretti_assign_color_done'];
+        $e = (int) ($_GET['moretti_assign_color_errors'] ?? 0);
+        $msg = "Kolor z CSV: zaktualizowano {$n} produktów.";
+        if ($e > 0) {
+            $msg .= " Błędów: {$e}.";
+        }
+        echo '<script>alert("' . esc_js($msg) . '");</script>';
     }
 }, 20);
