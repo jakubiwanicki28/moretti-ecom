@@ -209,7 +209,7 @@ foreach ($hero_banners as $idx => $_b) {
     <div class="mh2__controls-strip" aria-hidden="true">
         <div class="mh2__controls" id="moretti-hero-controls">
             <button type="button" class="mh2__arrow" id="moretti-hero-prev" aria-label="Poprzedni baner">
-                <svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"/></svg>
+                <svg class="mh2__arrow-ico" width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"/></svg>
             </button>
             <div class="mh2__dots" id="moretti-hero-dots">
                 <?php foreach ($hero_banners as $di => $_) : ?>
@@ -218,8 +218,8 @@ foreach ($hero_banners as $idx => $_b) {
                 </button>
                 <?php endforeach; ?>
             </div>
-            <button type="button" class="mh2__arrow" id="moretti-hero-next" aria-label="Następny baner">
-                <svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.617 9.9238C10.8882 10.195 10.8882 10.6346 10.617 10.9058L1.80242 19.7204L10.617 28.535C10.8882 28.8062 10.8882 29.2459 10.617 29.517C10.3459 29.7882 9.90621 29.7882 9.63504 29.517L0.565919 20.4479C0.164146 20.0461 0.164146 19.3947 0.565919 18.993L9.63504 9.9238C9.90621 9.65263 10.3459 9.65263 10.617 9.9238Z" fill="currentColor"/></svg>
+            <button type="button" class="mh2__arrow mh2__arrow--next" id="moretti-hero-next" aria-label="Następny baner">
+                <svg class="mh2__arrow-ico" width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"/></svg>
             </button>
         </div>
     </div>

@@ -190,9 +190,15 @@
     outline-offset: 2px;
 }
 
-.mh2__arrow svg {
+.mh2__arrow-ico {
     width: 11px;
     height: 20px;
+    display: block;
+}
+
+/* Prawa strzałka = ta sama ikona, odbita w poziomie */
+.mh2__arrow--next .mh2__arrow-ico {
+    transform: scaleX(-1);
 }
 
 /* Kropki */
