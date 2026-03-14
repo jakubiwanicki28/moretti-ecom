@@ -811,6 +811,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         <article class="product-card <?php echo $image_count > 1 ? 'has-hover-second-image' : ''; ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                             <div class="product-image-wrapper">
                                     <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
+                                        <div class="product-image-interior-hover-zone" aria-hidden="true"></div>
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -858,6 +859,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                                                             style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
                                                             aria-label="<?php echo esc_attr($variant['color_label']); ?>"
                                                             title="<?php echo esc_attr($variant['color_label']); ?>"
+                                                            <?php if (!empty($variant['first_image_url']) && empty($variant['is_current'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
                                                         >
                                                             <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
                                                         </a>
@@ -1567,10 +1569,20 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         }
     }
 
-    /* Grid: hide arrows and dots; hover shows second image (desktop only) */
+    /* Grid: hide arrows and dots; hover shows second image only over top zone (desktop only) */
     .shop-page-wittchen .products-grid .image-nav,
     .shop-page-wittchen .products-grid .image-dots {
         display: none !important;
+    }
+
+    .shop-page-wittchen .products-grid .product-image-interior-hover-zone {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 82%;
+        z-index: 2;
+        pointer-events: auto;
     }
 
     @media (hover: hover) {
@@ -1580,11 +1592,17 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         .shop-page-wittchen .products-grid .product-card.has-hover-second-image .product-image-slide[data-index="1"] {
             opacity: 0;
         }
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image:hover .product-image-slide[data-index="0"] {
+        .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .product-image-slide[data-index="0"] {
             opacity: 0;
         }
-        .shop-page-wittchen .products-grid .product-card.has-hover-second-image:hover .product-image-slide[data-index="1"] {
+        .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .product-image-slide[data-index="1"] {
             opacity: 1;
+        }
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide[data-index="0"] {
+            opacity: 1;
+        }
+        .shop-page-wittchen .products-grid .product-card.has-hover-second-image.is-showing-variant-preview .product-image-slide[data-index="1"] {
+            opacity: 0;
         }
     }
 </style>

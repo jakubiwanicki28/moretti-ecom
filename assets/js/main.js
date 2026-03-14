@@ -291,12 +291,38 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('form.variations_form').on('reset_data', function() {
             const mainImage = document.querySelector('.main-product-image img');
             const firstThumb = document.querySelector('.thumbnail-item');
-            
+
             if (firstThumb) {
                 firstThumb.click();
             }
         });
     }
+
+    // Product cards: hover on color dot shows that variant's first image (grid + homepage)
+    document.querySelectorAll('.product-card .sku-color-dot[data-first-image-url]').forEach(function(dot) {
+        dot.addEventListener('mouseenter', function() {
+            const card = this.closest('.product-card');
+            const firstSlide = card && card.querySelector('.product-image-slide[data-index="0"]');
+            const img = firstSlide && firstSlide.querySelector('img');
+            const url = this.getAttribute('data-first-image-url');
+            if (!card || !img || !url) return;
+            if (!card.dataset.originalFirstImageSrc) {
+                card.dataset.originalFirstImageSrc = img.currentSrc || img.src;
+            }
+            img.src = url;
+            card.classList.add('is-showing-variant-preview');
+        });
+        dot.addEventListener('mouseleave', function() {
+            const card = this.closest('.product-card');
+            const firstSlide = card && card.querySelector('.product-image-slide[data-index="0"]');
+            const img = firstSlide && firstSlide.querySelector('img');
+            if (!card || !img) return;
+            if (card.dataset.originalFirstImageSrc) {
+                img.src = card.dataset.originalFirstImageSrc;
+            }
+            card.classList.remove('is-showing-variant-preview');
+        });
+    });
 
     // Single Product Validation
     const cartForm = document.querySelector('form.cart');

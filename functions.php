@@ -593,6 +593,9 @@ function moretti_get_product_color_variants($product_or_id) {
         }
         $seen_color_slugs[$resolved_color_slug] = true;
 
+        $first_image_id = $candidate->get_image_id();
+        $first_image_url = $first_image_id ? wp_get_attachment_image_url((int) $first_image_id, 'large') : '';
+
         $variants[] = array(
             'id' => (int) $candidate->get_id(),
             'url' => (string) get_permalink($candidate->get_id()),
@@ -602,6 +605,7 @@ function moretti_get_product_color_variants($product_or_id) {
             'color_label' => $resolved_color_label,
             'color_hex' => moretti_get_color_hex($resolved_color_slug),
             'is_current' => $candidate_is_current,
+            'first_image_url' => $first_image_url ? (string) $first_image_url : '',
         );
     }
 
