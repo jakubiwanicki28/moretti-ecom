@@ -201,6 +201,8 @@ add_action('after_setup_theme', 'moretti_theme_setup');
  */
 function moretti_register_image_sizes() {
     add_image_size('moretti_home_tile', 1000, 1000, true);
+    /* Miniatury galerii na stronie produktu: 3:4 portret, bez kadrowania */
+    add_image_size('moretti_gallery_thumb', 120, 160, false);
 }
 add_action('after_setup_theme', 'moretti_register_image_sizes', 30);
 
