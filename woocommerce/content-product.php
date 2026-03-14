@@ -67,7 +67,7 @@ if ($is_home_carousel) :
     $has_gallery = $image_count > 1;
     ?>
     <li <?php wc_product_class('group relative', $product); ?>>
-        <div class="product-card bg-white moretti-card-43">
+        <div class="product-card bg-white moretti-card-43 <?php echo $has_gallery ? 'has-hover-second-image' : ''; ?>">
             <div class="product-image-wrapper">
                 <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
                     <?php if ($image_count > 0) : ?>

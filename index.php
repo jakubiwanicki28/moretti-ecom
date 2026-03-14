@@ -732,6 +732,26 @@ foreach ($hero_banners as $idx => $_b) {
     border-radius: 3px;
 }
 
+/* Strona główna: ta sama mechanika co na gridzie – najechanie pokazuje drugie zdjęcie (np. otwarty portfel) */
+@media (hover: hover) {
+    .home-products-item .product-card.has-hover-second-image .image-nav,
+    .home-products-item .product-card.has-hover-second-image .image-dots {
+        display: none !important;
+    }
+    .home-products-item .product-card.has-hover-second-image .product-image-slide[data-index="0"] {
+        opacity: 1;
+    }
+    .home-products-item .product-card.has-hover-second-image .product-image-slide[data-index="1"] {
+        opacity: 0;
+    }
+    .home-products-item .product-card.has-hover-second-image:hover .product-image-slide[data-index="0"] {
+        opacity: 0;
+    }
+    .home-products-item .product-card.has-hover-second-image:hover .product-image-slide[data-index="1"] {
+        opacity: 1;
+    }
+}
+
 .home-products-item .product-heart {
     position: absolute;
     top: 12px;
