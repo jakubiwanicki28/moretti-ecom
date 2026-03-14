@@ -52,56 +52,60 @@
  *     portfele-meskie | portfele-damskie
  */
 return array(
-    // Slajd 0: główny hero (model po prawej) – tekst po lewej, pionowo na środku
+    // Baner 1: desktop left+center | mobile na górze (left-top)
     0 => array(
-        'offset_x'      => 0,
-        'text_position' => 'left-center',
-        'title'         => 'MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL',
-        'subtitle'      => 'Odkryj naszą wyselekcjonowaną kolekcję portfeli premium.',
-        'cta_text'      => 'KUP TERAZ',
-        'cta_filters'   => array( 'filter_kolekcja' => 'animals' ),
+        'offset_x'             => 0,
+        'text_position'        => 'left-center',
+        'text_position_mobile' => 'left-top',
+        'title'                => 'MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL',
+        'subtitle'             => 'Odkryj naszą wyselekcjonowaną kolekcję portfeli premium.',
+        'cta_text'             => 'KUP TERAZ',
+        'cta_filters'          => array( 'filter_kolekcja' => 'animals' ),
     ),
-    // Slajd 1: inna pozycja – prawy dolny róg
+    // Baner 2: desktop left+center | mobile left+center
     1 => array(
-        'offset_x'      => 0,
-        'text_position' => 'right-bottom',
-        'title'         => 'Skóra matowa',
-        'subtitle'      => 'Wyjątkowe wykończenie w kolekcji.',
-        'cta_text'      => 'KUP TERAZ',
-        'cta_filters'   => array( 'filter_material' => 'skora-matowa' ),
+        'offset_x'             => 0,
+        'text_position'        => 'left-center',
+        'text_position_mobile' => 'left-center',
+        'title'                => 'Skóra matowa',
+        'subtitle'             => 'Wyjątkowe wykończenie w kolekcji.',
+        'cta_text'             => 'KUP TERAZ',
+        'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
     ),
-    // Slajd 2: środek na dole
+    // Baner 3: desktop left+top | mobile left+top
     2 => array(
-        'offset_x'           => 0,
-        'text_position'      => 'center-bottom',
-        'title'             => 'Portfele męskie',
-        'subtitle'          => 'Klasyka i elegancja.',
-        'cta_text'           => 'KUP TERAZ',
-        'cta_category_slug'  => 'portfele-meskie',
+        'offset_x'             => 0,
+        'text_position'        => 'left-top',
+        'text_position_mobile' => 'left-top',
+        'title'                => 'Portfele męskie',
+        'subtitle'             => 'Klasyka i elegancja.',
+        'cta_text'             => 'KUP TERAZ',
+        'cta_category_slug'     => 'portfele-meskie',
     ),
-    // Slajd 3: lewy górny (np. gdy kadr ma ważny element na dole)
+    // Baner 4: desktop right+top | mobile dobrze (right-top)
     3 => array(
-        'offset_x'      => 0,
-        'text_position' => 'left-top',
-        'title'         => 'Kolekcja Croco',
-        'subtitle'      => 'Odważny wzór w najlepszym wydaniu.',
-        'cta_text'      => 'KUP TERAZ',
-        'cta_filters'   => array( 'filter_kolekcja' => 'croco' ),
+        'offset_x'             => 0,
+        'text_position'        => 'right-top',
+        'text_position_mobile' => 'right-top',
+        'title'                => 'Kolekcja Croco',
+        'subtitle'             => 'Odważny wzór w najlepszym wydaniu.',
+        'cta_text'             => 'KUP TERAZ',
+        'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
-    // Slajd 4: prawy górny – przykładowa odmiana
+    // Baner 5: desktop left+bottom | mobile left+bottom
     4 => array(
-        'offset_x'      => 0,
-        'offset_x_mobile' => 0,
-        'text_position' => 'right-top',
-        'text_position_mobile' => 'center-bottom', // na mobile można inaczej
-        'content_offset_x' => 0,
-        'content_offset_y' => 0,
-        'content_offset_x_mobile' => null, // opcjonalnie: px
-        'content_offset_y_mobile' => null,
-        'title'         => 'Baner 5',
-        'subtitle'      => 'Test na remote – piąty slajd.',
-        'cta_text'      => 'KUP TERAZ',
-        'cta_url'       => '',
-        'cta_category_slug' => '',
+        'offset_x'                  => 0,
+        'offset_x_mobile'           => 0,
+        'text_position'             => 'left-bottom',
+        'text_position_mobile'      => 'left-bottom',
+        'content_offset_x'           => 0,
+        'content_offset_y'           => 0,
+        'content_offset_x_mobile'    => null,
+        'content_offset_y_mobile'    => null,
+        'title'                     => 'Baner 5',
+        'subtitle'                  => 'Test na remote – piąty slajd.',
+        'cta_text'                  => 'KUP TERAZ',
+        'cta_url'                   => '',
+        'cta_category_slug'         => '',
     ),
 );
