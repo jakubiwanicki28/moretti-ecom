@@ -38,18 +38,25 @@ if ($is_home_carousel) :
         $home_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
     }
 
-    // Keep homepage-selected lead image while using shop card mechanics.
+    // Gallery order first (no preview/featured image as first); then main/homepage if not in gallery.
     $all_images = array();
-    if ($homepage_first_image_id) {
-        $all_images[] = $homepage_first_image_id;
-    }
-    if ($main_image_id) {
-        $all_images[] = $main_image_id;
-    }
     if (!empty($gallery_image_ids)) {
-        $all_images = array_merge($all_images, $gallery_image_ids);
+        $all_images = array_map('absint', $gallery_image_ids);
+        if ($main_image_id && !in_array((int) $main_image_id, $all_images)) {
+            $all_images[] = (int) $main_image_id;
+        }
+        if ($homepage_first_image_id && !in_array((int) $homepage_first_image_id, $all_images)) {
+            $all_images[] = (int) $homepage_first_image_id;
+        }
+    } else {
+        if ($homepage_first_image_id) {
+            $all_images[] = (int) $homepage_first_image_id;
+        }
+        if ($main_image_id) {
+            $all_images[] = (int) $main_image_id;
+        }
     }
-    $all_images = array_values(array_unique(array_filter(array_map('absint', $all_images))));
+    $all_images = array_values(array_unique(array_filter($all_images)));
     $valid_image_ids = array();
     foreach ($all_images as $candidate_image_id) {
         if (wp_get_attachment_image_url($candidate_image_id, 'large')) {
@@ -167,18 +174,19 @@ endif;
             // Homepage carousel can use dedicated first image per product.
             $homepage_first_image_id = 0;
 
-            // Combine custom homepage image + main image + gallery images.
+            // Gallery order first (no preview/featured image as first); then main if not in gallery.
             $all_images = array();
-            if ($homepage_first_image_id) {
-                $all_images[] = $homepage_first_image_id;
-            }
-            if ($main_image_id) {
-                $all_images[] = $main_image_id;
-            }
             if (!empty($gallery_image_ids)) {
-                $all_images = array_merge($all_images, $gallery_image_ids);
+                $all_images = array_map('absint', $gallery_image_ids);
+                if ($main_image_id && !in_array((int) $main_image_id, $all_images)) {
+                    $all_images[] = (int) $main_image_id;
+                }
+            } else {
+                if ($main_image_id) {
+                    $all_images[] = (int) $main_image_id;
+                }
             }
-            $all_images = array_values(array_unique(array_filter(array_map('absint', $all_images))));
+            $all_images = array_values(array_unique(array_filter($all_images)));
             
             // Only show slider if there are 2+ images
             $has_multiple_images = count($all_images) > 1;

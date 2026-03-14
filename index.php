@@ -505,8 +505,19 @@ foreach ($hero_banners as $idx => $_b) {
             $featured_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
         }
         
-        // Combine main image + gallery and keep only images that resolve to valid URLs.
-        $all_images = array_values(array_unique(array_filter(array_map('absint', array_merge(array($main_image_id), $gallery_ids)))));
+        // Gallery order first (no preview/featured image as first); then main if not in gallery.
+        $all_images = array();
+        if (!empty($gallery_ids)) {
+            $all_images = array_map('absint', $gallery_ids);
+            if ($main_image_id && !in_array((int) $main_image_id, $all_images)) {
+                $all_images[] = (int) $main_image_id;
+            }
+        } else {
+            if ($main_image_id) {
+                $all_images[] = (int) $main_image_id;
+            }
+        }
+        $all_images = array_values(array_unique(array_filter($all_images)));
         $slider_images = array();
         foreach ($all_images as $image_id) {
             if (wp_get_attachment_image_url($image_id, 'large')) {

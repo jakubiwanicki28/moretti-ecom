@@ -791,12 +791,17 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         global $product;
                                 $gallery_ids = $product->get_gallery_image_ids();
                                 $has_gallery = !empty($gallery_ids);
+                                $main_id = has_post_thumbnail() ? get_post_thumbnail_id() : 0;
                                 $all_images = array();
-                                if (has_post_thumbnail()) {
-                                    $all_images[] = get_post_thumbnail_id();
-                                }
                                 if ($has_gallery) {
-                                    $all_images = array_merge($all_images, $gallery_ids);
+                                    $all_images = array_map('absint', $gallery_ids);
+                                    if ($main_id && !in_array($main_id, $all_images)) {
+                                        $all_images[] = $main_id;
+                                    }
+                                } else {
+                                    if ($main_id) {
+                                        $all_images[] = $main_id;
+                                    }
                                 }
                                 $image_count = count($all_images);
                                 $color_variants = function_exists('moretti_get_product_color_variants')
