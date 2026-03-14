@@ -595,21 +595,16 @@ function moretti_get_product_color_variants($product_or_id) {
         }
         $seen_color_slugs[$resolved_color_slug] = true;
 
-        // Pierwsze zdjęcie z karuzeli (indeks 0), nie featured – ta sama kolejność co w gridzie: galeria, potem main
+        // Podgląd przy najechaniu (grid + single): pierwszy slajd z karuzeli, NIE Featured Image.
+        // WooCommerce: get_gallery_image_ids() = tylko galeria (bez głównego). Pierwszy z karuzeli = gallery[0]; tylko gdy galeria pusta – main.
         $gallery_ids = $candidate->get_gallery_image_ids();
         $main_id = $candidate->get_image_id();
-        $carousel_order = array();
+        $first_image_id = 0;
         if (!empty($gallery_ids)) {
-            $carousel_order = array_map('absint', $gallery_ids);
-            if ($main_id && !in_array((int) $main_id, $carousel_order)) {
-                $carousel_order[] = (int) $main_id;
-            }
-        } else {
-            if ($main_id) {
-                $carousel_order[] = (int) $main_id;
-            }
+            $first_image_id = (int) $gallery_ids[0];
+        } elseif ($main_id) {
+            $first_image_id = (int) $main_id;
         }
-        $first_image_id = isset($carousel_order[0]) ? (int) $carousel_order[0] : 0;
         $first_image_url = $first_image_id ? wp_get_attachment_image_url($first_image_id, 'large') : '';
         $first_image_debug = '';
         if (empty($first_image_url)) {
