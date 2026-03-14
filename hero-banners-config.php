@@ -86,11 +86,17 @@ return array(
     ),
     4 => array(
         'offset_x'      => 0,
+        'offset_x_mobile' => 0,           // opcjonalnie: kadr zdjęcia na mobile (px)
         'text_position' => 'left-center',
+        'text_position_mobile' => 'left-center', // opcjonalnie: np. 'center-bottom' na mobile
+        'content_offset_x' => 0,
+        'content_offset_y' => 0,
+        'content_offset_x_mobile' => null, // opcjonalnie: px
+        'content_offset_y_mobile' => null,
         'title'         => 'Baner 5',
         'subtitle'      => 'Test na remote – piąty slajd.',
         'cta_text'      => 'KUP TERAZ',
-        'cta_url'       => '', // opcjonalnie: gotowy URL albo zostaw puste – wtedy cta_category_slug / cta_filters
+        'cta_url'       => '',
         'cta_category_slug' => '',
     ),
 );

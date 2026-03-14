@@ -77,7 +77,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center center;
+    object-position: calc(50% + var(--offset-x, 0px)) center;
 }
 
 /* Opcjonalna warstwa overlay (np. PNG z tekstem jak Wittchen) */
@@ -162,6 +162,33 @@
 .mh2__content--right-top    { right: 0; top: 0;    left: auto; bottom: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
 .mh2__content--right-center { right: 0; top: 50%;  left: auto; bottom: auto; transform: translateY(-50%) translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
 .mh2__content--right-bottom { right: 0; bottom: 0; left: auto; top: auto; transform: translate(var(--content-offset-x, 0), var(--content-offset-y, 0)); }
+
+/* Mobile: osobne offsety i pozycja bloku (--content-offset-x-mobile, text_position_mobile) */
+@media (max-width: 767px) {
+    .mh2__bg img,
+    .mh2__bg picture {
+        object-position: calc(50% + var(--offset-x-mobile, var(--offset-x, 0px))) center;
+    }
+    .mh2__content--left-top    { transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--left-center { transform: translateY(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--left-bottom { transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--center-top    { transform: translateX(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--center-center { transform: translate(-50%, -50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--center-bottom { transform: translateX(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--right-top    { transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--right-center { transform: translateY(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--right-bottom { transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    /* Pozycja bloku na mobile (gdy ustawione text_position_mobile) – pełna pozycja + transform z offsetami mobile */
+    .mh2__content--mobile-left-top    { left: 0; top: 0; right: auto; bottom: auto; transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-left-center { left: 0; top: 50%; right: auto; bottom: auto; transform: translateY(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-left-bottom { left: 0; bottom: 0; right: auto; top: auto; transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-center-top    { left: 50%; top: 0; right: auto; bottom: auto; transform: translateX(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-center-center { left: 50%; top: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-center-bottom { left: 50%; bottom: 0; right: auto; top: auto; transform: translateX(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-right-top    { right: 0; top: 0; left: auto; bottom: auto; transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-right-center { right: 0; top: 50%; left: auto; bottom: auto; transform: translateY(-50%) translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+    .mh2__content--mobile-right-bottom { right: 0; bottom: 0; left: auto; top: auto; transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))); }
+}
 
 /* Strzałki */
 .mh2__arrow {

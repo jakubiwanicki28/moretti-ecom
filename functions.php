@@ -685,6 +685,110 @@ function moretti_single_product_force_quantity_one($args, $product) {
 }
 add_filter('woocommerce_quantity_input_args', 'moretti_single_product_force_quantity_one', 10, 2);
 
+/**
+ * Dane do hero slidera na stronie głównej (jedno źródło prawdy – używane przez index.php i front-page.php).
+ * Strzałki i markup hero są w template-parts/home-hero.php.
+ *
+ * @return array{hero_banners: array, hero_banners_count: int, hero_banner_dir_path: string, hero_banner_dir_url: string, hero_shop_url: string}
+ */
+function moretti_get_home_hero_data() {
+    $hero_banner_dir_path = trailingslashit(get_template_directory()) . 'images/banners/';
+    $hero_banner_dir_url  = trailingslashit(get_template_directory_uri()) . 'images/banners/';
+    $hero_banners         = array();
+    $orders_map            = array();
+
+    if (is_dir($hero_banner_dir_path)) {
+        $hero_banner_entries = scandir($hero_banner_dir_path);
+        if ($hero_banner_entries !== false) {
+            foreach ($hero_banner_entries as $hero_banner_entry) {
+                if ($hero_banner_entry === '.' || $hero_banner_entry === '..') continue;
+                $hero_banner_full_path = $hero_banner_dir_path . $hero_banner_entry;
+                if (!is_file($hero_banner_full_path)) continue;
+                $order = null;
+                $type  = null;
+                if (preg_match('/^([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                    $order = (int) $m[1];
+                    $type  = 'legacy';
+                } elseif (preg_match('/^desktop_([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                    $order = (int) $m[1];
+                    $type  = 'desktop';
+                } elseif (preg_match('/^mobile_([0-9]+)\.[^.]+$/i', $hero_banner_entry, $m) === 1) {
+                    $order = (int) $m[1];
+                    $type  = 'mobile';
+                }
+                if ($order === null || $type === null) continue;
+                if (!isset($orders_map[ $order ])) {
+                    $orders_map[ $order ] = array('desktop' => null, 'mobile' => null, 'legacy' => null);
+                }
+                $orders_map[ $order ][ $type ] = $hero_banner_entry;
+            }
+        }
+    }
+
+    if (!empty($orders_map)) {
+        ksort($orders_map, SORT_NUMERIC);
+        foreach ($orders_map as $order => $files) {
+            $legacy       = isset($files['legacy']) ? $files['legacy'] : null;
+            $desktop      = isset($files['desktop']) ? $files['desktop'] : null;
+            $mobile       = isset($files['mobile']) ? $files['mobile'] : null;
+            $desktop_name = $desktop ?: $legacy;
+            $mobile_name  = $mobile ?: $legacy;
+            if ($desktop_name || $mobile_name) {
+                $hero_banners[] = array(
+                    'order'        => $order,
+                    'name'         => $desktop_name ?: $mobile_name,
+                    'desktop_name' => $desktop_name,
+                    'mobile_name'  => $mobile_name,
+                );
+            }
+        }
+    }
+
+    if (empty($hero_banners)) {
+        $hero_banners[] = array(
+            'order'        => 1,
+            'name'         => 'Baner strona www Large.jpeg',
+            'desktop_name' => 'Baner strona www Large.jpeg',
+            'mobile_name'  => 'Baner strona www Large.jpeg',
+        );
+    }
+
+    $hero_banners_config = array();
+    $hero_config_path    = trailingslashit(get_template_directory()) . 'hero-banners-config.php';
+    if (is_readable($hero_config_path)) {
+        $hero_banners_config = (array) include $hero_config_path;
+    }
+    $hero_shop_url = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '';
+
+    foreach ($hero_banners as $idx => $_b) {
+        $cfg = isset($hero_banners_config[ $idx ]) ? $hero_banners_config[ $idx ] : array();
+        $hero_banners[ $idx ]['offset_x']               = isset($cfg['offset_x']) ? (int) $cfg['offset_x'] : 0;
+        $hero_banners[ $idx ]['offset_x_mobile']        = isset($cfg['offset_x_mobile']) ? (int) $cfg['offset_x_mobile'] : null;
+        $hero_banners[ $idx ]['content_offset_x']       = isset($cfg['content_offset_x']) ? (int) $cfg['content_offset_x'] : 0;
+        $hero_banners[ $idx ]['content_offset_y']       = isset($cfg['content_offset_y']) ? (int) $cfg['content_offset_y'] : 0;
+        $hero_banners[ $idx ]['content_offset_x_mobile'] = isset($cfg['content_offset_x_mobile']) ? (int) $cfg['content_offset_x_mobile'] : null;
+        $hero_banners[ $idx ]['content_offset_y_mobile'] = isset($cfg['content_offset_y_mobile']) ? (int) $cfg['content_offset_y_mobile'] : null;
+        $hero_banners[ $idx ]['cta_url']               = isset($cfg['cta_url']) ? (string) $cfg['cta_url'] : '';
+        $hero_banners[ $idx ]['cta_filters']           = isset($cfg['cta_filters']) && is_array($cfg['cta_filters']) ? $cfg['cta_filters'] : array();
+        $hero_banners[ $idx ]['cta_category_slug']     = isset($cfg['cta_category_slug']) ? (string) $cfg['cta_category_slug'] : '';
+        $hero_banners[ $idx ]['text_position']         = isset($cfg['text_position']) ? (string) $cfg['text_position'] : 'left-center';
+        $hero_banners[ $idx ]['text_position_mobile']  = isset($cfg['text_position_mobile']) ? (string) $cfg['text_position_mobile'] : null;
+        $hero_banners[ $idx ]['title']                 = isset($cfg['title']) ? (string) $cfg['title'] : '';
+        $hero_banners[ $idx ]['subtitle']              = isset($cfg['subtitle']) ? (string) $cfg['subtitle'] : '';
+        $hero_banners[ $idx ]['cta_text']              = isset($cfg['cta_text']) ? (string) $cfg['cta_text'] : 'KUP TERAZ';
+        $hero_banners[ $idx ]['overlay_desktop']       = isset($cfg['overlay_desktop']) ? (string) $cfg['overlay_desktop'] : '';
+        $hero_banners[ $idx ]['overlay_mobile']        = isset($cfg['overlay_mobile']) ? (string) $cfg['overlay_mobile'] : '';
+    }
+
+    return array(
+        'hero_banners'         => $hero_banners,
+        'hero_banners_count'   => count($hero_banners),
+        'hero_banner_dir_path' => $hero_banner_dir_path,
+        'hero_banner_dir_url'  => $hero_banner_dir_url,
+        'hero_shop_url'        => $hero_shop_url,
+    );
+}
+
 // Enqueue styles and scripts
 function moretti_enqueue_assets() {
     // Main stylesheet (compiled Tailwind CSS)
