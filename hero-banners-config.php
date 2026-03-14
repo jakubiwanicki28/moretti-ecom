@@ -52,43 +52,48 @@
  *     portfele-meskie | portfele-damskie
  */
 return array(
+    // Slajd 0: główny hero (model po prawej) – tekst po lewej, pionowo na środku
     0 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-bottom',
+        'text_position' => 'left-center',
         'title'         => 'MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL',
         'subtitle'      => 'Odkryj naszą wyselekcjonowaną kolekcję portfeli premium.',
         'cta_text'      => 'KUP TERAZ',
         'cta_filters'   => array( 'filter_kolekcja' => 'animals' ),
     ),
+    // Slajd 1: inna pozycja – prawy dolny róg
     1 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-bottom',
+        'text_position' => 'right-bottom',
         'title'         => 'Skóra matowa',
         'subtitle'      => 'Wyjątkowe wykończenie w kolekcji.',
         'cta_text'      => 'KUP TERAZ',
         'cta_filters'   => array( 'filter_material' => 'skora-matowa' ),
     ),
+    // Slajd 2: środek na dole
     2 => array(
         'offset_x'           => 0,
-        'text_position'      => 'left-bottom',
+        'text_position'      => 'center-bottom',
         'title'             => 'Portfele męskie',
         'subtitle'          => 'Klasyka i elegancja.',
         'cta_text'           => 'KUP TERAZ',
         'cta_category_slug'  => 'portfele-meskie',
     ),
+    // Slajd 3: lewy górny (np. gdy kadr ma ważny element na dole)
     3 => array(
         'offset_x'      => 0,
-        'text_position' => 'left-bottom',
+        'text_position' => 'left-top',
         'title'         => 'Kolekcja Croco',
         'subtitle'      => 'Odważny wzór w najlepszym wydaniu.',
         'cta_text'      => 'KUP TERAZ',
         'cta_filters'   => array( 'filter_kolekcja' => 'croco' ),
     ),
+    // Slajd 4: prawy górny – przykładowa odmiana
     4 => array(
         'offset_x'      => 0,
-        'offset_x_mobile' => 0,           // opcjonalnie: kadr zdjęcia na mobile (px)
-        'text_position' => 'left-bottom',
-        'text_position_mobile' => 'left-bottom', // góra/dół, nie środek
+        'offset_x_mobile' => 0,
+        'text_position' => 'right-top',
+        'text_position_mobile' => 'center-bottom', // na mobile można inaczej
         'content_offset_x' => 0,
         'content_offset_y' => 0,
         'content_offset_x_mobile' => null, // opcjonalnie: px
