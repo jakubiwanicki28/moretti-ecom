@@ -732,7 +732,7 @@ foreach ($hero_banners as $idx => $_b) {
     border-radius: 3px;
 }
 
-/* Strona główna: hover tylko w górnej części zdjęcia (bez strefy kropek); kropki = osobny hitbox */
+/* Strona główna: strefa hover obejmuje link + strzałki + kropki, żeby najechanie na strzałkę nie gasiło wnętrza */
 .home-products-item .product-image-interior-hover-zone {
     position: absolute;
     top: 0;
@@ -742,8 +742,18 @@ foreach ($hero_banners as $idx => $_b) {
     z-index: 2;
     pointer-events: auto;
     display: block;
+}
+.home-products-item .product-image-interior-link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: 0;
     text-decoration: none;
     color: transparent;
+}
+.home-products-item .product-image-interior-hover-zone .image-nav,
+.home-products-item .product-image-interior-hover-zone .image-dots {
+    z-index: 1;
 }
 
 @media (hover: hover) {
@@ -751,8 +761,8 @@ foreach ($hero_banners as $idx => $_b) {
     .home-products-item .product-card.has-hover-second-image .image-dots {
         display: none !important;
     }
-    .home-products-item .product-image .product-image-interior-hover-zone:hover ~ .image-nav,
-    .home-products-item .product-image .product-image-interior-hover-zone:hover ~ .image-dots {
+    .home-products-item .product-image .product-image-interior-hover-zone:hover .image-nav,
+    .home-products-item .product-image .product-image-interior-hover-zone:hover .image-dots {
         display: flex !important;
     }
     .home-products-item .product-card.has-hover-second-image .product-image-slide[data-index="0"] {

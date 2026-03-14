@@ -811,7 +811,26 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         <article class="product-card <?php echo $image_count > 1 ? 'has-hover-second-image' : ''; ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                             <div class="product-image-wrapper">
                                     <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
-                                        <a href="<?php echo esc_url(get_permalink()); ?>" class="product-image-interior-hover-zone" aria-hidden="true"></a>
+                                        <div class="product-image-interior-hover-zone">
+                                                <a href="<?php echo esc_url(get_permalink()); ?>" class="product-image-interior-link" aria-hidden="true"></a>
+                                                <?php if ($image_count > 1) : ?>
+                                                    <button type="button" class="image-nav image-prev" aria-label="Poprzednie zdjęcie">
+                                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button type="button" class="image-nav image-next" aria-label="Następne zdjęcie">
+                                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="image-dots">
+                                                        <?php for ($i = 0; $i < $image_count; $i++) : ?>
+                                                            <span class="image-dot <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>"></span>
+                                                        <?php endfor; ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -820,24 +839,6 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                                                     </a>
                                                 </div>
                                             <?php endforeach; ?>
-                                            
-                                            <?php if ($image_count > 1) : ?>
-                                                <button class="image-nav image-prev" aria-label="Poprzednie zdjęcie">
-                                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                                    </svg>
-                                                </button>
-                                                <button class="image-nav image-next" aria-label="Następne zdjęcie">
-                                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                                    </svg>
-                                                </button>
-                                                <div class="image-dots">
-                                                    <?php for ($i = 0; $i < $image_count; $i++) : ?>
-                                                        <span class="image-dot <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>"></span>
-                                                    <?php endfor; ?>
-                                                </div>
-                                            <?php endif; ?>
                                             <button
                                                 type="button"
                                                 class="wishlist-toggle image-wishlist product-heart"
@@ -1569,13 +1570,13 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         }
     }
 
-    /* Grid: hide arrows and dots by default; show them when hovering the interior zone */
+    /* Grid: hide arrows and dots by default; show them when hovering the interior zone (zone contains link + nav + dots to avoid flicker) */
     .shop-page-wittchen .products-grid .image-nav,
     .shop-page-wittchen .products-grid .image-dots {
         display: none !important;
     }
-    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .image-nav,
-    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover ~ .image-dots {
+    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover .image-nav,
+    .shop-page-wittchen .products-grid .product-image .product-image-interior-hover-zone:hover .image-dots {
         display: flex !important;
     }
 
@@ -1588,8 +1589,18 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         z-index: 2;
         pointer-events: auto;
         display: block;
+    }
+    .shop-page-wittchen .products-grid .product-image-interior-link {
+        position: absolute;
+        inset: 0;
+        display: block;
+        z-index: 0;
         text-decoration: none;
         color: transparent;
+    }
+    .shop-page-wittchen .products-grid .product-image-interior-hover-zone .image-nav,
+    .shop-page-wittchen .products-grid .product-image-interior-hover-zone .image-dots {
+        z-index: 1;
     }
 
     @media (hover: hover) {

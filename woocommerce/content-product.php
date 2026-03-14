@@ -70,25 +70,15 @@ if ($is_home_carousel) :
         <div class="product-card bg-white moretti-card-43 <?php echo $has_gallery ? 'has-hover-second-image' : ''; ?>">
             <div class="product-image-wrapper">
                 <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
-                    <a href="<?php the_permalink(); ?>" class="product-image-interior-hover-zone" aria-hidden="true"></a>
-                    <?php if ($image_count > 0) : ?>
-                        <?php foreach ($valid_image_ids as $index => $image_id) : ?>
-                            <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
-                                <a href="<?php the_permalink(); ?>">
-                                    <?php echo wp_get_attachment_image($image_id, 'large', false, array(
-                                        'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity',
-                                    )); ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-
+                    <div class="product-image-interior-hover-zone">
+                        <a href="<?php the_permalink(); ?>" class="product-image-interior-link" aria-hidden="true"></a>
                         <?php if ($image_count > 1) : ?>
-                            <button class="image-nav image-prev" aria-label="Poprzednie zdjęcie">
+                            <button type="button" class="image-nav image-prev" aria-label="Poprzednie zdjęcie">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <button class="image-nav image-next" aria-label="Następne zdjęcie">
+                            <button type="button" class="image-nav image-next" aria-label="Następne zdjęcie">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -99,6 +89,17 @@ if ($is_home_carousel) :
                                 <?php endfor; ?>
                             </div>
                         <?php endif; ?>
+                    </div>
+                    <?php if ($image_count > 0) : ?>
+                        <?php foreach ($valid_image_ids as $index => $image_id) : ?>
+                            <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
+                                <a href="<?php the_permalink(); ?>">
+                                    <?php echo wp_get_attachment_image($image_id, 'large', false, array(
+                                        'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity',
+                                    )); ?>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
 
                     <?php else : ?>
                         <div class="product-image-slide active" data-index="0">

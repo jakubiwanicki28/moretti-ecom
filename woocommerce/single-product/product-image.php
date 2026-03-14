@@ -90,7 +90,7 @@ foreach ($attachment_ids as $attachment_id) {
                     data-full-url="<?php echo esc_url($full_url[0]); ?>"
                     aria-label="<?php echo esc_attr(sprintf('Pokaż zdjęcie %d', $index + 1)); ?>"
                 >
-                    <?php echo wp_get_attachment_image($thumb_id, 'thumbnail', false, array('class' => 'w-full h-full object-cover')); ?>
+                    <?php echo wp_get_attachment_image($thumb_id, 'thumbnail', false, array('class' => 'w-full h-full object-contain')); ?>
                 </button>
             <?php endforeach; ?>
         </div>

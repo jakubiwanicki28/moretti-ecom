@@ -268,7 +268,7 @@ get_header(); ?>
     .woocommerce-product-gallery .main-product-image-frame::before {
         content: "" !important;
         display: block !important;
-        padding-top: 75% !important; /* STAŁE pole 4:3 (szerokość:wysokość) */
+        padding-top: 133.333% !important; /* 3:4 portret (wysokość : szerokość) */
     }
     .woocommerce-product-gallery .main-product-image-el {
         position: absolute !important;
@@ -316,13 +316,19 @@ get_header(); ?>
     }
     .thumbnail-item {
         width: 86px !important;
-        height: 86px !important;
+        aspect-ratio: 3 / 4 !important;
+        height: auto !important;
         border: 1px solid #e5e7eb !important;
         background: #ffffff !important;
         overflow: hidden !important;
         cursor: pointer !important;
         padding: 0 !important;
         transition: border-color 0.2s ease !important;
+    }
+    .thumbnail-item img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
     }
     .thumbnail-item.is-active {
         border-color: #2a2826 !important;
@@ -391,12 +397,12 @@ get_header(); ?>
         }
         .thumbnail-item {
             width: 22px !important;
-            height: 22px !important;
+            aspect-ratio: 3 / 4 !important;
+            height: auto !important;
             min-width: 22px !important;
-            min-height: 22px !important;
+            min-height: auto !important;
             max-width: 22px !important;
-            max-height: 22px !important;
-            aspect-ratio: 1 / 1 !important;
+            max-height: none !important;
             border-width: 1px !important;
             opacity: 0.55;
             flex: 0 0 22px !important;
@@ -411,8 +417,7 @@ get_header(); ?>
             height: 100% !important;
             min-width: 100% !important;
             min-height: 100% !important;
-            aspect-ratio: 1 / 1 !important;
-            object-fit: cover !important;
+            object-fit: contain !important;
         }
         .thumbnail-item.is-active {
             opacity: 1;
