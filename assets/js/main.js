@@ -300,21 +300,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Product cards: hover on color dot shows that variant's first image (grid + homepage)
     // Event delegation so it works for initial DOM and for infinite-scroll loaded cards
+    var morettiDotDebug = typeof window !== 'undefined' && /[?&]moretti_debug_dots=1/.test(window.location.search);
+    function morettiDotLog(msg, detail) {
+        if (!morettiDotDebug) return;
+        var line = msg + (detail !== undefined ? ' ' + JSON.stringify(detail) : '');
+        if (typeof console !== 'undefined' && console.log) console.log('[moretti-dots]', line);
+        var el = document.getElementById('moretti-dots-debug');
+        if (el) {
+            el.innerHTML = '<strong>' + new Date().toLocaleTimeString() + '</strong> ' + msg + (detail !== undefined ? ' <code>' + String(detail).substring(0, 80) + '</code>' : '');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+    if (morettiDotDebug) {
+        var wrap = document.createElement('div');
+        wrap.id = 'moretti-dots-debug';
+        wrap.setAttribute('style', 'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#1a1a1a;color:#0f0;font:12px/1.4 monospace;padding:8px 12px;max-height:120px;overflow:auto;border-top:2px solid #0f0;');
+        wrap.innerHTML = '<strong>Moretti dots debug (?)</strong> Najechanie na kropkę zaktualizuje ten komunikat.';
+        document.body.appendChild(wrap);
+        var dotsCount = document.querySelectorAll('.sku-color-dot[data-first-image-url]').length;
+        var dotsAny = document.querySelectorAll('.sku-color-dot').length;
+        morettiDotLog('Strona załadowana. Kropek z data-first-image-url: ' + dotsCount + ', wszystkich .sku-color-dot: ' + dotsAny);
+    }
     function getCardFirstImg(card) {
         const slide = card.querySelector('.product-image-slide[data-index="0"]') || card.querySelector('.product-image-slide');
         return slide ? slide.querySelector('img') : null;
     }
     function applyDotPreview(dot) {
         const url = dot.getAttribute('data-first-image-url');
-        if (!url) return;
+        if (!url) {
+            morettiDotLog('applyDotPreview: brak data-first-image-url na kropce');
+            return;
+        }
         const card = dot.closest('.product-card');
         const img = card && getCardFirstImg(card);
-        if (!card || !img) return;
+        if (!card) {
+            morettiDotLog('applyDotPreview: nie znaleziono .product-card');
+            return;
+        }
+        if (!img) {
+            morettiDotLog('applyDotPreview: nie znaleziono img w pierwszym slajdzie', { slide: !!card.querySelector('.product-image-slide') });
+            return;
+        }
         if (!card.dataset.originalFirstImageSrc) {
             card.dataset.originalFirstImageSrc = img.currentSrc || img.getAttribute('src') || img.src;
         }
         img.src = url;
         card.classList.add('is-showing-variant-preview');
+        morettiDotLog('Podmiana zdjęcia na wariant OK', url.substring(0, 60) + '…');
     }
     function clearDotPreview(dot) {
         const card = dot.closest('.product-card');
@@ -324,10 +356,16 @@ document.addEventListener('DOMContentLoaded', function() {
             img.src = card.dataset.originalFirstImageSrc;
         }
         card.classList.remove('is-showing-variant-preview');
+        morettiDotLog('Przywrócono oryginalne zdjęcie');
     }
     document.addEventListener('mouseover', function(e) {
         const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
-        if (dot) applyDotPreview(dot);
+        if (dot) {
+            morettiDotLog('mouseover na kropce z data-first-image-url');
+            applyDotPreview(dot);
+        } else if (e.target.closest && e.target.closest('.sku-color-dot')) {
+            morettiDotLog('mouseover na kropce BEZ data-first-image-url – sprawdź PHP/warianty');
+        }
     });
     document.addEventListener('mouseout', function(e) {
         const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
@@ -335,7 +373,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const card = dot.closest('.product-card');
         const variants = card && card.querySelector('.sku-color-variants');
         const stillInsideVariants = variants && variants.contains(e.relatedTarget);
-        if (!stillInsideVariants) clearDotPreview(dot);
+        if (!stillInsideVariants) {
+            morettiDotLog('mouseout z kropki – przywracam zdjęcie');
+            clearDotPreview(dot);
+        }
     });
 
     // Single Product Validation
