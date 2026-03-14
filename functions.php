@@ -789,6 +789,101 @@ function moretti_get_home_hero_data() {
     );
 }
 
+/**
+ * Render homepage product carousel section (NOWOŚCI, BESTSELLERY, OKAZJE).
+ * Używane przez index.php i template-parts/home-content.php.
+ */
+if (!function_exists('moretti_render_home_carousel_section')) {
+    function moretti_render_home_carousel_section($section_id, $title, $category_slug, $section_classes = 'py-20 overflow-hidden bg-white') {
+        $category_term = get_term_by('slug', $category_slug, 'product_cat');
+        $category_url = get_permalink(wc_get_page_id('shop'));
+        if ($category_term && !is_wp_error($category_term)) {
+            $category_link = get_term_link($category_term);
+            if (!is_wp_error($category_link)) {
+                $category_url = $category_link;
+            }
+        }
+
+        $query_args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => 30,
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $category_slug,
+                ),
+            ),
+        );
+
+        $loop = new WP_Query($query_args);
+        ?>
+        <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
+            <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem;">
+                <div class="flex justify-between items-end mb-6">
+                    <h2 class="text-4xl md:text-6xl font-bold text-charcoal uppercase tracking-tighter"><?php echo esc_html($title); ?></h2>
+                    <a href="<?php echo esc_url($category_url); ?>" class="inline-flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] border border-charcoal text-charcoal px-4 py-2 hover:bg-charcoal hover:text-white transition-colors">
+                        Pokaż więcej
+                    </a>
+                </div>
+                <div class="home-products-grid">
+                    <?php set_query_var('moretti_home_carousel', true); ?>
+                    <?php
+                    $rendered_models = array();
+                    $rendered_count  = 0;
+                    $max_models      = 5;
+                    ?>
+                    <?php if ($loop->have_posts()) : ?>
+                        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+                            <?php
+                            if ($rendered_count >= $max_models) {
+                                break;
+                            }
+
+                            $product = wc_get_product(get_the_ID());
+                            if ($product instanceof WC_Product) {
+                                $sku = (string) $product->get_sku();
+                            } else {
+                                $sku = '';
+                            }
+
+                            $model_key = '';
+                            if (function_exists('moretti_parse_sku_model_and_color') && $sku !== '') {
+                                $parsed = moretti_parse_sku_model_and_color($sku);
+                                if (!empty($parsed['model'])) {
+                                    $model_key = $parsed['model'];
+                                }
+                            }
+
+                            if ($model_key === '') {
+                                $model_key = 'id-' . get_the_ID();
+                            }
+
+                            if (isset($rendered_models[$model_key])) {
+                                continue;
+                            }
+
+                            $rendered_models[$model_key] = true;
+                            $rendered_count++;
+                            ?>
+                            <div class="home-products-item">
+                                <ul class="products list-none m-0 p-0">
+                                    <?php wc_get_template_part('content', 'product'); ?>
+                                </ul>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else : ?>
+                        <div class="w-full py-10 text-center text-gray-500">Brak produktów w tej sekcji.</div>
+                    <?php endif; ?>
+                    <?php set_query_var('moretti_home_carousel', false); ?>
+                </div>
+            </div>
+        </section>
+        <?php
+        wp_reset_postdata();
+    }
+}
+
 // Enqueue styles and scripts
 function moretti_enqueue_assets() {
     // Main stylesheet (compiled Tailwind CSS)
