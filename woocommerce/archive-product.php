@@ -811,7 +811,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         <article class="product-card <?php echo $image_count > 1 ? 'has-hover-second-image' : ''; ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                             <div class="product-image-wrapper">
                                     <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
-                                        <div class="product-image-interior-hover-zone" aria-hidden="true"></div>
+                                        <a href="<?php echo esc_url(get_permalink()); ?>" class="product-image-interior-hover-zone" aria-hidden="true"></a>
                                         <?php if ($image_count > 0) : ?>
                                             <?php foreach ($all_images as $index => $image_id) : ?>
                                                 <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
@@ -1583,6 +1583,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         height: 82%;
         z-index: 2;
         pointer-events: auto;
+        display: block;
+        text-decoration: none;
+        color: transparent;
     }
 
     @media (hover: hover) {

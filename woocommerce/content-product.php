@@ -70,7 +70,7 @@ if ($is_home_carousel) :
         <div class="product-card bg-white moretti-card-43 <?php echo $has_gallery ? 'has-hover-second-image' : ''; ?>">
             <div class="product-image-wrapper">
                 <div class="product-image <?php echo $has_gallery ? 'has-gallery' : ''; ?>" style="aspect-ratio: 3 / 4;">
-                    <div class="product-image-interior-hover-zone" aria-hidden="true"></div>
+                    <a href="<?php the_permalink(); ?>" class="product-image-interior-hover-zone" aria-hidden="true"></a>
                     <?php if ($image_count > 0) : ?>
                         <?php foreach ($valid_image_ids as $index => $image_id) : ?>
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">

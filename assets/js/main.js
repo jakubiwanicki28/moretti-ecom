@@ -401,6 +401,43 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Single product page: hover on color dot shows that variant's first image
+    var singleMainImg = document.querySelector('.single-product-main .main-product-image-el, #moretti-main-img');
+    if (singleMainImg) {
+        document.addEventListener('mouseover', function(e) {
+            var singleDot = e.target.closest && e.target.closest('.single-color-dot[data-first-image-url]');
+            if (!singleDot) return;
+            var url = singleDot.getAttribute('data-first-image-url');
+            if (!url) return;
+            var img = document.querySelector('.single-product-main .main-product-image-el, #moretti-main-img');
+            if (!img) return;
+            if (!img.dataset.morettiOriginalSrc) {
+                img.dataset.morettiOriginalSrc = img.currentSrc || img.getAttribute('src') || img.src;
+                img.dataset.morettiOriginalSrcset = img.getAttribute('srcset') || '';
+                img.dataset.morettiOriginalSizes = img.getAttribute('sizes') || '';
+            }
+            img.removeAttribute('srcset');
+            img.removeAttribute('sizes');
+            img.src = url;
+            singleDot.classList.add('is-previewing');
+        });
+        document.addEventListener('mouseout', function(e) {
+            var singleDot = e.target.closest && e.target.closest('.single-color-dot[data-first-image-url]');
+            if (!singleDot) return;
+            var container = singleDot.closest('.single-color-variants');
+            var stillInside = container && container.contains(e.relatedTarget);
+            if (stillInside) return;
+            singleDot.classList.remove('is-previewing');
+            var img = document.querySelector('.single-product-main .main-product-image-el, #moretti-main-img');
+            if (!img || !img.dataset.morettiOriginalSrc) return;
+            img.src = img.dataset.morettiOriginalSrc;
+            if (img.dataset.morettiOriginalSrcset) img.setAttribute('srcset', img.dataset.morettiOriginalSrcset);
+            else img.removeAttribute('srcset');
+            if (img.dataset.morettiOriginalSizes) img.setAttribute('sizes', img.dataset.morettiOriginalSizes);
+            else img.removeAttribute('sizes');
+        });
+    }
+
     // Single Product Validation
     const cartForm = document.querySelector('form.cart');
     if (cartForm) {

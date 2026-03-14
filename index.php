@@ -741,6 +741,9 @@ foreach ($hero_banners as $idx => $_b) {
     height: 82%;
     z-index: 2;
     pointer-events: auto;
+    display: block;
+    text-decoration: none;
+    color: transparent;
 }
 
 @media (hover: hover) {
