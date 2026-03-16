@@ -10,14 +10,19 @@ defined('ABSPATH') || exit;
 
 get_header();
 
-// Get all products
+// Get all products (including search results)
 $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 $args = array(
-    'post_type' => 'product',
+    'post_type'      => 'product',
     'posts_per_page' => 12,
-    'paged' => $paged,
-    'post_status' => 'publish',
+    'paged'          => $paged,
+    'post_status'    => 'publish',
 );
+
+// Handle text search (product name / content)
+if (is_search() && !empty(get_search_query())) {
+    $args['s'] = sanitize_text_field(get_search_query());
+}
 
 // Initialize tax_query
 $tax_query = array('relation' => 'AND');
@@ -120,7 +125,9 @@ $categories = get_terms(array(
 
 // Page title
 $page_title = 'Sklep';
-if (is_product_category()) {
+if (is_search()) {
+    $page_title = sprintf('Wyniki dla: "%s"', esc_html(get_search_query()));
+} elseif (is_product_category()) {
     $page_title = single_cat_title('', false);
 }
 ?>
