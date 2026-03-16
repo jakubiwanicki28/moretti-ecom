@@ -72,31 +72,31 @@ return array(
         'cta_text'             => 'KUP TERAZ',
         'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
     ),
-    // Baner 3: desktop left+top | mobile left+top
+    // Baner 3: desktop left+center | mobile left+top
     2 => array(
         'offset_x'             => 0,
-        'text_position'        => 'left-top',
+        'text_position'        => 'left-center',
         'text_position_mobile' => 'left-top',
         'title'                => 'Portfele męskie',
         'subtitle'             => 'Klasyka i elegancja.',
         'cta_text'             => 'KUP TERAZ',
         'cta_category_slug'     => 'portfele-meskie',
     ),
-    // Baner 4: desktop right+top | mobile dobrze (right-top)
+    // Baner 4: desktop left+center | mobile right-top
     3 => array(
         'offset_x'             => 0,
-        'text_position'        => 'right-top',
+        'text_position'        => 'left-center',
         'text_position_mobile' => 'right-top',
         'title'                => 'Kolekcja Croco',
         'subtitle'             => 'Odważny wzór w najlepszym wydaniu.',
         'cta_text'             => 'KUP TERAZ',
         'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
-    // Baner 5: desktop left+bottom | mobile left+bottom
+    // Baner 5: desktop left+center | mobile left+bottom
     4 => array(
         'offset_x'                  => 0,
         'offset_x_mobile'           => 0,
-        'text_position'             => 'left-bottom',
+        'text_position'             => 'left-center',
         'text_position_mobile'      => 'left-bottom',
         'content_offset_x'           => 0,
         'content_offset_y'           => 0,
