@@ -1,0 +1,20 @@
+{
+  "name": "moretti-theme",
+  "version": "1.0.0",
+  "description": "Custom WordPress/WooCommerce theme with Tailwind CSS",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/css/input.css -o ./assets/css/main.css --watch",
+    "build": "npx tailwindcss -i ./src/css/input.css -o ./assets/css/main.css --minify",
+    "install-deps": "npm install"
+  },
+  "keywords": [
+    "wordpress",
+    "woocommerce",
+    "tailwind"
+  ],
+  "author": "Moretti Team",
+  "license": "GPL-2.0-or-later",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

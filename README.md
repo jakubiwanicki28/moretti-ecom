@@ -16,7 +16,7 @@ Custom WordPress + WooCommerce theme with Tailwind CSS inspired by CEIN design.
 
 ### Technical Features
 - Custom WooCommerce templates
-- Quick add to cart over native WooCommerce AJAX endpoint
+- AJAX quick add to cart functionality
 - Responsive mobile menu
 - Tailwind CSS with custom color system
 - Product variations with color swatches
@@ -194,14 +194,10 @@ moretti-theme/
 
 ### Quick Add to Cart
 - Click (+) button on product card
-- Adds 1 item to cart via native WooCommerce AJAX (`wc-ajax=add_to_cart`)
+- Adds 1 item to cart via AJAX
 - Shows loading spinner
 - Shows checkmark on success
 - Updates cart counter in header
-
-### Meta Pixel (WooCommerce)
-- Official plugin integration runbook: `docs/meta-pixel-woocommerce.md`
-- Includes setup, 5-event QA checklist, and regression guardrails
 
 ### Mobile Menu
 - Hamburger icon appears on mobile

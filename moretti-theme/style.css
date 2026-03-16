@@ -1,0 +1,19 @@
+/*
+Theme Name: Moretti E-commerce Theme
+Theme URI: https://moretti-ecom.local
+Author: Moretti Team
+Author URI: https://moretti-ecom.local
+Description: Custom WooCommerce theme with Tailwind CSS
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: moretti-theme
+Tags: woocommerce, e-commerce, tailwind, custom
+Requires at least: 5.0
+Tested up to: 6.4
+Requires PHP: 7.4
+
+This theme supports WooCommerce and uses Tailwind CSS for styling.
+*/
+
+/* This file is required by WordPress but we use Tailwind CSS compiled in assets/css/main.css */
