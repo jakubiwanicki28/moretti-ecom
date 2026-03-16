@@ -19,16 +19,27 @@ $args = array(
     'post_status'    => 'publish',
 );
 
-// Special handling for search: text search in produktach
-if (is_search() && !empty(get_search_query())) {
-    $search_term = sanitize_text_field(get_search_query());
+// Wyszukiwanie tylko po NAZWIE (tytuł produktu)
+$search_title_only_cb = null;
+if (!empty($_GET['s'])) {
+    $search_term = sanitize_text_field(wp_unslash($_GET['s']));
     $args['s'] = $search_term;
+    $args['post_type'] = 'product';
+    // Ograniczenie wyszukiwania wyłącznie do post_title (nazwa produktu)
+    $search_title_only_cb = function ($search, $query) use ($search_term) {
+        if ($query->get('post_type') === 'product' && $query->get('s')) {
+            global $wpdb;
+            $like = '%' . $wpdb->esc_like($search_term) . '%';
+            $search = $wpdb->prepare(" AND ({$wpdb->posts}.post_title LIKE %s)", $like);
+        }
+        return $search;
+    };
+    add_filter('posts_search', $search_title_only_cb, 10, 2);
 }
 
-// Initialize tax_query
+// Filtry: tylko KATEGORIA + KOLOR (bez materiału, rozmiaru, ceny)
 $tax_query = array('relation' => 'AND');
 
-// Handle category filter
 if (is_product_category()) {
     $tax_query[] = array(
         'taxonomy' => 'product_cat',
@@ -37,7 +48,6 @@ if (is_product_category()) {
     );
 }
 
-// Handle attribute filters
 if (!empty($_GET['filter_color'])) {
     $tax_query[] = array(
         'taxonomy' => 'pa_color',
@@ -46,47 +56,8 @@ if (!empty($_GET['filter_color'])) {
     );
 }
 
-if (!empty($_GET['filter_material'])) {
-    $tax_query[] = array(
-        'taxonomy' => 'pa_material',
-        'field' => 'slug',
-        'terms' => sanitize_text_field($_GET['filter_material']),
-    );
-}
-
-if (!empty($_GET['filter_size'])) {
-    $tax_query[] = array(
-        'taxonomy' => 'pa_wielkosc',
-        'field' => 'slug',
-        'terms' => sanitize_text_field($_GET['filter_size']),
-    );
-}
-
 if (count($tax_query) > 1) {
     $args['tax_query'] = $tax_query;
-}
-
-// Handle price filter
-if (!empty($_GET['min_price']) || !empty($_GET['max_price'])) {
-    $args['meta_query'] = array('relation' => 'AND');
-    
-    if (!empty($_GET['min_price'])) {
-        $args['meta_query'][] = array(
-            'key' => '_price',
-            'value' => floatval($_GET['min_price']),
-            'compare' => '>=',
-            'type' => 'NUMERIC',
-        );
-    }
-    
-    if (!empty($_GET['max_price'])) {
-        $args['meta_query'][] = array(
-            'key' => '_price',
-            'value' => floatval($_GET['max_price']),
-            'compare' => '<=',
-            'type' => 'NUMERIC',
-        );
-    }
 }
 
 // Handle sorting
@@ -117,6 +88,10 @@ switch ($orderby) {
 
 $products = new WP_Query($args);
 
+if ($search_title_only_cb) {
+    remove_filter('posts_search', $search_title_only_cb, 10, 2);
+}
+
 // Get categories
 $categories = get_terms(array(
     'taxonomy' => 'product_cat',
@@ -126,8 +101,8 @@ $categories = get_terms(array(
 
 // Page title
 $page_title = 'Sklep';
-if (is_search()) {
-    $page_title = sprintf('Wyniki dla: "%s"', esc_html(get_search_query()));
+if (!empty($_GET['s'])) {
+    $page_title = sprintf('Wyniki dla: "%s"', esc_html(sanitize_text_field(wp_unslash($_GET['s']))));
 } elseif (is_product_category()) {
     $page_title = single_cat_title('', false);
 }
@@ -194,84 +169,8 @@ if (is_search()) {
             </div>
             <?php endif; ?>
 
-            <!-- Material Filter -->
-            <?php
-            $materials = get_terms(array(
-                'taxonomy' => 'pa_material',
-                'hide_empty' => true,
-            ));
-            if (!empty($materials) && !is_wp_error($materials)) :
-            ?>
-            <div class="sidebar-block">
-                <h3 class="sidebar-heading">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                    </svg>
-                    Materiał
-                </h3>
-                <div class="filter-options">
-                    <?php foreach ($materials as $material) :
-                        $is_active = isset($_GET['filter_material']) && $_GET['filter_material'] === $material->slug;
-                    ?>
-                        <a href="<?php echo esc_url(add_query_arg('filter_material', $material->slug)); ?>" 
-                           class="filter-option <?php echo $is_active ? 'active' : ''; ?>">
-                            <?php echo esc_html($material->name); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Size Filter -->
-            <?php
-            $sizes = get_terms(array(
-                'taxonomy' => 'pa_wielkosc',
-                'hide_empty' => true,
-            ));
-            if (!empty($sizes) && !is_wp_error($sizes)) :
-            ?>
-            <div class="sidebar-block">
-                <h3 class="sidebar-heading">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                    </svg>
-                    Wielkość
-                </h3>
-                <div class="filter-options filter-sizes">
-                    <?php foreach ($sizes as $size) :
-                        $is_active = isset($_GET['filter_size']) && $_GET['filter_size'] === $size->slug;
-                    ?>
-                        <a href="<?php echo esc_url(add_query_arg('filter_size', $size->slug)); ?>" 
-                           class="size-option <?php echo $is_active ? 'active' : ''; ?>">
-                            <?php echo esc_html($size->name); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Price Filter -->
-            <div class="sidebar-block">
-                <h3 class="sidebar-heading">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Cena (PLN)
-                </h3>
-                <form method="get" class="price-form">
-                    <div class="price-range">
-                        <input type="number" name="min_price" placeholder="Od" class="price-input" 
-                               value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
-                        <span class="price-dash">—</span>
-                        <input type="number" name="max_price" placeholder="Do" class="price-input" 
-                               value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>">
-                    </div>
-                    <button type="submit" class="filter-btn">Zastosuj</button>
-                </form>
-            </div>
-
-            <!-- Clear Filters -->
-            <?php if (!empty($_GET['filter_color']) || !empty($_GET['filter_material']) || !empty($_GET['filter_size']) || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
+            <!-- Clear Filters (tylko kolor – kategoria to osobna strona) -->
+            <?php if (!empty($_GET['filter_color']) || !empty($_GET['s'])) : ?>
             <div class="sidebar-block">
                 <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="clear-all-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
