@@ -115,6 +115,9 @@ if ($selected_material !== '') {
 }
 
 $moretti_current_query_args = array();
+if (isset($_GET['s']) && $_GET['s'] !== '') {
+    $moretti_current_query_args['s'] = sanitize_text_field(wp_unslash($_GET['s']));
+}
 if ($selected_color !== '') {
     $moretti_current_query_args['filter_color'] = $selected_color;
 }
@@ -141,6 +144,7 @@ if ($is_wishlist_view) {
 }
 
 $moretti_known_query_args = array(
+    's',
     'filter_color',
     'filter_kolor',
     'filter_material',
@@ -244,6 +248,23 @@ $args = array(
     'paged' => $paged,
     'post_status' => 'publish',
 );
+
+// Search: limit products strictly by title match when "s" is present.
+if (isset($_GET['s']) && $_GET['s'] !== '') {
+    $search_term = sanitize_text_field(wp_unslash($_GET['s']));
+    global $wpdb;
+    $like = '%' . $wpdb->esc_like($search_term) . '%';
+    $ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts}
+             WHERE post_type = 'product'
+               AND post_status = 'publish'
+               AND post_title LIKE %s",
+            $like
+        )
+    );
+    $args['post__in'] = !empty($ids) ? array_map('intval', $ids) : array(0);
+}
 
 if ($is_wishlist_view) {
     $args['post__in'] = !empty($wishlist_ids) ? $wishlist_ids : array(0);
@@ -365,7 +386,9 @@ $categories = get_terms(array(
 
 // Page title
 $page_title = 'Sklep';
-if (is_product_category()) {
+if (isset($_GET['s']) && $_GET['s'] !== '') {
+    $page_title = sprintf('Wyniki dla: "%s"', esc_html(sanitize_text_field(wp_unslash($_GET['s']))));
+} elseif (is_product_category()) {
     $page_title = single_cat_title('', false);
 } elseif ($is_wishlist_view) {
     $page_title = 'Ulubione';
@@ -727,6 +750,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                             <?php endif; ?>
                             <?php if ($selected_size !== '') : ?>
                                 <input type="hidden" name="filter_size" value="<?php echo esc_attr($selected_size); ?>">
+                            <?php endif; ?>
+                            <?php if (isset($_GET['s']) && $_GET['s'] !== '') : ?>
+                                <input type="hidden" name="s" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['s']))); ?>">
                             <?php endif; ?>
                             <?php if (!empty($orderby)) : ?>
                                 <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
