@@ -19,24 +19,16 @@ $args = array(
     'post_status'    => 'publish',
 );
 
-// Wyszukiwanie WYŁĄCZNIE po nazwie (tytuł produktu) – bez opisu/SKU, żeby nie wchodziły inne produkty
-$search_where_cb = null;
+// Wyszukiwanie: tylko po nazwie (tytuł). Jedno proste zapytanie po ID, potem grid.
 if (!empty($_GET['s'])) {
     $search_term = sanitize_text_field(wp_unslash($_GET['s']));
-    // Nie używamy $args['s'] – wtedy WP szukałby też w opisie i mogłyby wchodzić produkty typu SNAKE przy "croco"
-    $apply_once = true;
-    $search_where_cb = function ($where, $query) use ($search_term, &$apply_once) {
-        $pt = $query->get('post_type');
-        $is_product = ($pt === 'product' || (is_array($pt) && in_array('product', $pt)));
-        if ($apply_once && $is_product) {
-            $apply_once = false;
-            global $wpdb;
-            $like = '%' . $wpdb->esc_like($search_term) . '%';
-            $where .= $wpdb->prepare(" AND ({$wpdb->posts}.post_title LIKE %s)", $like);
-        }
-        return $where;
-    };
-    add_filter('posts_where', $search_where_cb, 10, 2);
+    global $wpdb;
+    $like = '%' . $wpdb->esc_like($search_term) . '%';
+    $ids = $wpdb->get_col($wpdb->prepare(
+        "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish' AND post_title LIKE %s",
+        $like
+    ));
+    $args['post__in'] = !empty($ids) ? array_map('intval', $ids) : array(0);
 }
 
 // Filtry: tylko KATEGORIA + KOLOR (bez materiału, rozmiaru, ceny)
@@ -89,10 +81,6 @@ switch ($orderby) {
 }
 
 $products = new WP_Query($args);
-
-if ($search_where_cb) {
-    remove_filter('posts_where', $search_where_cb, 10, 2);
-}
 
 // Get categories
 $categories = get_terms(array(
