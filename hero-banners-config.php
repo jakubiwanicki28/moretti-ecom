@@ -52,59 +52,59 @@
  *     portfele-meskie | portfele-damskie
  */
 return array(
-    // Baner 1: desktop left+center | mobile na górze (left-top)
+    // Baner 1: Beże i brązy (Matowy prestiż)
     0 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-top',
-        'title'                => 'MORETTI FASHION<br>ELEGANCJA I&nbsp;STYL',
-        'subtitle'             => 'Odkryj naszą wyselekcjonowaną kolekcję portfeli premium.',
-        'cta_text'             => 'KUP TERAZ',
-        'cta_filters'          => array( 'filter_kolekcja' => 'animals' ),
+        'title'                => 'MATOWY PRESTIŻ',
+        'subtitle'             => 'Odkryj aksamitną strukturę skóry, która definiuje luksus na nowo. Minimalizm w najczystszej formie.',
+        'cta_text'             => 'ODKRYJ KOLEKCJĘ',
+        'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
     ),
-    // Baner 2: desktop left+center | mobile left+center
+    // Baner 2: Kolekcja Croco
     1 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-center',
-        'title'                => 'Skóra matowa',
-        'subtitle'             => 'Wyjątkowe wykończenie w kolekcji.',
-        'cta_text'             => 'KUP TERAZ',
-        'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
+        'title'                => 'SIŁA CHARAKTERU',
+        'subtitle'             => 'Odważna tekstura Croco dla kobiet, które nie boją się wyróżniać. Elegancja z pazurem.',
+        'cta_text'             => 'SPRAWDŹ MODELE',
+        'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
-    // Baner 3: desktop left+center | mobile left+top
+    // Baner 3: Portfele Męskie
     2 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-top',
-        'title'                => 'Portfele męskie',
-        'subtitle'             => 'Klasyka i elegancja.',
-        'cta_text'             => 'KUP TERAZ',
-        'cta_category_slug'     => 'portfele-meskie',
+        'title'                => 'MĘSKI PUNKT WIDZENIA',
+        'subtitle'             => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena. Solidność i styl, który przetrwa lata.',
+        'cta_text'             => 'ZOBACZ KOLEKCJĘ',
+        'cta_category_slug'    => 'portfele-meskie',
     ),
-    // Baner 4: desktop left+center | mobile right-top
+    // Baner 4: Animal Print
     3 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'right-top',
-        'title'                => 'Kolekcja Croco',
-        'subtitle'             => 'Odważny wzór w najlepszym wydaniu.',
+        'title'                => 'DZIKA ELEGANCJA',
+        'subtitle'             => 'Wyjdź poza schematy z kolekcją Animal Print. Dodatki, które stają się centrum Twojej stylizacji.',
         'cta_text'             => 'KUP TERAZ',
-        'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
+        'cta_filters'          => array( 'filter_kolekcja' => 'animals' ),
     ),
-    // Baner 5: desktop left+center | mobile left+bottom
+    // Baner 5: Różowy portfel z dużym logo (Detale, które lśnią)
     4 => array(
         'offset_x'                  => 0,
         'offset_x_mobile'           => 0,
         'text_position'             => 'left-center',
         'text_position_mobile'      => 'left-bottom',
-        'content_offset_x'           => 0,
-        'content_offset_y'           => 0,
-        'content_offset_x_mobile'    => null,
-        'content_offset_y_mobile'    => null,
-        'title'                     => 'Baner 5',
-        'subtitle'                  => 'Test na remote – piąty slajd.',
-        'cta_text'                  => 'KUP TERAZ',
+        'content_offset_x'          => 0,
+        'content_offset_y'          => 0,
+        'content_offset_x_mobile'   => null,
+        'content_offset_y_mobile'  => null,
+        'title'                     => 'DETALE, KTÓRE LŚNIĄ',
+        'subtitle'                  => 'Wyjątkowe wykończenia i kultowe detale Moretti. Pozwól sobie na odrobinę codziennego blasku.',
+        'cta_text'                  => 'LISTA ŻYCZEŃ',
         'cta_url'                   => '',
         'cta_category_slug'         => '',
     ),

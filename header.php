@@ -293,7 +293,7 @@
 
         .moretti-cat-dropdown {
             position: absolute;
-            top: calc(100% + 2px);
+            top: 100%;
             left: 50%;
             transform: translateX(-50%);
             min-width: 280px;
@@ -301,6 +301,7 @@
             border: 1px solid #ececec;
             box-shadow: 0 18px 36px rgba(0, 0, 0, 0.10);
             padding: 14px 0;
+            padding-top: 6px;
             z-index: 80;
             opacity: 0;
             visibility: hidden;
@@ -473,27 +474,33 @@
                 return $result;
             };
     
-            // Core navigation items – slugi zgodne z kategoriami w WooCommerce (Portfele → portfele, Portfele damskie → portfele-damskie, Portfele męskie → portfele-meskie).
+            // Core navigation items – slugi zgodne z kategoriami w WooCommerce.
+            // Dla niej / Dla niego mają rozwijane panele; Nowości, Bestsellery, Okazje – tylko link (bez dropdownu).
             $items = array(
                 array(
                     'label'      => 'Dla niej',
                     'term_slugs' => array('portfele-damskie'),
+                    'expandable' => true,
                 ),
                 array(
                     'label'      => 'Dla niego',
                     'term_slugs' => array('portfele-meskie'),
+                    'expandable' => true,
                 ),
                 array(
                     'label'      => 'Nowości',
                     'term_slugs' => array('nowosci', 'nowosci-1', 'new-in'),
+                    'expandable' => false,
                 ),
                 array(
-                    'label'      => 'Klasyka i hity',
+                    'label'      => 'Bestsellery',
                     'term_slugs' => array('klasyka-i-hity', 'klasyki-i-hity', 'hity'),
+                    'expandable' => false,
                 ),
                 array(
                     'label'      => 'Okazje',
                     'term_slugs' => array('okazje', 'promocje', 'sale'),
+                    'expandable' => false,
                 ),
             );
     
@@ -596,9 +603,12 @@
     </div>
     <div class="moretti-header-bottom hidden md:block">
         <nav class="moretti-header-inner moretti-header-cats" aria-label="Kategorie glowne">
-            <?php foreach ($header_nav_items as $item) : ?>
+            <?php foreach ($header_nav_items as $item) :
+                $expandable = !empty($item['expandable']);
+            ?>
                 <div class="moretti-cat-item">
                     <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-link"><?php echo esc_html($item['label']); ?></a>
+                    <?php if ($expandable) : ?>
                     <div class="moretti-cat-dropdown">
                         <a href="<?php echo esc_url($item['url']); ?>" class="moretti-cat-dropdown-all"><?php echo ($item['term'] && !is_wp_error($item['term'])) ? esc_html($item['term']->name) : 'Wszystko'; ?></a>
                         <?php if (!empty($item['panel']['categories'])) : ?>
@@ -608,6 +618,7 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </nav>
@@ -720,7 +731,7 @@
 
             <ul class="space-y-6">
                 <li><a href="<?php echo esc_url(home_url('/#nowosci')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Nowości</a></li>
-                <li><a href="<?php echo esc_url(home_url('/#klasyki')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Klasyki i Hity</a></li>
+                <li><a href="<?php echo esc_url(home_url('/#klasyki')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Bestsellery</a></li>
                 <?php if (class_exists('WooCommerce')) : ?>
                     <li><a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Ulubione</a></li>
                 <?php endif; ?>
