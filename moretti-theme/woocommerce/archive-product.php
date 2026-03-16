@@ -19,24 +19,10 @@ $args = array(
     'post_status'    => 'publish',
 );
 
-// Special handling for search: focus on SKU / model number
+// Special handling for search: text search in produktach
 if (is_search() && !empty(get_search_query())) {
     $search_term = sanitize_text_field(get_search_query());
-
-    // Override base args so search behaves predictably
-    $args = array(
-        'post_type'      => 'product',
-        'posts_per_page' => 12,
-        'paged'          => $paged,
-        'post_status'    => 'publish',
-        'meta_query'     => array(
-            array(
-                'key'     => '_sku',
-                'value'   => $search_term,
-                'compare' => 'LIKE',
-            ),
-        ),
-    );
+    $args['s'] = $search_term;
 }
 
 // Initialize tax_query
