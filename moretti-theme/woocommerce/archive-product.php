@@ -19,22 +19,24 @@ $args = array(
     'post_status'    => 'publish',
 );
 
-// Wyszukiwanie tylko po NAZWIE (tytuł produktu)
-$search_title_only_cb = null;
+// Wyszukiwanie WYŁĄCZNIE po nazwie (tytuł produktu) – bez opisu/SKU, żeby nie wchodziły inne produkty
+$search_where_cb = null;
 if (!empty($_GET['s'])) {
     $search_term = sanitize_text_field(wp_unslash($_GET['s']));
-    $args['s'] = $search_term;
-    $args['post_type'] = 'product';
-    // Ograniczenie wyszukiwania wyłącznie do post_title (nazwa produktu)
-    $search_title_only_cb = function ($search, $query) use ($search_term) {
-        if ($query->get('post_type') === 'product' && $query->get('s')) {
+    // Nie używamy $args['s'] – wtedy WP szukałby też w opisie i mogłyby wchodzić produkty typu SNAKE przy "croco"
+    $apply_once = true;
+    $search_where_cb = function ($where, $query) use ($search_term, &$apply_once) {
+        $pt = $query->get('post_type');
+        $is_product = ($pt === 'product' || (is_array($pt) && in_array('product', $pt)));
+        if ($apply_once && $is_product) {
+            $apply_once = false;
             global $wpdb;
             $like = '%' . $wpdb->esc_like($search_term) . '%';
-            $search = $wpdb->prepare(" AND ({$wpdb->posts}.post_title LIKE %s)", $like);
+            $where .= $wpdb->prepare(" AND ({$wpdb->posts}.post_title LIKE %s)", $like);
         }
-        return $search;
+        return $where;
     };
-    add_filter('posts_search', $search_title_only_cb, 10, 2);
+    add_filter('posts_where', $search_where_cb, 10, 2);
 }
 
 // Filtry: tylko KATEGORIA + KOLOR (bez materiału, rozmiaru, ceny)
@@ -88,8 +90,8 @@ switch ($orderby) {
 
 $products = new WP_Query($args);
 
-if ($search_title_only_cb) {
-    remove_filter('posts_search', $search_title_only_cb, 10, 2);
+if ($search_where_cb) {
+    remove_filter('posts_where', $search_where_cb, 10, 2);
 }
 
 // Get categories
