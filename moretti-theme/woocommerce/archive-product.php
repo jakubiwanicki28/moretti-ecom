@@ -182,7 +182,9 @@ if (!empty($_GET['s'])) {
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
-                <?php if (is_product_category()) : ?>
+                <?php if (!empty($_GET['s'])) : ?>
+                    <span class="current"><?php echo esc_html($page_title); ?></span>
+                <?php elseif (is_product_category()) : ?>
                     <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">Sklep</a>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
