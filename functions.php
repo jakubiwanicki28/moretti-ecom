@@ -362,6 +362,7 @@ function moretti_color_swatch_hex_map() {
         'czerwony' => '#c81e1e',
         'czarny' => '#111111',
         'jasny-roz' => '#f4a3c3',
+        'ciemny-roz' => '#b71c6e',
         'szary' => '#7a7a7a',
         'zloty' => '#caa23b',
         'granatowy' => '#1e2a52',

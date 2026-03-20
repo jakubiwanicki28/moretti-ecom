@@ -56,7 +56,7 @@ return array(
     0 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
-        'text_position_mobile' => 'left-top',
+        'text_position_mobile' => 'left-bottom',
         'title'                => 'MATOWY PRESTIŻ',
         'subtitle'             => 'Odkryj aksamitną strukturę skóry, która definiuje luksus na nowo. Minimalizm w najczystszej formie.',
         'cta_text'             => 'ODKRYJ KOLEKCJĘ',
@@ -66,7 +66,7 @@ return array(
     1 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
-        'text_position_mobile' => 'left-center',
+        'text_position_mobile' => 'left-bottom',
         'title'                => 'SIŁA CHARAKTERU',
         'subtitle'             => 'Odważna tekstura Croco dla kobiet, które nie boją się wyróżniać. Elegancja z pazurem.',
         'cta_text'             => 'SPRAWDŹ MODELE',
@@ -76,7 +76,7 @@ return array(
     2 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
-        'text_position_mobile' => 'left-top',
+        'text_position_mobile' => 'left-bottom',
         'title'                => 'MĘSKI PUNKT WIDZENIA',
         'subtitle'             => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena. Solidność i styl, który przetrwa lata.',
         'cta_text'             => 'ZOBACZ KOLEKCJĘ',
@@ -86,7 +86,7 @@ return array(
     3 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
-        'text_position_mobile' => 'right-top',
+        'text_position_mobile' => 'right-bottom',
         'title'                => 'DZIKA ELEGANCJA',
         'subtitle'             => 'Wyjdź poza schematy z kolekcją Animal Print. Dodatki, które stają się centrum Twojej stylizacji.',
         'cta_text'             => 'KUP TERAZ',

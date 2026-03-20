@@ -58,8 +58,6 @@ if (!isset($hero_banners, $hero_banners_count, $hero_banner_dir_path, $hero_bann
                 $loading = $hero_banner_index === 0 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
                 $text_pos = isset($hero_banner['text_position']) ? $hero_banner['text_position'] : 'left-center';
                 $pos_class = preg_match('/^(left|center|right)-(top|center|bottom)$/', $text_pos) ? 'mh2__content--' . $text_pos : 'mh2__content--left-center';
-                $text_pos_mobile = isset($hero_banner['text_position_mobile']) ? $hero_banner['text_position_mobile'] : null;
-                $pos_class_mobile = ($text_pos_mobile !== null && preg_match('/^(left|center|right)-(top|center|bottom)$/', $text_pos_mobile)) ? ' mh2__content--mobile-' . $text_pos_mobile : '';
                 $cox = isset($hero_banner['content_offset_x']) ? (int) $hero_banner['content_offset_x'] : 0;
                 $coy = isset($hero_banner['content_offset_y']) ? (int) $hero_banner['content_offset_y'] : 0;
                 $cox_m = isset($hero_banner['content_offset_x_mobile']) ? (int) $hero_banner['content_offset_x_mobile'] : null;
@@ -107,7 +105,7 @@ if (!isset($hero_banners, $hero_banners_count, $hero_banner_dir_path, $hero_bann
                         </picture>
                     </div>
                     <?php endif; ?>
-                    <div class="mh2__content <?php echo esc_attr($pos_class . $pos_class_mobile); ?>"<?php echo $content_style; ?>>
+                    <div class="mh2__content <?php echo esc_attr($pos_class); ?>"<?php echo $content_style; ?>>
                         <?php if (!empty($hero_banner['title'])) : ?>
                         <h2 class="mh2__title"><?php echo wp_kses_post($hero_banner['title']); ?></h2>
                         <?php endif; ?>
