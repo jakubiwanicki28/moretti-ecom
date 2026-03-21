@@ -5,6 +5,14 @@ module.exports = {
     './src/**/*.js',
     './woocommerce/**/*.php',
   ],
+  safelist: [
+    'wc-block-cart',
+    'wc-block-cart__submit-container',
+    'wc-block-components-button',
+    'wc-block-cart__submit-button',
+    'wc-block-components-button__text',
+    'wp-element-button',
+  ],
   theme: {
     extend: {
       colors: {
