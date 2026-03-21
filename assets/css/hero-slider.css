@@ -325,8 +325,8 @@
      * ciemna typografia na jasnym pasie. Desktop zostaje przy ciemnym overlay + jasny tekst.
      */
     .mh2__shade-gradient {
-        /* ~20% niższy pas niż wcześniej (48% → ~38%). */
-        height: 38%;
+        /* Jeszcze ~15% niżej / krócej niż 38% → ~32%. */
+        height: 32%;
         /* Nielinearnie: ~0–70% wysokości pasu to prawie pełna biel; „przenikanie” głównie w górnych ~30%. */
         background: linear-gradient(
             to top,
