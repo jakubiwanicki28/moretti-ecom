@@ -338,8 +338,8 @@
      * ciemna typografia na jasnym pasie. Na desktop warstwa .mh2__shade jest wyłączona.
      */
     .mh2__shade-gradient {
-        /* ~32% + 7 pp wyżej (większy zasięg białego od dołu na mobile). */
-        height: 39%;
+        /* ~32% + 7 pp + 5 pp — zasięg białego od dołu na mobile. */
+        height: 30%;
         /* Nielinearnie: ~0–70% wysokości pasu to prawie pełna biel; „przenikanie” głównie w górnych ~30%. */
         background: linear-gradient(
             to top,
