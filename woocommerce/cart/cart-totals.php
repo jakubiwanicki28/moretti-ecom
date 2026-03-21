@@ -99,7 +99,9 @@ defined('ABSPATH') || exit;
     </table>
 
     <div class="wc-proceed-to-checkout mt-12">
-        <?php do_action('woocommerce_proceed_to_checkout'); ?>
+        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="moretti-checkout-cta">
+            <?php esc_html_e('Przejdź do płatności', 'moretti-theme'); ?>
+        </a>
     </div>
 
     <?php do_action('woocommerce_after_cart_totals'); ?>
