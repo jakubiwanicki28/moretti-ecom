@@ -35,6 +35,12 @@ module.exports = {
         },
         'cream': '#f5f3ef',
         'charcoal': '#2a2826',
+        // Primary commerce CTA — strong green, sufficient contrast with white label text
+        'cta': {
+          DEFAULT: '#15803d',
+          hover: '#166534',
+          ring: '#14532d',
+        },
       },
       fontFamily: {
         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],

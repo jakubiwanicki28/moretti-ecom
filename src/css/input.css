@@ -406,7 +406,7 @@
   }
 
   .cart_totals .wc-proceed-to-checkout a.checkout-button {
-    @apply w-full bg-charcoal text-white hover:bg-taupe-800 transition-colors py-4 px-6 text-sm font-bold uppercase tracking-widest rounded-none text-center block !important;
+    @apply w-full bg-cta text-white hover:bg-cta-hover transition-colors py-4 px-6 text-sm font-bold uppercase tracking-widest rounded-none text-center block !important;
   }
 
   /* Coupon section */
@@ -629,7 +629,7 @@
   }
 
   .wc-proceed-to-checkout a.checkout-button {
-    @apply block w-full py-5 bg-charcoal text-white text-center text-xs font-bold uppercase tracking-widest hover:bg-taupe-800 transition-all !important;
+    @apply block w-full py-5 bg-cta text-white text-center text-xs font-bold uppercase tracking-widest hover:bg-cta-hover transition-all !important;
   }
 
   .woocommerce-cart table.cart td.product-quantity .quantity input {
@@ -1095,8 +1095,8 @@
   align-items: center !important;
   justify-content: center !important;
   min-height: 50px !important;
-  border: 1px solid #111111 !important;
-  background: #111111 !important;
+  border: 1px solid #15803d !important;
+  background: #15803d !important;
   color: #ffffff !important;
   text-decoration: none !important;
   text-transform: uppercase !important;
@@ -1115,14 +1115,18 @@
 .woocommerce-page a.checkout-button.button:hover,
 .woocommerce-checkout #payment #place_order:hover,
 .woocommerce-checkout .place-order .button.alt:hover {
-  background: #2a2826 !important;
-  border-color: #2a2826 !important;
+  background: #166534 !important;
+  border-color: #166534 !important;
   color: #ffffff !important;
 }
 
 .woocommerce-checkout #payment #place_order:focus-visible,
 .woocommerce a.checkout-button.button:focus-visible,
-.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible,
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible {
+  outline: 2px solid #14532d !important;
+  outline-offset: 2px !important;
+}
+
 .woocommerce a.button.wc-backward:focus-visible,
 .woocommerce-checkout a.wc-backward:focus-visible {
   outline: 2px solid #111111 !important;

@@ -397,7 +397,7 @@
   }
 
   .cart_totals .wc-proceed-to-checkout a.checkout-button {
-    @apply w-full bg-charcoal text-white hover:bg-taupe-800 transition-colors py-4 px-6 text-sm font-bold uppercase tracking-widest rounded-none text-center block !important;
+    @apply w-full bg-cta text-white hover:bg-cta-hover transition-colors py-4 px-6 text-sm font-bold uppercase tracking-widest rounded-none text-center block !important;
   }
 
   /* Coupon section */
@@ -620,7 +620,7 @@
   }
 
   .wc-proceed-to-checkout a.checkout-button {
-    @apply block w-full py-5 bg-charcoal text-white text-center text-xs font-bold uppercase tracking-widest hover:bg-taupe-800 transition-all !important;
+    @apply block w-full py-5 bg-cta text-white text-center text-xs font-bold uppercase tracking-widest hover:bg-cta-hover transition-all !important;
   }
 
   .woocommerce-cart table.cart td.product-quantity .quantity input {
