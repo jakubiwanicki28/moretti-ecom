@@ -49,11 +49,21 @@
  *     (wykończenie: lakierowana vs matowa; wszystko to skóra naturalna)
  *
  *   Kategorie (product_cat), cta_category_slug
- *     portfele-meskie | portfele-damskie
+ *     portfele-meskie | portfele-damskie | wzory-zwierzece | …
  */
 return array(
-    // Baner 1: Beże i brązy (Matowy prestiż)
+    // Slajd 1: kategoria Wzory zwierzęce (product_cat — slug z panelu).
     0 => array(
+        'offset_x'             => 0,
+        'text_position'        => 'left-center',
+        'text_position_mobile' => 'left-bottom',
+        'title'                => 'DZIKA{{BR}}ELEGANCJA',
+        'subtitle'             => 'Wyjdź poza schematy z kolekcją wzorów zwierzęcych.{{BR}}Dodatki, które stają się centrum Twojej stylizacji.',
+        'cta_text'             => 'ODKRYJ KOLEKCJĘ',
+        'cta_category_slug'    => 'wzory-zwierzece',
+    ),
+    // Slajd 2: Materiał — Skóra matowa (atrybut, param filter_material).
+    1 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
@@ -62,17 +72,7 @@ return array(
         'cta_text'             => 'ODKRYJ KOLEKCJĘ',
         'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
     ),
-    // Baner 2: Kolekcja Croco
-    1 => array(
-        'offset_x'             => 0,
-        'text_position'        => 'left-center',
-        'text_position_mobile' => 'left-bottom',
-        'title'                => 'SIŁA CHARAKTERU',
-        'subtitle'             => 'Jasna matowa tekstura dla kobiet, które nie boją się wyróżniać.{{BR}}Elegancja z pazurem.',
-        'cta_text'             => 'SPRAWDŹ MODELE',
-        'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
-    ),
-    // Baner 3: Portfele Męskie
+    // Slajd 3: Portfele męskie (kategoria).
     2 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
@@ -82,17 +82,17 @@ return array(
         'cta_text'             => 'ZOBACZ KOLEKCJĘ',
         'cta_category_slug'    => 'portfele-meskie',
     ),
-    // Baner 4: Animal Print
+    // Slajd 4: Kolekcja — Croco (atrybut, param filter_kolekcja, wartość croco).
     3 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'right-bottom',
-        'title'                => 'DZIKA{{BR}}ELEGANCJA',
-        'subtitle'             => 'Wyjdź poza schematy z kolekcją Animal Print.{{BR}}Dodatki, które stają się centrum Twojej stylizacji.',
-        'cta_text'             => 'KUP TERAZ',
-        'cta_filters'          => array( 'filter_kolekcja' => 'animals' ),
+        'title'                => 'SIŁA{{BR}}CHARAKTERU',
+        'subtitle'             => 'Tekstura Croco dla odważnych.{{BR}}Elegancja z pazurem.',
+        'cta_text'             => 'SPRAWDŹ MODELE',
+        'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
-    // Baner 5: Różowy portfel z dużym logo (Detale, które lśnią)
+    // Slajd 5: Materiał — Skóra lakierowana (atrybut, param filter_material).
     4 => array(
         'offset_x'                  => 0,
         'offset_x_mobile'           => 0,
@@ -104,8 +104,7 @@ return array(
         'content_offset_y_mobile'  => null,
         'title'                     => 'DETALE,{{BR}}KTÓRE LŚNIĄ',
         'subtitle'                  => 'Wyjątkowe wykończenia i kultowe detale Moretti.{{BR}}Pozwól sobie na odrobinę codziennego blasku.',
-        'cta_text'                  => 'LISTA ŻYCZEŃ',
-        'cta_url'                   => '',
-        'cta_category_slug'         => '',
+        'cta_text'                  => 'ODKRYJ KOLEKCJĘ',
+        'cta_filters'               => array( 'filter_material' => 'skora-lakierowana' ),
     ),
 );
