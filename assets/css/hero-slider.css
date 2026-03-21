@@ -325,13 +325,14 @@
      * ciemna typografia na jasnym pasie. Desktop zostaje przy ciemnym overlay + jasny tekst.
      */
     .mh2__shade-gradient {
-        height: 32%;
+        /* Wyżej niż wcześniej: szerszy pas od dołu, żeby biel „wchodziła” wcześniej w kadr. */
+        height: 48%;
         background: linear-gradient(
             to top,
             #ffffff 0%,
-            rgba(255, 255, 255, 0.97) 18%,
-            rgba(255, 255, 255, 0.75) 45%,
-            rgba(255, 255, 255, 0.2) 78%,
+            rgba(255, 255, 255, 0.97) 12%,
+            rgba(255, 255, 255, 0.78) 38%,
+            rgba(255, 255, 255, 0.35) 72%,
             rgba(255, 255, 255, 0) 100%
         );
     }
