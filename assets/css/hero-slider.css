@@ -62,30 +62,38 @@
     overflow: hidden;
 }
 
-/* Czytelność treści: ciemny gradient od dołu (80% -> 0% w 1/4 wysokości). */
-.mh2__slide::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100px;
-    background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.55) 45%,
-        rgba(0, 0, 0, 0) 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-}
-
 /* Tło slajdu – picture pełny ekran */
 .mh2__bg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    z-index: 0;
+}
+
+/*
+ * Warstwa cienia: pełny kontener 1:1 ze slajdem + wewnętrzny gradient od dołu (~25% wysokości banera).
+ * Jawny DOM zamiast ::after — łatwiej utrzymać z-index i powiązanie z treścią (mobile/desktop).
+ */
+.mh2__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.mh2__shade-gradient {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 25%;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.55) 45%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
 
 .mh2__bg img,
@@ -101,6 +109,7 @@
 .mh2__overlay {
     position: absolute;
     inset: 0;
+    z-index: 2;
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -119,7 +128,7 @@
 /* Blok tekstu + CTA – pozycjonowany przez modyfikatory */
 .mh2__content {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     padding: 1rem 1.5rem 20px;
     max-width: 90%;
     pointer-events: none;

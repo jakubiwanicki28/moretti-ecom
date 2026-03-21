@@ -76,6 +76,9 @@ if (!isset($hero_banners, $hero_banners_count, $hero_banner_dir_path, $hero_bann
                         </picture>
                         <?php endif; ?>
                     </div>
+                    <div class="mh2__shade" aria-hidden="true">
+                        <div class="mh2__shade-gradient"></div>
+                    </div>
                     <?php if ($overlay_d !== '' && file_exists($hero_banner_dir_path . $overlay_d)) : ?>
                     <div class="mh2__overlay">
                         <picture>
