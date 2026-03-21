@@ -691,6 +691,8 @@ add_filter('woocommerce_quantity_input_args', 'moretti_single_product_force_quan
  *
  * W stringu użyj dosłownie znacznika **{{BR}}** tam, gdzie ma być nowa linia.
  * Przykład: 'MATOWY {{BR}} PRESTIŻ' lub w podtytule dwa fragmenty z łamaniem.
+ * Dla innego łamania na mobile niż na desktop użyj osobno title_desktop / title_mobile
+ * (oraz subtitle_*) w hero-banners-config.php — patrz moretti_hero_resolve_variant_text().
  * Nie wstawiaj surowego &lt;br&gt; w configu — ten mechanizm escapuje tekst i wstawia bezpieczne &lt;br /&gt;.
  *
  * @param string $text Tytuł lub podtytuł z opcjonalnymi {{BR}}.
@@ -704,6 +706,36 @@ function moretti_hero_format_line_breaks( $text ) {
     $text = str_replace( '{{BR}}', $ph, $text );
     $text = esc_html( $text );
     return str_replace( $ph, '<br />', $text );
+}
+
+/**
+ * Hero: osobne wersje tytułu/podtytułu na desktop (≥768px) i mobile.
+ *
+ * Klucze w banerze: title, subtitle (baza) oraz opcjonalnie title_desktop, title_mobile,
+ * subtitle_desktop, subtitle_mobile. Puste _desktop / _mobile = użycie wartości z bazy (title / subtitle).
+ * W każdej wersji możesz używać {{BR}} — patrz moretti_hero_format_line_breaks().
+ *
+ * @param array  $banner  Wpis banera z moretti_get_home_hero_data().
+ * @param string $base_key 'title' lub 'subtitle'.
+ * @return array{desktop: string, mobile: string, split: bool} split = true gdy trzeba renderować dwie warstwy.
+ */
+function moretti_hero_resolve_variant_text( $banner, $base_key ) {
+    $base = isset( $banner[ $base_key ] ) ? (string) $banner[ $base_key ] : '';
+    $dk   = $base_key . '_desktop';
+    $mk   = $base_key . '_mobile';
+    $desktop = ( isset( $banner[ $dk ] ) && $banner[ $dk ] !== '' ) ? (string) $banner[ $dk ] : $base;
+    $mobile  = ( isset( $banner[ $mk ] ) && $banner[ $mk ] !== '' ) ? (string) $banner[ $mk ] : $base;
+    if ( $desktop === '' && $mobile !== '' ) {
+        $desktop = $mobile;
+    }
+    if ( $mobile === '' && $desktop !== '' ) {
+        $mobile = $desktop;
+    }
+    return array(
+        'desktop' => $desktop,
+        'mobile'  => $mobile,
+        'split'   => ( $desktop !== $mobile ),
+    );
 }
 
 /**
@@ -795,7 +827,11 @@ function moretti_get_home_hero_data() {
         $hero_banners[ $idx ]['text_position']         = isset($cfg['text_position']) ? (string) $cfg['text_position'] : 'left-center';
         $hero_banners[ $idx ]['text_position_mobile']  = isset($cfg['text_position_mobile']) ? (string) $cfg['text_position_mobile'] : null;
         $hero_banners[ $idx ]['title']                 = isset($cfg['title']) ? (string) $cfg['title'] : '';
+        $hero_banners[ $idx ]['title_desktop']         = isset($cfg['title_desktop']) ? (string) $cfg['title_desktop'] : '';
+        $hero_banners[ $idx ]['title_mobile']          = isset($cfg['title_mobile']) ? (string) $cfg['title_mobile'] : '';
         $hero_banners[ $idx ]['subtitle']              = isset($cfg['subtitle']) ? (string) $cfg['subtitle'] : '';
+        $hero_banners[ $idx ]['subtitle_desktop']      = isset($cfg['subtitle_desktop']) ? (string) $cfg['subtitle_desktop'] : '';
+        $hero_banners[ $idx ]['subtitle_mobile']       = isset($cfg['subtitle_mobile']) ? (string) $cfg['subtitle_mobile'] : '';
         $hero_banners[ $idx ]['cta_text']              = isset($cfg['cta_text']) ? (string) $cfg['cta_text'] : 'KUP TERAZ';
         $hero_banners[ $idx ]['overlay_desktop']       = isset($cfg['overlay_desktop']) ? (string) $cfg['overlay_desktop'] : '';
         $hero_banners[ $idx ]['overlay_mobile']        = isset($cfg['overlay_mobile']) ? (string) $cfg['overlay_mobile'] : '';

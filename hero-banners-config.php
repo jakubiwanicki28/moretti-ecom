@@ -5,9 +5,10 @@
  * === GDZIE USTAWIAĆ DANE I POZYCJĘ ===
  * Wszystko poniżej: każdy wpis (0, 1, 2, 3...) to jeden slajd. Kolejność = kolejność na stronie.
  *
- * Tekst na slajdzie:
- *   title    – tytuł. Pusty '' = brak tytułu. Łamanie linii: wstaw dosłownie {{BR}} (np. 'PIERWSZA LINIA {{BR}} DRUGA').
- *   subtitle – podtytuł. To samo: {{BR}} = nowa linia w tym samym bloku.
+ * Tekst na slajdzie (łamanie: {{BR}}):
+ *   title + title_desktop + title_mobile – przy pełnej konfiguracji ustaw wszystkie trzy spójnie
+ *     (title = baza / kopia desktopu). Różne łamanie na mobile = edytuj tylko title_mobile (i subtitle_mobile).
+ *   subtitle + subtitle_desktop + subtitle_mobile – to samo.
  *   cta_text – tekst przycisku (np. "KUP TERAZ"). Pusty = brak przycisku.
  *
  * Pozycja bloku tekstu (żeby nie zasłaniał ważnych elementów na zdjęciu):
@@ -27,8 +28,9 @@
  * content_offset_x_mobile, content_offset_y_mobile – (opcjonalnie) to samo dla mobile.
  * text_position       – pozycja bloku tekstu (desktop). left-top, left-center, … right-bottom.
  * text_position_mobile – (opcjonalnie) pozycja bloku tekstu na mobile. Nie podane = text_position.
- * title               – tytuł slajdu (HTML). Pusty = brak tytułu.
- * subtitle            – podtytuł (HTML). Pusty = brak.
+ * title               – tytuł slajdu (tekst + {{BR}}). Pusty = brak tytułu.
+ * title_desktop, title_mobile, subtitle_desktop, subtitle_mobile – patrz wyżej.
+ * subtitle            – podtytuł. Pusty = brak.
  * cta_text            – tekst przycisku. Domyślnie "KUP TERAZ".
  * cta_url             – (opcjonalnie) gotowy adres przycisku. Jeśli podany, reszta jest ignorowana.
  * cta_filters         – (opcjonalnie) tablica: nazwa parametru => slug termu. Buduje URL sklepu z filtrami.
@@ -51,6 +53,9 @@
  *
  *   Kategorie (product_cat), cta_category_slug
  *     portfele-meskie | portfele-damskie | wzory-zwierzece | …
+ *
+ * Każdy slajd ma title_desktop / title_mobile / subtitle_* — na start takie same jak title/subtitle.
+ * Inne przełamanie tylko na mobile: zmień wyłącznie *_mobile (albo *_desktop na dużym ekranie).
  */
 return array(
     // Slajd 1: kategoria Wzory zwierzęce (product_cat — slug z panelu).
@@ -59,7 +64,11 @@ return array(
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
         'title'                => 'DZIKA{{BR}}ELEGANCJA',
+        'title_desktop'        => 'DZIKA{{BR}}ELEGANCJA',
+        'title_mobile'         => 'DZIKA ELEGANCJA',
         'subtitle'             => 'Wyjdź poza schematy z kolekcją wzorów zwierzęcych.{{BR}}Dodatki, które stają się centrum Twojej stylizacji.',
+        'subtitle_desktop'     => 'Wyjdź poza schematy z kolekcją wzorów zwierzęcych.{{BR}}Dodatki, które stają się centrum Twojej stylizacji.',
+        'subtitle_mobile'      => 'Wyjdź poza schematy z kolekcją wzorów zwierzęcych.{{BR}}Dodatki, które stają się centrum Twojej stylizacji.',
         'cta_text'             => 'ODKRYJ KOLEKCJĘ',
         'cta_category_slug'    => 'wzory-zwierzece',
     ),
@@ -69,7 +78,11 @@ return array(
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
         'title'                => 'MATOWY PRESTIŻ',
+        'title_desktop'        => 'MATOWY PRESTIŻ',
+        'title_mobile'         => 'MATOWY PRESTIŻ',
         'subtitle'             => 'Odkryj aksamitną strukturę skóry, która definiuje luksus na nowo.{{BR}}Minimalizm w najczystszej formie.',
+        'subtitle_desktop'     => 'Odkryj aksamitną strukturę skóry, która definiuje luksus na nowo.{{BR}}Minimalizm w najczystszej formie.',
+        'subtitle_mobile'      => 'Odkryj aksamitną strukturę skóry, która definiuje luksus na nowo.{{BR}}Minimalizm w najczystszej formie.',
         'cta_text'             => 'ODKRYJ KOLEKCJĘ',
         'cta_filters'          => array( 'filter_material' => 'skora-matowa' ),
     ),
@@ -79,7 +92,11 @@ return array(
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
         'title'                => 'MĘSKI PUNKT{{BR}}WIDZENIA',
+        'title_desktop'        => 'MĘSKI PUNKT{{BR}}WIDZENIA',
+        'title_mobile'         => 'MĘSKI PUNKT WIDZENIA',
         'subtitle'             => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena. {{BR}}Solidność i styl, który przetrwa lata.',
+        'subtitle_desktop'     => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena. {{BR}}Solidność i styl, który przetrwa lata.',
+        'subtitle_mobile'      => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena. {{BR}}Solidność i styl, który przetrwa lata.',
         'cta_text'             => 'ZOBACZ KOLEKCJĘ',
         'cta_category_slug'    => 'portfele-meskie',
     ),
@@ -89,7 +106,11 @@ return array(
         'text_position'        => 'left-center',
         'text_position_mobile' => 'right-bottom',
         'title'                => 'SIŁA{{BR}}CHARAKTERU',
+        'title_desktop'        => 'SIŁA{{BR}}CHARAKTERU',
+        'title_mobile'         => 'SIŁA CHARAKTERU',
         'subtitle'             => 'Tekstura Croco dla odważnych.{{BR}}Elegancja z pazurem.',
+        'subtitle_desktop'     => 'Tekstura Croco dla odważnych.{{BR}}Elegancja z pazurem.',
+        'subtitle_mobile'      => 'Tekstura Croco dla odważnych.{{BR}}Elegancja z pazurem.',
         'cta_text'             => 'SPRAWDŹ MODELE',
         'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
@@ -104,7 +125,11 @@ return array(
         'content_offset_x_mobile'   => null,
         'content_offset_y_mobile'  => null,
         'title'                     => 'DETALE,{{BR}}KTÓRE LŚNIĄ',
+        'title_desktop'             => 'DETALE,{{BR}}KTÓRE LŚNIĄ',
+        'title_mobile'              => 'DETALE, KTÓRE LŚNIĄ',
         'subtitle'                  => 'Wyjątkowe wykończenia i kultowe detale Moretti.{{BR}}Pozwól sobie na odrobinę codziennego blasku.',
+        'subtitle_desktop'          => 'Wyjątkowe wykończenia i kultowe detale Moretti.{{BR}}Pozwól sobie na odrobinę codziennego blasku.',
+        'subtitle_mobile'           => 'Wyjątkowe wykończenia i kultowe detale Moretti.{{BR}}Pozwól sobie na odrobinę codziennego blasku.',
         'cta_text'                  => 'ODKRYJ KOLEKCJĘ',
         'cta_filters'               => array(
             'filter_material'    => 'skora-lakierowana',

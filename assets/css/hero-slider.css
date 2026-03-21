@@ -178,6 +178,26 @@
     text-shadow: 0 0 40px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
+/* Osobne łamanie linii desktop vs mobile (title_desktop / title_mobile itd.) */
+.mh2__title-inner--desktop,
+.mh2__subtitle-inner--desktop {
+    display: none;
+}
+.mh2__title-inner--mobile,
+.mh2__subtitle-inner--mobile {
+    display: block;
+}
+@media (min-width: 768px) {
+    .mh2__title-inner--desktop,
+    .mh2__subtitle-inner--desktop {
+        display: block;
+    }
+    .mh2__title-inner--mobile,
+    .mh2__subtitle-inner--mobile {
+        display: none;
+    }
+}
+
 .mh2__cta {
     display: inline-block;
     padding: 0.75rem 2rem;

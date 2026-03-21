@@ -90,26 +90,64 @@ if (!isset($hero_banners, $hero_banners_count, $hero_banner_dir_path, $hero_bann
                     </div>
                     <?php endif; ?>
                     <div class="mh2__content <?php echo esc_attr($pos_class); ?>"<?php echo $content_style; ?>>
-                        <?php if (!empty($hero_banner['title']) || !empty($hero_banner['subtitle']) || !empty($hero_banner['cta_text'])) : ?>
+                        <?php
+                        $title_res = function_exists('moretti_hero_resolve_variant_text')
+                            ? moretti_hero_resolve_variant_text($hero_banner, 'title')
+                            : array(
+                                'desktop' => isset($hero_banner['title']) ? (string) $hero_banner['title'] : '',
+                                'mobile' => isset($hero_banner['title']) ? (string) $hero_banner['title'] : '',
+                                'split' => false,
+                            );
+                        $sub_res = function_exists('moretti_hero_resolve_variant_text')
+                            ? moretti_hero_resolve_variant_text($hero_banner, 'subtitle')
+                            : array(
+                                'desktop' => isset($hero_banner['subtitle']) ? (string) $hero_banner['subtitle'] : '',
+                                'mobile' => isset($hero_banner['subtitle']) ? (string) $hero_banner['subtitle'] : '',
+                                'split' => false,
+                            );
+                        $hero_fmt = function_exists('moretti_hero_format_line_breaks')
+                            ? 'moretti_hero_format_line_breaks'
+                            : static function ($t) {
+                                return esc_html((string) $t);
+                            };
+                        $show_stack = ($title_res['desktop'] !== '' || $sub_res['desktop'] !== '' || !empty($hero_banner['cta_text']));
+                        ?>
+                        <?php if ($show_stack) : ?>
                         <div class="mh2__text-stack">
-                            <?php if (!empty($hero_banner['title'])) : ?>
+                            <?php if ($title_res['desktop'] !== '') : ?>
                             <div class="mh2__title-row">
+                                <?php if (!empty($title_res['split'])) : ?>
+                                <h2 class="mh2__title">
+                                    <span class="mh2__title-inner mh2__title-inner--desktop"><?php
+                                    echo wp_kses(call_user_func($hero_fmt, $title_res['desktop']), array('br' => array()));
+                                    ?></span>
+                                    <span class="mh2__title-inner mh2__title-inner--mobile"><?php
+                                    echo wp_kses(call_user_func($hero_fmt, $title_res['mobile']), array('br' => array()));
+                                    ?></span>
+                                </h2>
+                                <?php else : ?>
                                 <h2 class="mh2__title"><?php
-                                $hero_title_html = function_exists('moretti_hero_format_line_breaks')
-                                    ? moretti_hero_format_line_breaks($hero_banner['title'])
-                                    : esc_html($hero_banner['title']);
-                                echo wp_kses($hero_title_html, array('br' => array()));
+                                echo wp_kses(call_user_func($hero_fmt, $title_res['desktop']), array('br' => array()));
                                 ?></h2>
+                                <?php endif; ?>
                             </div>
                             <?php endif; ?>
-                            <?php if (!empty($hero_banner['subtitle'])) : ?>
+                            <?php if ($sub_res['desktop'] !== '') : ?>
                             <div class="mh2__subtitle-wrap">
+                                <?php if (!empty($sub_res['split'])) : ?>
+                                <p class="mh2__subtitle">
+                                    <span class="mh2__subtitle-inner mh2__subtitle-inner--desktop"><?php
+                                    echo wp_kses(call_user_func($hero_fmt, $sub_res['desktop']), array('br' => array()));
+                                    ?></span>
+                                    <span class="mh2__subtitle-inner mh2__subtitle-inner--mobile"><?php
+                                    echo wp_kses(call_user_func($hero_fmt, $sub_res['mobile']), array('br' => array()));
+                                    ?></span>
+                                </p>
+                                <?php else : ?>
                                 <p class="mh2__subtitle"><?php
-                                $hero_sub_html = function_exists('moretti_hero_format_line_breaks')
-                                    ? moretti_hero_format_line_breaks($hero_banner['subtitle'])
-                                    : esc_html($hero_banner['subtitle']);
-                                echo wp_kses($hero_sub_html, array('br' => array()));
+                                echo wp_kses(call_user_func($hero_fmt, $sub_res['desktop']), array('br' => array()));
                                 ?></p>
+                                <?php endif; ?>
                             </div>
                             <?php endif; ?>
                             <?php if (!empty($hero_banner['cta_text'])) : ?>
