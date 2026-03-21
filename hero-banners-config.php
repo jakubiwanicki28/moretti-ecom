@@ -32,6 +32,7 @@
  * cta_text            – tekst przycisku. Domyślnie "KUP TERAZ".
  * cta_url             – (opcjonalnie) gotowy adres przycisku. Jeśli podany, reszta jest ignorowana.
  * cta_filters         – (opcjonalnie) tablica: nazwa parametru => slug termu. Buduje URL sklepu z filtrami.
+ *                       Klucz exclude_kolekcja (slug) wyklucza kolekcję z wyników (np. croco przy lakierze).
  * cta_category_slug   – (opcjonalnie) slug kategorii product_cat. Buduje link do archiwum kategorii.
  * overlay_desktop     – (opcjonalnie) nazwa pliku obrazka overlay (desktop), np. tekst jako PNG. W images/banners/.
  * overlay_mobile       – (opcjonalnie) nazwa pliku obrazka overlay (mobile). Pusty = ten sam co desktop.
@@ -62,7 +63,7 @@ return array(
         'cta_text'             => 'ODKRYJ KOLEKCJĘ',
         'cta_category_slug'    => 'wzory-zwierzece',
     ),
-    // Slajd 2: Materiał — Skóra matowa (atrybut, param filter_material).
+    // Slajd 2: Skóra matowa + tylko damskie — URL ustawiany w functions.php (kategoria portfele-damskie + filter_material).
     1 => array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
@@ -92,7 +93,7 @@ return array(
         'cta_text'             => 'SPRAWDŹ MODELE',
         'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
-    // Slajd 5: Materiał — Skóra lakierowana (atrybut, param filter_material).
+    // Slajd 5: Skóra lakierowana bez kolekcji Croco (exclude_kolekcja).
     4 => array(
         'offset_x'                  => 0,
         'offset_x_mobile'           => 0,
@@ -105,6 +106,9 @@ return array(
         'title'                     => 'DETALE,{{BR}}KTÓRE LŚNIĄ',
         'subtitle'                  => 'Wyjątkowe wykończenia i kultowe detale Moretti.{{BR}}Pozwól sobie na odrobinę codziennego blasku.',
         'cta_text'                  => 'ODKRYJ KOLEKCJĘ',
-        'cta_filters'               => array( 'filter_material' => 'skora-lakierowana' ),
+        'cta_filters'               => array(
+            'filter_material'    => 'skora-lakierowana',
+            'exclude_kolekcja'   => 'croco',
+        ),
     ),
 );

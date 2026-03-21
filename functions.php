@@ -801,6 +801,15 @@ function moretti_get_home_hero_data() {
         $hero_banners[ $idx ]['overlay_mobile']        = isset($cfg['overlay_mobile']) ? (string) $cfg['overlay_mobile'] : '';
     }
 
+    // Slajd 2 (indeks 1): skóra matowa + tylko damskie — archiwum kategorii + filtr materiału (nie sam sklep).
+    if (isset($hero_banners[1]) && taxonomy_exists('product_cat')) {
+        $term_damskie = get_term_by('slug', 'portfele-damskie', 'product_cat');
+        if ($term_damskie && !is_wp_error($term_damskie)) {
+            $hero_banners[1]['cta_url']     = add_query_arg('filter_material', 'skora-matowa', get_term_link($term_damskie));
+            $hero_banners[1]['cta_filters'] = array();
+        }
+    }
+
     return array(
         'hero_banners'         => $hero_banners,
         'hero_banners_count'   => count($hero_banners),

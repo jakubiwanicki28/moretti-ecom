@@ -55,6 +55,7 @@ $selected_color = $requested_color_slug;
 $selected_material = isset($_GET['filter_material']) ? sanitize_title(wp_unslash($_GET['filter_material'])) : '';
 $selected_size = isset($_GET['filter_size']) ? sanitize_title(wp_unslash($_GET['filter_size'])) : '';
 $selected_kolekcja = isset($_GET['filter_kolekcja']) ? sanitize_title(wp_unslash($_GET['filter_kolekcja'])) : '';
+$exclude_kolekcja = isset($_GET['exclude_kolekcja']) ? sanitize_title(wp_unslash($_GET['exclude_kolekcja'])) : '';
 $is_wishlist_view = isset($_GET['wishlist']) && '1' === sanitize_text_field(wp_unslash($_GET['wishlist']));
 
 $material_filter_taxonomy = $material_taxonomy;
@@ -130,6 +131,9 @@ if ($selected_size !== '') {
 if ($selected_kolekcja !== '') {
     $moretti_current_query_args['filter_kolekcja'] = $selected_kolekcja;
 }
+if ($exclude_kolekcja !== '') {
+    $moretti_current_query_args['exclude_kolekcja'] = $exclude_kolekcja;
+}
 if (isset($_GET['min_price']) && $_GET['min_price'] !== '') {
     $moretti_current_query_args['min_price'] = sanitize_text_field(wp_unslash($_GET['min_price']));
 }
@@ -150,6 +154,7 @@ $moretti_known_query_args = array(
     'filter_material',
     'filter_size',
     'filter_kolekcja',
+    'exclude_kolekcja',
     'min_price',
     'max_price',
     'orderby',
@@ -319,6 +324,15 @@ if (!$is_wishlist_view && $kolekcja_taxonomy && taxonomy_exists($kolekcja_taxono
         'taxonomy' => $kolekcja_taxonomy,
         'field' => 'slug',
         'terms' => $selected_kolekcja,
+    );
+}
+
+if (!$is_wishlist_view && $kolekcja_taxonomy && taxonomy_exists($kolekcja_taxonomy) && $exclude_kolekcja !== '') {
+    $tax_query[] = array(
+        'taxonomy' => $kolekcja_taxonomy,
+        'field' => 'slug',
+        'operator' => 'NOT IN',
+        'terms' => array($exclude_kolekcja),
     );
 }
 
@@ -589,6 +603,12 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                     <?php if ($selected_size !== '') : ?>
                         <input type="hidden" name="filter_size" value="<?php echo esc_attr($selected_size); ?>">
                     <?php endif; ?>
+                    <?php if ($selected_kolekcja !== '') : ?>
+                        <input type="hidden" name="filter_kolekcja" value="<?php echo esc_attr($selected_kolekcja); ?>">
+                    <?php endif; ?>
+                    <?php if ($exclude_kolekcja !== '') : ?>
+                        <input type="hidden" name="exclude_kolekcja" value="<?php echo esc_attr($exclude_kolekcja); ?>">
+                    <?php endif; ?>
                     <?php if (!empty($orderby)) : ?>
                         <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
                     <?php endif; ?>
@@ -604,9 +624,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             </div>
 
             <!-- Clear Filters -->
-            <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
+            <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || $selected_kolekcja !== '' || $exclude_kolekcja !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
             <div class="sidebar-block">
-                <a href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'min_price' => false, 'max_price' => false))); ?>" class="clear-all-btn">
+                <a href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'filter_kolekcja' => false, 'exclude_kolekcja' => false, 'min_price' => false, 'max_price' => false))); ?>" class="clear-all-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -751,6 +771,12 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                             <?php if ($selected_size !== '') : ?>
                                 <input type="hidden" name="filter_size" value="<?php echo esc_attr($selected_size); ?>">
                             <?php endif; ?>
+                            <?php if ($selected_kolekcja !== '') : ?>
+                                <input type="hidden" name="filter_kolekcja" value="<?php echo esc_attr($selected_kolekcja); ?>">
+                            <?php endif; ?>
+                            <?php if ($exclude_kolekcja !== '') : ?>
+                                <input type="hidden" name="exclude_kolekcja" value="<?php echo esc_attr($exclude_kolekcja); ?>">
+                            <?php endif; ?>
                             <?php if (isset($_GET['s']) && $_GET['s'] !== '') : ?>
                                 <input type="hidden" name="s" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['s']))); ?>">
                             <?php endif; ?>
@@ -799,8 +825,8 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                     </div>
                 </details>
 
-                <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
-                    <a class="wittchen-reset" href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'min_price' => false, 'max_price' => false))); ?>">
+                <?php if ($selected_color !== '' || $selected_material !== '' || $selected_size !== '' || $selected_kolekcja !== '' || $exclude_kolekcja !== '' || !empty($_GET['min_price']) || !empty($_GET['max_price'])) : ?>
+                    <a class="wittchen-reset" href="<?php echo esc_url($moretti_build_shop_url(array('filter_color' => false, 'filter_kolor' => false, 'filter_material' => false, 'filter_size' => false, 'filter_kolekcja' => false, 'exclude_kolekcja' => false, 'min_price' => false, 'max_price' => false))); ?>">
                         Wyczyść filtry
                     </a>
                 <?php endif; ?>
