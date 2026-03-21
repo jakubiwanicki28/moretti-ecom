@@ -320,6 +320,43 @@
 }
 
 @media (max-width: 767px) {
+    /*
+     * Mobile: biały gradient od dołu (ciągłość z białym tłem strony → obraz),
+     * ciemna typografia na jasnym pasie. Desktop zostaje przy ciemnym overlay + jasny tekst.
+     */
+    .mh2__shade-gradient {
+        height: 32%;
+        background: linear-gradient(
+            to top,
+            #ffffff 0%,
+            rgba(255, 255, 255, 0.97) 18%,
+            rgba(255, 255, 255, 0.75) 45%,
+            rgba(255, 255, 255, 0.2) 78%,
+            rgba(255, 255, 255, 0) 100%
+        );
+    }
+
+    .mh2__title {
+        color: #2a2826;
+        text-shadow: none;
+    }
+
+    .mh2__subtitle {
+        color: rgba(42, 40, 38, 0.88);
+        text-shadow: none;
+    }
+
+    .mh2__cta {
+        background: #2a2826;
+        color: #ffffff;
+        border: 1px solid #2a2826;
+    }
+
+    .mh2__cta:hover {
+        background: #ffffff;
+        color: #2a2826;
+    }
+
     .mh2__controls-strip {
         height: 40px;
     }
@@ -331,12 +368,14 @@
         top: auto !important;
         bottom: 0 !important;
         max-width: calc(100% - 0.75rem);
+        /* 20px od dolnej krawędzi banera do dolnej krawędzi przycisku (padding pod treścią). */
         padding: 0.75rem 1rem 20px;
         transform: translate(var(--content-offset-x-mobile, var(--content-offset-x, 0)), var(--content-offset-y-mobile, var(--content-offset-y, 0))) !important;
     }
 
+    /* Bez dodatkowego przesunięcia w dół — wcześniej translateY obniżał blok względem dołu. */
     .mh2__text-stack {
-        transform: translateY(16px);
+        transform: none;
     }
 
     .mh2__arrow {
