@@ -68,7 +68,7 @@ return array(
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
         'title'                => 'SIŁA CHARAKTERU',
-        'subtitle'             => 'Odważna tekstura Croco dla kobiet, które nie boją się wyróżniać.{{BR}}Elegancja z pazurem.',
+        'subtitle'             => 'Jasna matowa tekstura dla kobiet, które nie boją się wyróżniać.{{BR}}Elegancja z pazurem.',
         'cta_text'             => 'SPRAWDŹ MODELE',
         'cta_filters'          => array( 'filter_kolekcja' => 'croco' ),
     ),
