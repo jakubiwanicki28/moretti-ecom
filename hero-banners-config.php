@@ -77,7 +77,7 @@ return array(
         'offset_x'             => 0,
         'text_position'        => 'left-center',
         'text_position_mobile' => 'left-bottom',
-        'title'                => 'MĘSKI PUNKT WIDZENIA',
+        'title'                => 'MĘSKI PUNKT{{BR}}WIDZENIA',
         'subtitle'             => 'Ponadczasowa klasyka dla nowoczesnego dżentelmena.{{BR}}Solidność i styl, który przetrwa lata.',
         'cta_text'             => 'ZOBACZ KOLEKCJĘ',
         'cta_category_slug'    => 'portfele-meskie',

@@ -152,9 +152,10 @@
 }
 
 .mh2__title {
-    display: inline-block;
-    margin: 0 0 0.5rem;
+    display: block;
+    width: fit-content;
     max-width: 100%;
+    margin: 0 0 0.5rem;
     font-size: clamp(1.72rem, 4.6vw, 3.45rem);
     font-weight: 700;
     line-height: 1.1;
@@ -318,9 +319,9 @@
         font-size: clamp(2.3rem, 5.75vw, 5.75rem);
     }
 
-    /* Podtytuł ~32% większy niż baza (clamp × 1.32). */
+    /* Podtytuł pod nagłówkiem — większy niż baza (mobile); dopracowany rozmiar na desktop. */
     .mh2__subtitle {
-        font-size: clamp(0.99rem, 2.64vw, 1.32rem);
+        font-size: clamp(1.1rem, 2.95vw, 1.48rem);
     }
 
     /* CTA nieco większy na desktopie. */
