@@ -318,6 +318,18 @@
         font-size: clamp(2.3rem, 5.75vw, 5.75rem);
     }
 
+    /* Podtytuł ~32% większy niż baza (clamp × 1.32). */
+    .mh2__subtitle {
+        font-size: clamp(0.99rem, 2.64vw, 1.32rem);
+    }
+
+    /* CTA nieco większy na desktopie. */
+    .mh2__cta {
+        padding: 0.9rem 2.35rem;
+        font-size: 0.875rem;
+        letter-spacing: 0.12em;
+    }
+
     /* Gradient / cień od dołu tylko na mobile — na desktop nie jest potrzebny. */
     .mh2__shade {
         display: none;

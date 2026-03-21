@@ -687,6 +687,26 @@ function moretti_single_product_force_quantity_one($args, $product) {
 add_filter('woocommerce_quantity_input_args', 'moretti_single_product_force_quantity_one', 10, 2);
 
 /**
+ * Hero slider: jawne łamanie linii w tytule i podtytule (hero-banners-config.php).
+ *
+ * W stringu użyj dosłownie znacznika **{{BR}}** tam, gdzie ma być nowa linia.
+ * Przykład: 'MATOWY {{BR}} PRESTIŻ' lub w podtytule dwa fragmenty z łamaniem.
+ * Nie wstawiaj surowego &lt;br&gt; w configu — ten mechanizm escapuje tekst i wstawia bezpieczne &lt;br /&gt;.
+ *
+ * @param string $text Tytuł lub podtytuł z opcjonalnymi {{BR}}.
+ * @return string HTML (fragment z &lt;br /&gt;) gotowy do wp_kses_post().
+ */
+function moretti_hero_format_line_breaks( $text ) {
+    if ( ! is_string( $text ) || $text === '' ) {
+        return '';
+    }
+    $ph = '__MORETTI_HERO_BR__';
+    $text = str_replace( '{{BR}}', $ph, $text );
+    $text = esc_html( $text );
+    return str_replace( $ph, '<br />', $text );
+}
+
+/**
  * Dane do hero slidera na stronie głównej (jedno źródło prawdy – używane przez index.php i front-page.php).
  * Strzałki i markup hero są w template-parts/home-hero.php.
  *

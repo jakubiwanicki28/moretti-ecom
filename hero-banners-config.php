@@ -6,8 +6,8 @@
  * Wszystko poniżej: każdy wpis (0, 1, 2, 3...) to jeden slajd. Kolejność = kolejność na stronie.
  *
  * Tekst na slajdzie:
- *   title    – tytuł (może zawierać <br>). Pusty '' = brak tytułu na tym slajdzie.
- *   subtitle – podtytuł. Pusty '' = brak podtytułu.
+ *   title    – tytuł. Pusty '' = brak tytułu. Łamanie linii: wstaw dosłownie {{BR}} (np. 'PIERWSZA LINIA {{BR}} DRUGA').
+ *   subtitle – podtytuł. To samo: {{BR}} = nowa linia w tym samym bloku.
  *   cta_text – tekst przycisku (np. "KUP TERAZ"). Pusty = brak przycisku.
  *
  * Pozycja bloku tekstu (żeby nie zasłaniał ważnych elementów na zdjęciu):

@@ -94,12 +94,12 @@ if (!isset($hero_banners, $hero_banners_count, $hero_banner_dir_path, $hero_bann
                         <div class="mh2__text-stack">
                             <?php if (!empty($hero_banner['title'])) : ?>
                             <div class="mh2__title-row">
-                                <h2 class="mh2__title"><?php echo wp_kses_post($hero_banner['title']); ?></h2>
+                                <h2 class="mh2__title"><?php echo wp_kses_post(moretti_hero_format_line_breaks($hero_banner['title'])); ?></h2>
                             </div>
                             <?php endif; ?>
                             <?php if (!empty($hero_banner['subtitle'])) : ?>
                             <div class="mh2__subtitle-wrap">
-                                <p class="mh2__subtitle"><?php echo wp_kses_post($hero_banner['subtitle']); ?></p>
+                                <p class="mh2__subtitle"><?php echo wp_kses_post(moretti_hero_format_line_breaks($hero_banner['subtitle'])); ?></p>
                             </div>
                             <?php endif; ?>
                             <?php if (!empty($hero_banner['cta_text'])) : ?>
