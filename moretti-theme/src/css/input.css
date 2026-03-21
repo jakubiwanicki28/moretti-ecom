@@ -623,6 +623,52 @@
     @apply block w-full py-5 bg-cta text-white text-center text-xs font-bold uppercase tracking-widest hover:bg-cta-hover transition-all !important;
   }
 
+  /* Cart + Checkout CTA contrast hardening */
+  .woocommerce-cart .wc-proceed-to-checkout a,
+  .woocommerce-cart .wc-proceed-to-checkout a.checkout-button,
+  .woocommerce a.checkout-button.button,
+  .woocommerce-page a.checkout-button.button,
+  .woocommerce-checkout #payment #place_order,
+  .woocommerce-checkout .place-order .button.alt {
+    display: inline-flex !important;
+    width: 100% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 50px !important;
+    border: 1px solid #15803d !important;
+    background: #15803d !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    padding: 0.95rem 1.35rem !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+  }
+
+  .woocommerce-cart .wc-proceed-to-checkout a:hover,
+  .woocommerce-cart .wc-proceed-to-checkout a.checkout-button:hover,
+  .woocommerce a.checkout-button.button:hover,
+  .woocommerce-page a.checkout-button.button:hover,
+  .woocommerce-checkout #payment #place_order:hover,
+  .woocommerce-checkout .place-order .button.alt:hover {
+    background: #166534 !important;
+    border-color: #166534 !important;
+    color: #ffffff !important;
+  }
+
+  .woocommerce-checkout #payment #place_order:focus-visible,
+  .woocommerce a.checkout-button.button:focus-visible,
+  .woocommerce-cart .wc-proceed-to-checkout a:focus-visible,
+  .woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible {
+    outline: 2px solid #14532d !important;
+    outline-offset: 2px !important;
+  }
+
   .woocommerce-cart table.cart td.product-quantity .quantity input {
     @apply w-12 border-none bg-gray-50 py-2 text-center text-xs font-bold focus:ring-1 focus:ring-charcoal;
   }
