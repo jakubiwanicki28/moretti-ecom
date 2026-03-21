@@ -138,7 +138,7 @@
     pointer-events: auto;
 }
 
-/* Tytuł wyznacza szerokość bloku; podtytuł = max 90% tej szerokości (inline-block shrink-wrap). */
+/* Tytuł wyznacza szerokość bloku; podtytuł może zająć do 100% tej szerokości. */
 .mh2__text-stack {
     display: inline-block;
     vertical-align: top;
@@ -165,15 +165,9 @@
 }
 
 .mh2__subtitle-wrap {
-    width: 90%;
-    max-width: 90%;
-    min-width: 0;
-}
-
-/* Gdy brak tytułu – nie ma czego zwężać względem niego. */
-.mh2__text-stack:not(:has(.mh2__title-row)) .mh2__subtitle-wrap {
     width: 100%;
     max-width: 100%;
+    min-width: 0;
 }
 
 .mh2__subtitle {
