@@ -5,7 +5,7 @@
  */
 ?>
 <!-- 2. NOWOŚCI -->
-<?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'py-20 overflow-hidden bg-white'); ?>
+<?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'pt-8 pb-16 md:py-20 overflow-hidden bg-white'); ?>
 
 <!-- 3. PROMO MARQUEE (Screenshot 5) - HIDDEN BY USER REQUEST
 <div class="bg-charcoal py-4 overflow-hidden whitespace-nowrap border-y border-white/10">
