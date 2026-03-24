@@ -57,9 +57,9 @@
     <div class="home-video-break-edge-fade" aria-hidden="true"></div>
     <div class="home-video-break-content">
         <p class="home-video-break-kicker">MORETTI COLLECTION</p>
-        <h2>ZOBACZ PEŁNĄ OFERTĘ</h2>
+        <h2>ZOBACZ NASZ ASORTYMENT</h2>
         <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje <br class="home-video-break-br-mobile" aria-hidden="true">w jednym miejscu.</p>
-        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">ZOBACZ WIĘCEJ</a>
+        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">PRZEJDŹ DO SKLEPU</a>
     </div>
 </section>
 
@@ -479,9 +479,10 @@
     grid-template-rows: 1fr;
     place-items: center;
     --home-video-fade-y: clamp(11px, 1.8vw, 26px);
+    --home-video-fade-x: 0px;
 }
 
-/* Miękkie przejście tylko góra/dół (biała sekcja → baner → szara OKAZJE) — bez gradientów po bokach */
+/* Miękkie przejście: mobile tylko góra/dół; desktop + boki (białe „marginesy” obok treści) */
 #home-video-break-banner .home-video-break-edge-fade {
     z-index: 2;
     align-self: stretch;
@@ -491,6 +492,21 @@
     background:
         linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
         linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat;
+}
+
+@media (min-width: 768px) {
+    #home-video-break-banner {
+        --home-video-fade-y: clamp(12px, 1.6vw, 28px);
+        --home-video-fade-x: clamp(18px, 2.8vw, 64px);
+    }
+
+    #home-video-break-banner .home-video-break-edge-fade {
+        background:
+            linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
+            linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat,
+            linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%) left / var(--home-video-fade-x) 100% no-repeat,
+            linear-gradient(to left, #ffffff 0%, rgba(255, 255, 255, 0) 100%) right / var(--home-video-fade-x) 100% no-repeat;
+    }
 }
 
 #home-video-break-banner > * {
