@@ -49,6 +49,7 @@
 <!-- 6. VIDEO DIVIDER -->
 <section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
     <video class="home-video-break-video" autoplay muted loop playsinline preload="metadata">
+        <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mp4'); ?>" type="video/mp4">
         <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mov'); ?>" type="video/quicktime">
         Twoja przeglądarka nie obsługuje odtwarzania wideo.
     </video>
