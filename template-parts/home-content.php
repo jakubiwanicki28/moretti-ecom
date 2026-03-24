@@ -58,6 +58,7 @@
             preload="metadata"
             aria-label="Wideo promocyjne Moretti"
         >
+            <source src="<?php echo esc_url(home_url('/images/LOOP.mp4')); ?>" type="video/mp4">
             <source src="<?php echo esc_url(home_url('/images/LOOP.mov')); ?>" type="video/quicktime">
             Twoja przeglądarka nie obsługuje odtwarzania wideo.
         </video>
