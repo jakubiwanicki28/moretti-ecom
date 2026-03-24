@@ -48,9 +48,19 @@
 
 <!-- 6. VIDEO DIVIDER -->
 <section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
-    <video class="home-video-break-video" autoplay muted loop playsinline preload="metadata">
-        <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mp4'); ?>" type="video/mp4">
-        <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mov'); ?>" type="video/quicktime">
+    <video class="home-video-break-video" autoplay muted loop playsinline preload="auto">
+        <?php
+        // get_theme_file_uri (WP 5.9+): szuka pliku w child theme, potem w parent — unika 404 przy aktywnym child theme
+        if (function_exists('get_theme_file_uri')) {
+            $home_loop_mp4 = get_theme_file_uri('images/LOOP.mp4');
+            $home_loop_mov = get_theme_file_uri('images/LOOP.mov');
+        } else {
+            $home_loop_mp4 = get_template_directory_uri() . '/images/LOOP.mp4';
+            $home_loop_mov = get_template_directory_uri() . '/images/LOOP.mov';
+        }
+        ?>
+        <source src="<?php echo esc_url($home_loop_mp4); ?>" type="video/mp4">
+        <source src="<?php echo esc_url($home_loop_mov); ?>" type="video/quicktime">
         Twoja przeglądarka nie obsługuje odtwarzania wideo.
     </video>
     <div class="home-video-break-tint" aria-hidden="true"></div>
@@ -61,6 +71,20 @@
         <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">ZOBACZ WIĘCEJ</a>
     </div>
 </section>
+<script>
+(function () {
+    var el = document.querySelector('#home-video-break-banner .home-video-break-video');
+    if (!el) return;
+    function tryPlay() {
+        if (el.play) el.play().catch(function () {});
+    }
+    el.addEventListener('loadeddata', tryPlay);
+    el.addEventListener('canplay', tryPlay);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) tryPlay();
+    });
+})();
+</script>
 
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
@@ -472,11 +496,9 @@
     margin: 0;
     overflow: hidden;
     background: #111111;
-    /* Jedna komórka: wideo + tint na pełny rozmiar, copy wyśrodkowane w pionie i poziomie */
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     --home-video-edge-fade: clamp(11px, 1.8vw, 26px);
 }
 
@@ -502,17 +524,12 @@
     background: linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%);
 }
 
-#home-video-break-banner > * {
-    grid-area: 1 / 1;
-}
-
 #home-video-break-banner .home-video-break-video {
+    position: absolute;
+    inset: 0;
     z-index: 0;
     width: 100%;
     height: 100%;
-    min-height: 0;
-    align-self: stretch;
-    justify-self: stretch;
     object-fit: cover;
     object-position: 50% 50%;
     transform: scale(1.02);
@@ -520,10 +537,9 @@
 }
 
 #home-video-break-banner .home-video-break-tint {
+    position: absolute;
+    inset: 0;
     z-index: 1;
-    align-self: stretch;
-    justify-self: stretch;
-    min-height: 0;
     background:
         linear-gradient(to bottom, rgba(18, 18, 18, 0.44) 0%, rgba(18, 18, 18, 0.34) 38%, rgba(18, 18, 18, 0.44) 100%),
         rgba(30, 30, 30, 0.18);
@@ -533,7 +549,6 @@
 #home-video-break-banner .home-video-break-content {
     position: relative;
     z-index: 3;
-    place-self: center;
     width: min(760px, 92%);
     max-width: 100%;
     box-sizing: border-box;
