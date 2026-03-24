@@ -46,24 +46,12 @@
 <!-- 5. BESTSELLERY -->
 <?php moretti_render_home_carousel_section('klasyki', 'BESTSELLERY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
 
-<!-- 5.5 VIDEO BANNER -->
-<section id="home-video-break-banner" aria-label="Baner wideo Moretti">
-    <div class="home-video-break-inner">
-        <video
-            class="home-video-break-media"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-            aria-label="Wideo promocyjne Moretti"
-        >
-            <source src="<?php echo esc_url(home_url('/images/LOOP.mp4')); ?>" type="video/mp4">
-            <source src="<?php echo esc_url(home_url('/images/LOOP.mov')); ?>" type="video/quicktime">
-            Twoja przeglądarka nie obsługuje odtwarzania wideo.
-        </video>
-        <div class="home-video-break-overlay" aria-hidden="true"></div>
-    </div>
+<!-- 6. VIDEO DIVIDER -->
+<section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
+    <video class="home-video-break-video" autoplay muted loop playsinline preload="metadata">
+        <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mov'); ?>" type="video/quicktime">
+        Twoja przeglądarka nie obsługuje odtwarzania wideo.
+    </video>
 </section>
 
 <!-- 6. OKAZJE -->
@@ -472,43 +460,20 @@
 #home-video-break-banner {
     position: relative;
     width: 100%;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-    background: #f8f8f8;
-}
-
-#home-video-break-banner .home-video-break-inner {
-    position: relative;
-    width: min(1260px, 100%);
-    margin: 0 auto;
-    aspect-ratio: 21 / 8;
+    height: clamp(190px, 42vw, 660px);
+    margin: 0;
     overflow: hidden;
-    border-radius: 2px;
     background: #111111;
 }
 
-#home-video-break-banner .home-video-break-overlay {
+#home-video-break-banner .home-video-break-video {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 40%);
-    pointer-events: none;
-}
-
-#home-video-break-banner .home-video-break-media {
-    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-@media (max-width: 1200px) {
-    .home-products-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    #home-video-break-banner .home-video-break-inner {
-        aspect-ratio: 16 / 8;
-    }
+    object-position: 50% 50%;
+    transform: scale(1.02);
 }
 
 @media (max-width: 992px) {
@@ -653,14 +618,6 @@
 
     #home-featured-content-col > div[style*="margin-bottom: 2rem"] {
         margin-bottom: 1rem !important;
-    }
-
-    #home-video-break-banner {
-        padding: 1rem 1rem 1.5rem;
-    }
-
-    #home-video-break-banner .home-video-break-inner {
-        aspect-ratio: 4 / 3;
     }
 
     #home-featured-cta-row {
