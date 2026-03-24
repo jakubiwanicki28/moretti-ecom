@@ -477,7 +477,7 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     place-items: center;
-    --home-video-edge-fade: clamp(22px, 3.6vw, 52px);
+    --home-video-edge-fade: clamp(11px, 1.8vw, 26px);
 }
 
 /* Miękkie „ścięcie” do białej sekcji nad banerem i szarej pod (Tailwind gray-100 ≈ #f3f4f6) */
@@ -746,14 +746,15 @@
         margin-bottom: 1rem !important;
     }
 
-    /* Banner wideo: wyższy o ~20% + przybliżenie kadru, żeby zmieścić copy na wąskim ekranie */
+    /* Banner wideo: wyższa sekcja + mocniejszy zoom; krótsze paski gradientu niż na desktopie */
     #home-video-break-banner {
-        height: clamp(228px, 50.4vw, 660px);
-        min-height: clamp(228px, 50.4vw, 660px);
+        height: clamp(260px, 58vw, 660px);
+        min-height: clamp(260px, 58vw, 660px);
+        --home-video-edge-fade: clamp(6px, 1.1vw, 14px);
     }
 
     #home-video-break-banner .home-video-break-video {
-        transform: scale(1.22);
+        transform: scale(1.32);
         transform-origin: center center;
     }
 
