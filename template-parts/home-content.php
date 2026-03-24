@@ -48,7 +48,7 @@
 
 <!-- 6. VIDEO DIVIDER -->
 <section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
-    <video class="home-video-break-video" autoplay muted loop playsinline preload="auto">
+    <video class="home-video-break-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
         <?php
         // get_theme_file_uri (WP 5.9+): szuka pliku w child theme, potem w parent — unika 404 przy aktywnym child theme
         if (function_exists('get_theme_file_uri')) {
@@ -75,11 +75,22 @@
 (function () {
     var el = document.querySelector('#home-video-break-banner .home-video-break-video');
     if (!el) return;
+    el.muted = true;
+    el.defaultMuted = true;
+    el.autoplay = true;
+    el.loop = true;
+    el.playsInline = true;
     function tryPlay() {
         if (el.play) el.play().catch(function () {});
     }
+    el.load();
     el.addEventListener('loadeddata', tryPlay);
     el.addEventListener('canplay', tryPlay);
+    el.addEventListener('error', function () {
+        // Keep section readable even when video cannot be loaded.
+        var wrap = document.getElementById('home-video-break-banner');
+        if (wrap) wrap.classList.add('home-video-break-fallback');
+    });
     document.addEventListener('visibilitychange', function () {
         if (!document.hidden) tryPlay();
     });
@@ -533,7 +544,7 @@
     object-fit: cover;
     object-position: 50% 50%;
     transform: scale(1.02);
-    filter: saturate(70%) contrast(88%) brightness(92%);
+    filter: saturate(92%) contrast(96%) brightness(100%);
 }
 
 #home-video-break-banner .home-video-break-tint {
@@ -541,9 +552,19 @@
     inset: 0;
     z-index: 1;
     background:
-        linear-gradient(to bottom, rgba(18, 18, 18, 0.44) 0%, rgba(18, 18, 18, 0.34) 38%, rgba(18, 18, 18, 0.44) 100%),
-        rgba(30, 30, 30, 0.18);
+        linear-gradient(to bottom, rgba(18, 18, 18, 0.28) 0%, rgba(18, 18, 18, 0.2) 38%, rgba(18, 18, 18, 0.28) 100%),
+        rgba(28, 28, 28, 0.1);
     pointer-events: none;
+}
+
+#home-video-break-banner.home-video-break-fallback {
+    background:
+        radial-gradient(circle at 15% 24%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 40%),
+        linear-gradient(135deg, #1d1d1d 0%, #232323 45%, #1a1a1a 100%);
+}
+
+#home-video-break-banner.home-video-break-fallback .home-video-break-video {
+    display: none;
 }
 
 #home-video-break-banner .home-video-break-content {
