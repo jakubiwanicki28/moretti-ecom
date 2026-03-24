@@ -352,13 +352,14 @@
     }
 
     .mh2__shade-gradient {
-        height: 12%;
+        /* Krótszy pas + stromszy zanik — mniej „mlecznego” cienia w górnej części paska */
+        height: 8%;
         background: linear-gradient(
             to top,
             #ffffff 0%,
-            rgba(255, 255, 255, 0.78) 34%,
-            rgba(255, 255, 255, 0.32) 68%,
-            rgba(255, 255, 255, 0) 100%
+            rgba(255, 255, 255, 0.9) 22%,
+            rgba(255, 255, 255, 0.28) 52%,
+            rgba(255, 255, 255, 0) 78%
         );
     }
 }
