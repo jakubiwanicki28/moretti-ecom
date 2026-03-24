@@ -346,9 +346,20 @@
         letter-spacing: 0.12em;
     }
 
-    /* Gradient / cień od dołu tylko na mobile — na desktop nie jest potrzebny. */
+    /* Desktop: subtelne wygaszenie do bieli na dole (łagodniejsze i krótsze niż mobile). */
     .mh2__shade {
-        display: none;
+        display: block;
+    }
+
+    .mh2__shade-gradient {
+        height: 18%;
+        background: linear-gradient(
+            to top,
+            #ffffff 0%,
+            rgba(255, 255, 255, 0.78) 34%,
+            rgba(255, 255, 255, 0.32) 68%,
+            rgba(255, 255, 255, 0) 100%
+        );
     }
 }
 
