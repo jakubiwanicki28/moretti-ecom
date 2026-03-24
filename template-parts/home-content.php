@@ -472,13 +472,24 @@
     margin: 0;
     overflow: hidden;
     background: #111111;
+    /* Jedna komórka: wideo + tint na pełny rozmiar, copy wyśrodkowane w pionie i poziomie */
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+}
+
+#home-video-break-banner > * {
+    grid-area: 1 / 1;
 }
 
 #home-video-break-banner .home-video-break-video {
-    position: absolute;
-    inset: 0;
+    z-index: 0;
     width: 100%;
     height: 100%;
+    min-height: 0;
+    align-self: stretch;
+    justify-self: stretch;
     object-fit: cover;
     object-position: 50% 50%;
     transform: scale(1.02);
@@ -486,8 +497,10 @@
 }
 
 #home-video-break-banner .home-video-break-tint {
-    position: absolute;
-    inset: 0;
+    z-index: 1;
+    align-self: stretch;
+    justify-self: stretch;
+    min-height: 0;
     background:
         linear-gradient(to bottom, rgba(18, 18, 18, 0.44) 0%, rgba(18, 18, 18, 0.34) 38%, rgba(18, 18, 18, 0.44) 100%),
         rgba(30, 30, 30, 0.18);
@@ -497,8 +510,11 @@
 #home-video-break-banner .home-video-break-content {
     position: relative;
     z-index: 2;
+    place-self: center;
     width: min(760px, 92%);
-    margin: 0 auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
     text-align: center;
     color: #ffffff;
     display: flex;
