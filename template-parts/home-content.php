@@ -479,10 +479,9 @@
     grid-template-rows: 1fr;
     place-items: center;
     --home-video-fade-y: clamp(11px, 1.8vw, 26px);
-    --home-video-fade-x: 0px;
 }
 
-/* Miękkie przejście: mobile tylko góra/dół; desktop + boki (białe „marginesy” obok treści) */
+/* Miękkie przejście tylko góra/dół (biała sekcja → baner → szara OKAZJE) — bez gradientów po bokach */
 #home-video-break-banner .home-video-break-edge-fade {
     z-index: 2;
     align-self: stretch;
@@ -492,21 +491,6 @@
     background:
         linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
         linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat;
-}
-
-@media (min-width: 768px) {
-    #home-video-break-banner {
-        --home-video-fade-y: clamp(12px, 1.6vw, 28px);
-        --home-video-fade-x: clamp(18px, 2.8vw, 64px);
-    }
-
-    #home-video-break-banner .home-video-break-edge-fade {
-        background:
-            linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
-            linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat,
-            linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%) left / var(--home-video-fade-x) 100% no-repeat,
-            linear-gradient(to left, #ffffff 0%, rgba(255, 255, 255, 0) 100%) right / var(--home-video-fade-x) 100% no-repeat;
-    }
 }
 
 #home-video-break-banner > * {
