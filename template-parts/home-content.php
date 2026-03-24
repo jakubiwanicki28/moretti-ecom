@@ -57,7 +57,7 @@
     <div class="home-video-break-content">
         <p class="home-video-break-kicker">MORETTI COLLECTION</p>
         <h2>ZOBACZ NASZ ASORTYMENT</h2>
-        <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje w jednym miejscu.</p>
+        <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje <br class="home-video-break-br-mobile" aria-hidden="true">w jednym miejscu.</p>
         <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">PRZEJDŹ DO SKLEPU</a>
     </div>
 </section>
@@ -477,6 +477,29 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     place-items: center;
+    --home-video-edge-fade: clamp(22px, 3.6vw, 52px);
+}
+
+/* Miękkie „ścięcie” do białej sekcji nad banerem i szarej pod (Tailwind gray-100 ≈ #f3f4f6) */
+#home-video-break-banner::before,
+#home-video-break-banner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    height: var(--home-video-edge-fade);
+    pointer-events: none;
+}
+
+#home-video-break-banner::before {
+    top: 0;
+    background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+#home-video-break-banner::after {
+    bottom: 0;
+    background: linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%);
 }
 
 #home-video-break-banner > * {
@@ -509,7 +532,7 @@
 
 #home-video-break-banner .home-video-break-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     place-self: center;
     width: min(760px, 92%);
     max-width: 100%;
@@ -547,6 +570,11 @@
     font-size: clamp(0.88rem, 1.25vw, 1rem);
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
+}
+
+/* Przełamanie przed „w …” tylko na mobile (na desktopie jedna linia) */
+#home-video-break-banner .home-video-break-br-mobile {
+    display: none;
 }
 
 #home-video-break-banner .home-video-break-cta {
@@ -718,17 +746,43 @@
         margin-bottom: 1rem !important;
     }
 
+    /* Banner wideo: wyższy o ~20% + przybliżenie kadru, żeby zmieścić copy na wąskim ekranie */
+    #home-video-break-banner {
+        height: clamp(228px, 50.4vw, 660px);
+        min-height: clamp(228px, 50.4vw, 660px);
+    }
+
+    #home-video-break-banner .home-video-break-video {
+        transform: scale(1.22);
+        transform-origin: center center;
+    }
+
+    #home-video-break-banner .home-video-break-br-mobile {
+        display: block;
+    }
+
     #home-video-break-banner .home-video-break-content {
         width: min(640px, 92%);
-        gap: 0.65rem;
+        gap: 0.55rem;
+        padding: 0.35rem 0.5rem;
+    }
+
+    #home-video-break-banner .home-video-break-content h2 {
+        font-size: clamp(1.35rem, 5.2vw, 1.85rem);
+        line-height: 1.12;
     }
 
     #home-video-break-banner .home-video-break-subtitle {
-        max-width: 36ch;
+        max-width: 34ch;
+        font-size: 0.875rem;
+        line-height: 1.45;
     }
 
     #home-video-break-banner .home-video-break-cta {
         width: min(260px, 100%);
+        margin-top: 0.45rem;
+        min-height: 40px;
+        padding: 0.7rem 1.5rem;
     }
 
     #home-featured-cta-row {
