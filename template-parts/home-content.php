@@ -53,6 +53,13 @@
         <source src="<?php echo esc_url(get_template_directory_uri() . '/images/LOOP.mov'); ?>" type="video/quicktime">
         Twoja przeglądarka nie obsługuje odtwarzania wideo.
     </video>
+    <div class="home-video-break-tint" aria-hidden="true"></div>
+    <div class="home-video-break-content">
+        <p class="home-video-break-kicker">MORETTI COLLECTION</p>
+        <h2>ZOBACZ NASZ ASORTYMENT</h2>
+        <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje w jednym miejscu.</p>
+        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">PRZEJDŹ DO SKLEPU</a>
+    </div>
 </section>
 
 <!-- 6. OKAZJE -->
@@ -475,6 +482,80 @@
     object-fit: cover;
     object-position: 50% 50%;
     transform: scale(1.02);
+    filter: saturate(70%) contrast(88%) brightness(92%);
+}
+
+#home-video-break-banner .home-video-break-tint {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom, rgba(18, 18, 18, 0.44) 0%, rgba(18, 18, 18, 0.34) 38%, rgba(18, 18, 18, 0.44) 100%),
+        rgba(30, 30, 30, 0.18);
+    pointer-events: none;
+}
+
+#home-video-break-banner .home-video-break-content {
+    position: relative;
+    z-index: 2;
+    width: min(760px, 92%);
+    margin: 0 auto;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+#home-video-break-banner .home-video-break-kicker {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.84);
+}
+
+#home-video-break-banner .home-video-break-content h2 {
+    margin: 0;
+    font-size: clamp(1.7rem, 3.4vw, 3rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+#home-video-break-banner .home-video-break-subtitle {
+    margin: 0;
+    font-size: clamp(0.88rem, 1.25vw, 1rem);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#home-video-break-banner .home-video-break-cta {
+    margin-top: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.85rem 2.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.14);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+#home-video-break-banner .home-video-break-cta:hover,
+#home-video-break-banner .home-video-break-cta:focus-visible {
+    background: #ffffff;
+    color: #2a2826;
+    border-color: #ffffff;
 }
 
 @media (max-width: 992px) {
@@ -619,6 +700,19 @@
 
     #home-featured-content-col > div[style*="margin-bottom: 2rem"] {
         margin-bottom: 1rem !important;
+    }
+
+    #home-video-break-banner .home-video-break-content {
+        width: min(640px, 92%);
+        gap: 0.65rem;
+    }
+
+    #home-video-break-banner .home-video-break-subtitle {
+        max-width: 36ch;
+    }
+
+    #home-video-break-banner .home-video-break-cta {
+        width: min(260px, 100%);
     }
 
     #home-featured-cta-row {
