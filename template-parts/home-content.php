@@ -54,11 +54,12 @@
         Twoja przeglądarka nie obsługuje odtwarzania wideo.
     </video>
     <div class="home-video-break-tint" aria-hidden="true"></div>
+    <div class="home-video-break-edge-fade" aria-hidden="true"></div>
     <div class="home-video-break-content">
         <p class="home-video-break-kicker">MORETTI COLLECTION</p>
-        <h2>ZOBACZ NASZ ASORTYMENT</h2>
+        <h2>ZOBACZ PEŁNĄ OFERTĘ</h2>
         <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje <br class="home-video-break-br-mobile" aria-hidden="true">w jednym miejscu.</p>
-        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">PRZEJDŹ DO SKLEPU</a>
+        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">ZOBACZ WIĘCEJ</a>
     </div>
 </section>
 
@@ -477,29 +478,35 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     place-items: center;
-    --home-video-edge-fade: clamp(11px, 1.8vw, 26px);
+    --home-video-fade-y: clamp(11px, 1.8vw, 26px);
+    --home-video-fade-x: 0px;
 }
 
-/* Miękkie „ścięcie” do białej sekcji nad banerem i szarej pod (Tailwind gray-100 ≈ #f3f4f6) */
-#home-video-break-banner::before,
-#home-video-break-banner::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
+/* Miękkie przejście: mobile tylko góra/dół; desktop + boki (białe „marginesy” obok treści) */
+#home-video-break-banner .home-video-break-edge-fade {
     z-index: 2;
-    height: var(--home-video-edge-fade);
+    align-self: stretch;
+    justify-self: stretch;
+    min-height: 0;
     pointer-events: none;
+    background:
+        linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
+        linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat;
 }
 
-#home-video-break-banner::before {
-    top: 0;
-    background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-}
+@media (min-width: 768px) {
+    #home-video-break-banner {
+        --home-video-fade-y: clamp(12px, 1.6vw, 28px);
+        --home-video-fade-x: clamp(18px, 2.8vw, 64px);
+    }
 
-#home-video-break-banner::after {
-    bottom: 0;
-    background: linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%);
+    #home-video-break-banner .home-video-break-edge-fade {
+        background:
+            linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%) top / 100% var(--home-video-fade-y) no-repeat,
+            linear-gradient(to top, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%) bottom / 100% var(--home-video-fade-y) no-repeat,
+            linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%) left / var(--home-video-fade-x) 100% no-repeat,
+            linear-gradient(to left, #ffffff 0%, rgba(255, 255, 255, 0) 100%) right / var(--home-video-fade-x) 100% no-repeat;
+    }
 }
 
 #home-video-break-banner > * {
@@ -750,7 +757,7 @@
     #home-video-break-banner {
         height: clamp(260px, 58vw, 660px);
         min-height: clamp(260px, 58vw, 660px);
-        --home-video-edge-fade: clamp(6px, 1.1vw, 14px);
+        --home-video-fade-y: clamp(6px, 1.1vw, 14px);
     }
 
     #home-video-break-banner .home-video-break-video {
