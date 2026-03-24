@@ -46,6 +46,25 @@
 <!-- 5. BESTSELLERY -->
 <?php moretti_render_home_carousel_section('klasyki', 'BESTSELLERY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
 
+<!-- 5.5 VIDEO BANNER -->
+<section id="home-video-break-banner" aria-label="Baner wideo Moretti">
+    <div class="home-video-break-inner">
+        <video
+            class="home-video-break-media"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-label="Wideo promocyjne Moretti"
+        >
+            <source src="<?php echo esc_url(home_url('/images/LOOP.mov')); ?>" type="video/quicktime">
+            Twoja przeglądarka nie obsługuje odtwarzania wideo.
+        </video>
+        <div class="home-video-break-overlay" aria-hidden="true"></div>
+    </div>
+</section>
+
 <!-- 6. OKAZJE -->
 <?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
 
@@ -452,88 +471,33 @@
 #home-video-break-banner {
     position: relative;
     width: 100%;
-    height: 600px;
-    margin: 0;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: #f8f8f8;
+}
+
+#home-video-break-banner .home-video-break-inner {
+    position: relative;
+    width: min(1260px, 100%);
+    margin: 0 auto;
+    aspect-ratio: 21 / 8;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1f1d1b 0%, #2a2826 50%, #3b3834 100%);
+    border-radius: 2px;
+    background: #111111;
 }
 
 #home-video-break-banner .home-video-break-overlay {
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 44%),
-        radial-gradient(circle at 85% 70%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 42%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 40%);
     pointer-events: none;
 }
 
-#home-video-break-banner .home-video-break-inner {
-    position: relative;
-    z-index: 1;
-    width: min(1260px, 100%);
-    padding: 0 1rem;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: 2rem;
-    align-items: center;
-}
-
-#home-video-break-banner .home-video-break-copy {
-    color: #ffffff;
-}
-
-#home-video-break-banner .home-video-break-kicker {
-    margin: 0 0 0.9rem;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    opacity: 0.82;
-}
-
-#home-video-break-banner .home-video-break-copy h2 {
-    margin: 0 0 1rem;
-    font-size: clamp(2rem, 3.3vw, 3.1rem);
-    line-height: 1.05;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-#home-video-break-banner .home-video-break-copy p {
-    margin: 0;
-    max-width: 460px;
-    color: rgba(255, 255, 255, 0.84);
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-#home-video-break-banner .home-video-break-placeholders {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-}
-
-#home-video-break-banner .home-video-break-card {
-    height: 360px;
-    border: 1px dashed rgba(255, 255, 255, 0.38);
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    backdrop-filter: blur(1px);
-}
-
-#home-video-break-banner .home-video-break-card span {
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+#home-video-break-banner .home-video-break-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 @media (max-width: 1200px) {
@@ -542,16 +506,7 @@
     }
 
     #home-video-break-banner .home-video-break-inner {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    #home-video-break-banner .home-video-break-copy p {
-        max-width: 100%;
-    }
-
-    #home-video-break-banner .home-video-break-card {
-        height: 220px;
+        aspect-ratio: 16 / 8;
     }
 }
 
@@ -699,12 +654,12 @@
         margin-bottom: 1rem !important;
     }
 
-    #home-video-break-banner .home-video-break-placeholders {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    #home-video-break-banner {
+        padding: 1rem 1rem 1.5rem;
     }
 
-    #home-video-break-banner .home-video-break-card {
-        height: 180px;
+    #home-video-break-banner .home-video-break-inner {
+        aspect-ratio: 4 / 3;
     }
 
     #home-featured-cta-row {
@@ -719,10 +674,6 @@
         width: 100% !important;
         text-align: center !important;
         padding: 1rem 0.6rem !important;
-    }
-
-    #home-video-break-banner .home-video-break-placeholders {
-        grid-template-columns: 1fr;
     }
 }
 </style>
