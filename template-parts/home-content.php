@@ -640,7 +640,7 @@
 
 @media (max-width: 992px) {
     .home-products-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
 }
 
@@ -715,7 +715,7 @@
     }
 
     .home-products-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 16px 10px;
     }
 
@@ -1206,6 +1206,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
 
         card.dataset.homeSliderInitialized = 'true';
+    });
+
+    // Adjust grid columns when fewer than 5 products are rendered
+    document.querySelectorAll('.home-products-grid').forEach(function(grid) {
+        var count = grid.querySelectorAll('.home-products-item').length;
+        if (count > 0 && count < 5) {
+            grid.style.gridTemplateColumns = 'repeat(' + count + ', minmax(0, 1fr))';
+        }
     });
 });
 </script>
