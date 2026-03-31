@@ -1427,6 +1427,29 @@ function moretti_ensure_legal_pages_exist() {
         }
     }
 
+    // Strona Ulubione z dedykowanym templatem.
+    $ulubione_page = get_page_by_path('ulubione', OBJECT, 'page');
+    if ($ulubione_page instanceof WP_Post) {
+        wp_update_post(array(
+            'ID'           => $ulubione_page->ID,
+            'post_title'   => 'Ulubione',
+            'post_status'  => 'publish',
+        ));
+        update_post_meta($ulubione_page->ID, '_wp_page_template', 'page-ulubione.php');
+    } else {
+        $new_id = wp_insert_post(array(
+            'post_title'   => 'Ulubione',
+            'post_name'    => 'ulubione',
+            'post_content' => '',
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+            'post_author'  => 1,
+        ));
+        if ($new_id) {
+            update_post_meta($new_id, '_wp_page_template', 'page-ulubione.php');
+        }
+    }
+
     // Backward-compatible alias page used by older footer links.
     $legacy_delivery = get_page_by_path('koszty-dostawy', OBJECT, 'page');
     if (!$legacy_delivery instanceof WP_Post) {

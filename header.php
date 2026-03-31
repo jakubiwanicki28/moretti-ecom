@@ -575,7 +575,7 @@
 
             <div class="moretti-header-actions">
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <a href="<?php echo esc_url(add_query_arg('wishlist', '1', $shop_url)); ?>" class="moretti-header-icon moretti-header-action-link wishlist-header-link" aria-label="Ulubione">
+                    <a href="<?php echo esc_url(home_url('/ulubione/')); ?>" class="moretti-header-icon moretti-header-action-link wishlist-header-link" aria-label="Ulubione">
                         <div class="moretti-header-action-icon-wrapper">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -733,7 +733,7 @@
                 <li><a href="<?php echo esc_url(home_url('/#nowosci')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Nowości</a></li>
                 <li><a href="<?php echo esc_url(home_url('/#klasyki')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Bestsellery</a></li>
                 <?php if (class_exists('WooCommerce')) : ?>
-                    <li><a href="<?php echo esc_url(add_query_arg('wishlist', '1', get_permalink(wc_get_page_id('shop')))); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Ulubione</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/ulubione/')); ?>" class="mobile-menu-link block text-base font-medium text-charcoal uppercase tracking-[0.1em]">Ulubione</a></li>
                 <?php endif; ?>
                 
                 <!-- Divider -->
