@@ -69,6 +69,13 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             </div>
         </div>
 
+        <!-- Company Data Bar -->
+        <div style="padding: 20px 0; border-top: 1px solid #f3f4f6; text-align: center;">
+            <p style="font-size: 11px; color: #a8a09d; margin: 0; letter-spacing: 0.05em; line-height: 1.8;">
+                LIDA Dariusz Cała &nbsp;|&nbsp; ul. Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska &nbsp;|&nbsp; NIP: 5261119292
+            </p>
+        </div>
+
         <!-- Social & Copyright Bar -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 32px 0; border-top: 1px solid #f3f4f6; gap: 24px;">
             <div style="display: flex; gap: 24px;">

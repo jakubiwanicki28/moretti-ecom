@@ -1448,6 +1448,12 @@ function moretti_ensure_legal_pages_exist() {
         ));
     }
 
+    // Ustaw stronę regulaminu jako Terms & Conditions w WooCommerce → pojawi się obowiązkowy checkbox przy kasie.
+    $terms_page = get_page_by_path('regulamin-sklepu', OBJECT, 'page');
+    if ($terms_page instanceof WP_Post) {
+        update_option('woocommerce_terms_page_id', $terms_page->ID);
+    }
+
     update_option('moretti_legal_pages_seeded_v5', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
