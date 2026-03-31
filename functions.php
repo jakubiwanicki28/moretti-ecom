@@ -1407,15 +1407,8 @@ function moretti_ensure_legal_pages_exist() {
 
     foreach ($pages as $slug => $data) {
         $existing_page = get_page_by_path($slug, OBJECT, 'page');
-        if ($existing_page instanceof WP_Post) {
-            wp_update_post(array(
-                'ID' => $existing_page->ID,
-                'post_title' => $data['title'],
-                'post_name' => $slug,
-                'post_content' => $data['content'],
-                'post_status' => 'publish',
-            ));
-        } else {
+        // Tylko twórz stronę jeśli NIE ISTNIEJE – nie nadpisuj ręcznie edytowanych treści.
+        if (!$existing_page instanceof WP_Post) {
             wp_insert_post(array(
                 'post_title' => $data['title'],
                 'post_name' => $slug,
@@ -1589,6 +1582,45 @@ add_action('wp_footer', function () {
     </script>
     <?php
 });
+
+/**
+ * AJAX handler – zwraca HTML produktów z listy ulubionych.
+ * Wywołanie: POST /wp-admin/admin-ajax.php, action=moretti_wishlist_products, ids=1,2,3
+ */
+function moretti_ajax_wishlist_products() {
+    $raw_ids = isset($_POST['ids']) ? sanitize_text_field(wp_unslash($_POST['ids'])) : '';
+    $ids = array_filter(array_map('absint', explode(',', $raw_ids)));
+
+    if (empty($ids)) {
+        wp_send_json_success(array('html' => '', 'count' => 0));
+    }
+
+    $query = new WP_Query(array(
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'post__in'       => $ids,
+        'orderby'        => 'post__in',
+        'posts_per_page' => -1,
+    ));
+
+    ob_start();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            global $product;
+            $product = wc_get_product(get_the_ID());
+            if ($product && $product->is_visible()) {
+                wc_get_template_part('content', 'product');
+            }
+        }
+        wp_reset_postdata();
+    }
+    $html = ob_get_clean();
+
+    wp_send_json_success(array('html' => $html, 'count' => $query->found_posts));
+}
+add_action('wp_ajax_moretti_wishlist_products', 'moretti_ajax_wishlist_products');
+add_action('wp_ajax_nopriv_moretti_wishlist_products', 'moretti_ajax_wishlist_products');
 
 /**
  * Custom CSS for mobile product page layout

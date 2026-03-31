@@ -42,7 +42,7 @@ $pages_to_create = array(
 
 <h2>§ 1. Postanowienia ogólne i definicje</h2>
 <ol>
-    <li>Sklep internetowy dostępny pod adresem <strong>morettifashion.com</strong> (dalej: „Sklep") prowadzony jest przez <strong>LIDA Dariusz Cała</strong>, prowadzącego działalność gospodarczą pod marką <strong>Moretti Fashion</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>, adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska (dalej: „Sprzedawca").</li>
+    <li>Sklep internetowy dostępny pod adresem <strong>morettifashion.com</strong> (dalej: „Sklep") prowadzony jest przez <strong>LIDA Dariusz Cała</strong>, prowadzącego działalność gospodarczą pod marką <strong>Moretti Fashion</strong>, NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong>, adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 (dalej: „Sprzedawca").</li>
     <li>Dane kontaktowe Sprzedawcy: e-mail: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>, tel. <a href="tel:+48725538100">+48 725 538 100</a> (pon.–pt., godz. 9:00–17:00).</li>
     <li>Niniejszy Regulamin określa zasady korzystania ze Sklepu, zawierania umów sprzedaży na odległość oraz prawa i obowiązki stron. Regulamin jest udostępniany nieodpłatnie, w sposób umożliwiający jego pobranie, utrwalenie i wydruk.</li>
     <li>Użyte w Regulaminie pojęcia oznaczają:
@@ -118,12 +118,12 @@ $pages_to_create = array(
     <li>Oświadczenie o odstąpieniu można złożyć:
         <ul>
             <li>drogą e-mailową na adres: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>;</li>
-            <li>listownie na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska;</li>
+            <li>listownie na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552;</li>
             <li>z wykorzystaniem wzoru formularza stanowiącego <strong>Załącznik nr 1</strong> do niniejszego Regulaminu (stosowanie wzoru nie jest obowiązkowe).</li>
         </ul>
     </li>
     <li>Do zachowania terminu wystarczy wysłanie oświadczenia przed jego upływem. Sprzedawca niezwłocznie potwierdza otrzymanie oświadczenia o odstąpieniu na trwałym nośniku.</li>
-    <li>Konsument zobowiązany jest zwrócić Towar Sprzedawcy lub przekazać go osobie upoważnionej przez Sprzedawcę niezwłocznie, nie później niż w ciągu <strong>14 dni od dnia złożenia oświadczenia o odstąpieniu</strong>. Do zachowania terminu wystarczy odesłanie Towaru przed jego upływem na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska.</li>
+    <li>Konsument zobowiązany jest zwrócić Towar Sprzedawcy lub przekazać go osobie upoważnionej przez Sprzedawcę niezwłocznie, nie później niż w ciągu <strong>14 dni od dnia złożenia oświadczenia o odstąpieniu</strong>. Do zachowania terminu wystarczy odesłanie Towaru przed jego upływem na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552.</li>
     <li>Bezpośrednie koszty odesłania Towaru (przesyłka zwrotna) ponosi Konsument.</li>
     <li>Sprzedawca zwraca wszystkie dokonane przez Konsumenta płatności, w tym koszty dostarczenia Towaru (z wyjątkiem dodatkowych kosztów wynikających z wybrania przez Konsumenta sposobu dostarczenia innego niż najtańszy zwykły sposób oferowany przez Sprzedawcę), niezwłocznie, nie później niż w terminie <strong>14 dni</strong> od dnia otrzymania zwróconego Towaru lub dowodu jego odesłania (w zależności od tego, co nastąpi wcześniej). Sprzedawca może wstrzymać zwrot płatności do czasu otrzymania Towaru lub potwierdzenia jego odesłania (art. 32 ust. 3 UPK).</li>
     <li>Zwrot płatności dokonywany jest przy użyciu tego samego sposobu płatności, którym posłużył się Konsument, chyba że Konsument wyraźnie zgodził się na inny sposób, który nie wiąże się dla niego z żadnymi kosztami.</li>
@@ -211,7 +211,7 @@ $pages_to_create = array(
 <p>
 Adresat:<br>
 LIDA Dariusz Cała – Moretti Fashion<br>
-Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska<br>
+Nadrzeczna 14, GD Hala 5, Box A-07, 05-552<br>
 E-mail: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>
 </p>
 <p>Niniejszym informuję o moim odstąpieniu od umowy sprzedaży następujących rzeczy:</p>
@@ -236,7 +236,7 @@ Data: ………………………………
 <p>Administratorem Twoich danych osobowych jest <strong>LIDA Dariusz Cała</strong>, prowadzący działalność gospodarczą pod marką <strong>Moretti Fashion</strong>:</p>
 <ul>
     <li>NIP: <strong>5261119292</strong>, REGON: <strong>015161906</strong></li>
-    <li>Adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska</li>
+    <li>Adres: Nadrzeczna 14, GD Hala 5, Box A-07, 05-552</li>
     <li>E-mail: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a></li>
     <li>Telefon: <a href="tel:+48725538100">+48 725 538 100</a></li>
 </ul>
@@ -339,7 +339,7 @@ Data: ………………………………
 <p>Pliki cookies (ciasteczka) to małe pliki tekstowe zapisywane na Twoim urządzeniu (komputer, tablet, smartfon) przez przeglądarkę internetową podczas odwiedzania stron internetowych. Pliki cookies nie są programami i nie mogą wykonywać żadnych operacji na Twoim urządzeniu. Umożliwiają natomiast zapamiętanie Twoich preferencji i działań na stronie.</p>
 
 <h2>2. Kto jest administratorem danych zbieranych przez cookies?</h2>
-<p>Administratorem danych osobowych zbieranych za pośrednictwem plików cookies jest <strong>LIDA Dariusz Cała</strong> (Moretti Fashion), NIP: 5261119292, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska. Kontakt: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>.</p>
+<p>Administratorem danych osobowych zbieranych za pośrednictwem plików cookies jest <strong>LIDA Dariusz Cała</strong> (Moretti Fashion), NIP: 5261119292, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552. Kontakt: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>.</p>
 
 <h2>3. Jakich plików cookies używamy i jakie są ich cele?</h2>
 <table>
@@ -463,7 +463,7 @@ Data: ………………………………
 <p>Aby odstąpić od umowy, musisz poinformować Sprzedawcę o swojej decyzji przed upływem terminu 14 dni. Możesz to zrobić:</p>
 <ul>
     <li>wysyłając e-mail na adres: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a> – podaj numer zamówienia i informację o odstąpieniu;</li>
-    <li>wysyłając pismo listownie na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska;</li>
+    <li>wysyłając pismo listownie na adres: LIDA Dariusz Cała – Moretti Fashion, Nadrzeczna 14, GD Hala 5, Box A-07, 05-552;</li>
     <li>wypełniając i odsyłając <strong>formularz odstąpienia od umowy</strong> (wzór poniżej lub w <a href="/regulamin-sklepu/">Regulaminie sklepu</a> – stosowanie wzoru nie jest obowiązkowe).</li>
 </ul>
 <p>Sprzedawca niezwłocznie prześle Ci potwierdzenie otrzymania oświadczenia o odstąpieniu na trwałym nośniku (e-mail).</p>
@@ -475,7 +475,7 @@ Data: ………………………………
     <li><strong>Odeślij Towar</strong> na adres Sprzedawcy w ciągu <strong>14 dni od złożenia oświadczenia o odstąpieniu</strong>:<br>
         <strong>LIDA Dariusz Cała – Moretti Fashion</strong><br>
         Nadrzeczna 14, GD Hala 5, Box A-07<br>
-        05-552 Wólka Kosowska<br>
+        05-552<br>
         Do zachowania terminu wystarczy nadanie przesyłki przed jego upływem.
     </li>
     <li><strong>Koszty zwrotu:</strong> Bezpośrednie koszty odesłania Towaru (przesyłka zwrotna) ponosi Klient/Konsument.</li>
@@ -500,7 +500,7 @@ Data: ………………………………
 <p>
 Adresat:<br>
 LIDA Dariusz Cała – Moretti Fashion<br>
-Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska<br>
+Nadrzeczna 14, GD Hala 5, Box A-07, 05-552<br>
 E-mail: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>
 </p>
 <p>Niniejszym informuję o moim odstąpieniu od umowy sprzedaży następujących rzeczy:</p>
@@ -571,7 +571,7 @@ Data: ………………………………
 <p>
     <strong>LIDA Dariusz Cała – Moretti Fashion</strong><br>
     Nadrzeczna 14, GD Hala 5, Box A-07<br>
-    05-552 Wólka Kosowska<br>
+    05-552<br>
     E-mail: <a href="mailto:kontakt@morettifashion.com">kontakt@morettifashion.com</a>
 </p>
 

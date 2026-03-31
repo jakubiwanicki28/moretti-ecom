@@ -72,7 +72,7 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
         <!-- Company Data Bar -->
         <div style="padding: 20px 0; border-top: 1px solid #f3f4f6; text-align: center;">
             <p style="font-size: 11px; color: #a8a09d; margin: 0; letter-spacing: 0.05em; line-height: 1.8;">
-                LIDA Dariusz Cała &nbsp;|&nbsp; ul. Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 Wólka Kosowska &nbsp;|&nbsp; NIP: 5261119292
+                LIDA Dariusz Cała &nbsp;|&nbsp; ul. Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 &nbsp;|&nbsp; NIP: 5261119292
             </p>
         </div>
 
@@ -99,6 +99,112 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
 </footer>
 
 <?php wp_footer(); ?>
+
+<!-- ===== WISHLIST DRAWER ===== -->
+<div id="moretti-wishlist-overlay"
+     onclick="if(event.target===this) morettiCloseWishlist()"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9998;"></div>
+
+<div id="moretti-wishlist-drawer"
+     style="display:none; position:fixed; top:0; right:0; bottom:0; width:min(520px,100vw);
+            background:#fff; z-index:9999; overflow-y:auto; box-shadow:-4px 0 32px rgba(0,0,0,0.15);
+            flex-direction:column;">
+
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between;
+                padding:24px 28px; border-bottom:1px solid #f0ede9; position:sticky; top:0; background:#fff; z-index:1;">
+        <h2 style="margin:0; font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#2a2826;">
+            Ulubione <span id="wishlist-drawer-count" style="font-weight:400; color:#766a5d;"></span>
+        </h2>
+        <button onclick="morettiCloseWishlist()"
+                style="background:none; border:none; cursor:pointer; padding:4px; color:#2a2826; line-height:1;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Body -->
+    <div id="moretti-wishlist-body" style="padding:24px 28px; flex:1;">
+        <div id="wishlist-loading" style="text-align:center; padding:60px 0; color:#766a5d; font-size:13px;">
+            Ładowanie...
+        </div>
+    </div>
+</div>
+
+<script>
+function morettiOpenWishlist(e) {
+    if (e) e.preventDefault();
+
+    var overlay = document.getElementById('moretti-wishlist-overlay');
+    var drawer  = document.getElementById('moretti-wishlist-drawer');
+    var body    = document.getElementById('moretti-wishlist-body');
+    var countEl = document.getElementById('wishlist-drawer-count');
+
+    overlay.style.display = 'block';
+    drawer.style.display  = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Odczytaj IDs z cookie
+    var ids = [];
+    try {
+        var row = document.cookie.split('; ').find(function(r){ return r.startsWith('moretti_wishlist='); });
+        if (row) ids = JSON.parse(decodeURIComponent(row.split('=')[1])) || [];
+    } catch(ex) { ids = []; }
+
+    ids = ids.map(Number).filter(function(n){ return n > 0; });
+
+    if (ids.length === 0) {
+        countEl.textContent = '';
+        body.innerHTML =
+            '<div style="text-align:center; padding:80px 24px; color:#766a5d;">' +
+            '<svg style="width:48px;height:48px;margin:0 auto 20px;display:block;opacity:.25" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>' +
+            '<p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2a2826;margin-bottom:8px">Brak ulubionych</p>' +
+            '<p style="font-size:13px;margin-bottom:28px">Kliknij serce na produkcie, aby dodać go do ulubionych.</p>' +
+            '<a href="' + (typeof woocommerce_params !== "undefined" ? woocommerce_params.shop_url : "/sklep/") + '" ' +
+            'onclick="morettiCloseWishlist()" ' +
+            'style="display:inline-block;background:#2a2826;color:#fff;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:13px 28px;text-decoration:none;">' +
+            'Przejdź do sklepu</a>' +
+            '</div>';
+        return;
+    }
+
+    countEl.textContent = '(' + ids.length + ')';
+    body.innerHTML = '<div id="wishlist-loading" style="text-align:center;padding:60px 0;color:#766a5d;font-size:13px;">Ładowanie...</div>';
+
+    // AJAX – pobierz HTML produktów
+    var form = new FormData();
+    form.append('action', 'moretti_wishlist_products');
+    form.append('ids', ids.join(','));
+
+    fetch('<?php echo esc_url(admin_url("admin-ajax.php")); ?>', { method: 'POST', body: form })
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+            if (data.success && data.data.html) {
+                body.innerHTML =
+                    '<ul class="products" style="list-style:none;padding:0;margin:0;display:grid;' +
+                    'grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;">' +
+                    data.data.html + '</ul>';
+            } else {
+                body.innerHTML = '<p style="text-align:center;padding:40px 0;color:#766a5d;font-size:13px;">Brak produktów.</p>';
+            }
+        })
+        .catch(function() {
+            body.innerHTML = '<p style="text-align:center;padding:40px 0;color:#e2401c;font-size:13px;">Błąd ładowania. Odśwież stronę.</p>';
+        });
+}
+
+function morettiCloseWishlist() {
+    document.getElementById('moretti-wishlist-overlay').style.display = 'none';
+    document.getElementById('moretti-wishlist-drawer').style.display  = 'none';
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') morettiCloseWishlist();
+});
+</script>
 
 <script>
     // ========================================
