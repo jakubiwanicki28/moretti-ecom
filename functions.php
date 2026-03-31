@@ -1459,17 +1459,113 @@ function moretti_ensure_legal_pages_exist() {
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
 
 /**
- * Ensure WooCommerce terms page is always set → shows mandatory checkbox at checkout.
- * Runs independently from the seeder so it works even after seeder already ran.
+ * Inject mandatory terms checkbox into WooCommerce block checkout via JS.
+ * Block checkout is React-based – PHP hooks don't reach the DOM, so we use
+ * MutationObserver to watch for the terms text node and replace it with a checkbox.
  */
-add_action('init', function () {
-    if (!get_option('woocommerce_terms_page_id')) {
-        $terms_page = get_page_by_path('regulamin-sklepu', OBJECT, 'page');
-        if ($terms_page instanceof WP_Post) {
-            update_option('woocommerce_terms_page_id', $terms_page->ID);
+add_action('wp_footer', function () {
+    if (!is_checkout()) return;
+    ?>
+    <style>
+        #moretti-terms-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
         }
-    }
-}, 30);
+        #moretti-terms-wrap input[type="checkbox"] {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: #2a2826;
+        }
+        #moretti-terms-wrap.moretti-terms-error label {
+            color: #e2401c;
+        }
+        #moretti-terms-wrap.moretti-terms-error input {
+            outline: 2px solid #e2401c;
+        }
+    </style>
+    <script>
+    (function () {
+        var injected = false;
+
+        function injectCheckbox() {
+            if (injected) return;
+
+            // Find the WooCommerce block checkout terms element
+            var termsEl = document.querySelector('.wc-block-checkout__terms, [data-block-name="woocommerce/checkout-terms-block"] p, .wp-block-woocommerce-checkout-terms-block p');
+            if (!termsEl) return;
+
+            // Already injected?
+            if (document.getElementById('moretti-terms-wrap')) return;
+
+            injected = true;
+
+            var originalText = termsEl.innerHTML;
+            var parent = termsEl.parentNode;
+
+            // Hide the original text
+            termsEl.style.display = 'none';
+
+            // Build checkbox wrapper
+            var wrap = document.createElement('div');
+            wrap.id = 'moretti-terms-wrap';
+            wrap.innerHTML =
+                '<input type="checkbox" id="moretti-terms-checkbox">' +
+                '<label for="moretti-terms-checkbox">' + originalText + '</label>';
+
+            parent.insertBefore(wrap, termsEl);
+        }
+
+        function validateAndBlock(e) {
+            var cb = document.getElementById('moretti-terms-checkbox');
+            var wrap = document.getElementById('moretti-terms-wrap');
+            if (!cb || !wrap) return;
+
+            if (!cb.checked) {
+                e.preventDefault();
+                e.stopPropagation();
+                wrap.classList.add('moretti-terms-error');
+                wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                cb.addEventListener('change', function () {
+                    if (cb.checked) wrap.classList.remove('moretti-terms-error');
+                }, { once: true });
+            }
+        }
+
+        function attachSubmitGuard() {
+            // Block checkout submit button
+            var btn = document.querySelector('.wc-block-components-checkout-place-order-button, button[type="submit"].wc-block-checkout__submit-button, .wp-block-woocommerce-checkout button[type="submit"]');
+            if (btn && !btn.dataset.morettiGuarded) {
+                btn.dataset.morettiGuarded = '1';
+                btn.addEventListener('click', validateAndBlock, true);
+            }
+        }
+
+        // Use MutationObserver because block checkout renders asynchronously
+        var observer = new MutationObserver(function () {
+            injectCheckbox();
+            attachSubmitGuard();
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // Also try immediately on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function () {
+            injectCheckbox();
+            attachSubmitGuard();
+        });
+    })();
+    </script>
+    <?php
+});
 
 /**
  * Custom CSS for mobile product page layout
