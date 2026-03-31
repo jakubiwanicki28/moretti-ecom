@@ -1229,7 +1229,7 @@ add_action('after_switch_theme', 'moretti_create_default_pages');
  * Runs once and only creates/publishes missing pages.
  */
 function moretti_ensure_legal_pages_exist() {
-    if (get_option('moretti_legal_pages_seeded_v5')) {
+    if (get_option('moretti_legal_pages_seeded_v6')) {
         return;
     }
 
@@ -1454,9 +1454,22 @@ function moretti_ensure_legal_pages_exist() {
         update_option('woocommerce_terms_page_id', $terms_page->ID);
     }
 
-    update_option('moretti_legal_pages_seeded_v5', 1, false);
+    update_option('moretti_legal_pages_seeded_v6', 1, false);
 }
 add_action('init', 'moretti_ensure_legal_pages_exist', 25);
+
+/**
+ * Ensure WooCommerce terms page is always set → shows mandatory checkbox at checkout.
+ * Runs independently from the seeder so it works even after seeder already ran.
+ */
+add_action('init', function () {
+    if (!get_option('woocommerce_terms_page_id')) {
+        $terms_page = get_page_by_path('regulamin-sklepu', OBJECT, 'page');
+        if ($terms_page instanceof WP_Post) {
+            update_option('woocommerce_terms_page_id', $terms_page->ID);
+        }
+    }
+}, 30);
 
 /**
  * Custom CSS for mobile product page layout
