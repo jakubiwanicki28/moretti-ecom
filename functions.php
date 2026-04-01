@@ -1240,8 +1240,8 @@ function moretti_ensure_legal_pages_exist() {
             <div class="moretti-legal-doc">
                 <h2>Postanowienia ogólne</h2>
                 <p>Ogłoszenia, reklamy, cenniki i inne informacje o produktach podane na stronie Hurtowni internetowej www.portfelland.pl, w szczególności ich opisy, parametry techniczne i użytkowe oraz ceny, stanowią zaproszenie do zawarcia umowy, w rozumieniu art. 71 Kodeksu Cywilnego.</p>
-                <p>Hurtownia LIDA NIP 5261119292 REGON 015161906 oferuje sprzedaż hurtową towarów za pośrednictwem strony dla kontrahentów prowadzących działalność gospodarczą.</p>
-                <p><strong>Adres firmy:</strong><br>LIDA DARIUSZ CAŁA<br>Nadrzeczna 14<br>GD Hala 5, Box A-07<br>05-552 Wólka Kosowska</p>
+                <p>Hurtownia LIDA DUO NIP 5222973237 oferuje sprzedaż hurtową towarów za pośrednictwem strony dla kontrahentów prowadzących działalność gospodarczą.</p>
+                <p><strong>Adres firmy:</strong><br>LIDA DUO Lilija Cała<br>Lechicka 8/17<br>02-156 Warszawa</p>
                 <p>Prezentacja towaru oraz jego ceny za pośrednictwem strony internetowej Hurtowni www.portfelland.pl nie oznacza, że dany towar jest dostępny lub istnieje możliwość realizacji zamówienia i nie może stanowić podstawy do roszczeń względem www.portfelland.pl. Kupujący składając zamówienie za pomocą mechanizmów dostępnych na stronach internetowych Hurtowni www.portfelland.pl, składa ofertę kupna określonego produktu na warunkach podanych w opisie produktu.</p>
                 <ol start="4">
                     <li>Minimalna wartość zamówienia hurtowego wynosi 1200 zł netto.</li>
@@ -1284,7 +1284,7 @@ function moretti_ensure_legal_pages_exist() {
                 <p>Wszelkie odstępstwa od Regulaminu wymagają formy pisemnej pod rygorem nieważności.</p>
                 <ol start="4">
                     <li>Sądem właściwym do rozstrzygnięcia sporu między stronami będzie sąd właściwy według siedziby Sprzedawcy.</li>
-                    <li>Sprzedawca LIDA DARIUSZ CAŁA NIP 5261119292 REGON 015161906.</li>
+                    <li>Sprzedawca LIDA DUO Lilija Cała NIP 5222973237.</li>
                 </ol>
             </div>',
         ),
@@ -1326,7 +1326,7 @@ function moretti_ensure_legal_pages_exist() {
                 <p>Dane są usuwane w momencie zamknięcia przeglądarki (sesja) i wyszukiwaniach produktów nie póżniej jak 360 dni po czym są usuniete trwale.</p>
 
                 <h2>Aktualizacje dokumentu</h2>
-                <p>vvInformujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych.Informujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DARIUSZ CAŁA niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych..</p>
+                <p>vvInformujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DUO Lilija Cała niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych.Informujemy, iż w celu zapewnienia bezpieczeństwa Państwa danych osobowych oraz aktualnych i przejrzystych procedur i polityk w LIDA DUO Lilija Cała niniejszy dokument będzie regularnie analizowany i zmieniany w związku ze zmianami w powszechnie obowiązujących przepisach prawa oraz wszelkimi działaniami podejmowanymi w celu zapewnienia należytej ochrony Państwa Danych Osobowych..</p>
             </div>',
         ),
         'dostawa-i-platnosci' => array(
