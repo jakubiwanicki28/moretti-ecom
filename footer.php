@@ -72,7 +72,7 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
         <!-- Company Data Bar -->
         <div style="padding: 20px 0; border-top: 1px solid #f3f4f6; text-align: center;">
             <p style="font-size: 11px; color: #a8a09d; margin: 0; letter-spacing: 0.05em; line-height: 1.8;">
-                LIDA Dariusz Cała &nbsp;|&nbsp; ul. Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 &nbsp;|&nbsp; NIP: 5261119292
+                Lida Duo Lilija Cała &nbsp;|&nbsp; ul. Nadrzeczna 14, GD Hala 5, Box A-07, 05-552 &nbsp;|&nbsp; NIP: 5222973237
             </p>
         </div>
 
