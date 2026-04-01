@@ -897,7 +897,7 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                     <?php
                     $rendered_models = array();
                     $rendered_count  = 0;
-                    $max_models      = 5;
+                    $max_models      = 4;
                     ?>
                     <?php if ($loop->have_posts()) : ?>
                         <?php while ($loop->have_posts()) : $loop->the_post(); ?>
