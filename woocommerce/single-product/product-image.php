@@ -34,9 +34,9 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
             $image_src = wp_get_attachment_image_src($first_slide_id, 'large');
             $image_alt = get_post_meta($first_slide_id, '_wp_attachment_image_alt', true);
             ?>
-            <div class="main-product-image-frame relative overflow-hidden">
-                <img 
-                    src="<?php echo esc_url($image_src[0]); ?>" 
+            <div id="moretti-img-wrapper" class="main-product-image-frame relative overflow-hidden">
+                <img
+                    src="<?php echo esc_url($image_src[0]); ?>"
                     alt="<?php echo esc_attr($image_alt ? $image_alt : get_the_title()); ?>"
                     class="main-product-image-el"
                     id="moretti-main-img"
@@ -193,3 +193,17 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
         </script>
     <?php endif; ?>
 </div>
+
+<style>
+#moretti-img-wrapper {
+    cursor: zoom-in;
+}
+#moretti-main-img {
+    transition: opacity 0.2s ease-in-out, transform 0.15s ease !important;
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+@media (max-width: 768px) {
+    #moretti-img-wrapper { cursor: default; }
+}
+</style>
