@@ -21,7 +21,7 @@ $attachment_ids = $product->get_gallery_image_ids();
             $image_src = wp_get_attachment_image_src($image_id, 'full');
             $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
             ?>
-            <div class="relative bg-white overflow-hidden flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+            <div id="moretti-img-wrapper" class="relative bg-white overflow-hidden flex items-center justify-center min-h-[400px] md:min-h-[500px]">
                 <img 
                     src="<?php echo esc_url($image_src[0]); ?>" 
                     alt="<?php echo esc_attr($image_alt ? $image_alt : get_the_title()); ?>"
@@ -93,10 +93,18 @@ $attachment_ids = $product->get_gallery_image_ids();
         </script>
         <style>
             #moretti-main-img {
-                transition: opacity 0.2s ease-in-out;
+                transition: opacity 0.2s ease-in-out, transform 0.15s ease;
+                transform-origin: 50% 50%;
+                will-change: transform;
             }
             .thumbnail-item {
                 cursor: pointer;
+            }
+            #moretti-img-wrapper {
+                cursor: zoom-in;
+            }
+            @media (max-width: 768px) {
+                #moretti-img-wrapper { cursor: default; }
             }
         </style>
     <?php endif; ?>
