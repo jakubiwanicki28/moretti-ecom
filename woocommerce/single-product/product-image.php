@@ -199,11 +199,16 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
     cursor: zoom-in;
 }
 #moretti-main-img {
-    transition: opacity 0.2s ease-in-out, transform 0.15s ease !important;
+    transition: transform 0.1s ease !important;
     transform-origin: 50% 50%;
     will-change: transform;
+    display: block !important;
+}
+#moretti-img-wrapper:hover #moretti-main-img {
+    transform: scale(2.5) !important;
 }
 @media (max-width: 768px) {
     #moretti-img-wrapper { cursor: default; }
+    #moretti-img-wrapper:hover #moretti-main-img { transform: none !important; }
 }
 </style>

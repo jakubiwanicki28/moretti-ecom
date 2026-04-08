@@ -620,25 +620,21 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductImageSliders();
 
     // =============================================
-    // Product Image Inline Zoom
+    // Product Image Inline Zoom (CSS hover handles scale, JS tracks cursor for origin)
     // =============================================
     function initProductZoom() {
         const wrapper = document.getElementById('moretti-img-wrapper');
         const img     = document.getElementById('moretti-main-img');
         if (!wrapper || !img) return;
 
-        const ZOOM = 2.5;
-
         wrapper.addEventListener('mousemove', function(e) {
             const rect = wrapper.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width)  * 100;
             const y = ((e.clientY - rect.top)  / rect.height) * 100;
             img.style.transformOrigin = x + '% ' + y + '%';
-            img.style.transform = 'scale(' + ZOOM + ')';
         });
 
         wrapper.addEventListener('mouseleave', function() {
-            img.style.transform       = '';
             img.style.transformOrigin = '';
         });
     }
