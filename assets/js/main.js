@@ -628,9 +628,42 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!wrapper || !img) return;
 
         wrapper.addEventListener('mousemove', function(e) {
-            const rect = wrapper.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width)  * 100;
-            const y = ((e.clientY - rect.top)  / rect.height) * 100;
+            const wRect = wrapper.getBoundingClientRect();
+            const cw = wRect.width;
+            const ch = wRect.height;
+
+            // Compute rendered image bounds within the container (object-fit: contain)
+            const nw = img.naturalWidth  || cw;
+            const nh = img.naturalHeight || ch;
+            const imgRatio       = nw / nh;
+            const containerRatio = cw / ch;
+
+            var renderedW, renderedH, offsetX, offsetY;
+            if (imgRatio > containerRatio) {
+                // wider than container → letterbox top/bottom
+                renderedW = cw;
+                renderedH = cw / imgRatio;
+                offsetX   = 0;
+                offsetY   = (ch - renderedH) / 2;
+            } else {
+                // taller than container → letterbox left/right
+                renderedH = ch;
+                renderedW = ch * imgRatio;
+                offsetX   = (cw - renderedW) / 2;
+                offsetY   = 0;
+            }
+
+            // Cursor position relative to rendered image
+            var cx = e.clientX - wRect.left - offsetX;
+            var cy = e.clientY - wRect.top  - offsetY;
+
+            // Clamp and convert to percentage
+            cx = Math.max(0, Math.min(cx, renderedW));
+            cy = Math.max(0, Math.min(cy, renderedH));
+
+            var x = (cx / renderedW) * 100;
+            var y = (cy / renderedH) * 100;
+
             img.style.transformOrigin = x + '% ' + y + '%';
         });
 
