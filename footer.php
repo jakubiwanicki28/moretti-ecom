@@ -72,13 +72,6 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             </div>
         </div>
 
-        <!-- Company Data Bar -->
-        <div style="padding: 20px 0; border-top: 1px solid #f3f4f6; text-align: center;">
-            <p style="font-size: 11px; color: #a8a09d; margin: 0; letter-spacing: 0.05em; line-height: 1.8;">
-                LIDA DUO Lilija Cała &nbsp;|&nbsp; ul. Lechicka 8/17, 02-156 Warszawa &nbsp;|&nbsp; NIP: 5222973237
-            </p>
-        </div>
-
         <!-- Social & Copyright Bar -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 32px 0; border-top: 1px solid #f3f4f6; gap: 24px;">
             <div style="display: flex; gap: 24px;">
