@@ -620,21 +620,19 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductImageSliders();
 
     // =============================================
-    // Product Image Inline Zoom — JS owns both transform and origin (atomic, no race condition)
+    // Product Image Inline Zoom
+    // CSS :hover handles scale, JS sets transformOrigin on mouseenter+mousemove (no transition = no race)
     // =============================================
     function initProductZoom() {
         const wrapper = document.getElementById('moretti-img-wrapper');
         const img     = document.getElementById('moretti-main-img');
         if (!wrapper || !img) return;
 
-        const ZOOM = 2.5;
-
-        wrapper.addEventListener('mousemove', function(e) {
+        function calcOrigin(e) {
             const wRect = wrapper.getBoundingClientRect();
             const cw = wRect.width;
             const ch = wRect.height;
 
-            // Compute rendered image bounds (object-fit: contain, centered)
             const nw = img.naturalWidth  || cw;
             const nh = img.naturalHeight || ch;
             const imgRatio       = nw / nh;
@@ -653,20 +651,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 offsetY   = 0;
             }
 
-            // Clamp cursor to rendered image bounds
             var cx = Math.max(offsetX, Math.min(e.clientX - wRect.left, offsetX + renderedW));
             var cy = Math.max(offsetY, Math.min(e.clientY - wRect.top,  offsetY + renderedH));
 
-            // transform-origin as % of element box — set atomically with scale
-            var x = (cx / cw) * 100;
-            var y = (cy / ch) * 100;
+            return (cx / cw * 100) + '% ' + (cy / ch * 100) + '%';
+        }
 
-            img.style.transformOrigin = x + '% ' + y + '%';
-            img.style.transform = 'scale(' + ZOOM + ')';
+        // Set origin immediately on enter — runs before browser paints :hover scale
+        wrapper.addEventListener('mouseenter', function(e) {
+            img.style.transformOrigin = calcOrigin(e);
+        });
+
+        wrapper.addEventListener('mousemove', function(e) {
+            img.style.transformOrigin = calcOrigin(e);
         });
 
         wrapper.addEventListener('mouseleave', function() {
-            img.style.transform = '';
             img.style.transformOrigin = '';
         });
     }
