@@ -620,19 +620,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductImageSliders();
 
     // =============================================
-    // Product Image Inline Zoom (CSS hover handles scale, JS tracks cursor for origin)
+    // Product Image Inline Zoom — JS owns both transform and origin (atomic, no race condition)
     // =============================================
     function initProductZoom() {
         const wrapper = document.getElementById('moretti-img-wrapper');
         const img     = document.getElementById('moretti-main-img');
         if (!wrapper || !img) return;
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        const ZOOM = 2.5;
 
         wrapper.addEventListener('mousemove', function(e) {
             const wRect = wrapper.getBoundingClientRect();
             const cw = wRect.width;
             const ch = wRect.height;
 
-            // Compute rendered image bounds (object-fit: contain, object-position: center)
+            // Compute rendered image bounds (object-fit: contain, centered)
             const nw = img.naturalWidth  || cw;
             const nh = img.naturalHeight || ch;
             const imgRatio       = nw / nh;
@@ -651,18 +654,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 offsetY   = 0;
             }
 
-            // Clamp cursor to rendered image bounds (in element coords)
+            // Clamp cursor to rendered image bounds
             var cx = Math.max(offsetX, Math.min(e.clientX - wRect.left, offsetX + renderedW));
             var cy = Math.max(offsetY, Math.min(e.clientY - wRect.top,  offsetY + renderedH));
 
-            // transform-origin as % of element box
+            // transform-origin as % of element box — set atomically with scale
             var x = (cx / cw) * 100;
             var y = (cy / ch) * 100;
 
             img.style.transformOrigin = x + '% ' + y + '%';
+            img.style.transform = 'scale(' + ZOOM + ')';
         });
 
         wrapper.addEventListener('mouseleave', function() {
+            img.style.transform = '';
             img.style.transformOrigin = '';
         });
     }
