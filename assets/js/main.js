@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const cw = wRect.width;
             const ch = wRect.height;
 
-            // Compute rendered image bounds within the container (object-fit: contain)
+            // Compute rendered image bounds (object-fit: contain, object-position: center)
             const nw = img.naturalWidth  || cw;
             const nh = img.naturalHeight || ch;
             const imgRatio       = nw / nh;
@@ -640,29 +640,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var renderedW, renderedH, offsetX, offsetY;
             if (imgRatio > containerRatio) {
-                // wider than container → letterbox top/bottom
                 renderedW = cw;
                 renderedH = cw / imgRatio;
                 offsetX   = 0;
                 offsetY   = (ch - renderedH) / 2;
             } else {
-                // taller than container → letterbox left/right
                 renderedH = ch;
                 renderedW = ch * imgRatio;
                 offsetX   = (cw - renderedW) / 2;
                 offsetY   = 0;
             }
 
-            // Cursor position relative to rendered image
-            var cx = e.clientX - wRect.left - offsetX;
-            var cy = e.clientY - wRect.top  - offsetY;
+            // Clamp cursor to rendered image bounds (in element coords)
+            var cx = Math.max(offsetX, Math.min(e.clientX - wRect.left, offsetX + renderedW));
+            var cy = Math.max(offsetY, Math.min(e.clientY - wRect.top,  offsetY + renderedH));
 
-            // Clamp and convert to percentage
-            cx = Math.max(0, Math.min(cx, renderedW));
-            cy = Math.max(0, Math.min(cy, renderedH));
-
-            var x = (cx / renderedW) * 100;
-            var y = (cy / renderedH) * 100;
+            // transform-origin as % of element box
+            var x = (cx / cw) * 100;
+            var y = (cy / ch) * 100;
 
             img.style.transformOrigin = x + '% ' + y + '%';
         });
