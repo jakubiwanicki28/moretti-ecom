@@ -620,54 +620,47 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductImageSliders();
 
     // =============================================
-    // Product Image Inline Zoom
-    // CSS :hover handles scale, JS sets transformOrigin on mouseenter+mousemove (no transition = no race)
+    // Product Image Inline Zoom — JS only, no CSS :hover (safe on mobile)
     // =============================================
     function initProductZoom() {
         const wrapper = document.getElementById('moretti-img-wrapper');
         const img     = document.getElementById('moretti-main-img');
         if (!wrapper || !img) return;
-        if (window.matchMedia('(max-width: 768px)').matches) return;
+        if (window.innerWidth <= 768) return;
 
-        function calcOrigin(e) {
-            const wRect = wrapper.getBoundingClientRect();
-            const cw = wRect.width;
-            const ch = wRect.height;
+        var ZOOM = 2.5;
+        wrapper.style.cursor = 'zoom-in';
 
-            const nw = img.naturalWidth  || cw;
-            const nh = img.naturalHeight || ch;
-            const imgRatio       = nw / nh;
-            const containerRatio = cw / ch;
-
+        function applyZoom(e) {
+            var wRect = wrapper.getBoundingClientRect();
+            var cw = wRect.width;
+            var ch = wRect.height;
+            var nw = img.naturalWidth  || cw;
+            var nh = img.naturalHeight || ch;
+            var imgRatio       = nw / nh;
+            var containerRatio = cw / ch;
             var renderedW, renderedH, offsetX, offsetY;
+
             if (imgRatio > containerRatio) {
-                renderedW = cw;
-                renderedH = cw / imgRatio;
-                offsetX   = 0;
-                offsetY   = (ch - renderedH) / 2;
+                renderedW = cw; renderedH = cw / imgRatio;
+                offsetX = 0; offsetY = (ch - renderedH) / 2;
             } else {
-                renderedH = ch;
-                renderedW = ch * imgRatio;
-                offsetX   = (cw - renderedW) / 2;
-                offsetY   = 0;
+                renderedH = ch; renderedW = ch * imgRatio;
+                offsetX = (cw - renderedW) / 2; offsetY = 0;
             }
 
             var cx = Math.max(offsetX, Math.min(e.clientX - wRect.left, offsetX + renderedW));
             var cy = Math.max(offsetY, Math.min(e.clientY - wRect.top,  offsetY + renderedH));
 
-            return (cx / cw * 100) + '% ' + (cy / ch * 100) + '%';
+            img.style.transformOrigin = (cx / cw * 100) + '% ' + (cy / ch * 100) + '%';
+            img.style.transform = 'scale(' + ZOOM + ')';
         }
 
-        // Set origin immediately on enter — runs before browser paints :hover scale
-        wrapper.addEventListener('mouseenter', function(e) {
-            img.style.transformOrigin = calcOrigin(e);
-        });
-
-        wrapper.addEventListener('mousemove', function(e) {
-            img.style.transformOrigin = calcOrigin(e);
-        });
+        wrapper.addEventListener('mouseenter', applyZoom);
+        wrapper.addEventListener('mousemove', applyZoom);
 
         wrapper.addEventListener('mouseleave', function() {
+            img.style.transform = '';
             img.style.transformOrigin = '';
         });
     }

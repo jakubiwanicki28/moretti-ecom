@@ -195,18 +195,8 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
 </div>
 
 <style>
-#moretti-img-wrapper {
-    cursor: zoom-in;
-}
 #moretti-main-img {
     will-change: transform;
     display: block !important;
-}
-#moretti-img-wrapper:hover #moretti-main-img {
-    transform: scale(2.5) !important;
-}
-@media (max-width: 768px) {
-    #moretti-img-wrapper { cursor: default; }
-    #moretti-img-wrapper:hover #moretti-main-img { transform: none !important; }
 }
 </style>
