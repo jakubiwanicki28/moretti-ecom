@@ -185,7 +185,6 @@ function moretti_theme_setup() {
     add_theme_support('post-thumbnails');
     add_theme_support('custom-logo');
     add_theme_support('woocommerce');
-    add_theme_support('wc-product-gallery-zoom');
     add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
 
@@ -1027,6 +1026,13 @@ function moretti_disable_select2() {
     wp_deregister_script('select2');
 }
 add_action('wp_enqueue_scripts', 'moretti_disable_select2', 100);
+
+// Disable WooCommerce built-in zoom plugin — custom zoom in main.js (desktop only)
+function moretti_disable_wc_zoom() {
+    wp_dequeue_script('zoom');
+    wp_deregister_script('zoom');
+}
+add_action('wp_enqueue_scripts', 'moretti_disable_wc_zoom', 100);
 
 // WooCommerce customizations
 function moretti_woocommerce_support() {
