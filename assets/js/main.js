@@ -627,6 +627,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const wrapper = document.getElementById('moretti-img-wrapper');
         const img     = document.getElementById('moretti-main-img');
         if (!wrapper || !img) return;
+        if (window.matchMedia('(max-width: 768px)').matches) return;
 
         function calcOrigin(e) {
             const wRect = wrapper.getBoundingClientRect();
