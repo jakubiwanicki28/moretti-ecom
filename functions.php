@@ -185,7 +185,6 @@ function moretti_theme_setup() {
     add_theme_support('post-thumbnails');
     add_theme_support('custom-logo');
     add_theme_support('woocommerce');
-    add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
 
     register_nav_menus(array(
@@ -1033,6 +1032,19 @@ function moretti_disable_wc_zoom() {
     wp_deregister_script('zoom');
 }
 add_action('wp_enqueue_scripts', 'moretti_disable_wc_zoom', 100);
+
+// Disable WooCommerce PhotoSwipe lightbox — custom gallery handles everything
+function moretti_disable_wc_lightbox() {
+    wp_dequeue_script('photoswipe');
+    wp_deregister_script('photoswipe');
+    wp_dequeue_script('photoswipe-ui-default');
+    wp_deregister_script('photoswipe-ui-default');
+    wp_dequeue_style('photoswipe');
+    wp_deregister_style('photoswipe');
+    wp_dequeue_style('photoswipe-default-skin');
+    wp_deregister_style('photoswipe-default-skin');
+}
+add_action('wp_enqueue_scripts', 'moretti_disable_wc_lightbox', 100);
 
 // WooCommerce customizations
 function moretti_woocommerce_support() {
