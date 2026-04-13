@@ -1160,7 +1160,8 @@
 .woocommerce a.checkout-button.button,
 .woocommerce-page a.checkout-button.button,
 .woocommerce-checkout #payment #place_order,
-.woocommerce-checkout .place-order .button.alt {
+.woocommerce-checkout .place-order .button.alt,
+.wc-block-components-checkout-place-order-button {
   display: inline-flex !important;
   width: 100% !important;
   align-items: center !important;
@@ -1185,7 +1186,8 @@
 .woocommerce a.checkout-button.button:hover,
 .woocommerce-page a.checkout-button.button:hover,
 .woocommerce-checkout #payment #place_order:hover,
-.woocommerce-checkout .place-order .button.alt:hover {
+.woocommerce-checkout .place-order .button.alt:hover,
+.wc-block-components-checkout-place-order-button:hover {
   background: #166534 !important;
   border-color: #166534 !important;
   color: #ffffff !important;
@@ -1193,7 +1195,8 @@
 
 .woocommerce-checkout #payment #place_order:focus-visible,
 .woocommerce a.checkout-button.button:focus-visible,
-.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible {
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus-visible,
+.wc-block-components-checkout-place-order-button:focus-visible {
   outline: 2px solid #14532d !important;
   outline-offset: 2px !important;
 }
@@ -1204,7 +1207,8 @@
   outline-offset: 2px !important;
 }
 
-.woocommerce-checkout #payment #place_order:disabled {
+.woocommerce-checkout #payment #place_order:disabled,
+.wc-block-components-checkout-place-order-button:disabled {
   opacity: 0.55 !important;
   cursor: not-allowed !important;
 }
