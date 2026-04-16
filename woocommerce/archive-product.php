@@ -254,21 +254,10 @@ $args = array(
     'post_status' => 'publish',
 );
 
-// Search: limit products strictly by title match when "s" is present.
-if (isset($_GET['s']) && $_GET['s'] !== '') {
-    $search_term = sanitize_text_field(wp_unslash($_GET['s']));
-    global $wpdb;
-    $like = '%' . $wpdb->esc_like($search_term) . '%';
-    $ids = $wpdb->get_col(
-        $wpdb->prepare(
-            "SELECT ID FROM {$wpdb->posts}
-             WHERE post_type = 'product'
-               AND post_status = 'publish'
-               AND post_title LIKE %s",
-            $like
-        )
-    );
-    $args['post__in'] = !empty($ids) ? array_map('intval', $ids) : array(0);
+// Search: use WP_Query 's' parameter so posts_search filters (SKU, excerpt) can extend it.
+$is_search_view = is_search() && !empty(get_search_query()) && !$is_wishlist_view;
+if ($is_search_view) {
+    $args['s'] = get_search_query();
 }
 
 if ($is_wishlist_view) {
@@ -680,6 +669,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                 </div>
             </div>
 
+            <?php if (!$is_search_view) : ?>
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
                     <h2 class="shop-hero-title">Torba prezentowa gratis</h2>
@@ -705,6 +695,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                     </svg>
                 </div>
             </div>
+            <?php endif; ?>
 
             <div class="shop-filters-divider" aria-hidden="true"></div>
 

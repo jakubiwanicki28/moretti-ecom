@@ -1046,6 +1046,52 @@ function moretti_disable_wc_lightbox() {
 }
 add_action('wp_enqueue_scripts', 'moretti_disable_wc_lightbox', 100);
 
+/**
+ * Extend product search to SKU and short description (post_excerpt).
+ * WordPress default searches only post_title and post_content.
+ */
+add_filter('posts_join', 'moretti_product_search_join', 10, 2);
+add_filter('posts_search', 'moretti_product_search_sql', 10, 2);
+add_filter('posts_groupby', 'moretti_product_search_groupby', 10, 2);
+
+function moretti_product_search_join($join, $wp_query) {
+    global $wpdb;
+    $post_type = $wp_query->get('post_type');
+    $is_product_query = $post_type === 'product' || (is_array($post_type) && in_array('product', $post_type, true));
+    if (!$wp_query->get('s') || !$is_product_query) {
+        return $join;
+    }
+    $join .= " LEFT JOIN {$wpdb->postmeta} AS moretti_sku_s"
+        . " ON (moretti_sku_s.post_id = {$wpdb->posts}.ID AND moretti_sku_s.meta_key = '_sku')";
+    return $join;
+}
+
+function moretti_product_search_sql($search, $wp_query) {
+    global $wpdb;
+    $post_type = $wp_query->get('post_type');
+    $is_product_query = $post_type === 'product' || (is_array($post_type) && in_array('product', $post_type, true));
+    if (empty($search) || !$wp_query->get('s') || !$is_product_query) {
+        return $search;
+    }
+    $like = '%' . $wpdb->esc_like($wp_query->get('s')) . '%';
+    $extra = $wpdb->prepare(
+        " OR ({$wpdb->posts}.post_excerpt LIKE %s) OR (moretti_sku_s.meta_value LIKE %s)",
+        $like,
+        $like
+    );
+    return preg_replace('/\)\s*$/', $extra . ')', $search);
+}
+
+function moretti_product_search_groupby($groupby, $wp_query) {
+    global $wpdb;
+    $post_type = $wp_query->get('post_type');
+    $is_product_query = $post_type === 'product' || (is_array($post_type) && in_array('product', $post_type, true));
+    if (!$wp_query->get('s') || !$is_product_query) {
+        return $groupby;
+    }
+    return "{$wpdb->posts}.ID";
+}
+
 // WooCommerce customizations
 function moretti_woocommerce_support() {
     // Remove default WooCommerce styles (we'll use Tailwind)
