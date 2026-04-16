@@ -665,8 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Run after all scripts (including WC gallery JS) have executed.
-    window.addEventListener('load', initProductZoom);
+    initProductZoom();
 
 });
 

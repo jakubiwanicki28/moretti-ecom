@@ -185,7 +185,8 @@ function moretti_theme_setup() {
     add_theme_support('post-thumbnails');
     add_theme_support('custom-logo');
     add_theme_support('woocommerce');
-    add_theme_support('wc-product-gallery-slider');
+    // NOTE: wc-product-gallery-slider intentionally removed — FlexSlider
+    // conflicts with custom gallery & zoom in main.js / product-image.php.
 
     register_nav_menus(array(
         'primary' => __('Menu Główne', 'moretti-theme'),
@@ -1045,6 +1046,14 @@ function moretti_disable_wc_lightbox() {
     wp_deregister_style('photoswipe-default-skin');
 }
 add_action('wp_enqueue_scripts', 'moretti_disable_wc_lightbox', 100);
+
+// Disable WooCommerce gallery init script on product pages — custom gallery/zoom handles everything
+function moretti_disable_wc_gallery_scripts() {
+    if (is_product()) {
+        wp_dequeue_script('wc-single-product');
+    }
+}
+add_action('wp_enqueue_scripts', 'moretti_disable_wc_gallery_scripts', 100);
 
 /**
  * Extend product search to SKU and short description (post_excerpt).

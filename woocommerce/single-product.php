@@ -272,12 +272,9 @@ get_header(); ?>
     }
     .woocommerce-product-gallery .main-product-image-el {
         position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+        inset: 0 !important;
         height: 100% !important;
-        width: auto !important;
-        max-width: 100% !important;
+        width: 100% !important;
         object-fit: contain !important;
     }
     .single-gallery-arrow {
