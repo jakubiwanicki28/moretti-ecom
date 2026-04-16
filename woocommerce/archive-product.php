@@ -682,11 +682,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
-                    <p class="shop-hero-eyebrow">Bezlimitowana oferta</p>
                     <h2 class="shop-hero-title">Torba prezentowa gratis</h2>
                     <p class="shop-hero-subtitle">Do każdego zamówienia dołączamy elegancką torbę prezentową.</p>
-                    <p class="shop-hero-copy">Bez warunków i limitów — Twój zakup jest zawsze gotowy do podarowania.</p>
-                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Przejdź do sklepu</a>
+                    <p class="shop-hero-copy">Bez warunków i limitów - Twój zakup jest zawsze gotowy do podarowania.</p>
                 </div>
                 <div class="shop-hero-banner-visual" aria-hidden="true">
                     <svg class="shop-hero-ribbon" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
