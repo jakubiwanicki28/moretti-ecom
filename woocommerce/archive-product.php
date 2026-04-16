@@ -682,11 +682,29 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
-                    <p class="shop-hero-eyebrow">Limitowana oferta</p>
-                    <h2 class="shop-hero-title">Okazje</h2>
-                    <p class="shop-hero-subtitle">Wyjątkowe przeceny na wybrane modele portfeli</p>
-                    <p class="shop-hero-copy">Skorzystaj z promocji i wybierz styl, który zostaje z Tobą na lata.</p>
-                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Zobacz kolekcję</a>
+                    <p class="shop-hero-eyebrow">Bezlimitowana oferta</p>
+                    <h2 class="shop-hero-title">Torba prezentowa gratis</h2>
+                    <p class="shop-hero-subtitle">Do każdego zamówienia dołączamy elegancką torbę prezentową.</p>
+                    <p class="shop-hero-copy">Bez warunków i limitów — Twój zakup jest zawsze gotowy do podarowania.</p>
+                    <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="shop-hero-cta">Przejdź do sklepu</a>
+                </div>
+                <div class="shop-hero-banner-visual" aria-hidden="true">
+                    <svg class="shop-hero-ribbon" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- bag handle -->
+                        <path d="M32 44 Q30 18 50 14 Q70 18 68 44" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="2.5" stroke-linecap="round"/>
+                        <!-- bag body -->
+                        <rect x="8" y="44" width="84" height="63" rx="4" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+                        <!-- vertical ribbon -->
+                        <rect x="43" y="44" width="14" height="63" fill="rgba(255,255,255,0.07)"/>
+                        <!-- horizontal ribbon -->
+                        <rect x="8" y="66" width="84" height="12" fill="rgba(255,255,255,0.07)"/>
+                        <!-- bow left loop -->
+                        <path d="M38 44 C18 26 12 38 24 44 C30 47 38 44 38 44Z" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.32)" stroke-width="1.2"/>
+                        <!-- bow right loop -->
+                        <path d="M62 44 C82 26 88 38 76 44 C70 47 62 44 62 44Z" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.32)" stroke-width="1.2"/>
+                        <!-- bow center knot -->
+                        <ellipse cx="50" cy="44" rx="8" ry="6" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+                    </svg>
                 </div>
             </div>
 
@@ -1061,6 +1079,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         min-height: 175px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
     }
 
     .shop-page-wittchen .shop-hero-banner::after {
@@ -1138,6 +1157,22 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
     .shop-page-wittchen .shop-hero-cta:hover {
         background: #fff;
         color: #930018;
+    }
+
+    .shop-page-wittchen .shop-hero-banner-visual {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 28px 16px 0;
+        pointer-events: none;
+    }
+
+    .shop-page-wittchen .shop-hero-ribbon {
+        width: 118px;
+        height: 118px;
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.18));
+        opacity: 0.82;
     }
 
     .shop-page-wittchen .shop-filters-divider {
@@ -1540,6 +1575,10 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         .shop-page-wittchen .shop-hero-banner {
             margin-bottom: 10px;
             min-height: 136px;
+        }
+
+        .shop-page-wittchen .shop-hero-banner-visual {
+            display: none;
         }
 
         .shop-page-wittchen .shop-hero-banner-content {
