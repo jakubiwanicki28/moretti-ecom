@@ -1563,7 +1563,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
         .shop-page-wittchen .shop-hero-banner {
             margin-bottom: 10px;
-            min-height: 136px;
+            min-height: 0;
         }
 
         .shop-page-wittchen .shop-hero-banner-visual {
@@ -1590,8 +1590,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         }
 
         .shop-page-wittchen .shop-hero-copy {
-            font-size: 12px;
-            margin-bottom: 8px;
+            display: none;
         }
 
         .shop-page-wittchen .shop-hero-cta {
