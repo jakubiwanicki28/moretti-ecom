@@ -235,7 +235,7 @@
     <!-- Search Bar Dropdown - Hidden by default, toggle via search icon -->
     <div id="search-bar" style="display: none;" class="bg-white border-t border-b border-gray-100">
         <div class="container mx-auto px-4" style="padding-top: 2rem; padding-bottom: 2rem;">
-            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(home_url('/')); ?>">
                 <input 
                     type="search" 
                     id="search-input"

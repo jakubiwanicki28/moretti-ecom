@@ -522,6 +522,7 @@
     }
     
     $header_nav_items = moretti_get_header_nav_items();
+    $shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
     ?>
     <div class="moretti-header-inner">
         <div class="moretti-header-top">
@@ -555,7 +556,7 @@
                 </a>
             </div>
 
-            <form role="search" method="get" action="<?php echo esc_url($shop_url); ?>" class="moretti-header-search-form hidden md:block">
+            <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>" class="moretti-header-search-form hidden md:block">
                 <div class="moretti-header-search-wrap">
                     <input
                         type="search"
@@ -643,7 +644,7 @@
             
             <!-- Search Form -->
             <div class="flex-1 px-4 py-6">
-                <form role="search" method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
                     <div class="flex flex-col gap-4">
                         <input 
                             type="search" 
@@ -670,7 +671,7 @@
     <!-- Desktop Search Bar - Hidden by default -->
     <div id="search-bar-desktop" style="display: none;" class="hidden md:block bg-white border-t border-b border-gray-100">
         <div class="container mx-auto px-4" style="padding-top: 2rem; padding-bottom: 2rem;">
-            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+            <form role="search" method="get" class="flex items-center gap-2" action="<?php echo esc_url(home_url('/')); ?>">
                 <input 
                     type="search" 
                     id="search-input-desktop"
@@ -711,7 +712,7 @@
 
             <!-- Search Bar -->
             <div class="mb-8 mt-8">
-                <form role="search" method="get" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+                <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
                     <div style="position: relative;">
                         <input 
                             type="search" 

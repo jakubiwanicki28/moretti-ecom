@@ -315,8 +315,8 @@ get_header(); ?>
         width: 86px !important;
         aspect-ratio: 3 / 4 !important;
         height: auto !important;
-        border: 1px solid #e5e7eb !important;
-        background: #ffffff !important;
+        border: none !important;
+        background: #F2F2F2 !important;
         overflow: hidden !important;
         cursor: pointer !important;
         padding: 0 !important;
