@@ -206,13 +206,31 @@ function moretti_register_image_sizes() {
 add_action('after_setup_theme', 'moretti_register_image_sizes', 30);
 
 /**
- * Keep frontend image quality at a safe baseline.
+ * Preserve full image quality — no lossy compression on upload.
+ * Covers both GD and Imagick editors.
  */
 function moretti_image_quality($quality) {
-    return 88;
+    return 100;
 }
 add_filter('jpeg_quality', 'moretti_image_quality');
 add_filter('wp_editor_set_quality', 'moretti_image_quality');
+
+/**
+ * Disable WordPress 5.3+ auto-scaling of images larger than 2560px.
+ * We want the full original resolution preserved.
+ */
+add_filter('big_image_size_threshold', '__return_false');
+
+/**
+ * Remove useless intermediate sizes added by WP 5.3 (1536x1536, 2048x2048).
+ * They waste disk space — we serve 'full' on the product page anyway.
+ */
+function moretti_remove_extra_image_sizes($sizes) {
+    unset($sizes['1536x1536']);
+    unset($sizes['2048x2048']);
+    return $sizes;
+}
+add_filter('intermediate_image_sizes_advanced', 'moretti_remove_extra_image_sizes');
 
 // Include site setup engine
 require_once get_template_directory() . '/inc/theme-setup-data.php';

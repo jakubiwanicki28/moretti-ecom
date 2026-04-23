@@ -31,7 +31,7 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
     <div class="main-product-image mb-6">
         <?php
         if ($first_slide_id) {
-            $image_src = wp_get_attachment_image_src($first_slide_id, 'large');
+            $image_src = wp_get_attachment_image_src($first_slide_id, 'full');
             $image_alt = get_post_meta($first_slide_id, '_wp_attachment_image_alt', true);
             ?>
             <div id="moretti-img-wrapper" class="main-product-image-frame relative overflow-hidden">
@@ -75,7 +75,7 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
     <?php if (!empty($thumb_ids)) : ?>
         <div class="product-thumbnails">
             <?php foreach ($thumb_ids as $index => $thumb_id) :
-                $full_url = wp_get_attachment_image_src($thumb_id, 'large');
+                $full_url = wp_get_attachment_image_src($thumb_id, 'full');
                 if (!$full_url || empty($full_url[0])) {
                     continue;
                 }
