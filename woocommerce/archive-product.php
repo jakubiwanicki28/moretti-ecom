@@ -249,7 +249,7 @@ if ($is_wishlist_view && isset($_COOKIE['moretti_wishlist'])) {
 $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 $args = array(
     'post_type' => 'product',
-    'posts_per_page' => 12,
+    'posts_per_page' => 30,
     'paged' => $paged,
     'post_status' => 'publish',
 );
@@ -950,7 +950,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
                 <!-- Pagination -->
                 <?php if ($products->max_num_pages > 1) : ?>
-                    <div class="shop-pagination shop-pagination-fallback">
+                    <div class="shop-pagination">
                         <?php
                         echo paginate_links(array(
                             'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
@@ -962,21 +962,6 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         ));
                         ?>
                     </div>
-                    <div
-                        class="shop-infinite-loader"
-                        id="shop-infinite-loader"
-                        role="status"
-                        aria-live="polite"
-                        data-current-page="<?php echo esc_attr((string) max(1, (int) $paged)); ?>"
-                        data-max-pages="<?php echo esc_attr((string) max(1, (int) $products->max_num_pages)); ?>"
-                        data-total-products="<?php echo esc_attr((string) max(0, (int) $products->found_posts)); ?>"
-                        data-next-url="<?php echo esc_url($paged < $products->max_num_pages ? $moretti_build_paged_shop_url($paged + 1) : ''); ?>"
-                    >
-                        <span class="shop-infinite-spinner" id="shop-infinite-spinner" aria-hidden="true"></span>
-                        <span class="shop-infinite-text" id="shop-infinite-text">Przewiń, aby załadować więcej produktów</span>
-                        <button type="button" class="shop-infinite-retry" id="shop-infinite-retry" hidden>Spróbuj ponownie</button>
-                    </div>
-                    <div class="shop-infinite-sentinel" id="shop-infinite-sentinel" aria-hidden="true"></div>
                 <?php endif; ?>
 
             <?php else : ?>
@@ -1360,60 +1345,6 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         font-size: 11px;
         text-decoration: underline;
         margin-left: 6px;
-    }
-
-    .shop-infinite-ready .shop-page-wittchen .shop-pagination-fallback {
-        display: none;
-    }
-
-    .shop-page-wittchen .shop-infinite-loader {
-        margin: 20px auto 4px;
-        min-height: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        color: #5f554b;
-        font-size: 12px;
-    }
-
-    .shop-page-wittchen .shop-infinite-spinner {
-        width: 14px;
-        height: 14px;
-        border-radius: 999px;
-        border: 2px solid #d7d2cb;
-        border-top-color: #2a2826;
-        animation: moretti-spin 0.8s linear infinite;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .shop-page-wittchen .shop-infinite-loader.is-loading .shop-infinite-spinner {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .shop-page-wittchen .shop-infinite-sentinel {
-        width: 100%;
-        height: 1px;
-    }
-
-    .shop-page-wittchen .shop-infinite-retry {
-        border: 1px solid #cfc9c1;
-        background: #fff;
-        color: #2a2826;
-        padding: 5px 10px;
-        font-size: 11px;
-        cursor: pointer;
-    }
-
-    .shop-page-wittchen .shop-infinite-retry:hover {
-        background: #f7f7f7;
-    }
-
-    @keyframes moretti-spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
     }
 
     .shop-page-wittchen .products-grid {
@@ -1909,234 +1840,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.product-card').forEach(initProductCard);
 
-    // Infinite scroll loading
-    const productsGrid = document.getElementById('products-grid');
-    const infiniteLoader = document.getElementById('shop-infinite-loader');
-    const infiniteText = document.getElementById('shop-infinite-text');
-    const infiniteSentinel = document.getElementById('shop-infinite-sentinel');
-    const infiniteRetry = document.getElementById('shop-infinite-retry');
-
-    if (productsGrid && infiniteLoader && infiniteText && infiniteSentinel) {
-        let currentPage = parseInt(infiniteLoader.dataset.currentPage || '1', 10);
-        let maxPages = parseInt(infiniteLoader.dataset.maxPages || '1', 10);
-        const totalProducts = parseInt(infiniteLoader.dataset.totalProducts || '0', 10);
-        let nextUrl = infiniteLoader.dataset.nextUrl || '';
-        let isLoading = false;
-        let hasLoadError = false;
-        let observer = null;
-        const loadedPageUrls = new Set();
-        let fallbackScrollHandler = null;
-        let proximityCheckHandler = null;
-        let proximityCheckRaf = null;
-
-        const setInfiniteStatus = (status, message) => {
-            infiniteLoader.classList.toggle('is-loading', status === 'loading');
-            infiniteText.textContent = message;
-            if (infiniteRetry) {
-                if (status === 'error') {
-                    infiniteRetry.hidden = false;
-                    infiniteRetry.textContent = 'Spróbuj ponownie';
-                } else if (status === 'idle' && nextUrl && currentPage < maxPages) {
-                    infiniteRetry.hidden = false;
-                    infiniteRetry.textContent = 'Załaduj więcej';
-                } else {
-                    infiniteRetry.hidden = true;
-                }
-            }
-        };
-
-        const stopInfinite = ({ message = '', hideLoader = false } = {}) => {
-            setInfiniteStatus('idle', message);
-            if (observer) {
-                observer.disconnect();
-            }
-            if (fallbackScrollHandler) {
-                window.removeEventListener('scroll', fallbackScrollHandler);
-                fallbackScrollHandler = null;
-            }
-            if (proximityCheckHandler) {
-                window.removeEventListener('scroll', proximityCheckHandler);
-                window.removeEventListener('resize', proximityCheckHandler);
-                proximityCheckHandler = null;
-            }
-            if (infiniteSentinel.parentNode) {
-                infiniteSentinel.parentNode.removeChild(infiniteSentinel);
-            }
-            if (infiniteRetry) {
-                infiniteRetry.hidden = true;
-            }
-            if (hideLoader) {
-                infiniteLoader.style.display = 'none';
-            }
-        };
-
-        const shouldHideByCount = () => {
-            if (!Number.isInteger(totalProducts) || totalProducts <= 0) {
-                return false;
-            }
-            const renderedCards = productsGrid.querySelectorAll('.product-card').length;
-            return renderedCards >= totalProducts;
-        };
-
-        const syncInfiniteVisibilityByCount = () => {
-            if (shouldHideByCount()) {
-                stopInfinite({ hideLoader: true });
-                return true;
-            }
-            return false;
-        };
-
-        const loadNextPage = async () => {
-            if (isLoading || hasLoadError || !nextUrl || currentPage >= maxPages) {
-                return;
-            }
-
-            if (loadedPageUrls.has(nextUrl)) {
-                stopInfinite({ message: 'Zatrzymano automatyczne ładowanie (wykryto pętlę stron).' });
-                return;
-            }
-
-            isLoading = true;
-            setInfiniteStatus('loading', 'Ładowanie produktów...');
-            const requestedUrl = nextUrl;
-
-            try {
-                const response = await fetch(requestedUrl, {
-                    credentials: 'same-origin',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Nie udało się pobrać kolejnej strony.');
-                }
-
-                const html = await response.text();
-                const parsedDoc = new DOMParser().parseFromString(html, 'text/html');
-                const nextGrid = parsedDoc.getElementById('products-grid');
-
-                if (!nextGrid) {
-                    stopInfinite({ hideLoader: true });
-                    return;
-                }
-
-                const incomingCards = Array.from(nextGrid.querySelectorAll('.product-card'));
-                if (incomingCards.length === 0) {
-                    stopInfinite({ hideLoader: true });
-                    return;
-                }
-                incomingCards.forEach((card) => {
-                    productsGrid.appendChild(card);
-                    initProductCard(card);
-                });
-
-                if (syncInfiniteVisibilityByCount()) {
-                    return;
-                }
-
-                const incomingLoader = parsedDoc.getElementById('shop-infinite-loader');
-                if (incomingLoader) {
-                    currentPage = parseInt(incomingLoader.dataset.currentPage || String(currentPage + 1), 10);
-                    maxPages = parseInt(incomingLoader.dataset.maxPages || String(maxPages), 10);
-                    nextUrl = incomingLoader.dataset.nextUrl || '';
-                } else {
-                    currentPage += 1;
-                    nextUrl = '';
-                }
-                loadedPageUrls.add(requestedUrl);
-                hasLoadError = false;
-
-                infiniteLoader.dataset.currentPage = String(currentPage);
-                infiniteLoader.dataset.maxPages = String(maxPages);
-                infiniteLoader.dataset.nextUrl = nextUrl;
-
-                if (!nextUrl || currentPage >= maxPages) {
-                    stopInfinite({ hideLoader: true });
-                } else {
-                    setInfiniteStatus('idle', 'Przewiń, aby załadować więcej produktów');
-                }
-            } catch (error) {
-                // Nie wyświetlamy błędu użytkownikowi – brak kolejnych produktów lub błąd sieci = po prostu ukrywamy loader.
-                hasLoadError = false;
-                stopInfinite({ hideLoader: true });
-            } finally {
-                isLoading = false;
-            }
-        };
-
-        if (infiniteRetry) {
-            infiniteRetry.addEventListener('click', () => {
-                if (isLoading || !nextUrl) {
-                    return;
-                }
-                hasLoadError = false;
-                loadNextPage();
-            });
-        }
-
-        if (syncInfiniteVisibilityByCount()) {
-            return;
-        }
-
-        if (!nextUrl || currentPage >= maxPages) {
-            stopInfinite({ hideLoader: true });
-            return;
-        }
-
-        // Ładowanie tylko gdy końcówka grida pojawia się na ekranie (mały margines pod viewportem).
-        const preloadDistance = 200;
-
-        const checkProximity = () => {
-            if (isLoading || hasLoadError || !nextUrl || currentPage >= maxPages) {
-                return;
-            }
-            const loaderRect = infiniteLoader.getBoundingClientRect();
-            const sentinelRect = infiniteSentinel.getBoundingClientRect();
-            const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-
-            const loaderNearViewport = loaderRect.top <= viewportHeight + preloadDistance;
-            const sentinelNearViewport = sentinelRect.top <= viewportHeight + preloadDistance;
-
-            if ((loaderNearViewport || sentinelNearViewport) && !isLoading && !hasLoadError) {
-                loadNextPage();
-            }
-        };
-
-        proximityCheckHandler = () => {
-            if (proximityCheckRaf) {
-                cancelAnimationFrame(proximityCheckRaf);
-            }
-            proximityCheckRaf = requestAnimationFrame(checkProximity);
-        };
-
-        window.addEventListener('scroll', proximityCheckHandler, { passive: true });
-        window.addEventListener('resize', proximityCheckHandler);
-
-        if ('IntersectionObserver' in window) {
-            observer = new IntersectionObserver((entries) => {
-                const hasVisibleSentinel = entries.some((entry) => entry.isIntersecting);
-                if (hasVisibleSentinel && !hasLoadError) {
-                    loadNextPage();
-                }
-            }, {
-                rootMargin: preloadDistance + 'px 0px ' + preloadDistance + 'px 0px'
-            });
-            observer.observe(infiniteSentinel);
-        } else {
-            // Fallback for very old browsers.
-            fallbackScrollHandler = () => {
-                const rect = infiniteSentinel.getBoundingClientRect();
-                if (rect.top <= window.innerHeight + preloadDistance && !hasLoadError) {
-                    loadNextPage();
-                }
-            };
-            window.addEventListener('scroll', fallbackScrollHandler, { passive: true });
-        }
-
-        // Initial proximity check in case user is already at bottom on load.
-        checkProximity();
-    }
 });
 </script>
 
