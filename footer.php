@@ -38,9 +38,6 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             <div>
                 <h4 style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #2a2826; margin-bottom: 32px; text-transform: uppercase;">Kontakt</h4>
                 <div style="font-size: 13px; color: #766a5d; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.9; font-weight: 500;">
-                    <p style="margin: 0 0 4px 0;">LIDA DUO Lilija Cała</p>
-                    <p style="margin: 0 0 4px 0;">NIP: 5222973237</p>
-                    <p style="margin: 0 0 14px 0;">ul. Lechicka 8/17, 02-156 Warszawa</p>
                     <p style="margin: 0 0 6px 0;"><a href="mailto:kontakt@morettifashion.com" style="color: #766a5d; text-decoration: none;">kontakt@morettifashion.com</a></p>
                     <p style="margin: 0 0 6px 0;"><a href="tel:+48725538100" style="color: #766a5d; text-decoration: none;">TEL: (+48) 725 538 100</a></p>
                     <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
