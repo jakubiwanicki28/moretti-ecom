@@ -325,7 +325,7 @@ $home_gender_women_url = $home_gender_resolve_url(array('portfele-damskie'));
     width: 100%;
     aspect-ratio: 3 / 4 !important;
     overflow: hidden;
-    background: #f7f5f2 !important;
+    background: #F2F2F2 !important;
 }
 
 .home-products-item .product-image-slide {
@@ -345,8 +345,9 @@ $home_gender_women_url = $home_gender_resolve_url(array('portfele-damskie'));
     display: block;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center center !important;
+    background: #F2F2F2 !important;
 }
 
 .home-products-item .product-image-slide > a {
@@ -676,7 +677,8 @@ $home_gender_women_url = $home_gender_resolve_url(array('portfele-damskie'));
 #featured-slider .slider-image img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
+    background: #F2F2F2;
 }
 
 #featured-slider .home-featured-image-nav {

@@ -738,8 +738,9 @@
 .product-image img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center center !important;
+    background: #F2F2F2 !important;
     transition: none !important;
 }
 

@@ -1446,7 +1446,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
     .shop-page-wittchen .product-image {
         position: relative !important;
         aspect-ratio: 3 / 4 !important;
-        background: #f7f5f2 !important;
+        background: #F2F2F2 !important;
         width: 100% !important;
         overflow: hidden !important;
     }
@@ -1454,7 +1454,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
     .shop-page-wittchen .product-image img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
         object-position: center center !important;
     }
 

@@ -95,7 +95,7 @@ if ($is_home_carousel) :
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <a href="<?php the_permalink(); ?>">
                                     <?php echo wp_get_attachment_image($image_id, 'large', false, array(
-                                        'class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity',
+                                        'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity',
                                     )); ?>
                                 </a>
                             </div>
@@ -107,7 +107,7 @@ if ($is_home_carousel) :
                                 <img
                                     src="<?php echo esc_url($home_placeholder_src); ?>"
                                     alt="<?php echo esc_attr(get_the_title()); ?>"
-                                    class="w-full h-full object-cover group-hover:opacity-90 transition-opacity"
+                                    class="w-full h-full object-contain group-hover:opacity-90 transition-opacity"
                                 >
                             </a>
                         </div>
@@ -163,7 +163,7 @@ endif;
     <div class="product-card bg-white moretti-card-43">
         
         <!-- Product Image with Gallery Slider -->
-        <div class="relative overflow-hidden bg-gray-50 mb-3 product-image-slider moretti-card-media" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+        <div class="relative overflow-hidden mb-3 product-image-slider moretti-card-media" style="background: #F2F2F2;" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
             <?php
             // Get product gallery images
             $gallery_image_ids = $product->get_gallery_image_ids();
@@ -195,12 +195,12 @@ endif;
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
                             <?php echo wp_get_attachment_image($image_id, 'large', false, array(
-                                'class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity'
+                                'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity'
                             )); ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <?php echo woocommerce_get_product_thumbnail('large', array('class' => 'w-full h-full object-cover group-hover:opacity-90 transition-opacity')); ?>
+                    <?php echo woocommerce_get_product_thumbnail('large', array('class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity')); ?>
                 <?php endif; ?>
             </a>
 
