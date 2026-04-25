@@ -887,35 +887,41 @@ if (!function_exists('moretti_render_home_carousel_section')) {
             }
         }
 
-        $query_args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => 30,
-            'meta_query'     => array(
-                'relation'         => 'OR',
-                'featured_clause'  => array(
-                    'key'     => '_moretti_featured_homepage',
-                    'value'   => '1',
-                    'compare' => '=',
-                ),
-                'not_featured_clause' => array(
-                    'key'     => '_moretti_featured_homepage',
-                    'compare' => 'NOT EXISTS',
-                ),
-            ),
-            'orderby'        => array(
-                'featured_clause' => 'DESC',
-                'date'            => 'DESC',
-            ),
-            'tax_query'      => array(
-                array(
-                    'taxonomy' => 'product_cat',
-                    'field'    => 'slug',
-                    'terms'    => $category_slug,
-                ),
-            ),
-        );
+        $cat_tax_query = array(array(
+            'taxonomy' => 'product_cat',
+            'field'    => 'slug',
+            'terms'    => $category_slug,
+        ));
 
-        $loop = new WP_Query($query_args);
+        // Featured product IDs first
+        $featured_ids = get_posts(array(
+            'post_type'   => 'product',
+            'numberposts' => 30,
+            'fields'      => 'ids',
+            'meta_key'    => '_moretti_featured_homepage',
+            'meta_value'  => '1',
+            'tax_query'   => $cat_tax_query,
+        ));
+
+        // All product IDs in category
+        $all_ids = get_posts(array(
+            'post_type'   => 'product',
+            'numberposts' => 30,
+            'fields'      => 'ids',
+            'tax_query'   => $cat_tax_query,
+        ));
+
+        // Merge: featured first, then the rest (no duplicates)
+        $sorted_ids = array_merge($featured_ids, array_diff($all_ids, $featured_ids));
+
+        $loop = new WP_Query(array(
+            'post_type'      => 'product',
+            'posts_per_page' => count($sorted_ids) ?: 1,
+            'post__in'       => $sorted_ids ?: array(0),
+            'orderby'        => 'post__in',
+        ));
+
+        $featured_ids_set = array_flip($featured_ids); // fast O(1) lookup
         ?>
         <section id="<?php echo esc_attr($section_id); ?>" class="<?php echo esc_attr($section_classes); ?>">
             <div style="max-width: 1260px; margin: 0 auto; padding: 0 1rem;">
@@ -939,7 +945,10 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                                 break;
                             }
 
-                            $product = wc_get_product(get_the_ID());
+                            $current_id  = get_the_ID();
+                            $is_featured = isset($featured_ids_set[$current_id]);
+
+                            $product = wc_get_product($current_id);
                             if ($product instanceof WC_Product) {
                                 $sku = (string) $product->get_sku();
                             } else {
@@ -955,10 +964,12 @@ if (!function_exists('moretti_render_home_carousel_section')) {
                             }
 
                             if ($model_key === '') {
-                                $model_key = 'id-' . get_the_ID();
+                                $model_key = 'id-' . $current_id;
                             }
 
-                            if (isset($rendered_models[$model_key])) {
+                            // Featured products always show (user explicitly chose them).
+                            // Non-featured products are deduplicated by model key.
+                            if (!$is_featured && isset($rendered_models[$model_key])) {
                                 continue;
                             }
 
