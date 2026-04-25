@@ -890,6 +890,22 @@ if (!function_exists('moretti_render_home_carousel_section')) {
         $query_args = array(
             'post_type'      => 'product',
             'posts_per_page' => 30,
+            'meta_query'     => array(
+                'relation'         => 'OR',
+                'featured_clause'  => array(
+                    'key'     => '_moretti_featured_homepage',
+                    'value'   => '1',
+                    'compare' => '=',
+                ),
+                'not_featured_clause' => array(
+                    'key'     => '_moretti_featured_homepage',
+                    'compare' => 'NOT EXISTS',
+                ),
+            ),
+            'orderby'        => array(
+                'featured_clause' => 'DESC',
+                'date'            => 'DESC',
+            ),
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'product_cat',
@@ -966,6 +982,45 @@ if (!function_exists('moretti_render_home_carousel_section')) {
         wp_reset_postdata();
     }
 }
+
+// Homepage Featured Products Metabox
+function moretti_homepage_featured_metabox() {
+    add_meta_box(
+        'moretti_homepage_featured',
+        'Strona główna',
+        'moretti_homepage_featured_metabox_html',
+        'product',
+        'side',
+        'default'
+    );
+}
+add_action('add_meta_boxes', 'moretti_homepage_featured_metabox');
+
+function moretti_homepage_featured_metabox_html($post) {
+    wp_nonce_field('moretti_homepage_featured_nonce', 'moretti_homepage_featured_nonce');
+    $checked = get_post_meta($post->ID, '_moretti_featured_homepage', true) === '1';
+    ?>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" name="moretti_featured_homepage" value="1" <?php checked($checked); ?>>
+        Wyróżnij na stronie głównej
+    </label>
+    <p style="color:#666;font-size:11px;margin-top:6px;">Produkt pojawi się jako pierwszy w swojej sekcji (Nowości, Bestsellery, Okazje).</p>
+    <?php
+}
+
+function moretti_homepage_featured_save($post_id) {
+    if (!isset($_POST['moretti_homepage_featured_nonce'])) return;
+    if (!wp_verify_nonce($_POST['moretti_homepage_featured_nonce'], 'moretti_homepage_featured_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (!empty($_POST['moretti_featured_homepage'])) {
+        update_post_meta($post_id, '_moretti_featured_homepage', '1');
+    } else {
+        delete_post_meta($post_id, '_moretti_featured_homepage');
+    }
+}
+add_action('save_post_product', 'moretti_homepage_featured_save');
 
 // Enqueue styles and scripts
 function moretti_enqueue_assets() {

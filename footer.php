@@ -74,6 +74,12 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
                     <li style="margin-bottom: 14px;"><a href="<?php echo esc_url($moretti_footer_page_url(array('zwroty'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Zwroty</a></li>
                     <li><a href="<?php echo esc_url($moretti_footer_page_url(array('reklamacje'))); ?>" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #766a5d; text-decoration: none; transition: color 0.2s; font-weight: 500;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Reklamacje</a></li>
                 </ul>
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #f3f4f6;">
+                    <a href="https://portfelland.pl/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #2a2826; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        Sprzedaż hurtowa
+                    </a>
+                </div>
             </div>
         </div>
 

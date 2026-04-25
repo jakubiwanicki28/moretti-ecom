@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// One-time: update Wielkość attribute for Animals & Crown products
+require_once get_template_directory() . '/update-wielkosc.php';
+
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {
     update_option('woocommerce_currency', 'PLN');
