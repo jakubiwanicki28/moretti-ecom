@@ -65,7 +65,7 @@
         <!-- Social & Copyright Bar -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 32px 0; border-top: 1px solid #f3f4f6; gap: 24px;">
             <div style="display: flex; gap: 24px;">
-                <a href="#" style="font-size: 12px; color: #766a5d; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; transition: color 0.2s;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Facebook</a>
+                <a href="https://www.facebook.com/profile.php?id=100094137496882" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: #766a5d; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; transition: color 0.2s;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Facebook</a>
                 <a href="#" style="font-size: 12px; color: #766a5d; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; transition: color 0.2s;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Instagram</a>
                 <a href="#" style="font-size: 12px; color: #766a5d; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; transition: color 0.2s;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">LinkedIn</a>
             </div>
