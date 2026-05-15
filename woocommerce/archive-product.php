@@ -146,9 +146,13 @@ if (isset($_GET['orderby']) && $_GET['orderby'] !== '') {
 if ($is_wishlist_view) {
     $moretti_current_query_args['wishlist'] = '1';
 }
+if (isset($_GET['post_type']) && $_GET['post_type'] !== '') {
+    $moretti_current_query_args['post_type'] = sanitize_text_field(wp_unslash($_GET['post_type']));
+}
 
 $moretti_known_query_args = array(
     's',
+    'post_type',
     'filter_color',
     'filter_kolor',
     'filter_material',
@@ -601,11 +605,17 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                     <?php if (!empty($orderby)) : ?>
                         <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
                     <?php endif; ?>
+                    <?php if (isset($_GET['s']) && $_GET['s'] !== '') : ?>
+                        <input type="hidden" name="s" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['s']))); ?>">
+                    <?php endif; ?>
+                    <?php if (isset($_GET['post_type']) && $_GET['post_type'] !== '') : ?>
+                        <input type="hidden" name="post_type" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['post_type']))); ?>">
+                    <?php endif; ?>
                     <div class="price-range">
-                        <input type="number" name="min_price" placeholder="Od" class="price-input" 
+                        <input type="number" name="min_price" placeholder="Od" class="price-input"
                                value="<?php echo isset($_GET['min_price']) ? esc_attr($_GET['min_price']) : ''; ?>">
                         <span class="price-dash">—</span>
-                        <input type="number" name="max_price" placeholder="Do" class="price-input" 
+                        <input type="number" name="max_price" placeholder="Do" class="price-input"
                                value="<?php echo isset($_GET['max_price']) ? esc_attr($_GET['max_price']) : ''; ?>">
                     </div>
                     <button type="submit" class="filter-btn">Zastosuj</button>
@@ -786,6 +796,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                             <?php endif; ?>
                             <?php if (isset($_GET['s']) && $_GET['s'] !== '') : ?>
                                 <input type="hidden" name="s" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['s']))); ?>">
+                            <?php endif; ?>
+                            <?php if (isset($_GET['post_type']) && $_GET['post_type'] !== '') : ?>
+                                <input type="hidden" name="post_type" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['post_type']))); ?>">
                             <?php endif; ?>
                             <?php if (!empty($orderby)) : ?>
                                 <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
