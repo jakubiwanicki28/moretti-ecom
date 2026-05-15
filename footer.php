@@ -83,16 +83,12 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             </div>
         </div>
 
-        <!-- Social & Copyright Bar -->
+        <!-- Copyright Bar -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 32px 0; border-top: 1px solid #f3f4f6; gap: 24px;">
-            <div style="display: flex; gap: 24px;">
-                <a href="https://www.instagram.com/morettigalanteria/" target="_blank" style="font-size: 12px; color: #766a5d; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; transition: color 0.2s;" onmouseover="this.style.color='#2a2826'" onmouseout="this.style.color='#766a5d'">Instagram</a>
-            </div>
-            
             <p style="font-size: 9px; color: #a8a09d; text-transform: uppercase; letter-spacing: 0.15em; margin: 0; font-weight: 600;">
                 &copy; <?php echo date('Y'); ?> MORETTI. WSZELKIE PRAWA ZASTRZEŻONE. POWERED BY MORETTI.
             </p>
-            
+
             <p style="font-size: 9px; color: #a8a09d; text-transform: uppercase; letter-spacing: 0.15em; margin: 0; font-weight: 600;">
                 DESIGN & DEVELOPED BY VISUAL CONTENT
             </p>
