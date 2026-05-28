@@ -1121,7 +1121,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         gap: 16px;
         margin-bottom: 24px;
         justify-content: center;
-        max-width: 720px;
+        max-width: 960px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -1172,10 +1172,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         opacity: 1;
     }
 
-    /* Single image (no slideshow) — keep static positioning */
-    .moretti-subcategory-tile-image:not([data-slideshow]) .moretti-subcategory-slide {
-        position: relative;
-    }
+    /* Single image — still absolute so object-fit: cover fills the aspect-ratio box */
 
     .moretti-subcategory-tile:hover .moretti-subcategory-slide.is-active {
         transform: scale(1.04);
