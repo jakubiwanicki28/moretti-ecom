@@ -1118,21 +1118,15 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
     .moretti-subcategory-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        gap: 20px;
         margin-bottom: 24px;
-        justify-content: center;
-        max-width: none;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     /* 3+ items: 3 columns on desktop */
     @media (min-width: 768px) {
         .moretti-subcategory-grid:not([data-count="2"]) {
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
             margin-bottom: 30px;
-            max-width: none;
         }
     }
 
@@ -1158,11 +1152,12 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         background: #f7f6f4;
     }
 
-    .moretti-subcategory-slide {
+    .moretti-subcategory-tile-image .moretti-subcategory-slide {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
+        max-width: none;
         object-fit: cover;
         opacity: 0;
         transition: opacity 0.8s ease, transform 0.35s ease;
