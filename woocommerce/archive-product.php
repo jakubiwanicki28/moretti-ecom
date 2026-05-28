@@ -1121,7 +1121,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         gap: 16px;
         margin-bottom: 24px;
         justify-content: center;
-        max-width: 960px;
+        max-width: none;
         margin-left: auto;
         margin-right: auto;
     }
