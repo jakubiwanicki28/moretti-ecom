@@ -1120,6 +1120,10 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
         margin-bottom: 24px;
+        justify-content: center;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* 3+ items: 3 columns on desktop */
@@ -1128,6 +1132,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
+            max-width: none;
         }
     }
 
@@ -1148,7 +1153,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .moretti-subcategory-tile-image {
         position: relative;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 3 / 4;
         overflow: hidden;
         background: #f7f6f4;
     }
