@@ -710,17 +710,57 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             </div>
 
             <?php if ($moretti_has_virtual_children && !empty($moretti_virtual_children_terms)) : ?>
-            <div class="moretti-subcategory-grid">
+            <div class="moretti-subcategory-grid" data-count="<?php echo count($moretti_virtual_children_terms); ?>">
                 <?php foreach ($moretti_virtual_children_terms as $sub_term) :
                     $sub_link = get_term_link($sub_term);
                     if (is_wp_error($sub_link)) continue;
-                    $thumb_id = get_term_meta($sub_term->term_id, 'thumbnail_id', true);
-                    $thumb_url = $thumb_id ? wp_get_attachment_image_url($thumb_id, 'medium_large') : '';
+
+                    // Fetch up to 3 random product images from this category for slideshow.
+                    $slide_images = array();
+                    $slide_products = get_posts(array(
+                        'post_type'      => 'product',
+                        'posts_per_page' => 3,
+                        'post_status'    => 'publish',
+                        'orderby'        => 'rand',
+                        'fields'         => 'ids',
+                        'tax_query'      => array(array(
+                            'taxonomy' => 'product_cat',
+                            'field'    => 'term_id',
+                            'terms'    => $sub_term->term_id,
+                        )),
+                    ));
+                    foreach ($slide_products as $slide_pid) {
+                        $img_id = get_post_thumbnail_id($slide_pid);
+                        if ($img_id) {
+                            $img_url = wp_get_attachment_image_url($img_id, 'medium_large');
+                            if ($img_url) {
+                                $slide_images[] = $img_url;
+                            }
+                        }
+                    }
+
+                    // Fallback: category thumbnail → placeholder.
+                    if (empty($slide_images)) {
+                        $thumb_id = get_term_meta($sub_term->term_id, 'thumbnail_id', true);
+                        if ($thumb_id) {
+                            $thumb_url = wp_get_attachment_image_url($thumb_id, 'medium_large');
+                            if ($thumb_url) {
+                                $slide_images[] = $thumb_url;
+                            }
+                        }
+                    }
                 ?>
                     <a href="<?php echo esc_url($sub_link); ?>" class="moretti-subcategory-tile">
-                        <div class="moretti-subcategory-tile-image">
-                            <?php if ($thumb_url) : ?>
-                                <img src="<?php echo esc_url($thumb_url); ?>" alt="<?php echo esc_attr($sub_term->name); ?>" loading="lazy" />
+                        <div class="moretti-subcategory-tile-image"<?php echo count($slide_images) > 1 ? ' data-slideshow' : ''; ?>>
+                            <?php if (!empty($slide_images)) : ?>
+                                <?php foreach ($slide_images as $i => $slide_url) : ?>
+                                    <img
+                                        class="moretti-subcategory-slide<?php echo $i === 0 ? ' is-active' : ''; ?>"
+                                        src="<?php echo esc_url($slide_url); ?>"
+                                        alt="<?php echo esc_attr($sub_term->name); ?>"
+                                        <?php echo $i === 0 ? '' : 'loading="lazy"'; ?>
+                                    />
+                                <?php endforeach; ?>
                             <?php else : ?>
                                 <div class="moretti-subcategory-tile-placeholder">
                                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1078,8 +1118,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         margin-bottom: 24px;
     }
 
+    /* 3+ items: 3 columns on desktop */
     @media (min-width: 768px) {
-        .moretti-subcategory-grid {
+        .moretti-subcategory-grid:not([data-count="2"]) {
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
@@ -1102,19 +1143,32 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
     }
 
     .moretti-subcategory-tile-image {
+        position: relative;
         aspect-ratio: 4 / 3;
         overflow: hidden;
         background: #f7f6f4;
     }
 
-    .moretti-subcategory-tile-image img {
+    .moretti-subcategory-slide {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.35s ease;
+        opacity: 0;
+        transition: opacity 0.8s ease, transform 0.35s ease;
     }
 
-    .moretti-subcategory-tile:hover .moretti-subcategory-tile-image img {
+    .moretti-subcategory-slide.is-active {
+        opacity: 1;
+    }
+
+    /* Single image (no slideshow) — keep static positioning */
+    .moretti-subcategory-tile-image:not([data-slideshow]) .moretti-subcategory-slide {
+        position: relative;
+    }
+
+    .moretti-subcategory-tile:hover .moretti-subcategory-slide.is-active {
         transform: scale(1.04);
     }
 
@@ -1997,6 +2051,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.product-card').forEach(initProductCard);
 
+});
+</script>
+
+<script>
+/* Subcategory tile image slideshow — crossfade every 3s */
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.moretti-subcategory-tile-image[data-slideshow]').forEach(function(container) {
+        var slides = container.querySelectorAll('.moretti-subcategory-slide');
+        if (slides.length <= 1) return;
+        var current = 0;
+        setInterval(function() {
+            slides[current].classList.remove('is-active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('is-active');
+        }, 3000);
+    });
 });
 </script>
 
