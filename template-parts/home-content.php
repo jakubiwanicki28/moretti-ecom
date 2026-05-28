@@ -20,9 +20,8 @@
 <!-- 4. GENDER SPLIT / CATEGORIES (Screenshot 3) -->
 <?php
 // Resolve category URLs from the same source-of-truth as the header nav,
-// so the homepage tiles always point to the live WooCommerce category pages
-// (slugs: portfele-meskie / portfele-damskie). Falls back to the shop page
-// if a category cannot be resolved, mirroring moretti_get_header_nav_items().
+// so the homepage tiles always point to the live WooCommerce category pages.
+// Falls back through slug candidates, mirroring moretti_get_header_nav_items().
 $home_gender_shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
 $home_gender_resolve_url = static function(array $slugs) use ($home_gender_shop_url) {
     foreach ($slugs as $slug) {
@@ -37,7 +36,7 @@ $home_gender_resolve_url = static function(array $slugs) use ($home_gender_shop_
     return $home_gender_shop_url;
 };
 $home_gender_men_url   = $home_gender_resolve_url(array('portfele-meskie'));
-$home_gender_women_url = $home_gender_resolve_url(array('portfele-damskie'));
+$home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-damskie'));
 ?>
 <section style="max-width: 1260px; margin: 0 auto; padding: 0 1rem 4rem;">
 <div id="home-gender-split-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 overflow-hidden" style="height: clamp(420px, 72vh, 860px);">

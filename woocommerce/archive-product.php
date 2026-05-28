@@ -277,7 +277,8 @@ $tax_query = array('relation' => 'AND');
 $moretti_virtual_subcategories = function_exists('moretti_get_virtual_subcategories')
     ? moretti_get_virtual_subcategories()
     : array();
-$moretti_current_cat_slug = is_product_category() ? get_queried_object()->slug : '';
+$moretti_queried_cat = is_product_category() ? get_queried_object() : null;
+$moretti_current_cat_slug = ($moretti_queried_cat instanceof WP_Term) ? $moretti_queried_cat->slug : '';
 $moretti_has_virtual_children = isset($moretti_virtual_subcategories[$moretti_current_cat_slug]);
 $moretti_virtual_children_terms = array();
 
@@ -305,7 +306,7 @@ if (is_product_category()) {
         $tax_query[] = array(
             'taxonomy' => 'product_cat',
             'field' => 'slug',
-            'terms' => get_queried_object()->slug,
+            'terms' => $moretti_current_cat_slug,
         );
     }
 }
@@ -730,7 +731,17 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         </div>
                         <span class="moretti-subcategory-tile-label"><?php echo esc_html($sub_term->name); ?></span>
                         <?php if ($sub_term->count > 0) : ?>
-                            <span class="moretti-subcategory-tile-count"><?php echo (int) $sub_term->count; ?> <?php echo (int) $sub_term->count === 1 ? 'produkt' : 'produktów'; ?></span>
+                            <span class="moretti-subcategory-tile-count"><?php
+                                $n = (int) $sub_term->count;
+                                echo $n . ' ';
+                                if ($n === 1) {
+                                    echo 'produkt';
+                                } elseif ($n % 10 >= 2 && $n % 10 <= 4 && ($n % 100 < 12 || $n % 100 > 14)) {
+                                    echo 'produkty';
+                                } else {
+                                    echo 'produktów';
+                                }
+                            ?></span>
                         <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
