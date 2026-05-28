@@ -451,36 +451,55 @@
                 return null;
             };
     
-            $build_header_panel_data = static function($term) {
+            $build_header_panel_data = static function($term, $custom_subcategory_slugs = array()) {
                 $result = array(
                     'categories' => array(),
                 );
-    
+
                 if (!$term || is_wp_error($term)) {
                     return $result;
                 }
-    
-                $children = get_terms(array(
-                    'taxonomy'   => 'product_cat',
-                    'hide_empty' => true,
-                    'parent'     => (int) $term->term_id,
-                    'orderby'    => 'name',
-                    'order'      => 'ASC',
-                ));
-                if (!is_wp_error($children) && !empty($children)) {
-                    $result['categories'] = $children;
+
+                // Use custom subcategory slugs if provided (virtual parent-child mapping).
+                if (!empty($custom_subcategory_slugs)) {
+                    $custom_children = array();
+                    foreach ($custom_subcategory_slugs as $slug) {
+                        $child_term = get_term_by('slug', $slug, 'product_cat');
+                        if ($child_term && !is_wp_error($child_term)) {
+                            $custom_children[] = $child_term;
+                        }
+                    }
+                    if (!empty($custom_children)) {
+                        $result['categories'] = $custom_children;
+                    }
+                } else {
+                    $children = get_terms(array(
+                        'taxonomy'   => 'product_cat',
+                        'hide_empty' => true,
+                        'parent'     => (int) $term->term_id,
+                        'orderby'    => 'name',
+                        'order'      => 'ASC',
+                    ));
+                    if (!is_wp_error($children) && !empty($children)) {
+                        $result['categories'] = $children;
+                    }
                 }
-    
+
                 return $result;
             };
     
+            $virtual_subcategories = function_exists('moretti_get_virtual_subcategories')
+                ? moretti_get_virtual_subcategories()
+                : array();
+
             // Core navigation items – slugi zgodne z kategoriami w WooCommerce.
             // Dla niej / Dla niego mają rozwijane panele; Nowości, Bestsellery, Okazje – tylko link (bez dropdownu).
             $items = array(
                 array(
                     'label'      => 'Dla niej',
-                    'term_slugs' => array('portfele-damskie'),
+                    'term_slugs' => array('dla-niej', 'portfele-damskie'),
                     'expandable' => true,
+                    'custom_subcategories' => isset($virtual_subcategories['dla-niej']) ? $virtual_subcategories['dla-niej'] : array(),
                 ),
                 array(
                     'label'      => 'Dla niego',
@@ -503,17 +522,18 @@
                     'expandable' => false,
                 ),
             );
-    
+
             foreach ($items as &$item) {
                 $term = $resolve_header_category_term($item['term_slugs']);
                 $item['term'] = $term;
-    
+
                 $url = ($term && !is_wp_error($term)) ? get_term_link($term) : $shop_url;
                 if (is_wp_error($url)) {
                     $url = $shop_url;
                 }
                 $item['url'] = $url;
-                $item['panel'] = $build_header_panel_data($term);
+                $custom_subs = isset($item['custom_subcategories']) ? $item['custom_subcategories'] : array();
+                $item['panel'] = $build_header_panel_data($term, $custom_subs);
             }
             unset($item);
     
