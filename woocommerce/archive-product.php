@@ -710,7 +710,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             </div>
 
             <?php if ($moretti_has_virtual_children && !empty($moretti_virtual_children_terms)) : ?>
-            <div class="moretti-subcategory-grid" data-count="<?php echo count($moretti_virtual_children_terms); ?>">
+            <div class="moretti-subcategory-grid">
                 <?php foreach ($moretti_virtual_children_terms as $sub_term) :
                     $sub_link = get_term_link($sub_term);
                     if (is_wp_error($sub_link)) continue;
@@ -785,6 +785,16 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                         <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
+                <div class="moretti-subcategory-tile moretti-subcategory-coming-soon">
+                    <div class="moretti-subcategory-tile-image">
+                        <div class="moretti-subcategory-coming-soon-inner">
+                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity:0.4;margin-bottom:10px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
+                            </svg>
+                            <span class="moretti-coming-soon-text">Więcej kategorii wkrótce</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
 
@@ -1122,9 +1132,8 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         margin-bottom: 24px;
     }
 
-    /* 3+ items: 3 columns on desktop */
     @media (min-width: 768px) {
-        .moretti-subcategory-grid:not([data-count="2"]) {
+        .moretti-subcategory-grid {
             grid-template-columns: repeat(3, 1fr);
             margin-bottom: 30px;
         }
@@ -1147,7 +1156,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .moretti-subcategory-tile-image {
         position: relative;
-        aspect-ratio: 3 / 4;
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         background: #f7f6f4;
     }
@@ -1180,6 +1189,35 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         align-items: center;
         justify-content: center;
         color: #c4b8ab;
+    }
+
+    .moretti-subcategory-coming-soon {
+        border-style: dashed;
+        border-color: #ddd;
+        cursor: default;
+    }
+
+    .moretti-subcategory-coming-soon:hover {
+        border-color: #ddd;
+        box-shadow: none;
+    }
+
+    .moretti-subcategory-coming-soon-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #b0a899;
+    }
+
+    .moretti-coming-soon-text {
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-align: center;
+        padding: 0 16px;
     }
 
     .moretti-subcategory-tile-label {
