@@ -31,13 +31,15 @@ add_action('after_setup_theme', 'moretti_wallet_setup', 20);
 // Professional Wallet Categories
 function moretti_create_wallet_categories() {
     if (!class_exists('WooCommerce')) return;
-    
+
     $categories = array(
         'portfele' => 'Portfele',
         'wizytowniki' => 'Wizytowniki',
-        'akcesoria' => 'Akcesoria'
+        'akcesoria' => 'Akcesoria',
+        'dla-niej' => 'Dla niej',
+        'torebki' => 'Torebki',
     );
-    
+
     foreach ($categories as $slug => $name) {
         if (!get_term_by('slug', $slug, 'product_cat')) {
             wp_insert_term($name, 'product_cat', array('slug' => $slug));
@@ -45,6 +47,17 @@ function moretti_create_wallet_categories() {
     }
 }
 add_action('init', 'moretti_create_wallet_categories');
+
+/**
+ * Virtual subcategory mapping for navigation and archive display.
+ * Parent category slugs mapped to their "virtual children" slugs.
+ * These don't need to be actual WP parent-child relationships.
+ */
+function moretti_get_virtual_subcategories() {
+    return array(
+        'dla-niej' => array('portfele-damskie', 'torebki'),
+    );
+}
 
 // Register WooCommerce Attributes for Filters
 function moretti_register_attributes() {

@@ -272,13 +272,43 @@ if ($is_wishlist_view) {
 // Initialize tax_query
 $tax_query = array('relation' => 'AND');
 
+// Virtual subcategory support: on parent category pages (e.g. "dla-niej"),
+// include products from all virtual children instead of just the parent slug.
+$moretti_virtual_subcategories = function_exists('moretti_get_virtual_subcategories')
+    ? moretti_get_virtual_subcategories()
+    : array();
+$moretti_queried_cat = is_product_category() ? get_queried_object() : null;
+$moretti_current_cat_slug = ($moretti_queried_cat instanceof WP_Term) ? $moretti_queried_cat->slug : '';
+$moretti_has_virtual_children = isset($moretti_virtual_subcategories[$moretti_current_cat_slug]);
+$moretti_virtual_children_terms = array();
+
+if ($moretti_has_virtual_children) {
+    foreach ($moretti_virtual_subcategories[$moretti_current_cat_slug] as $child_slug) {
+        $child_term = get_term_by('slug', $child_slug, 'product_cat');
+        if ($child_term && !is_wp_error($child_term)) {
+            $moretti_virtual_children_terms[] = $child_term;
+        }
+    }
+}
+
 // Handle category filter
 if (is_product_category()) {
-    $tax_query[] = array(
-        'taxonomy' => 'product_cat',
-        'field' => 'slug',
-        'terms' => get_queried_object()->slug,
-    );
+    if ($moretti_has_virtual_children && !empty($moretti_virtual_children_terms)) {
+        // Parent category with virtual children: include products from all children.
+        $child_slugs = array_map(static function($t) { return $t->slug; }, $moretti_virtual_children_terms);
+        $child_slugs[] = $moretti_current_cat_slug; // also include direct parent products
+        $tax_query[] = array(
+            'taxonomy' => 'product_cat',
+            'field' => 'slug',
+            'terms' => $child_slugs,
+        );
+    } else {
+        $tax_query[] = array(
+            'taxonomy' => 'product_cat',
+            'field' => 'slug',
+            'terms' => $moretti_current_cat_slug,
+        );
+    }
 }
 
 // Handle attribute filters
@@ -679,6 +709,45 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                 </div>
             </div>
 
+            <?php if ($moretti_has_virtual_children && !empty($moretti_virtual_children_terms)) : ?>
+            <div class="moretti-subcategory-grid">
+                <?php foreach ($moretti_virtual_children_terms as $sub_term) :
+                    $sub_link = get_term_link($sub_term);
+                    if (is_wp_error($sub_link)) continue;
+                    $thumb_id = get_term_meta($sub_term->term_id, 'thumbnail_id', true);
+                    $thumb_url = $thumb_id ? wp_get_attachment_image_url($thumb_id, 'medium_large') : '';
+                ?>
+                    <a href="<?php echo esc_url($sub_link); ?>" class="moretti-subcategory-tile">
+                        <div class="moretti-subcategory-tile-image">
+                            <?php if ($thumb_url) : ?>
+                                <img src="<?php echo esc_url($thumb_url); ?>" alt="<?php echo esc_attr($sub_term->name); ?>" loading="lazy" />
+                            <?php else : ?>
+                                <div class="moretti-subcategory-tile-placeholder">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                    </svg>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <span class="moretti-subcategory-tile-label"><?php echo esc_html($sub_term->name); ?></span>
+                        <?php if ($sub_term->count > 0) : ?>
+                            <span class="moretti-subcategory-tile-count"><?php
+                                $n = (int) $sub_term->count;
+                                echo $n . ' ';
+                                if ($n === 1) {
+                                    echo 'produkt';
+                                } elseif ($n % 10 >= 2 && $n % 10 <= 4 && ($n % 100 < 12 || $n % 100 > 14)) {
+                                    echo 'produkty';
+                                } else {
+                                    echo 'produktów';
+                                }
+                            ?></span>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
             <?php if (!$is_search_view) : ?>
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
@@ -1001,6 +1070,81 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
 <style>
+    /* --- Subcategory grid tiles (parent category pages) --- */
+    .moretti-subcategory-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    @media (min-width: 768px) {
+        .moretti-subcategory-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+    }
+
+    .moretti-subcategory-tile {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: #2a2826;
+        border: 1px solid #ececec;
+        overflow: hidden;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .moretti-subcategory-tile:hover {
+        border-color: #c4b8ab;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .moretti-subcategory-tile-image {
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        background: #f7f6f4;
+    }
+
+    .moretti-subcategory-tile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+    }
+
+    .moretti-subcategory-tile:hover .moretti-subcategory-tile-image img {
+        transform: scale(1.04);
+    }
+
+    .moretti-subcategory-tile-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #c4b8ab;
+    }
+
+    .moretti-subcategory-tile-label {
+        display: block;
+        padding: 14px 16px 4px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        line-height: 1.3;
+    }
+
+    .moretti-subcategory-tile-count {
+        display: block;
+        padding: 0 16px 14px;
+        font-size: 11px;
+        color: #8f8275;
+        letter-spacing: 0.01em;
+    }
+
     .shop-page.shop-page-wittchen {
         padding-top: 0;
         padding-bottom: 18px;
