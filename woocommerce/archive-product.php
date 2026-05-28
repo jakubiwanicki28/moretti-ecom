@@ -1156,7 +1156,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .moretti-subcategory-tile-image {
         position: relative;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 3 / 4;
         overflow: hidden;
         background: #f7f6f4;
     }
