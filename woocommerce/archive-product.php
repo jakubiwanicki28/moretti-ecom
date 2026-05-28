@@ -1168,7 +1168,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         position: relative;
     }
 
-    .moretti-subcategory-tile:hover .moretti-subcategory-slide {
+    .moretti-subcategory-tile:hover .moretti-subcategory-slide.is-active {
         transform: scale(1.04);
     }
 
