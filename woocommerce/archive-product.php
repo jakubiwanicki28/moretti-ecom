@@ -1167,7 +1167,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         width: 100%;
         height: 100%;
         max-width: none;
-        object-fit: cover;
+        object-fit: contain;
         opacity: 0;
         transition: opacity 0.8s ease, transform 0.35s ease;
     }
