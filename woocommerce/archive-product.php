@@ -788,6 +788,8 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             </div>
             <?php endif; ?>
 
+            <?php if (!$moretti_has_virtual_children) : ?>
+
             <?php if (!$is_search_view) : ?>
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
@@ -1100,6 +1102,8 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                 </div>
             <?php endif; ?>
             <?php wp_reset_postdata(); ?>
+
+            <?php endif; /* !$moretti_has_virtual_children */ ?>
 
         </main>
         
