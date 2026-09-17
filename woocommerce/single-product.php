@@ -554,10 +554,7 @@ get_header(); ?>
                         $base_ts = current_time('timestamp');
                         $ship_date = wp_date('d.m', strtotime('+1 day', $base_ts));
                         $delivery_date = wp_date('d.m', strtotime('+3 days', $base_ts));
-                        $care_page = get_page_by_path('pielegnacja-portfela', OBJECT, 'page');
-                        $care_page_url = ($care_page instanceof WP_Post && $care_page->post_status === 'publish')
-                            ? get_permalink($care_page->ID)
-                            : home_url('/pielegnacja-portfela/');
+                        $care_link = function_exists('moretti_get_product_care_link') ? moretti_get_product_care_link($product) : null;
                         ?>
                         <div class="product-mvp-status">
                             <div class="product-mvp-status-list">
@@ -573,10 +570,12 @@ get_header(); ?>
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h15l3 4v6a2 2 0 01-2 2h-1a2 2 0 01-4 0H9a2 2 0 01-4 0H4a1 1 0 01-1-1V7zm16 4h-4V9h2.5L19 11z"></path></svg>
                                     Darmowa dostawa od 250 zł
                                 </div>
+                                <?php if ($care_link) : ?>
                                 <div class="product-mvp-status-item">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-4-8h8m-9 10h10a2 2 0 002-2V8l-4-4H7a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <a class="product-care-link" href="<?php echo esc_url($care_page_url); ?>">Pielęgnacja portfela ze skóry naturalnej</a>
+                                    <a class="product-care-link" href="<?php echo esc_url($care_link['url']); ?>"><?php echo esc_html($care_link['label']); ?></a>
                                 </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         

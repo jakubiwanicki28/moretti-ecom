@@ -11,6 +11,7 @@ if (!defined('ABSPATH')) {
 
 // Include site setup engine
 require_once get_template_directory() . '/inc/theme-setup-data.php';
+require_once get_template_directory() . '/inc/product-care.php';
 
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {
