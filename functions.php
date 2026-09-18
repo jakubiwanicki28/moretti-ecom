@@ -335,22 +335,57 @@ function moretti_resolve_attribute_taxonomy(array $candidates, $preferred_term_s
     return $resolved_taxonomies[0];
 }
 
-// Helper function to get hex color from name
-function moretti_get_color_hex($color_name) {
+/**
+ * Rozwiązuje nazwę koloru na hex. Zwraca '' gdy koloru nie ma w mapie — dzięki temu
+ * wywołujący potrafi odróżnić „kolor nieznany" od „kolor przypadkiem szary".
+ *
+ * Dopasowanie jest odporne na myślniki i spacje, bo te same kolory zapisywane są
+ * w sklepie na kilka sposobów („jasnyroz", „jasny roz", „Jasny Róż").
+ */
+function moretti_resolve_color_hex($color_name) {
     $normalized = moretti_normalize_color_key($color_name);
+    if ($normalized === '') {
+        return '';
+    }
+
     $color_map = moretti_color_swatch_hex_map();
 
-    if ($normalized !== '' && isset($color_map[$normalized])) {
+    if (isset($color_map[$normalized])) {
         return $color_map[$normalized];
     }
 
+    $compact = str_replace('-', '', $normalized);
+
     foreach ($color_map as $key => $hex) {
-        if ($normalized !== '' && strpos($normalized, $key) !== false) {
+        if (str_replace('-', '', $key) === $compact) {
             return $hex;
         }
     }
 
-    return '#d1d5db'; // Neutral fallback
+    // Ostatnia szansa: nazwa koloru zaszyta w dłuższym określeniu. Próg długości chroni
+    // przed przypadkowymi trafieniami krótkich kluczy wewnątrz niepowiązanych słów.
+    foreach ($color_map as $key => $hex) {
+        $compact_key = str_replace('-', '', $key);
+        if (strlen($compact_key) >= 5 && strpos($compact, $compact_key) !== false) {
+            return $hex;
+        }
+    }
+
+    return '';
+}
+
+/**
+ * Czy kolor jest w ogóle znany mapie (bez zgadywania po szarym hexie).
+ */
+function moretti_color_hex_is_known($color_name) {
+    return moretti_resolve_color_hex($color_name) !== '';
+}
+
+// Helper function to get hex color from name
+function moretti_get_color_hex($color_name) {
+    $hex = moretti_resolve_color_hex($color_name);
+
+    return $hex !== '' ? $hex : '#d1d5db'; // Neutral fallback
 }
 
 /**
@@ -416,6 +451,16 @@ function moretti_color_swatch_hex_map() {
         'szara' => '#7a7a7a',
         'zlota' => '#caa23b',
         'granatowa' => '#1e2a52',
+        // Rudy/koniakowy — ciepły, rdzawy brąz; wyraźnie cieplejszy od jasnego brązu.
+        'rudy' => '#a85f2d',
+        'ruda' => '#a85f2d',
+        // Oliwka jako osobny odcień, żeby nie spłaszczała się do zwykłej zieleni.
+        'oliwkowy' => '#5a5c3c',
+        'oliwkowa' => '#5a5c3c',
+        'oliwka' => '#5a5c3c',
+        'zielony-oliwka' => '#5a5c3c',
+        'zielona-oliwka' => '#5a5c3c',
+        'bordo' => '#6f1d36',
         'taupe' => '#8f8275',
         'black' => '#111111',
         'brown' => '#8b5e3c',
@@ -714,16 +759,16 @@ function moretti_get_product_color_variants($product_or_id) {
         // Kropki i kolory działają stricte po atrybucie (taksonomia); meczowanie nadal po SKU (model).
         $taxonomy_color = moretti_get_product_color_from_taxonomy((int) $candidate->get_id());
         $color_source = 'sku';
-        if (!empty($taxonomy_color['color_slug']) && isset($color_map[$taxonomy_color['color_slug']])) {
+        if (!empty($taxonomy_color['color_slug']) && moretti_color_hex_is_known($taxonomy_color['color_slug'])) {
             $color_source = 'atrybut';
             $resolved_color_slug = $taxonomy_color['color_slug'];
             $resolved_color_label = $taxonomy_color['color_label'] !== '' ? $taxonomy_color['color_label'] : ucwords(str_replace('-', ' ', $resolved_color_slug));
         } else {
             $resolved_color_slug = $candidate_parsed['color_slug'];
             $resolved_color_label = $candidate_parsed['color_label'];
-            if ($resolved_color_slug !== '' && !isset($color_map[$resolved_color_slug])) {
+            if ($resolved_color_slug !== '' && !moretti_color_hex_is_known($resolved_color_slug)) {
                 $trimmed_slug = preg_replace('/^[0-9]+-+/', '', $resolved_color_slug);
-                if (is_string($trimmed_slug) && $trimmed_slug !== '' && isset($color_map[$trimmed_slug])) {
+                if (is_string($trimmed_slug) && $trimmed_slug !== '' && moretti_color_hex_is_known($trimmed_slug)) {
                     $resolved_color_slug = $trimmed_slug;
                     $resolved_color_label = ucwords(str_replace('-', ' ', $trimmed_slug));
                 }
@@ -763,7 +808,7 @@ function moretti_get_product_color_variants($product_or_id) {
             . ' | widocznosc ' . $candidate->get_catalog_visibility()
             . ' | kolor ' . ($resolved_color_slug !== '' ? $resolved_color_slug : '(brak)')
             . ' ze zrodla: ' . $color_source
-            . ' | hex ' . $resolved_hex . ($resolved_hex === '#d1d5db' ? ' (BRAK W MAPIE - szara kropka)' : '')
+            . ' | hex ' . $resolved_hex . (moretti_color_hex_is_known($resolved_color_slug) ? '' : ' (BRAK W MAPIE - szara kropka)')
             . ' | zdjecie podgladu ' . ($first_image_url ? 'OK' : 'BRAK');
 
         $variants[] = array(
@@ -771,7 +816,7 @@ function moretti_get_product_color_variants($product_or_id) {
             'status' => (string) $candidate_status,
             'is_unpublished' => $candidate_status !== 'publish',
             'color_source' => $color_source,
-            'color_is_mapped' => ($resolved_hex !== '#d1d5db'),
+            'color_is_mapped' => moretti_color_hex_is_known($resolved_color_slug),
             'url' => (string) get_permalink($candidate->get_id()),
             'sku' => $candidate_sku,
             'model' => $model,
