@@ -629,9 +629,41 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth <= 768) return;
 
         var ZOOM = 2.5;
+        // Strefa buforowa wokół strzałek nawigacji: zoom się w niej nie włącza, żeby obraz
+        // nie uciekał spod kursora, gdy ktoś celuje w przycisk.
+        var ARROW_SAFE_PADDING = 20;
         wrapper.style.cursor = 'zoom-in';
 
+        function clearZoom() {
+            img.style.transform = '';
+            img.style.transformOrigin = '';
+        }
+
+        function isInArrowSafeZone(e) {
+            var arrows = wrapper.querySelectorAll('.single-gallery-arrow');
+            for (var i = 0; i < arrows.length; i++) {
+                var r = arrows[i].getBoundingClientRect();
+                if (!r.width && !r.height) continue;
+                if (
+                    e.clientX >= r.left - ARROW_SAFE_PADDING &&
+                    e.clientX <= r.right + ARROW_SAFE_PADDING &&
+                    e.clientY >= r.top - ARROW_SAFE_PADDING &&
+                    e.clientY <= r.bottom + ARROW_SAFE_PADDING
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function applyZoom(e) {
+            if (isInArrowSafeZone(e)) {
+                wrapper.style.cursor = 'default';
+                clearZoom();
+                return;
+            }
+            wrapper.style.cursor = 'zoom-in';
+
             var wRect = wrapper.getBoundingClientRect();
             var cw = wRect.width;
             var ch = wRect.height;
@@ -660,8 +692,8 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('mousemove', applyZoom);
 
         wrapper.addEventListener('mouseleave', function() {
-            img.style.transform = '';
-            img.style.transformOrigin = '';
+            wrapper.style.cursor = 'zoom-in';
+            clearZoom();
         });
     }
 
