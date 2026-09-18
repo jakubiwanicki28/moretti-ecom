@@ -614,7 +614,7 @@ get_header(); ?>
                                     $current_sku = (string) $product->get_sku();
                                     $parsed = function_exists('moretti_parse_sku_model_and_color') ? moretti_parse_sku_model_and_color($current_sku) : array('model' => '', 'color_raw' => '');
                                     $model = $parsed['model'] ?? '';
-                                    echo '<div id="moretti-single-debug" style="position:fixed;right:0;top:80px;bottom:20px;width:min(360px,90vw);overflow:auto;padding:12px;background:#1a1a1a;color:#0f0;font:11px/1.4 monospace;border-radius:4px 0 0 4px;border-left:2px solid #0f0;z-index:999998;box-shadow:-4px 0 12px rgba(0,0,0,0.2);">';
+                                    echo '<div id="moretti-single-debug" style="position:fixed;right:0;top:80px;bottom:20px;width:min(360px,90vw);overflow:auto;padding:12px;background:#1a1a1a;color:#0f0;font:11px/1.4 monospace;border-radius:4px 0 0 4px;border-left:2px solid #0f0;z-index:1000000;box-shadow:-4px 0 12px rgba(0,0,0,0.2);">';
                                     echo '<strong>Diagnostyka kropek (?moretti_debug_dots=1)</strong><br>';
                                     echo 'Bieżący produkt: SKU=<code>' . esc_html($current_sku) . '</code>, model=<code>' . esc_html($model) . '</code><br>';
                                     echo 'Mechanika: warianty = produkty, których SKU zaczyna się od <code>' . esc_html($model) . '-</code>. Pierwsze zdjęcie = indeks 0 karuzeli (galeria, potem main).<br>';
