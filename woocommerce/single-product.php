@@ -594,11 +594,11 @@ get_header(); ?>
                                     <div class="single-color-variants" aria-label="Dostępne warianty kolorystyczne">
                                         <?php foreach ($single_color_variants as $variant) : ?>
                                             <a
-                                                class="single-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                                                class="single-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?> <?php echo !empty($variant['is_unpublished']) ? 'is-unpublished' : ''; ?>"
                                                 href="<?php echo esc_url($variant['url']); ?>"
                                                 style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
                                                 aria-label="<?php echo esc_attr($variant['color_label']); ?>"
-                                                title="<?php echo esc_attr($variant['color_label']); ?>"
+                                                title="<?php echo esc_attr($variant['color_label'] . (!empty($variant['is_unpublished']) ? ' — NIEOPUBLIKOWANY (' . $variant['status'] . '), klient tego nie widzi' : '')); ?>"
                                                 <?php if (!empty($variant['first_image_url'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
                                             >
                                                 <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
@@ -606,7 +606,10 @@ get_header(); ?>
                                         <?php endforeach; ?>
                                     </div>
                                 </div>
-                                <?php
+                            <?php endif; ?>
+
+                            <?php
+                                // Diagnostyka poza blokiem KOLORY, żeby działała także gdy wariantów nie znaleziono.
                                 if (!empty($_GET['moretti_debug_dots']) && $_GET['moretti_debug_dots'] === '1' && current_user_can('manage_woocommerce')) {
                                     $current_sku = (string) $product->get_sku();
                                     $parsed = function_exists('moretti_parse_sku_model_and_color') ? moretti_parse_sku_model_and_color($current_sku) : array('model' => '', 'color_raw' => '');
@@ -617,18 +620,31 @@ get_header(); ?>
                                     echo 'Mechanika: warianty = produkty, których SKU zaczyna się od <code>' . esc_html($model) . '-</code>. Pierwsze zdjęcie = indeks 0 karuzeli (galeria, potem main).<br>';
                                     if (empty($single_color_variants)) {
                                         echo 'Brak wariantów – inne kolory muszą mieć SKU np. <code>' . esc_html($model) . '-czerwony</code> (ten sam prefix przed ostatnim myślnikiem).<br>';
+                                        if (!function_exists('moretti_preview_unpublished_variants') || !moretti_preview_unpublished_variants()) {
+                                            echo 'Jeśli pozostałe kolory są jeszcze niepublikowane, <a style="color:#ffd479" href="' . esc_url(add_query_arg('moretti_preview_private', '1')) . '">włącz tryb podglądu</a>.<br>';
+                                        }
                                     } else {
-                                        echo 'Warianty (podgląd przy najechaniu działa tylko gdy first_image_url jest ustawiony):<br>';
+                                        $preview_on = function_exists('moretti_preview_unpublished_variants') && moretti_preview_unpublished_variants();
+                                        echo 'Tryb podglądu niepublikowanych: <strong>' . ($preview_on ? 'WŁĄCZONY' : 'wyłączony') . '</strong> — ';
+                                        echo '<a style="color:#ffd479" href="' . esc_url(add_query_arg('moretti_preview_private', $preview_on ? '0' : '1')) . '">' . ($preview_on ? 'wyłącz' : 'włącz') . '</a><br><br>';
+                                        echo 'Warianty:<br>';
                                         foreach ($single_color_variants as $v) {
                                             $ok = !empty($v['first_image_url']) ? 'OK' : 'BRAK URL';
                                             $reason = empty($v['first_image_url']) && !empty($v['first_image_debug']) ? ' (' . esc_html($v['first_image_debug']) . ')' : '';
-                                            echo '• ID ' . (int) $v['id'] . ' SKU=' . esc_html($v['sku']) . ' ' . esc_html($v['color_label']) . ' → first_image_url: ' . esc_html($ok) . $reason . '<br>';
+                                            $status = isset($v['status']) ? $v['status'] : '?';
+                                            $status_label = $status === 'publish' ? 'opublikowany' : strtoupper($status) . ' – klient NIE zobaczy';
+                                            $color_source = isset($v['color_source']) ? $v['color_source'] : '?';
+                                            $color_ok = !empty($v['color_is_mapped']) ? esc_html($v['color_hex']) : 'BRAK W MAPIE → szara kropka';
+                                            echo '<hr style="border-color:#333">';
+                                            echo '• ID ' . (int) $v['id'] . ' SKU=' . esc_html($v['sku']) . '<br>';
+                                            echo '&nbsp;&nbsp;status: ' . esc_html($status_label) . '<br>';
+                                            echo '&nbsp;&nbsp;kolor: ' . esc_html($v['color_label']) . ' (źródło: ' . esc_html($color_source) . ') → ' . $color_ok . '<br>';
+                                            echo '&nbsp;&nbsp;zdjęcie podglądu: ' . esc_html($ok) . $reason . '<br>';
                                         }
                                     }
                                     echo '</div>';
                                 }
-                                ?>
-                            <?php endif; ?>
+                            ?>
                             
                             <div class="text-[10px] text-taupe-600 leading-relaxed">
                                 <span class="font-bold text-charcoal uppercase tracking-[0.2em] mr-1">KATEGORIA:</span>

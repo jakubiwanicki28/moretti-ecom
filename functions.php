@@ -544,6 +544,80 @@ add_filter('woocommerce_taxonomy_args_pa_strona-glowna', static function($args) 
 });
 
 /**
+ * Ciasteczko trybu podglądu wariantów niepublikowanych.
+ */
+if (!defined('MORETTI_PREVIEW_PRIVATE_COOKIE')) {
+    define('MORETTI_PREVIEW_PRIVATE_COOKIE', 'moretti_preview_private');
+}
+
+/**
+ * Tryb podglądu: czy kropki kolorów mają uwzględniać produkty jeszcze nieopublikowane
+ * (Prywatny / Szkic / Oczekujący / Zaplanowany). Dostępny WYŁĄCZNIE dla osób mogących
+ * edytować produkty i tylko po świadomym włączeniu (?moretti_preview_private=1).
+ * Klient nigdy nie zobaczy kropki prowadzącej do nieopublikowanego produktu.
+ */
+function moretti_preview_unpublished_variants() {
+    static $enabled = null;
+
+    if ($enabled !== null) {
+        return $enabled;
+    }
+
+    $enabled = current_user_can('edit_products')
+        && isset($_COOKIE[MORETTI_PREVIEW_PRIVATE_COOKIE])
+        && $_COOKIE[MORETTI_PREVIEW_PRIVATE_COOKIE] === '1';
+
+    return $enabled;
+}
+
+/**
+ * Przełącznik trybu podglądu: ?moretti_preview_private=1 włącza, =0 wyłącza.
+ */
+add_action('init', static function () {
+    if (!isset($_GET['moretti_preview_private']) || !current_user_can('edit_products')) {
+        return;
+    }
+
+    $turn_on = $_GET['moretti_preview_private'] === '1';
+    $path = defined('COOKIEPATH') && COOKIEPATH ? COOKIEPATH : '/';
+    $domain = defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '';
+
+    setcookie(
+        MORETTI_PREVIEW_PRIVATE_COOKIE,
+        $turn_on ? '1' : '0',
+        $turn_on ? 0 : time() - 3600,
+        $path,
+        $domain,
+        is_ssl(),
+        true
+    );
+    $_COOKIE[MORETTI_PREVIEW_PRIVATE_COOKIE] = $turn_on ? '1' : '0';
+});
+
+/**
+ * Stały pasek, żeby tryb podglądu nigdy nie został włączony po cichu na stałe.
+ */
+add_action('wp_footer', static function () {
+    if (!moretti_preview_unpublished_variants()) {
+        return;
+    }
+
+    $off_url = esc_url(add_query_arg('moretti_preview_private', '0'));
+    ?>
+    <style>
+        .moretti-preview-bar { position: fixed; left: 16px; bottom: 16px; z-index: 999997; max-width: 340px; background: #2a2826; color: #fff; font: 12px/1.5 -apple-system, BlinkMacSystemFont, sans-serif; padding: 10px 14px; border-radius: 4px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+        .moretti-preview-bar a { color: #ffd479; text-decoration: underline; }
+        .sku-color-dot.is-unpublished, .single-color-dot.is-unpublished { outline: 2px dashed #e2401c; outline-offset: 2px; }
+    </style>
+    <div class="moretti-preview-bar">
+        Podgląd wariantów niepublikowanych: <strong>WŁĄCZONY</strong> — widzisz to tylko Ty.
+        Kropki z czerwoną przerywaną obwódką prowadzą do produktów, których klient nie widzi.
+        <a href="<?php echo $off_url; ?>">Wyłącz</a>
+    </div>
+    <?php
+}, 99);
+
+/**
  * Build color variants for product cards based on shared model parsed from SKU.
  *
  * @param int|WC_Product $product_or_id
@@ -576,10 +650,15 @@ function moretti_get_product_color_variants($product_or_id) {
     }
 
     $model = $parsed['model'];
-    if (!isset($model_product_ids_cache[$model])) {
+    // Tryb podglądu (tylko dla edytujących produkty) dołącza warianty jeszcze nieopublikowane.
+    $allowed_statuses = moretti_preview_unpublished_variants()
+        ? array('publish', 'private', 'draft', 'pending', 'future')
+        : array('publish');
+    $model_cache_key = $model . '|' . implode(',', $allowed_statuses);
+    if (!isset($model_product_ids_cache[$model_cache_key])) {
         $query = new WP_Query(array(
             'post_type' => 'product',
-            'post_status' => 'publish',
+            'post_status' => $allowed_statuses,
             'posts_per_page' => -1,
             'fields' => 'ids',
             'orderby' => array(
@@ -595,13 +674,13 @@ function moretti_get_product_color_variants($product_or_id) {
             ),
         ));
 
-        $model_product_ids_cache[$model] = !empty($query->posts) ? array_map('absint', $query->posts) : array();
+        $model_product_ids_cache[$model_cache_key] = !empty($query->posts) ? array_map('absint', $query->posts) : array();
     }
 
     $color_map = moretti_color_swatch_hex_map();
     $variants = array();
     $seen_color_slugs = array();
-    foreach ($model_product_ids_cache[$model] as $candidate_id) {
+    foreach ($model_product_ids_cache[$model_cache_key] as $candidate_id) {
         $candidate = wc_get_product($candidate_id);
         if (!$candidate instanceof WC_Product) {
             continue;
@@ -619,7 +698,9 @@ function moretti_get_product_color_variants($product_or_id) {
 
         // Kropki i kolory działają stricte po atrybucie (taksonomia); meczowanie nadal po SKU (model).
         $taxonomy_color = moretti_get_product_color_from_taxonomy((int) $candidate->get_id());
+        $color_source = 'sku';
         if (!empty($taxonomy_color['color_slug']) && isset($color_map[$taxonomy_color['color_slug']])) {
+            $color_source = 'atrybut';
             $resolved_color_slug = $taxonomy_color['color_slug'];
             $resolved_color_label = $taxonomy_color['color_label'] !== '' ? $taxonomy_color['color_label'] : ucwords(str_replace('-', ' ', $resolved_color_slug));
         } else {
@@ -657,14 +738,21 @@ function moretti_get_product_color_variants($product_or_id) {
             $first_image_debug = 'galeria=' . $gallery_count . ' main_id=' . (int) $main_id . ' first_id=' . $first_image_id;
         }
 
+        $candidate_status = get_post_status($candidate->get_id());
+        $resolved_hex = moretti_get_color_hex($resolved_color_slug);
+
         $variants[] = array(
             'id' => (int) $candidate->get_id(),
+            'status' => (string) $candidate_status,
+            'is_unpublished' => $candidate_status !== 'publish',
+            'color_source' => $color_source,
+            'color_is_mapped' => ($resolved_hex !== '#d1d5db'),
             'url' => (string) get_permalink($candidate->get_id()),
             'sku' => $candidate_sku,
             'model' => $model,
             'color_slug' => $resolved_color_slug,
             'color_label' => $resolved_color_label,
-            'color_hex' => moretti_get_color_hex($resolved_color_slug),
+            'color_hex' => $resolved_hex,
             'is_current' => $candidate_is_current,
             'first_image_url' => $first_image_url ? (string) $first_image_url : '',
             'first_image_debug' => $first_image_debug,

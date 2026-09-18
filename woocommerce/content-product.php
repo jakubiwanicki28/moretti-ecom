@@ -128,11 +128,11 @@ if ($is_home_carousel) :
                         <div class="sku-color-variants" aria-label="Dostępne warianty kolorystyczne">
                             <?php foreach ($color_variants as $variant) : ?>
                                 <a
-                                    class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                                    class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?> <?php echo !empty($variant['is_unpublished']) ? 'is-unpublished' : ''; ?>"
                                     href="<?php echo esc_url($variant['url']); ?>"
                                     style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
                                     aria-label="<?php echo esc_attr($variant['color_label']); ?>"
-                                    title="<?php echo esc_attr($variant['color_label']); ?>"
+                                    title="<?php echo esc_attr($variant['color_label'] . (!empty($variant['is_unpublished']) ? ' — NIEOPUBLIKOWANY (' . $variant['status'] . '), klient tego nie widzi' : '')); ?>"
                                     <?php if (!empty($variant['first_image_url'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
                                 >
                                     <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
@@ -221,11 +221,11 @@ endif;
                 <div class="sku-color-variants" aria-label="Dostępne warianty kolorystyczne">
                     <?php foreach ($color_variants as $variant) : ?>
                         <a
-                            class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?>"
+                            class="sku-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?> <?php echo !empty($variant['is_unpublished']) ? 'is-unpublished' : ''; ?>"
                             href="<?php echo esc_url($variant['url']); ?>"
                             style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
                             aria-label="<?php echo esc_attr($variant['color_label']); ?>"
-                            title="<?php echo esc_attr($variant['color_label']); ?>"
+                            title="<?php echo esc_attr($variant['color_label'] . (!empty($variant['is_unpublished']) ? ' — NIEOPUBLIKOWANY (' . $variant['status'] . '), klient tego nie widzi' : '')); ?>"
                         >
                             <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
                         </a>
