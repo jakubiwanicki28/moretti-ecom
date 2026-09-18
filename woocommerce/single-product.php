@@ -614,7 +614,7 @@ get_header(); ?>
                                     $current_sku = (string) $product->get_sku();
                                     $parsed = function_exists('moretti_parse_sku_model_and_color') ? moretti_parse_sku_model_and_color($current_sku) : array('model' => '', 'color_raw' => '');
                                     $model = $parsed['model'] ?? '';
-                                    echo '<div id="moretti-single-debug" style="position:fixed;right:0;top:80px;bottom:20px;width:min(360px,90vw);overflow:auto;padding:12px;background:#1a1a1a;color:#0f0;font:11px/1.4 monospace;border-radius:4px 0 0 4px;border-left:2px solid #0f0;z-index:1000000;box-shadow:-4px 0 12px rgba(0,0,0,0.2);">';
+                                    echo '<div id="moretti-single-debug" style="margin:16px 0;padding:12px;background:#1a1a1a;color:#0f0;font:11px/1.5 monospace;border-radius:4px;border:2px solid #0f0;word-break:break-word;">';
                                     echo '<strong>Diagnostyka kropek (?moretti_debug_dots=1)</strong><br>';
                                     echo 'Bieżący produkt: SKU=<code>' . esc_html($current_sku) . '</code>, model=<code>' . esc_html($model) . '</code><br>';
                                     echo 'Mechanika: warianty = produkty, których SKU zaczyna się od <code>' . esc_html($model) . '-</code>. Pierwsze zdjęcie = indeks 0 karuzeli (galeria, potem main).<br>';
@@ -631,6 +631,8 @@ get_header(); ?>
                                         }
                                         echo '<br>';
                                     }
+                                    $preview_state = function_exists('moretti_preview_unpublished_variants') && moretti_preview_unpublished_variants();
+                                    echo 'Tryb podglądu niepublikowanych: <strong>' . ($preview_state ? 'WŁĄCZONY' : 'WYŁĄCZONY') . '</strong>, uprawnienie edit_products: <strong>' . (current_user_can('edit_products') ? 'TAK' : 'NIE') . '</strong><br><br>';
                                     if (empty($single_color_variants)) {
                                         echo 'Brak wariantów – inne kolory muszą mieć SKU np. <code>' . esc_html($model) . '-czerwony</code> (ten sam prefix przed ostatnim myślnikiem).<br>';
                                         if (!function_exists('moretti_preview_unpublished_variants') || !moretti_preview_unpublished_variants()) {
@@ -640,6 +642,13 @@ get_header(); ?>
                                         $preview_on = function_exists('moretti_preview_unpublished_variants') && moretti_preview_unpublished_variants();
                                         echo 'Tryb podglądu niepublikowanych: <strong>' . ($preview_on ? 'WŁĄCZONY' : 'wyłączony') . '</strong> — ';
                                         echo '<a style="color:#ffd479" href="' . esc_url(add_query_arg('moretti_preview_private', $preview_on ? '0' : '1')) . '">' . ($preview_on ? 'wyłącz' : 'włącz') . '</a><br><br>';
+                                        if (!empty($vdbg['przyjete'])) {
+                                            echo 'Przyjęte do rodziny:<br>';
+                                            foreach ($vdbg['przyjete'] as $line) {
+                                                echo '&nbsp;&nbsp;– ' . esc_html($line) . '<br>';
+                                            }
+                                            echo '<br>';
+                                        }
                                         echo 'Warianty:<br>';
                                         foreach ($single_color_variants as $v) {
                                             $ok = !empty($v['first_image_url']) ? 'OK' : 'BRAK URL';

@@ -655,8 +655,12 @@ function moretti_get_product_color_variants($product_or_id) {
 
     $model = $parsed['model'];
     // Tryb podglądu (tylko dla edytujących produkty) dołącza warianty jeszcze nieopublikowane.
+    // 'any' celowo zamiast listy statusów: WP_Query przy jawnym 'private' dokłada własną
+    // kontrolę uprawnień, która potrafi wyciąć wyniki mimo posiadanych praw. Dostęp do trybu
+    // podglądu jest już zamknięty na uprawnieniu w moretti_preview_unpublished_variants(),
+    // więc nie potrzebujemy drugiej, nieprzewidywalnej bramki na poziomie zapytania.
     $allowed_statuses = moretti_preview_unpublished_variants()
-        ? array('publish', 'private', 'draft', 'pending', 'future')
+        ? array('any')
         : array('publish');
     $model_cache_key = $model . '|' . implode(',', $allowed_statuses);
     $debug['model'] = $model;
@@ -752,6 +756,15 @@ function moretti_get_product_color_variants($product_or_id) {
 
         $candidate_status = get_post_status($candidate->get_id());
         $resolved_hex = moretti_get_color_hex($resolved_color_slug);
+
+        $debug['przyjete'][] = 'ID ' . (int) $candidate->get_id()
+            . ' | SKU ' . $candidate_sku
+            . ' | status ' . $candidate_status
+            . ' | widocznosc ' . $candidate->get_catalog_visibility()
+            . ' | kolor ' . ($resolved_color_slug !== '' ? $resolved_color_slug : '(brak)')
+            . ' ze zrodla: ' . $color_source
+            . ' | hex ' . $resolved_hex . ($resolved_hex === '#d1d5db' ? ' (BRAK W MAPIE - szara kropka)' : '')
+            . ' | zdjecie podgladu ' . ($first_image_url ? 'OK' : 'BRAK');
 
         $variants[] = array(
             'id' => (int) $candidate->get_id(),
