@@ -618,6 +618,19 @@ get_header(); ?>
                                     echo '<strong>Diagnostyka kropek (?moretti_debug_dots=1)</strong><br>';
                                     echo 'Bieżący produkt: SKU=<code>' . esc_html($current_sku) . '</code>, model=<code>' . esc_html($model) . '</code><br>';
                                     echo 'Mechanika: warianty = produkty, których SKU zaczyna się od <code>' . esc_html($model) . '-</code>. Pierwsze zdjęcie = indeks 0 karuzeli (galeria, potem main).<br>';
+                                    if (function_exists('moretti_store_color_variants_debug')) {
+                                        $vdbg = moretti_store_color_variants_debug($product->get_id());
+                                        echo 'Status tego produktu: <code>' . esc_html(get_post_status($product->get_id())) . '</code><br>';
+                                        echo 'Dopuszczone statusy w zapytaniu: <code>' . esc_html(isset($vdbg['statusy']) ? $vdbg['statusy'] : '?') . '</code><br>';
+                                        echo 'Produktów znalezionych po SKU: <strong>' . (int) (isset($vdbg['znalezione']) ? $vdbg['znalezione'] : 0) . '</strong><br>';
+                                        if (!empty($vdbg['odrzucone'])) {
+                                            echo 'Odrzucone:<br>';
+                                            foreach ($vdbg['odrzucone'] as $line) {
+                                                echo '&nbsp;&nbsp;– ' . esc_html($line) . '<br>';
+                                            }
+                                        }
+                                        echo '<br>';
+                                    }
                                     if (empty($single_color_variants)) {
                                         echo 'Brak wariantów – inne kolory muszą mieć SKU np. <code>' . esc_html($model) . '-czerwony</code> (ten sam prefix przed ostatnim myślnikiem).<br>';
                                         if (!function_exists('moretti_preview_unpublished_variants') || !moretti_preview_unpublished_variants()) {

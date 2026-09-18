@@ -627,6 +627,8 @@ function moretti_get_product_color_variants($product_or_id) {
     static $variants_cache = array();
     static $model_product_ids_cache = array();
 
+    $debug = array('model' => '', 'statusy' => '', 'znalezione' => 0, 'odrzucone' => array());
+
     if ($product_or_id instanceof WC_Product) {
         $product = $product_or_id;
     } else {
@@ -645,6 +647,8 @@ function moretti_get_product_color_variants($product_or_id) {
     $sku = (string) $product->get_sku();
     $parsed = moretti_parse_sku_model_and_color($sku);
     if ($parsed['model'] === '') {
+        $debug['odrzucone'][] = 'SKU „' . $sku . '" nie daje modelu (brak myślnika lub pusty SKU)';
+        moretti_store_color_variants_debug($product_id, $debug);
         $variants_cache[$product_id] = array();
         return $variants_cache[$product_id];
     }
@@ -655,6 +659,8 @@ function moretti_get_product_color_variants($product_or_id) {
         ? array('publish', 'private', 'draft', 'pending', 'future')
         : array('publish');
     $model_cache_key = $model . '|' . implode(',', $allowed_statuses);
+    $debug['model'] = $model;
+    $debug['statusy'] = implode(', ', $allowed_statuses);
     if (!isset($model_product_ids_cache[$model_cache_key])) {
         $query = new WP_Query(array(
             'post_type' => 'product',
@@ -677,22 +683,27 @@ function moretti_get_product_color_variants($product_or_id) {
         $model_product_ids_cache[$model_cache_key] = !empty($query->posts) ? array_map('absint', $query->posts) : array();
     }
 
+    $debug['znalezione'] = count($model_product_ids_cache[$model_cache_key]);
+
     $color_map = moretti_color_swatch_hex_map();
     $variants = array();
     $seen_color_slugs = array();
     foreach ($model_product_ids_cache[$model_cache_key] as $candidate_id) {
         $candidate = wc_get_product($candidate_id);
         if (!$candidate instanceof WC_Product) {
+            $debug['odrzucone'][] = 'ID ' . (int) $candidate_id . ' – nie jest produktem WooCommerce';
             continue;
         }
 
         if ($candidate->get_catalog_visibility() === 'hidden') {
+            $debug['odrzucone'][] = 'ID ' . (int) $candidate_id . ' – widoczność w katalogu: UKRYTY';
             continue;
         }
 
         $candidate_sku = (string) $candidate->get_sku();
         $candidate_parsed = moretti_parse_sku_model_and_color($candidate_sku);
         if ($candidate_parsed['model'] !== $model) {
+            $debug['odrzucone'][] = 'ID ' . (int) $candidate_id . ' SKU=' . $candidate_sku . ' – inny model po rozbiciu SKU (' . $candidate_parsed['model'] . ')';
             continue;
         }
 
@@ -717,6 +728,7 @@ function moretti_get_product_color_variants($product_or_id) {
 
         $candidate_is_current = (int) $candidate->get_id() === $product_id;
         if (isset($seen_color_slugs[$resolved_color_slug]) && !$candidate_is_current) {
+            $debug['odrzucone'][] = 'ID ' . (int) $candidate_id . ' SKU=' . $candidate_sku . ' – duplikat koloru „' . $resolved_color_slug . '"';
             continue;
         }
         $seen_color_slugs[$resolved_color_slug] = true;
@@ -766,8 +778,24 @@ function moretti_get_product_color_variants($product_or_id) {
         return strnatcasecmp($a['color_label'], $b['color_label']);
     });
 
+    moretti_store_color_variants_debug($product_id, $debug);
+
     $variants_cache[$product_id] = $variants;
     return $variants_cache[$product_id];
+}
+
+/**
+ * Bufor diagnostyczny ostatniego wyliczenia wariantów (dla ?moretti_debug_dots=1).
+ */
+function moretti_store_color_variants_debug($product_id, $debug = null) {
+    static $store = array();
+
+    if ($debug !== null) {
+        $store[(int) $product_id] = $debug;
+        return $debug;
+    }
+
+    return isset($store[(int) $product_id]) ? $store[(int) $product_id] : array();
 }
 
 /**
