@@ -279,6 +279,14 @@ $moretti_virtual_subcategories = function_exists('moretti_get_virtual_subcategor
     : array();
 $moretti_queried_cat = is_product_category() ? get_queried_object() : null;
 $moretti_current_cat_slug = ($moretti_queried_cat instanceof WP_Term) ? $moretti_queried_cat->slug : '';
+
+// The free gift bag ships with wallets only (a handbag doesn't fit in it),
+// so the promo banner must not appear on handbag listings.
+$moretti_bags_term = get_term_by('slug', 'torebki', 'product_cat');
+$moretti_is_bags_view = ($moretti_queried_cat instanceof WP_Term) && $moretti_bags_term
+    && ($moretti_queried_cat->term_id === $moretti_bags_term->term_id
+        || term_is_ancestor_of($moretti_bags_term, $moretti_queried_cat, 'product_cat'));
+
 $moretti_has_virtual_children = isset($moretti_virtual_subcategories[$moretti_current_cat_slug]);
 $moretti_virtual_children_terms = array();
 
@@ -800,12 +808,11 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
             <?php if (!$moretti_has_virtual_children) : ?>
 
-            <?php if (!$is_search_view) : ?>
+            <?php if (!$is_search_view && !$moretti_is_bags_view) : ?>
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
-                    <h2 class="shop-hero-title">Torba prezentowa gratis</h2>
-                    <p class="shop-hero-subtitle">Do każdego zamówienia dołączamy elegancką torbę prezentową.</p>
-                    <p class="shop-hero-copy">Bez warunków i limitów - Twój zakup jest zawsze gotowy do podarowania.</p>
+                    <h2 class="shop-hero-title">Torebka prezentowa gratis do każdego portfela</h2>
+                    <p class="shop-hero-subtitle">Każdy portfel pakujemy w elegancką torebkę prezentową.</p>
                 </div>
                 <div class="shop-hero-banner-visual" aria-hidden="true">
                     <svg class="shop-hero-ribbon" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
