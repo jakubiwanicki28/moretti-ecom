@@ -812,7 +812,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
             <div class="shop-hero-banner">
                 <div class="shop-hero-banner-content">
                     <h2 class="shop-hero-title">Torebka prezentowa gratis do każdego portfela</h2>
-                    <p class="shop-hero-subtitle">Każdy portfel pakujemy w elegancką torebkę prezentową.</p>
+                    <p class="shop-hero-subtitle">Zakupiony portfel możesz od razu podarować w stylowej torebce prezentowej.</p>
                 </div>
                 <div class="shop-hero-banner-visual" aria-hidden="true">
                     <svg class="shop-hero-ribbon" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
