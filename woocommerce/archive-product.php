@@ -1349,7 +1349,9 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .shop-page-wittchen .shop-hero-title {
         margin: 0 0 7px;
-        font-size: clamp(1.55rem, 2.8vw, 2.6rem);
+        /* Capped so the title and subtitle each fit on one line within the
+           760px content box on laptops; subtitle scales in the same ratio. */
+        font-size: clamp(1.55rem, 2.8vw, 2rem);
         line-height: 1.05;
         font-weight: 800;
         letter-spacing: 0.01em;
@@ -1358,7 +1360,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .shop-page-wittchen .shop-hero-subtitle {
         margin: 0 0 6px;
-        font-size: clamp(1.02rem, 1.6vw, 1.42rem);
+        font-size: clamp(0.92rem, 1.55vw, 1.1rem);
         line-height: 1.2;
         font-weight: 600;
         color: #ffe8ec;
