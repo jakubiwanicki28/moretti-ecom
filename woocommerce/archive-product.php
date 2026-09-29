@@ -1333,7 +1333,10 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
         position: relative;
         z-index: 1;
         padding: 22px 26px;
-        max-width: 760px;
+        /* Take all the room up to the gift bag icon; the flex layout keeps
+           the text from running into it. */
+        flex: 1 1 auto;
+        min-width: 0;
         color: #fff;
     }
 
@@ -1349,8 +1352,6 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
 
     .shop-page-wittchen .shop-hero-title {
         margin: 0 0 7px;
-        /* Capped so the title and subtitle each fit on one line within the
-           760px content box on laptops; subtitle scales in the same ratio. */
         font-size: clamp(1.55rem, 2.8vw, 2rem);
         line-height: 1.05;
         font-weight: 800;
