@@ -460,6 +460,16 @@ function moretti_color_swatch_hex_map() {
         'oliwka' => '#5a5c3c',
         'zielony-oliwka' => '#5a5c3c',
         'zielona-oliwka' => '#5a5c3c',
+        // Błękitny — przygaszony, jasny niebieski; wyraźnie jaśniejszy i chłodniejszy od niebieskiego.
+        'blekitny' => '#9fc5d8',
+        'blekitna' => '#9fc5d8',
+        // Róż jako ogólny termin atrybutu (bez „jasny"/„ciemny") — stonowany, pośrodku między nimi.
+        // „roz" ma tylko 3 znaki, więc łapie się wyłącznie dokładnie, nigdy jako fragment innej nazwy.
+        'roz' => '#e8a3b3',
+        'rozowy' => '#e8a3b3',
+        'rozowa' => '#e8a3b3',
+        // Pudrowy róż — cielisty, lekko brzoskwiniowy (np. SKU „pudrowyroz").
+        'pudrowy-roz' => '#e2b3a3',
         'bordo' => '#6f1d36',
         'taupe' => '#8f8275',
         'black' => '#111111',
