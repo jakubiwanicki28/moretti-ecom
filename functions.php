@@ -470,6 +470,15 @@ function moretti_color_swatch_hex_map() {
         'rozowa' => '#e8a3b3',
         // Pudrowy róż — cielisty, lekko brzoskwiniowy (np. SKU „pudrowyroz").
         'pudrowy-roz' => '#e2b3a3',
+        // Kamelowy — koniakowy brąz (zdjęcia torebki MI_302); ciemniejszy i cieplejszy od jasnego brązu.
+        // Łapie też literówkę w atrybucie „Brąz jany kamelowy" (dopasowanie po fragmencie „kamelowy").
+        // „jasny brąz kamelowy" zostaje jasnym brązem, bo klucz „jasny-braz" stoi wyżej w mapie.
+        'kamelowy' => '#a86a42',
+        'kamelowa' => '#a86a42',
+        // Ciemno beżowy — piaskowy, wyraźnie ciemniejszy od beżowego; bez tego wpisu wpadał w „beżowy"
+        // przez dopasowanie po fragmencie i obie kropki wyglądały identycznie.
+        'ciemno-bezowy' => '#b39c80',
+        'ciemno-bezowa' => '#b39c80',
         'bordo' => '#6f1d36',
         'taupe' => '#8f8275',
         'black' => '#111111',
