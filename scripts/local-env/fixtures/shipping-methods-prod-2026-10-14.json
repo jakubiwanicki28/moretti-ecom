@@ -1,0 +1,119 @@
+[
+ {
+  "title": "Dostawa InPost do Paczkomatu",
+  "enabled": true,
+  "order": 1,
+  "settings": {
+   "title": "Dostawa InPost do Paczkomatu",
+   "tax_status": "taxable",
+   "cost": "15",
+   "display_apaczka_map": "yes",
+   "supplier_apaczka_map": "INPOST",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Kurier InPost na adres",
+  "enabled": true,
+  "order": 2,
+  "settings": {
+   "title": "Kurier InPost na adres",
+   "tax_status": "taxable",
+   "cost": "17",
+   "display_apaczka_map": "no",
+   "supplier_apaczka_map": "INPOST",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Dostawa do punktu Orlen Paczka",
+  "enabled": true,
+  "order": 3,
+  "settings": {
+   "title": "Dostawa do punktu Orlen Paczka",
+   "tax_status": "taxable",
+   "cost": "13",
+   "display_apaczka_map": "yes",
+   "supplier_apaczka_map": "PWR",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Dostawa do punktu DPD",
+  "enabled": true,
+  "order": 4,
+  "settings": {
+   "title": "Dostawa do punktu DPD",
+   "tax_status": "taxable",
+   "cost": "12",
+   "display_apaczka_map": "yes",
+   "supplier_apaczka_map": "DPD",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Kurier DPD na adres",
+  "enabled": true,
+  "order": 5,
+  "settings": {
+   "title": "Kurier DPD na adres",
+   "tax_status": "taxable",
+   "cost": "23",
+   "display_apaczka_map": "no",
+   "supplier_apaczka_map": "DPD",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Dostawa do punktu DHL",
+  "enabled": true,
+  "order": 6,
+  "settings": {
+   "title": "Dostawa do punktu DHL",
+   "tax_status": "taxable",
+   "cost": "17",
+   "display_apaczka_map": "yes",
+   "supplier_apaczka_map": "DHL_PARCEL",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Kurier DHL na adres",
+  "enabled": true,
+  "order": 7,
+  "settings": {
+   "title": "Kurier DHL na adres",
+   "tax_status": "taxable",
+   "cost": "24",
+   "display_apaczka_map": "no",
+   "supplier_apaczka_map": "DHL_PARCEL",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Dostawa do punktu UPS",
+  "enabled": true,
+  "order": 8,
+  "settings": {
+   "title": "Dostawa do punktu UPS",
+   "tax_status": "taxable",
+   "cost": "24",
+   "display_apaczka_map": "yes",
+   "supplier_apaczka_map": "UPS",
+   "only_cod_apaczka_map": "no"
+  }
+ },
+ {
+  "title": "Kurier UPS na adres",
+  "enabled": true,
+  "order": 9,
+  "settings": {
+   "title": "Kurier UPS na adres",
+   "tax_status": "taxable",
+   "cost": "34",
+   "display_apaczka_map": "no",
+   "supplier_apaczka_map": "UPS",
+   "only_cod_apaczka_map": "no"
+  }
+ }
+]

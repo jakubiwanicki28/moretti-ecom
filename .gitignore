@@ -68,3 +68,7 @@ wordpress/wp-content/upgrade/
 .vscode/
 .idea/
 node_modules/
+
+# Lokalne środowisko (scripts/local-env)
+scripts/local-env/.app-password
+scripts/checkout-config-backups/
