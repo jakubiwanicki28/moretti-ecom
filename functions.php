@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 require_once get_template_directory() . '/inc/theme-setup-data.php';
 require_once get_template_directory() . '/inc/product-care.php';
 require_once get_template_directory() . '/inc/checkout.php';
+require_once get_template_directory() . '/inc/litespeed-cache.php';
 
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {
@@ -221,11 +222,40 @@ function moretti_register_image_sizes() {
 add_action('after_setup_theme', 'moretti_register_image_sizes', 30);
 
 /**
- * Preserve full image quality — no lossy compression on upload.
- * Covers both GD and Imagick editors.
+ * Zdjęcie slajdu w karcie produktu (kategoria, karuzele na głównej, ulubione).
+ *
+ * Karta trzyma całą galerię produktu, ale klient widzi okładkę i — po najechaniu —
+ * drugie zdjęcie. Dlatego od trzeciego slajdu źródła lądują w data-*, a main.js
+ * podstawia je dopiero, gdy klient zacznie oglądać kartę. Bez tego kategoria
+ * ściągała całe galerie wszystkich produktów naraz (~30 MB na telefonie).
+ *
+ * @param int    $image_id ID załącznika.
+ * @param int    $index    Pozycja slajdu w karcie (0 = okładka).
+ * @param string $sizes    Szerokość karty w układzie strony, dla srcset.
+ * @param array  $attrs    Dodatkowe atrybuty <img> (np. class, loading).
+ */
+function moretti_card_slide_image($image_id, $index, $sizes, $attrs = array()) {
+    $html = wp_get_attachment_image($image_id, 'large', false, array_merge(array(
+        'sizes'    => $sizes,
+        'loading'  => 'lazy',
+        'decoding' => 'async',
+    ), $attrs));
+
+    if ($index >= 2) {
+        $html = preg_replace('/\s(src|srcset|sizes)=/', ' data-$1=', $html);
+    }
+
+    return $html;
+}
+
+/**
+ * Jakość miniatur generowanych z wgranego zdjęcia (GD i Imagick).
+ * Oryginał zostaje nietknięty; 82 to domyślna wartość WordPressa — przy 100
+ * miniatura 768 px ważyła 400–550 KB zamiast ~60 KB, bez widocznej różnicy.
+ * Istniejące miniatury zmieniają się dopiero po ich przegenerowaniu.
  */
 function moretti_image_quality($quality) {
-    return 100;
+    return 82;
 }
 add_filter('jpeg_quality', 'moretti_image_quality');
 add_filter('wp_editor_set_quality', 'moretti_image_quality');

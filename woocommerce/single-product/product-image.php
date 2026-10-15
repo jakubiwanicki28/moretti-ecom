@@ -7,6 +7,16 @@
 
 defined('ABSPATH') || exit;
 
+// Szerokość głównego zdjęcia w układzie strony produktu (dla srcset).
+defined('MORETTI_PRODUCT_MAIN_IMAGE_SIZES') || define('MORETTI_PRODUCT_MAIN_IMAGE_SIZES', '(max-width: 768px) calc(100vw - 24px), (max-width: 1100px) 45vw, 580px');
+
+// Na ekranie wystarcza 1024 px (telefon z gęstym ekranem bez tego sięgał po oryginał,
+// zwykle 0,5–4 MB). Pełną rozdzielczość pobiera tylko lupa na komputerze.
+$moretti_cap_srcset = function () {
+    return 1024;
+};
+add_filter('max_srcset_image_width', $moretti_cap_srcset);
+
 global $product;
 
 $attachment_ids = $product->get_gallery_image_ids();
@@ -31,16 +41,24 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
     <div class="main-product-image mb-6">
         <?php
         if ($first_slide_id) {
-            $image_src = wp_get_attachment_image_src($first_slide_id, 'full');
             $image_alt = get_post_meta($first_slide_id, '_wp_attachment_image_alt', true);
+            $zoom_src  = wp_get_attachment_image_url($first_slide_id, 'full');
             ?>
             <div id="moretti-img-wrapper" class="main-product-image-frame relative overflow-hidden">
-                <img
-                    src="<?php echo esc_url($image_src[0]); ?>"
-                    alt="<?php echo esc_attr($image_alt ? $image_alt : get_the_title()); ?>"
-                    class="main-product-image-el"
-                    id="moretti-main-img"
-                >
+                <?php
+                // Na ekranie miniatura dopasowana do szerokości (srcset); oryginał — bywa kilka MB —
+                // dociąga dopiero lupa na komputerze (main.js, data-zoom-src).
+                echo wp_get_attachment_image($first_slide_id, 'large', false, array(
+                    'alt'           => $image_alt ? $image_alt : get_the_title(),
+                    'class'         => 'main-product-image-el',
+                    'id'            => 'moretti-main-img',
+                    'sizes'         => MORETTI_PRODUCT_MAIN_IMAGE_SIZES,
+                    'loading'       => 'eager',
+                    'fetchpriority' => 'high',
+                    'decoding'      => 'async',
+                    'data-zoom-src' => $zoom_src ? $zoom_src : '',
+                ));
+                ?>
 
                 <?php if (count($gallery_nav_ids) > 1) : ?>
                     <button type="button" class="single-gallery-arrow single-gallery-prev" aria-label="Poprzednie zdjęcie">
@@ -75,15 +93,17 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
     <?php if (!empty($thumb_ids)) : ?>
         <div class="product-thumbnails">
             <?php foreach ($thumb_ids as $index => $thumb_id) :
-                $full_url = wp_get_attachment_image_src($thumb_id, 'full');
-                if (!$full_url || empty($full_url[0])) {
+                $display_url = wp_get_attachment_image_url($thumb_id, 'large');
+                if (!$display_url) {
                     continue;
                 }
             ?>
                 <button
                     type="button"
                     class="thumbnail-item <?php echo $index === 0 ? 'is-active' : ''; ?>"
-                    data-full-url="<?php echo esc_url($full_url[0]); ?>"
+                    data-src="<?php echo esc_url($display_url); ?>"
+                    data-srcset="<?php echo esc_attr((string) wp_get_attachment_image_srcset($thumb_id, 'large')); ?>"
+                    data-zoom-src="<?php echo esc_url((string) wp_get_attachment_image_url($thumb_id, 'full')); ?>"
                     aria-label="<?php echo esc_attr(sprintf('Pokaż zdjęcie %d', $index + 1)); ?>"
                 >
                     <?php echo wp_get_attachment_image($thumb_id, 'medium', false, array('class' => 'w-full h-full object-contain')); ?>
@@ -107,11 +127,18 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
                 const showIndex = (index) => {
                     if (index < 0 || index >= thumbnails.length) return;
                     const selectedThumb = thumbnails[index];
-                    const fullUrl = selectedThumb.dataset.fullUrl;
-                    if (!fullUrl) return;
+                    const src = selectedThumb.dataset.src;
+                    if (!src) return;
 
                     mainImage.style.opacity = '0.4';
-                    mainImage.src = fullUrl;
+                    mainImage.dataset.zoomSrc = selectedThumb.dataset.zoomSrc || '';
+                    if (selectedThumb.dataset.srcset) {
+                        mainImage.setAttribute('sizes', <?php echo wp_json_encode(MORETTI_PRODUCT_MAIN_IMAGE_SIZES); ?>);
+                        mainImage.setAttribute('srcset', selectedThumb.dataset.srcset);
+                    } else {
+                        mainImage.removeAttribute('srcset');
+                    }
+                    mainImage.src = src;
                     mainImage.onload = function() {
                         mainImage.style.opacity = '1';
                         mainImage.onload = null;
@@ -193,6 +220,8 @@ $first_slide_id = !empty($gallery_nav_ids) ? (int) $gallery_nav_ids[0] : 0;
         </script>
     <?php endif; ?>
 </div>
+
+<?php remove_filter('max_srcset_image_width', $moretti_cap_srcset); ?>
 
 <style>
 #moretti-main-img {

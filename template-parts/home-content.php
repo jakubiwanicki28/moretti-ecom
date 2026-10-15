@@ -4,274 +4,7 @@
  * Używane przez index.php oraz front-page.php gdy wyświetlane są "Najnowsze wpisy".
  */
 ?>
-<!-- 2. NOWOŚCI -->
-<?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'pt-8 pb-16 md:py-20 overflow-hidden bg-white'); ?>
-
-<!-- 3. PROMO MARQUEE (Screenshot 5) - HIDDEN BY USER REQUEST
-<div class="bg-charcoal py-4 overflow-hidden whitespace-nowrap border-y border-white/10">
-    <div class="inline-block animate-marquee uppercase text-white text-sm font-bold tracking-widest">
-        <?php for($i=0; $i<10; $i++): ?>
-            <span class="mx-8">* 20% ZNIŻKI PRZY ZAPISIE DO NEWSLETTERA</span>
-        <?php endfor; ?>
-    </div>
-</div>
--->
-
-<!-- 4. GENDER SPLIT / CATEGORIES (Screenshot 3) -->
-<?php
-// Resolve category URLs from the same source-of-truth as the header nav,
-// so the homepage tiles always point to the live WooCommerce category pages.
-// Falls back through slug candidates, mirroring moretti_get_header_nav_items().
-$home_gender_shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
-$home_gender_resolve_url = static function(array $slugs) use ($home_gender_shop_url) {
-    foreach ($slugs as $slug) {
-        $term = get_term_by('slug', $slug, 'product_cat');
-        if ($term && !is_wp_error($term)) {
-            $link = get_term_link($term);
-            if (!is_wp_error($link)) {
-                return $link;
-            }
-        }
-    }
-    return $home_gender_shop_url;
-};
-$home_gender_men_url   = $home_gender_resolve_url(array('portfele-meskie'));
-$home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-damskie'));
-?>
-<section style="max-width: 1260px; margin: 0 auto; padding: 0 1rem 4rem;">
-<div id="home-gender-split-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 overflow-hidden" style="height: clamp(420px, 72vh, 860px);">
-    <!-- Men -->
-    <div class="relative group overflow-hidden flex items-center justify-center">
-        <a href="<?php echo esc_url($home_gender_men_url); ?>" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niego"></a>
-        <img src="<?php echo get_template_directory_uri(); ?>/images/men-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niego">
-        <div class="absolute inset-0 bg-black/30"></div>
-        <div class="relative z-20 text-center pointer-events-none">
-            <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEGO</h2>
-            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
-        </div>
-    </div>
-    <!-- Women -->
-    <div class="relative group overflow-hidden flex items-center justify-center">
-        <a href="<?php echo esc_url($home_gender_women_url); ?>" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niej"></a>
-        <img src="<?php echo get_template_directory_uri(); ?>/images/women-category-v2.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niej">
-        <div class="absolute inset-0 bg-black/30"></div>
-        <div class="relative z-20 text-center pointer-events-none">
-            <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEJ</h2>
-            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
-        </div>
-    </div>
-</div>
-</section>
-
-<!-- 5. BESTSELLERY -->
-<?php moretti_render_home_carousel_section('klasyki', 'BESTSELLERY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
-
-<!-- 6. VIDEO DIVIDER -->
-<section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
-    <video class="home-video-break-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
-        <?php
-        // get_theme_file_uri (WP 5.9+): szuka pliku w child theme, potem w parent — unika 404 przy aktywnym child theme
-        if (function_exists('get_theme_file_uri')) {
-            $home_loop_mp4 = get_theme_file_uri('images/LOOP.mp4');
-            $home_loop_mov = get_theme_file_uri('images/LOOP.mov');
-        } else {
-            $home_loop_mp4 = get_template_directory_uri() . '/images/LOOP.mp4';
-            $home_loop_mov = get_template_directory_uri() . '/images/LOOP.mov';
-        }
-        ?>
-        <source src="<?php echo esc_url($home_loop_mp4); ?>" type="video/mp4">
-        <source src="<?php echo esc_url($home_loop_mov); ?>" type="video/quicktime">
-        Twoja przeglądarka nie obsługuje odtwarzania wideo.
-    </video>
-    <div class="home-video-break-tint" aria-hidden="true"></div>
-    <div class="home-video-break-content">
-        <p class="home-video-break-kicker">MORETTI COLLECTION</p>
-        <h2>ZOBACZ PEŁNĄ OFERTĘ</h2>
-        <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje <br class="home-video-break-br-mobile" aria-hidden="true">w jednym miejscu.</p>
-        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">ZOBACZ WIĘCEJ</a>
-    </div>
-</section>
-<script>
-(function () {
-    var el = document.querySelector('#home-video-break-banner .home-video-break-video');
-    if (!el) return;
-    el.muted = true;
-    el.defaultMuted = true;
-    el.autoplay = true;
-    el.loop = true;
-    el.playsInline = true;
-    function tryPlay() {
-        if (el.play) el.play().catch(function () {});
-    }
-    el.load();
-    el.addEventListener('loadeddata', tryPlay);
-    el.addEventListener('canplay', tryPlay);
-    el.addEventListener('error', function () {
-        // Keep section readable even when video cannot be loaded.
-        var wrap = document.getElementById('home-video-break-banner');
-        if (wrap) wrap.classList.add('home-video-break-fallback');
-    });
-    document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) tryPlay();
-    });
-})();
-</script>
-
-<!-- 6. OKAZJE -->
-<?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
-
-<!-- 7. VIDEO BREAK PLACEHOLDER BANNER - HIDDEN BY USER REQUEST
-<section id="home-video-break-banner" aria-label="Miejsce na nagrania promocyjne">
-    <div class="home-video-break-overlay" aria-hidden="true"></div>
-    <div class="home-video-break-inner">
-        <div class="home-video-break-copy">
-            <p class="home-video-break-kicker">Przestrzeń na content video</p>
-            <h2>Miejsce na Twoje nagrania</h2>
-            <p>Wstaw tutaj finalne ujęcia i animacje, aby dodać lekki przerywnik między sekcjami.</p>
-        </div>
-        <div class="home-video-break-placeholders" aria-label="Placeholdery pod nagrania">
-            <div class="home-video-break-card"><span>Placeholder 01</span></div>
-            <div class="home-video-break-card"><span>Placeholder 02</span></div>
-            <div class="home-video-break-card"><span>Placeholder 03</span></div>
-        </div>
-    </div>
-</section>
--->
-
-<!-- 8. FEATURED DETAIL -->
-<section id="home-featured-product" style="max-width: 1260px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
-    <?php
-    $featured_taxonomy = 'pa_strona-glowna';
-    $featured_term_slug = 'tak';
-
-    if (!taxonomy_exists($featured_taxonomy)) {
-        $featured_taxonomy = '';
-    }
-
-    $featured_args = array(
-        'post_type'      => 'product',
-        'posts_per_page' => 1,
-        'orderby'        => 'rand',
-        'post_status'    => 'publish',
-    );
-
-    if ($featured_taxonomy !== '' && $featured_term_slug !== '') {
-        $featured_args['tax_query'] = array(
-            array(
-                'taxonomy' => $featured_taxonomy,
-                'field'    => 'slug',
-                'terms'    => $featured_term_slug,
-            ),
-        );
-    }
-
-    $featured_loop = new WP_Query($featured_args);
-
-    if (!$featured_loop->have_posts()) {
-        $fallback_args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => 1,
-            'orderby'        => 'rand',
-            'post_status'    => 'publish',
-        );
-
-        $featured_loop = new WP_Query($fallback_args);
-    }
-
-    if ($featured_loop->have_posts()) : $featured_loop->the_post();
-        global $product;
-        $product_id = get_the_ID();
-        $gallery_ids = $product->get_gallery_image_ids();
-        $main_image_id = $product->get_image_id();
-        $featured_placeholder_src = wc_placeholder_img_src();
-        if (empty($featured_placeholder_src)) {
-            $featured_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
-        }
-        
-        // Gallery order first (no preview/featured image as first); then main if not in gallery.
-        $all_images = array();
-        if (!empty($gallery_ids)) {
-            $all_images = array_map('absint', $gallery_ids);
-            if ($main_image_id && !in_array((int) $main_image_id, $all_images)) {
-                $all_images[] = (int) $main_image_id;
-            }
-        } else {
-            if ($main_image_id) {
-                $all_images[] = (int) $main_image_id;
-            }
-        }
-        $all_images = array_values(array_unique(array_filter($all_images)));
-        $slider_images = array();
-        foreach ($all_images as $image_id) {
-            if (wp_get_attachment_image_url($image_id, 'large')) {
-                $slider_images[] = $image_id;
-            }
-        }
-        // Limit to 3 images for the slider
-        $slider_images = array_slice($slider_images, 0, 3);
-    ?>
-    <div id="home-featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-        <!-- Image Slider Column -->
-        <div id="home-featured-media-col" style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
-            <div id="featured-slider" style="position: relative; width: 100%; overflow: visible;">
-                <div style="height: 100%; position: relative;">
-                    <?php if (!empty($slider_images)) : ?>
-                        <?php foreach ($slider_images as $index => $image_id) :
-                            $image_url = wp_get_attachment_image_url($image_id, 'large');
-                        ?>
-                            <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease; overflow: hidden;">
-                                <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php the_title(); ?>">
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <div class="slider-image" data-index="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease; overflow: hidden;">
-                            <img src="<?php echo esc_url($featured_placeholder_src); ?>" style="width: 100%; height: 100%; object-fit: contain; background: #f7f5f2;" alt="<?php echo esc_attr(get_the_title()); ?>">
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <?php if (count($slider_images) > 1) : ?>
-                <!-- Slider Arrows -->
-                <!-- Strzałki: lewy przycisk = w lewo (←), prawy = w prawo (→). Ścieżki zamienione względem typowego rysunku. -->
-                <button id="home-featured-prev-btn" class="home-featured-image-nav" onclick="featuredSliderPrev()" aria-label="Poprzednie zdjęcie">
-                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-                </button>
-                <button id="home-featured-next-btn" class="home-featured-image-nav" onclick="featuredSliderNext()" aria-label="Następne zdjęcie">
-                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                </button>
-
-                <!-- Slider Dots -->
-                <div id="home-featured-dots" style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 20;">
-                    <?php foreach ($slider_images as $index => $image_id) : ?>
-                        <button onclick="featuredSliderGoTo(<?php echo $index; ?>)" class="slider-dot" data-index="<?php echo $index; ?>" style="width: <?php echo $index === 0 ? '24px' : '8px'; ?>; height: 8px; border-radius: 4px; background: <?php echo $index === 0 ? '#2a2826' : 'rgba(42,40,38,0.2)'; ?>; border: none; cursor: pointer; transition: all 0.3s; padding: 0;"></button>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Content Column -->
-        <div id="home-featured-content-col" style="padding: 3rem 0;">
-            <h2 style="font-size: 2.25rem; font-weight: 700; text-transform: uppercase; color: #2a2826; margin-bottom: 1.5rem; line-height: 1.1;"><?php the_title(); ?></h2>
-            <p style="color: #766a5d; margin-bottom: 2rem; line-height: 1.7;">
-                <?php echo wp_trim_words(get_the_excerpt(), 25); ?>
-            </p>
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                <span style="font-size: 1.5rem; font-weight: 700; color: #2a2826;"><?php echo $product->get_price_html(); ?></span>
-                <div style="display: flex; color: #fbbf24; font-size: 1rem;">
-                    <?php for($i=0; $i<5; $i++) echo "★"; ?>
-                    <span style="color: #a39588; font-size: 0.75rem; margin-left: 0.5rem;">(<?php echo $product->get_review_count(); ?> opinie)</span>
-                </div>
-            </div>
-            <div id="home-featured-cta-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <a id="home-featured-details-btn" href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
-                <button id="home-featured-cart-btn" class="add_to_cart_button ajax_add_to_cart" onclick="morettiQuickAddToCart(<?php echo $product_id; ?>, this)" data-product-id="<?php echo $product_id; ?>" data-product-type="<?php echo esc_attr($product->get_type()); ?>" data-product-url="<?php echo esc_url($product->get_permalink()); ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
-            </div>
-        </div>
-    </div>
-    <?php endif; wp_reset_postdata(); ?>
-</section>
-
+<?php /* Style kart i sekcji przed treścią — na końcu przeglądarka najpierw układała stronę bez nich (skoki układu, zbyt wczesne pobieranie zdjęć „lazy”). */ ?>
 <style>
 /* ===== Homepage product sections (no carousel) ===== */
 .home-products-grid {
@@ -857,6 +590,274 @@ $home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-da
     }
 }
 </style>
+<!-- 2. NOWOŚCI -->
+<?php moretti_render_home_carousel_section('nowosci', 'NOWOŚCI', 'nowosci', 'pt-8 pb-16 md:py-20 overflow-hidden bg-white'); ?>
+
+<!-- 3. PROMO MARQUEE (Screenshot 5) - HIDDEN BY USER REQUEST
+<div class="bg-charcoal py-4 overflow-hidden whitespace-nowrap border-y border-white/10">
+    <div class="inline-block animate-marquee uppercase text-white text-sm font-bold tracking-widest">
+        <?php for($i=0; $i<10; $i++): ?>
+            <span class="mx-8">* 20% ZNIŻKI PRZY ZAPISIE DO NEWSLETTERA</span>
+        <?php endfor; ?>
+    </div>
+</div>
+-->
+
+<!-- 4. GENDER SPLIT / CATEGORIES (Screenshot 3) -->
+<?php
+// Resolve category URLs from the same source-of-truth as the header nav,
+// so the homepage tiles always point to the live WooCommerce category pages.
+// Falls back through slug candidates, mirroring moretti_get_header_nav_items().
+$home_gender_shop_url = class_exists('WooCommerce') ? get_permalink(wc_get_page_id('shop')) : home_url('/');
+$home_gender_resolve_url = static function(array $slugs) use ($home_gender_shop_url) {
+    foreach ($slugs as $slug) {
+        $term = get_term_by('slug', $slug, 'product_cat');
+        if ($term && !is_wp_error($term)) {
+            $link = get_term_link($term);
+            if (!is_wp_error($link)) {
+                return $link;
+            }
+        }
+    }
+    return $home_gender_shop_url;
+};
+$home_gender_men_url   = $home_gender_resolve_url(array('portfele-meskie'));
+$home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-damskie'));
+?>
+<section style="max-width: 1260px; margin: 0 auto; padding: 0 1rem 4rem;">
+<div id="home-gender-split-grid" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 overflow-hidden" style="height: clamp(420px, 72vh, 860px);">
+    <!-- Men -->
+    <div class="relative group overflow-hidden flex items-center justify-center">
+        <a href="<?php echo esc_url($home_gender_men_url); ?>" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niego"></a>
+        <img src="<?php echo get_template_directory_uri(); ?>/images/men-category-v2.jpg" width="1200" height="1490" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niego">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative z-20 text-center pointer-events-none">
+            <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEGO</h2>
+            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
+        </div>
+    </div>
+    <!-- Women -->
+    <div class="relative group overflow-hidden flex items-center justify-center">
+        <a href="<?php echo esc_url($home_gender_women_url); ?>" class="absolute inset-0 z-10" aria-label="Przejdź do kategorii Dla Niej"></a>
+        <img src="<?php echo get_template_directory_uri(); ?>/images/women-category-v2.jpg" width="1200" height="1490" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dla Niej">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative z-20 text-center pointer-events-none">
+            <h2 class="text-5xl md:text-7xl font-bold text-white uppercase mb-6 tracking-tighter">DLA NIEJ</h2>
+            <span class="text-xs font-bold text-white border-b-2 border-white pb-1">ZOBACZ WIĘCEJ</span>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- 5. BESTSELLERY -->
+<?php moretti_render_home_carousel_section('klasyki', 'BESTSELLERY', 'bestsellery', 'py-20 overflow-hidden bg-white'); ?>
+
+<!-- 6. VIDEO DIVIDER -->
+<section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
+    <video class="home-video-break-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <?php
+        // get_theme_file_uri (WP 5.9+): szuka pliku w child theme, potem w parent — unika 404 przy aktywnym child theme
+        if (function_exists('get_theme_file_uri')) {
+            $home_loop_mp4 = get_theme_file_uri('images/LOOP.mp4');
+            $home_loop_mov = get_theme_file_uri('images/LOOP.mov');
+        } else {
+            $home_loop_mp4 = get_template_directory_uri() . '/images/LOOP.mp4';
+            $home_loop_mov = get_template_directory_uri() . '/images/LOOP.mov';
+        }
+        ?>
+        <source src="<?php echo esc_url($home_loop_mp4); ?>" type="video/mp4">
+        <source src="<?php echo esc_url($home_loop_mov); ?>" type="video/quicktime">
+        Twoja przeglądarka nie obsługuje odtwarzania wideo.
+    </video>
+    <div class="home-video-break-tint" aria-hidden="true"></div>
+    <div class="home-video-break-content">
+        <p class="home-video-break-kicker">MORETTI COLLECTION</p>
+        <h2>ZOBACZ PEŁNĄ OFERTĘ</h2>
+        <p class="home-video-break-subtitle">Klasyczne modele i nowe kolekcje <br class="home-video-break-br-mobile" aria-hidden="true">w jednym miejscu.</p>
+        <a class="home-video-break-cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">ZOBACZ WIĘCEJ</a>
+    </div>
+</section>
+<script>
+(function () {
+    var el = document.querySelector('#home-video-break-banner .home-video-break-video');
+    if (!el) return;
+    el.muted = true;
+    el.defaultMuted = true;
+    el.autoplay = true;
+    el.loop = true;
+    el.playsInline = true;
+    function tryPlay() {
+        if (el.play) el.play().catch(function () {});
+    }
+    el.load();
+    el.addEventListener('loadeddata', tryPlay);
+    el.addEventListener('canplay', tryPlay);
+    el.addEventListener('error', function () {
+        // Keep section readable even when video cannot be loaded.
+        var wrap = document.getElementById('home-video-break-banner');
+        if (wrap) wrap.classList.add('home-video-break-fallback');
+    });
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) tryPlay();
+    });
+})();
+</script>
+
+<!-- 6. OKAZJE -->
+<?php moretti_render_home_carousel_section('okazje', 'OKAZJE', 'okazje', 'py-20 overflow-hidden bg-gray-100'); ?>
+
+<!-- 7. VIDEO BREAK PLACEHOLDER BANNER - HIDDEN BY USER REQUEST
+<section id="home-video-break-banner" aria-label="Miejsce na nagrania promocyjne">
+    <div class="home-video-break-overlay" aria-hidden="true"></div>
+    <div class="home-video-break-inner">
+        <div class="home-video-break-copy">
+            <p class="home-video-break-kicker">Przestrzeń na content video</p>
+            <h2>Miejsce na Twoje nagrania</h2>
+            <p>Wstaw tutaj finalne ujęcia i animacje, aby dodać lekki przerywnik między sekcjami.</p>
+        </div>
+        <div class="home-video-break-placeholders" aria-label="Placeholdery pod nagrania">
+            <div class="home-video-break-card"><span>Placeholder 01</span></div>
+            <div class="home-video-break-card"><span>Placeholder 02</span></div>
+            <div class="home-video-break-card"><span>Placeholder 03</span></div>
+        </div>
+    </div>
+</section>
+-->
+
+<!-- 8. FEATURED DETAIL -->
+<section id="home-featured-product" style="max-width: 1260px; margin: 0 auto; padding: 5rem 1rem; border-top: 1px solid #f3f4f6;">
+    <?php
+    $featured_taxonomy = 'pa_strona-glowna';
+    $featured_term_slug = 'tak';
+
+    if (!taxonomy_exists($featured_taxonomy)) {
+        $featured_taxonomy = '';
+    }
+
+    $featured_args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => 1,
+        'orderby'        => 'rand',
+        'post_status'    => 'publish',
+    );
+
+    if ($featured_taxonomy !== '' && $featured_term_slug !== '') {
+        $featured_args['tax_query'] = array(
+            array(
+                'taxonomy' => $featured_taxonomy,
+                'field'    => 'slug',
+                'terms'    => $featured_term_slug,
+            ),
+        );
+    }
+
+    $featured_loop = new WP_Query($featured_args);
+
+    if (!$featured_loop->have_posts()) {
+        $fallback_args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => 1,
+            'orderby'        => 'rand',
+            'post_status'    => 'publish',
+        );
+
+        $featured_loop = new WP_Query($fallback_args);
+    }
+
+    if ($featured_loop->have_posts()) : $featured_loop->the_post();
+        global $product;
+        $product_id = get_the_ID();
+        $gallery_ids = $product->get_gallery_image_ids();
+        $main_image_id = $product->get_image_id();
+        $featured_placeholder_src = wc_placeholder_img_src();
+        if (empty($featured_placeholder_src)) {
+            $featured_placeholder_src = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#f7f5f2"/><rect x="170" y="250" width="260" height="220" fill="none" stroke="#d6d1ca" stroke-width="8"/><circle cx="270" cy="320" r="28" fill="none" stroke="#d6d1ca" stroke-width="8"/><path d="M190 430l85-92 65 66 40-40 40 66" fill="none" stroke="#d6d1ca" stroke-width="8"/></svg>');
+        }
+        
+        // Gallery order first (no preview/featured image as first); then main if not in gallery.
+        $all_images = array();
+        if (!empty($gallery_ids)) {
+            $all_images = array_map('absint', $gallery_ids);
+            if ($main_image_id && !in_array((int) $main_image_id, $all_images)) {
+                $all_images[] = (int) $main_image_id;
+            }
+        } else {
+            if ($main_image_id) {
+                $all_images[] = (int) $main_image_id;
+            }
+        }
+        $all_images = array_values(array_unique(array_filter($all_images)));
+        $slider_images = array();
+        foreach ($all_images as $image_id) {
+            if (wp_get_attachment_image_url($image_id, 'large')) {
+                $slider_images[] = $image_id;
+            }
+        }
+        // Limit to 3 images for the slider
+        $slider_images = array_slice($slider_images, 0, 3);
+    ?>
+    <div id="home-featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <!-- Image Slider Column -->
+        <div id="home-featured-media-col" style="display: flex; justify-content: center; align-items: flex-start; padding: 3rem 0;">
+            <div id="featured-slider" style="position: relative; width: 100%; overflow: visible;">
+                <div style="height: 100%; position: relative;">
+                    <?php if (!empty($slider_images)) : ?>
+                        <?php foreach ($slider_images as $index => $image_id) :
+                            $image_url = wp_get_attachment_image_url($image_id, 'large');
+                        ?>
+                            <div class="slider-image" data-index="<?php echo $index; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; transition: opacity 0.7s ease; overflow: hidden;">
+                                <img src="<?php echo esc_url($image_url); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="<?php the_title(); ?>">
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <div class="slider-image" data-index="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 0.7s ease; overflow: hidden;">
+                            <img src="<?php echo esc_url($featured_placeholder_src); ?>" style="width: 100%; height: 100%; object-fit: contain; background: #f7f5f2;" alt="<?php echo esc_attr(get_the_title()); ?>">
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (count($slider_images) > 1) : ?>
+                <!-- Slider Arrows -->
+                <!-- Strzałki: lewy przycisk = w lewo (←), prawy = w prawo (→). Ścieżki zamienione względem typowego rysunku. -->
+                <button id="home-featured-prev-btn" class="home-featured-image-nav" onclick="featuredSliderPrev()" aria-label="Poprzednie zdjęcie">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                </button>
+                <button id="home-featured-next-btn" class="home-featured-image-nav" onclick="featuredSliderNext()" aria-label="Następne zdjęcie">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+
+                <!-- Slider Dots -->
+                <div id="home-featured-dots" style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 20;">
+                    <?php foreach ($slider_images as $index => $image_id) : ?>
+                        <button onclick="featuredSliderGoTo(<?php echo $index; ?>)" class="slider-dot" data-index="<?php echo $index; ?>" style="width: <?php echo $index === 0 ? '24px' : '8px'; ?>; height: 8px; border-radius: 4px; background: <?php echo $index === 0 ? '#2a2826' : 'rgba(42,40,38,0.2)'; ?>; border: none; cursor: pointer; transition: all 0.3s; padding: 0;"></button>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Content Column -->
+        <div id="home-featured-content-col" style="padding: 3rem 0;">
+            <h2 style="font-size: 2.25rem; font-weight: 700; text-transform: uppercase; color: #2a2826; margin-bottom: 1.5rem; line-height: 1.1;"><?php the_title(); ?></h2>
+            <p style="color: #766a5d; margin-bottom: 2rem; line-height: 1.7;">
+                <?php echo wp_trim_words(get_the_excerpt(), 25); ?>
+            </p>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <span style="font-size: 1.5rem; font-weight: 700; color: #2a2826;"><?php echo $product->get_price_html(); ?></span>
+                <div style="display: flex; color: #fbbf24; font-size: 1rem;">
+                    <?php for($i=0; $i<5; $i++) echo "★"; ?>
+                    <span style="color: #a39588; font-size: 0.75rem; margin-left: 0.5rem;">(<?php echo $product->get_review_count(); ?> opinie)</span>
+                </div>
+            </div>
+            <div id="home-featured-cta-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a id="home-featured-details-btn" href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
+                <button id="home-featured-cart-btn" class="add_to_cart_button ajax_add_to_cart" onclick="morettiQuickAddToCart(<?php echo $product_id; ?>, this)" data-product-id="<?php echo $product_id; ?>" data-product-type="<?php echo esc_attr($product->get_type()); ?>" data-product-url="<?php echo esc_url($product->get_permalink()); ?>" style="display: inline-block; background: transparent; color: #2a2826; padding: 1rem 2rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid #2a2826; cursor: pointer; transition: all 0.3s;">DO KOSZYKA</button>
+            </div>
+        </div>
+    </div>
+    <?php endif; wp_reset_postdata(); ?>
+</section>
+
 
 <script>
 // Featured Product Slider - Pure JavaScript, no classes

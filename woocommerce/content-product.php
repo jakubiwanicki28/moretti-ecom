@@ -94,7 +94,7 @@ if ($is_home_carousel) :
                         <?php foreach ($valid_image_ids as $index => $image_id) : ?>
                             <div class="product-image-slide <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <a href="<?php the_permalink(); ?>">
-                                    <?php echo wp_get_attachment_image($image_id, 'large', false, array(
+                                    <?php echo moretti_card_slide_image($image_id, $index, '(max-width: 767px) 50vw, (max-width: 992px) 33vw, 20vw', array(
                                         'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity',
                                     )); ?>
                                 </a>
@@ -194,7 +194,7 @@ endif;
                 <?php if (!empty($all_images)) : ?>
                     <?php foreach ($all_images as $index => $image_id) : ?>
                         <div class="slider-image <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
-                            <?php echo wp_get_attachment_image($image_id, 'large', false, array(
+                            <?php echo moretti_card_slide_image($image_id, $index, '(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 320px', array(
                                 'class' => 'w-full h-full object-contain group-hover:opacity-90 transition-opacity'
                             )); ?>
                         </div>

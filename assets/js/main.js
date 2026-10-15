@@ -656,7 +656,23 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
+        // Na ekranie jest miniatura; do powiększenia dociągamy oryginał (data-zoom-src)
+        // i podmieniamy go dopiero, gdy się pobierze — bez mignięcia.
+        function ensureZoomSource() {
+            var zoomSrc = img.dataset.zoomSrc;
+            if (!zoomSrc || img.dataset.zoomLoaded === zoomSrc) return;
+            img.dataset.zoomLoaded = zoomSrc;
+            var hiRes = new Image();
+            hiRes.onload = function() {
+                if (img.dataset.zoomSrc !== zoomSrc) return;
+                img.removeAttribute('srcset');
+                img.src = zoomSrc;
+            };
+            hiRes.src = zoomSrc;
+        }
+
         function applyZoom(e) {
+            ensureZoomSource();
             if (isInArrowSafeZone(e)) {
                 wrapper.style.cursor = 'default';
                 clearZoom();
@@ -793,3 +809,24 @@ function updateCartCount() {
         .catch(error => console.error('Error updating cart count:', error));
 }
 
+
+// Karty produktów: slajdy od trzeciego mają źródła w data-* (zob. moretti_card_slide_image
+// w functions.php) i pobierają się dopiero, gdy klient zacznie oglądać kartę.
+(function() {
+    function loadDeferredCardImages(e) {
+        const card = e.target.closest && e.target.closest('.product-card');
+        if (!card || card.dataset.deferredImagesLoaded === '1') return;
+        card.dataset.deferredImagesLoaded = '1';
+        card.querySelectorAll('img[data-src]').forEach(function(img) {
+            if (img.dataset.sizes) img.setAttribute('sizes', img.dataset.sizes);
+            if (img.dataset.srcset) img.setAttribute('srcset', img.dataset.srcset);
+            img.setAttribute('src', img.dataset.src);
+            img.removeAttribute('data-sizes');
+            img.removeAttribute('data-srcset');
+            img.removeAttribute('data-src');
+        });
+    }
+    ['pointerover', 'touchstart', 'focusin'].forEach(function(type) {
+        document.addEventListener(type, loadDeferredCardImages, { capture: true, passive: true });
+    });
+})();
