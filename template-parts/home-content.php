@@ -490,7 +490,9 @@
 
     .home-products-item .image-dots {
         opacity: 1 !important;
-        bottom: 8px;
+        /* Kropki siedzą w strefie hover, która ma 82% wysokości zdjęcia — bez korekty
+           lądowały na ~3/4 zdjęcia (na modelce). 21,95% strefy = brakujące 18% zdjęcia. */
+        bottom: calc(10px - 21.95%);
     }
 
     #home-featured-product {
