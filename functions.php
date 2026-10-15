@@ -14,6 +14,7 @@ require_once get_template_directory() . '/inc/theme-setup-data.php';
 require_once get_template_directory() . '/inc/product-care.php';
 require_once get_template_directory() . '/inc/checkout.php';
 require_once get_template_directory() . '/inc/litespeed-cache.php';
+require_once get_template_directory() . '/inc/added-to-cart.php';
 
 // Polish WooCommerce Defaults
 function moretti_wallet_setup() {

@@ -1,0 +1,202 @@
+/*
+ * Okienko „Dodano do koszyka” (inc/added-to-cart.php). Telefon: panel wysuwany od dołu; komputer: na środku.
+ * Kolory i typografia jak przycisk „Dodaj do koszyka” na stronie produktu.
+ */
+
+.moretti-atc {
+	--atc-ink: #2a2826;
+	--atc-muted: #6b6560;
+	--atc-line: #e5e2dd;
+	--atc-cream: #f5f3ef;
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+.moretti-atc[hidden] {
+	display: none;
+}
+html.moretti-atc-locked {
+	overflow: hidden;
+}
+
+.moretti-atc__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(42, 40, 38, 0.45);
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+.moretti-atc.is-open .moretti-atc__backdrop {
+	opacity: 1;
+}
+
+.moretti-atc__panel {
+	position: relative;
+	width: 100%;
+	max-height: 90vh;
+	overflow: auto;
+	background: #fff;
+	color: var(--atc-ink);
+	padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+	transform: translateY(100%);
+	transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.moretti-atc.is-open .moretti-atc__panel {
+	transform: translateY(0);
+}
+.moretti-atc__panel:focus {
+	outline: none;
+}
+
+.moretti-atc__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+.moretti-atc__title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+.moretti-atc__title svg {
+	width: 16px;
+	height: 16px;
+	color: #15803d;
+}
+.moretti-atc__close {
+	width: 36px;
+	height: 36px;
+	margin: -8px -8px -8px 0;
+	border: 0;
+	background: none;
+	color: var(--atc-muted);
+	font-size: 26px;
+	line-height: 1;
+	cursor: pointer;
+}
+.moretti-atc__close:hover {
+	color: var(--atc-ink);
+}
+
+.moretti-atc__product {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	padding: 1rem 0;
+	border-top: 1px solid var(--atc-line);
+	border-bottom: 1px solid var(--atc-line);
+}
+.moretti-atc__image {
+	flex: 0 0 72px;
+	height: 72px;
+	background: #f2f2f2;
+}
+.moretti-atc__image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.moretti-atc__name {
+	margin: 0 0 0.25rem;
+	font-size: 0.9375rem;
+	line-height: 1.35;
+}
+.moretti-atc__price {
+	margin: 0;
+	font-size: 0.9375rem;
+	font-weight: 600;
+}
+.moretti-atc__price span {
+	margin-left: 0.25rem;
+	font-weight: 400;
+	color: var(--atc-muted);
+}
+
+.moretti-atc__summary {
+	margin: 0.875rem 0 1.25rem;
+	font-size: 0.8125rem;
+	color: var(--atc-muted);
+}
+
+.moretti-atc__actions {
+	display: grid;
+	gap: 0.625rem;
+}
+.moretti-atc__primary,
+.moretti-atc__secondary {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 50px;
+	padding: 0.875rem 1rem;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+.moretti-atc__primary {
+	border: 1px solid var(--atc-ink);
+	background: var(--atc-ink);
+	color: #fff;
+}
+.moretti-atc__primary:hover {
+	background: #000;
+	color: #fff;
+}
+.moretti-atc__secondary {
+	border: 1px solid var(--atc-ink);
+	background: #fff;
+	color: var(--atc-ink);
+}
+.moretti-atc__secondary:hover {
+	background: var(--atc-cream);
+}
+.moretti-atc__primary:focus-visible,
+.moretti-atc__secondary:focus-visible,
+.moretti-atc__close:focus-visible {
+	outline: 2px solid var(--atc-ink);
+	outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+	.moretti-atc {
+		align-items: center;
+	}
+	.moretti-atc__panel {
+		width: min(440px, calc(100vw - 32px));
+		padding: 1.5rem;
+		transform: translateY(12px) scale(0.98);
+		opacity: 0;
+		transition: transform 0.25s ease, opacity 0.25s ease;
+	}
+	.moretti-atc.is-open .moretti-atc__panel {
+		transform: none;
+		opacity: 1;
+	}
+	.moretti-atc__actions {
+		grid-template-columns: 1fr 1fr;
+	}
+	.moretti-atc__primary {
+		order: 2;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.moretti-atc__panel,
+	.moretti-atc__backdrop {
+		transition: none;
+	}
+}
