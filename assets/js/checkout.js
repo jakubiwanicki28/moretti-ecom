@@ -9,7 +9,8 @@
  * 2. Mapa Apaczki: widget wysyła wpisany tekst do wyszukiwarki OpenStreetMap bez ograniczenia kraju
  *    i bierze pierwszy wynik („Rudna” → Mołdawia, „00-001 wwa” → Alaska; brak wyniku wywraca mapę).
  *    Startujemy ze współrzędnych kodu pocztowego z naszego serwera, a wyszukiwarkę w mapie
- *    ograniczamy do Polski i uczymy kodów pocztowych.
+ *    ograniczamy do Polski i uczymy kodów pocztowych. Bez kodu pocztowego mapa sama pyta o lokalizację.
+ *    „Znajdź mnie” przybliżało do dokładności GPS (zoom 18 ≈ 90 m promienia) — pusta mapa bez punktów.
  * 3. Brak punktu odbioru: zamiast okienka wtyczki — komunikat pod przyciskiem wyboru punktu.
  */
 (function () {
@@ -81,6 +82,38 @@
 		return { center: { lat: hit.lat, lng: hit.lng }, zoom: zoom };
 	}
 
+	// Zoom, przy którym na telefonie widać kilka–kilkanaście punktów (14 ≈ 1,5 km wokół środka).
+	var LOCATE_ZOOM = 14;
+	var locateOnNextMap = false;
+
+	// Widget rysuje mapę Leafletem (window.L): ograniczamy przybliżenie „Znajdź mnie”, a nowo
+	// otwartą mapę — gdy klient nie podał kodu pocztowego — od razu ustawiamy na jego lokalizacji.
+	function patchLeaflet() {
+		var L = window.L;
+		if (!L || !L.Map || L.Map.prototype.__morettiPatched) {
+			return;
+		}
+		var locate = L.Map.prototype.locate;
+		L.Map.prototype.locate = function (options) {
+			options = Object.assign({}, options);
+			if (options.setView && !options.maxZoom) {
+				options.maxZoom = LOCATE_ZOOM;
+			}
+			return locate.call(this, options);
+		};
+		L.Map.addInitHook(function () {
+			if (!locateOnNextMap || !this.getContainer().closest('#BPWidget')) {
+				return;
+			}
+			locateOnNextMap = false;
+			var map = this;
+			map.whenReady(function () {
+				map.locate({ setView: true, maxZoom: LOCATE_ZOOM });
+			});
+		});
+		L.Map.prototype.__morettiPatched = true;
+	}
+
 	function patchPointMap() {
 		var widget = window.BPWidget;
 		if (!widget || typeof widget.init !== 'function' || widget.__morettiPatched) {
@@ -93,6 +126,7 @@
 			var country = (address.country || 'PL').toUpperCase();
 			var hit = country === 'PL' ? lookupPostcode(address.postcode) : Promise.resolve(null);
 			hit.then(function (point) {
+				locateOnNextMap = !point && !!navigator.geolocation;
 				init.call(self, element, Object.assign({}, options, {
 					countryCodes: country,
 					initialAddress: '', // pusty = widget nie geokoduje sam, tylko bierze mapOptions.center
@@ -101,6 +135,15 @@
 			});
 		};
 		widget.__morettiPatched = true;
+	}
+
+	// Widok całej Polski (brak kodu i brak zgody na lokalizację): podpowiedź zamiast samego „Przybliż…”.
+	var ZOOM_HINT = 'Wpisz kod pocztowy lub miasto w polu powyżej albo przybliż mapę';
+	function improveZoomHint() {
+		var warning = document.getElementById('BPWidgetZoomWarning');
+		if (warning && warning.textContent.trim() && warning.textContent.trim() !== ZOOM_HINT && /Przybliż/.test(warning.textContent)) {
+			warning.textContent = ZOOM_HINT;
+		}
 	}
 
 	// Pole „Szukaj punktu” w mapie: tylko Polska, a kod pocztowy z naszych danych (OSM słabo zna polskie kody).
@@ -216,8 +259,12 @@
 		if (phoneLabel && phoneLabel.textContent === 'Telefon (wymagany)') {
 			phoneLabel.textContent = 'Numer telefonu';
 		}
+		patchLeaflet();
 		patchPointMap();
 		patchMapSearch();
+		improveZoomHint();
+		var mapModal = document.querySelector('.apaczka_pl_geowidget_modal');
+		document.documentElement.classList.toggle('moretti-map-open', !!(mapModal && mapModal.getClientRects().length)); // fixed: offsetParent zawsze null
 		if (hasPoint() || !selectedRateNeedsPoint()) {
 			clearPointError();
 		}

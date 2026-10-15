@@ -176,29 +176,94 @@
 	color: var(--mc-ink);
 }
 
-/* Mapa punktów */
+/* Mapa punktów (widget Alsendo w okienku Apaczki) — kolory, krój i układ motywu */
 .apaczka_pl_geowidget_modal {
 	background-color: rgba(42, 40, 38, 0.55) !important;
+	/* widget barwi przyciski, zaznaczenia i suwaki tymi zmiennymi (domyślnie fiolet) */
+	--widget-accent-color-dark: var(--mc-ink);
+	--widget-accent-color: var(--mc-ink);
+	--widget-accent-color-light: rgba(42, 40, 38, 0.3);
+	--widget-accent-color-light-hover: rgba(42, 40, 38, 0.08);
+	--widget-accent-color-light-active: rgba(42, 40, 38, 0.06);
 }
 .apaczka_pl_geowidget_modal_inner {
 	width: min(1100px, 94vw) !important;
 	height: min(760px, 86vh) !important;
 	margin-top: 0 !important;
-	padding: 3rem 1rem 1rem !important;
+	padding: 3.5rem 1rem 1rem !important;
 	border-radius: 0 !important;
 }
+.apaczka_pl_geowidget_modal_inner::before {
+	content: "Wybierz punkt odbioru";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3.5rem;
+	display: flex;
+	align-items: center;
+	padding: 0 3.5rem 0 1rem;
+	border-bottom: 1px solid var(--mc-line);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--mc-ink);
+}
 #apaczka_pl_geowidget_modal_cross {
-	top: 0.75rem !important;
-	right: 0.75rem !important;
-	padding: 0.125rem 0.625rem !important;
-	border: 1px solid var(--mc-line) !important;
+	top: 0.625rem !important;
+	right: 0.625rem !important;
+	width: 2.25rem;
+	height: 2.25rem;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	padding: 0 !important;
+	border: 0 !important;
 	border-radius: 0 !important;
-	background: #fff !important;
-	font-size: 1.25rem !important;
-	line-height: 1.4;
+	background: transparent !important;
+	color: var(--mc-ink);
+	font-size: 1.75rem !important;
+	line-height: 1;
+	z-index: 2;
 }
 #apaczka_pl_geowidget_modal_inner_content {
 	margin: 0 !important;
+}
+#BPWidget,
+#BPWidget button,
+#BPWidget input {
+	font-family: inherit !important;
+}
+#BPWidget .bp-search-panel-button {
+	color: var(--mc-ink) !important;
+}
+#BPWidget .bp-map-submit-button,
+#BPWidget .button {
+	min-height: 44px;
+	border-radius: 0 !important;
+	font-size: 11px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+#BPWidget .bp-search-input {
+	border-radius: 0 !important;
+	border-color: var(--mc-line) !important;
+}
+#BPWidget #BPWidgetZoomWarning {
+	width: min(280px, 80%) !important;
+	padding: 1rem 1.25rem;
+	background: #fff;
+	box-shadow: 0 6px 24px rgba(42, 40, 38, 0.18);
+	font-size: 0.9375rem !important;
+	font-weight: 500 !important;
+	line-height: 1.45 !important;
+	color: var(--mc-ink);
+}
+/* Pływający przełącznik języka zasłaniał dół mapy */
+html.moretti-map-open .linguise_switcher_root {
+	display: none !important;
 }
 
 /* Okienko „Musisz wybrać punkt dostawy!” — zastąpione komunikatem pod przyciskiem wyboru punktu */
@@ -228,9 +293,55 @@
 		padding-top: 1.5rem !important;
 		padding-bottom: 1.25rem !important;
 	}
+	/* Mapa punktów na telefonie: pełny ekran, zwarty pasek wyszukiwania, mapa do samego dołu */
 	.apaczka_pl_geowidget_modal_inner {
 		width: 100vw !important;
 		height: 100dvh !important;
-		padding-top: 3.25rem !important;
+		padding: 3.5rem 0 0 !important;
+	}
+	#BPWidget .bp-search-panel {
+		height: var(--moretti-map-search-h);
+		padding: 0.75rem 1rem !important;
+		box-shadow: none !important;
+		border-bottom: 1px solid var(--mc-line);
+	}
+	#BPWidget .bp-search-panel .bp-search-wrapper .bp-search-buttons .bp-search-panel-button {
+		padding: 0.25rem 0.5rem !important;
+		font-size: 13px !important;
+	}
+	#BPWidget .code-search-autocomplete-container {
+		height: 44px !important;
+		margin-top: 0.5rem !important;
+	}
+	#BPWidget .bp-search-input {
+		height: 44px !important;
+		font-size: 16px !important; /* mniejsza czcionka = iOS przybliża stronę przy wpisywaniu */
+	}
+	#BPWidget {
+		--moretti-map-search-h: 7.25rem;
+	}
+	/* Mapa i panele (lista, punkt, filtry) zaczynają się pod paskiem wyszukiwania i kończą na dole ekranu;
+	   stopka z logo partnera zabierała 70 px mapy. */
+	#BPWidget .bp-footer {
+		display: none !important;
+	}
+	#BPWidget .bp-map-submit-button {
+		width: 100%;
+	}
+	#BPWidget .bp-map,
+	#BPWidget #leaflet-keyboard-focus,
+	#BPWidget #BPWidgetOverlayShadow {
+		top: var(--moretti-map-search-h) !important;
+		bottom: 0 !important;
+		height: auto !important;
+	}
+	#BPWidget .bp-list,
+	#BPWidget .bp-pos-info,
+	#BPWidget .bp-filters {
+		top: var(--moretti-map-search-h) !important;
+		bottom: 0 !important;
+		height: auto !important;
+		padding-bottom: 0 !important;
+		overflow: hidden; /* zamknięty panel ma szerokość 0, ale jego nagłówek wystawał na mapę */
 	}
 }
