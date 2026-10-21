@@ -380,7 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
         card.classList.remove('is-showing-variant-preview');
         morettiDotLog('Przywrócono oryginalne zdjęcie');
     }
-    document.addEventListener('mouseover', function(e) {
+    // Tylko mysz: na dotyku podmiana zdjęcia przy pierwszym dotknięciu sprawia, że iOS
+    // traktuje je jak hover i nie otwiera wariantu.
+    document.addEventListener('pointerover', function(e) {
+        if (e.pointerType !== 'mouse') return;
         const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
         if (dot) {
             morettiDotLog('mouseover na kropce z data-first-image-url');
@@ -389,7 +392,8 @@ document.addEventListener('DOMContentLoaded', function() {
             morettiDotLog('mouseover na kropce BEZ data-first-image-url – sprawdź PHP/warianty');
         }
     });
-    document.addEventListener('mouseout', function(e) {
+    document.addEventListener('pointerout', function(e) {
+        if (e.pointerType !== 'mouse') return;
         const dot = e.target.closest && e.target.closest('.sku-color-dot[data-first-image-url]');
         if (!dot) return;
         const card = dot.closest('.product-card');
@@ -618,6 +622,78 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     initProductImageSliders();
+
+    // Karty ze slajdami .product-image-slide (strona główna, siatka sklepu). Najechanie myszą
+    // pokazuje drugie zdjęcie. Na dotyku nic nie reaguje na „hover" — iOS uznałby zmianę
+    // zdjęcia przy pierwszym dotknięciu za hover i nie otworzył produktu; zdjęcia przełączają
+    // tam strzałki, kropki i przesunięcie palcem (wygląd: assets/css/product-cards.css).
+    function initCardGallery(card) {
+        if (card.dataset.cardGalleryInit === '1') return;
+        card.dataset.cardGalleryInit = '1';
+
+        const slides = card.querySelectorAll('.product-image-slide');
+        if (slides.length <= 1) return;
+        const dots = card.querySelectorAll('.image-dot');
+        let currentIndex = 0;
+
+        const showSlide = (index) => {
+            const target = ((index % slides.length) + slides.length) % slides.length;
+            slides.forEach((slide) => slide.classList.remove('active'));
+            dots.forEach((dot) => dot.classList.remove('active'));
+            slides[target].classList.add('active');
+            if (dots[target]) dots[target].classList.add('active');
+            currentIndex = target;
+        };
+
+        const zone = card.querySelector('.product-image-interior-hover-zone');
+        if (zone) {
+            zone.addEventListener('pointerenter', (e) => {
+                if (e.pointerType === 'mouse' && currentIndex === 0) showSlide(1);
+            });
+        }
+        card.addEventListener('pointerleave', (e) => {
+            if (e.pointerType === 'mouse') showSlide(0);
+        });
+
+        [['.image-prev', -1], ['.image-next', 1]].forEach(([selector, step]) => {
+            const button = card.querySelector(selector);
+            if (!button) return;
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showSlide(currentIndex + step);
+            });
+        });
+
+        dots.forEach((dot) => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const targetIndex = parseInt(dot.dataset.index || '0', 10);
+                showSlide(Number.isNaN(targetIndex) ? 0 : targetIndex);
+            });
+        });
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        card.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        card.addEventListener('touchend', (e) => {
+            if (!e.changedTouches.length) return;
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            const deltaY = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                showSlide(currentIndex + (deltaX < 0 ? 1 : -1));
+            }
+        }, { passive: true });
+    }
+
+    document.querySelectorAll('.product-card').forEach((card) => {
+        if (card.querySelector('.product-image-slide')) initCardGallery(card);
+    });
 
     // =============================================
     // Product Image Inline Zoom — JS only, no CSS :hover (safe on mobile)

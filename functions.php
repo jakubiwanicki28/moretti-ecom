@@ -1295,6 +1295,14 @@ function moretti_enqueue_assets() {
         filemtime(get_template_directory() . '/assets/css/main.css')
     );
 
+    // Kafelki produktów na dotyku (strzałki zdjęć, brak efektów hover) – wszędzie, gdzie są karty
+    wp_enqueue_style(
+        'moretti-product-cards',
+        get_template_directory_uri() . '/assets/css/product-cards.css',
+        array('moretti-main-style'),
+        filemtime(get_template_directory() . '/assets/css/product-cards.css')
+    );
+
     // Hero slider (Wittchen-style, izolowany .mh2) – tylko na stronie głównej
     if (is_front_page()) {
         wp_enqueue_style(

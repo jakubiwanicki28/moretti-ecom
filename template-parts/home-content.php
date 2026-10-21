@@ -114,8 +114,10 @@
     right: 8px;
 }
 
-.home-products-item .product-card:hover .image-nav {
-    opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+    .home-products-item .product-card:hover .image-nav {
+        opacity: 1;
+    }
 }
 
 .home-products-item .image-dots {
@@ -130,8 +132,10 @@
     transition: opacity 0.3s;
 }
 
-.home-products-item .product-card:hover .image-dots {
-    opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+    .home-products-item .product-card:hover .image-dots {
+        opacity: 1;
+    }
 }
 
 .home-products-item .image-dot {
@@ -173,7 +177,9 @@
     z-index: 1;
 }
 
-@media (hover: hover) {
+/* Tylko mysz. Na dotyku nic nie może się pojawiać po „najechaniu", bo iOS potraktuje pierwsze
+   dotknięcie jako hover i nie otworzy produktu (strzałki na dotyku: assets/css/product-cards.css). */
+@media (hover: hover) and (pointer: fine) {
     .home-products-item .product-card.has-hover-second-image .image-nav,
     .home-products-item .product-card.has-hover-second-image .image-dots {
         display: none !important;
@@ -482,10 +488,6 @@
 
     .home-products-item .product-price {
         font-size: 16px !important;
-    }
-
-    .home-products-item .image-nav {
-        display: none !important;
     }
 
     .home-products-item .image-dots {
@@ -1140,96 +1142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCarousel();
     });
 
-    const homeCards = document.querySelectorAll('#nowosci .product-card, #klasyki .product-card, #okazje .product-card');
-
-    homeCards.forEach((card) => {
-        if (card.dataset.homeSliderInitialized === 'true') {
-            return;
-        }
-
-        const slides = card.querySelectorAll('.product-image-slide');
-        const prevBtn = card.querySelector('.image-prev');
-        const nextBtn = card.querySelector('.image-next');
-        const dots = card.querySelectorAll('.image-dot');
-
-        if (slides.length <= 1) {
-            card.dataset.homeSliderInitialized = 'true';
-            return;
-        }
-
-        let currentIndex = 0;
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        const showSlide = (index) => {
-            if (index < 0 || index >= slides.length) return;
-            slides.forEach((slide) => slide.classList.remove('active'));
-            dots.forEach((dot) => dot.classList.remove('active'));
-            slides[index].classList.add('active');
-            if (dots[index]) dots[index].classList.add('active');
-            currentIndex = index;
-        };
-
-        const zone = card.querySelector('.product-image-interior-hover-zone');
-        if (zone) {
-            zone.addEventListener('mouseenter', () => {
-                if (currentIndex === 0) showSlide(1);
-            });
-        }
-        card.addEventListener('mouseleave', () => {
-            showSlide(0);
-        });
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
-                showSlide(newIndex);
-            });
-        }
-
-        if (nextBtn) {
-            nextBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
-                showSlide(newIndex);
-            });
-        }
-
-        dots.forEach((dot) => {
-            dot.addEventListener('click', (event) => {
-                event.preventDefault();
-                const targetIndex = parseInt(dot.dataset.index || '0', 10);
-                showSlide(Number.isNaN(targetIndex) ? 0 : targetIndex);
-            });
-        });
-
-        card.addEventListener('touchstart', (event) => {
-            if (!event.changedTouches || event.changedTouches.length === 0) {
-                return;
-            }
-            touchStartX = event.changedTouches[0].screenX;
-            touchEndX = touchStartX;
-        }, { passive: true });
-
-        card.addEventListener('touchend', (event) => {
-            if (!event.changedTouches || event.changedTouches.length === 0) {
-                return;
-            }
-            touchEndX = event.changedTouches[0].screenX;
-            const swipeThreshold = 50;
-            if (touchEndX < touchStartX - swipeThreshold) {
-                const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
-                showSlide(newIndex);
-            }
-            if (touchEndX > touchStartX + swipeThreshold) {
-                const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
-                showSlide(newIndex);
-            }
-        }, { passive: true });
-
-        card.dataset.homeSliderInitialized = 'true';
-    });
+    // Przełączanie zdjęć na kartach: initCardGallery w assets/js/main.js.
 
     // Adjust grid columns when fewer than 5 products are rendered
     document.querySelectorAll('.home-products-grid').forEach(function(grid) {

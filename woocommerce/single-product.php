@@ -432,18 +432,6 @@ get_header(); ?>
             width: 32px !important;
             height: 32px !important;
         }
-        .related-products .product-image-slider .slider-arrow {
-            opacity: 1 !important;
-            width: 16px !important;
-            height: 16px !important;
-            min-width: 16px !important;
-            min-height: 16px !important;
-            padding: 0 !important;
-        }
-        .related-products .product-image-slider .slider-arrow svg {
-            width: 10px !important;
-            height: 10px !important;
-        }
     }
 </style>
 

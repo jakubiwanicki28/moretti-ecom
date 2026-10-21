@@ -670,9 +670,6 @@
     .product-image {
         aspect-ratio: 4/5 !important; /* Slightly taller on mobile to maximize space */
     }
-    .image-nav {
-        display: none !important; /* Hide arrows on mobile */
-    }
     .image-dots {
         opacity: 1 !important; /* Always show dots on mobile */
         bottom: 8px;
@@ -768,8 +765,10 @@
     backdrop-filter: blur(4px);
 }
 
-.product-card:hover .image-nav {
-    opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+    .product-card:hover .image-nav {
+        opacity: 1;
+    }
 }
 
 .image-nav:hover {
@@ -798,8 +797,10 @@
     transition: opacity 0.3s;
 }
 
-.product-card:hover .image-dots {
-    opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+    .product-card:hover .image-dots {
+        opacity: 1;
+    }
 }
 
 .image-dot {

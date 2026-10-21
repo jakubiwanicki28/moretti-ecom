@@ -237,7 +237,6 @@ endif;
                 <!-- Previous Arrow -->
                 <button 
                     class="slider-arrow slider-prev absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/90 hover:bg-white text-charcoal rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    onclick="morettiSliderPrev(this); event.preventDefault();"
                     aria-label="Previous image"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +247,6 @@ endif;
                 <!-- Next Arrow -->
                 <button 
                     class="slider-arrow slider-next absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/90 hover:bg-white text-charcoal rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    onclick="morettiSliderNext(this); event.preventDefault();"
                     aria-label="Next image"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
