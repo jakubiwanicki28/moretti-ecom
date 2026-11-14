@@ -150,7 +150,7 @@ if ($is_home_carousel) :
                     </a>
                 </h3>
                 <div class="product-price">
-                    <?php echo $product->get_price_html(); ?>
+                    <?php echo $product->get_price_html(); ?><?php echo moretti_omnibus_note_html($product, 'moretti-card-omnibus'); ?>
                 </div>
             </div>
         </div>
@@ -288,7 +288,7 @@ endif;
 
             <!-- Product Price -->
             <div class="product-price text-sm md:text-base text-charcoal font-semibold mb-0 mt-0">
-                <?php echo $product->get_price_html(); ?>
+                <?php echo $product->get_price_html(); ?><?php echo moretti_omnibus_note_html($product, 'moretti-card-omnibus'); ?>
             </div>
 
         </div>

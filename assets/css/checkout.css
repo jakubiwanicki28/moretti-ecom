@@ -261,10 +261,6 @@
 	line-height: 1.45 !important;
 	color: var(--mc-ink);
 }
-/* Pływający przełącznik języka zasłaniał dół mapy */
-html.moretti-map-open .linguise_switcher_root {
-	display: none !important;
-}
 
 /* Okienko „Musisz wybrać punkt dostawy!” — zastąpione komunikatem pod przyciskiem wyboru punktu */
 #apaczka_pl_checkout_validation_modal {

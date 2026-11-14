@@ -72,3 +72,4 @@ node_modules/
 # Lokalne środowisko (scripts/local-env)
 scripts/local-env/.app-password
 scripts/checkout-config-backups/
+scripts/legal-pages-backups/

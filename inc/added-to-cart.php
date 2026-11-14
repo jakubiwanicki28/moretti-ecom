@@ -47,18 +47,9 @@ function moretti_added_to_cart_pull() {
     return $added ?: null;
 }
 
-/** „1 produkt”, „3 produkty”, „5 produktów”, „22 produkty” — polska odmiana ma trzy formy. */
+/** „1 produkt”, „3 produkty”, „5 produktów”, „22 produkty” — odmiana w moretti_plural() (inc/reviews.php). */
 function moretti_products_count_label($count) {
-    $mod10  = $count % 10;
-    $mod100 = $count % 100;
-    if ($count === 1) {
-        $word = 'produkt';
-    } elseif ($mod10 >= 2 && $mod10 <= 4 && ($mod100 < 12 || $mod100 > 14)) {
-        $word = 'produkty';
-    } else {
-        $word = 'produktów';
-    }
-    return $count . ' ' . $word;
+    return moretti_plural((int) $count, 'produkt', 'produkty', 'produktów');
 }
 
 function moretti_added_to_cart_html(array $added) {
@@ -97,6 +88,7 @@ function moretti_added_to_cart_html(array $added) {
                 W koszyku: <?php echo esc_html(moretti_products_count_label($count)); ?>
                 · <?php echo wp_kses_post(WC()->cart->get_cart_subtotal()); ?>
             </p>
+            <?php echo moretti_free_shipping_bar_html(); ?>
             <div class="moretti-atc__actions">
                 <a class="moretti-atc__primary" href="<?php echo esc_url(wc_get_cart_url()); ?>">Przejdź do koszyka</a>
                 <button type="button" class="moretti-atc__secondary" data-atc-close>Kupuj dalej</button>

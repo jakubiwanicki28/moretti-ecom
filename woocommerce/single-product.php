@@ -450,6 +450,7 @@ get_header(); ?>
         ?>
         
         <div class="single-product-main mx-auto px-3 md:px-4 lg:px-5">
+            <?php woocommerce_output_all_notices(); ?>
             
             <!-- Breadcrumbs -->
             <?php if (function_exists('woocommerce_breadcrumb')) : ?>
@@ -490,28 +491,19 @@ get_header(); ?>
                             <?php echo $product->get_price_html(); ?>
                         </div>
 
-                        <?php
-                        $average_rating = (float) $product->get_average_rating();
-                        $review_count = (int) $product->get_review_count();
-                        ?>
-                        <div class="product-reviews-summary">
-                            <?php if (wc_review_ratings_enabled()) : ?>
-                                <?php echo wc_get_rating_html($average_rating, $review_count); ?>
+                        <?php $review_count = (int) $product->get_review_count(); ?>
+                        <div class="product-reviews-summary"<?php echo $review_count > 0 ? '' : ' hidden'; ?>>
+                            <?php if ($review_count > 0 && wc_review_ratings_enabled()) : ?>
+                                <?php echo wc_get_rating_html((float) $product->get_average_rating(), $review_count); ?>
                             <?php endif; ?>
-                            <a href="#moretti-reviews" class="product-reviews-link">
-                                <?php echo $review_count > 0 ? sprintf('(Zobacz opinie %d)', $review_count) : '(Brak opinii)'; ?>
+                            <?php if ($review_count > 0) : ?>
+                            <a href="#reviews" class="product-reviews-link">
+                                (<?php echo esc_html(moretti_reviews_label($review_count)); ?>)
                             </a>
+                            <?php endif; ?>
                         </div>
 
-                        <?php
-                        $current_price_value = (float) $product->get_price();
-                        if ($current_price_value > 0) :
-                            $lowest_price_mvp = wc_get_price_to_display($product, array('price' => $current_price_value));
-                        ?>
-                            <div class="product-lowest-price-note">
-                                Najniższa cena z 30 dni przed obniżką: <?php echo wp_kses_post(wc_price($lowest_price_mvp)); ?>
-                            </div>
-                        <?php endif; ?>
+                        <?php echo moretti_omnibus_note_html($product); ?>
                         
                         <!-- Short Description -->
                         <?php if ($product->get_short_description()) : ?>
@@ -520,6 +512,27 @@ get_header(); ?>
                             </div>
                         <?php endif; ?>
                         
+                        <!-- Kolory (inne produkty z tego modelu) — nad przyciskiem, żeby wybór koloru był przed decyzją -->
+                        <?php if (!empty($single_color_variants)) : ?>
+                            <div class="single-color-variants-row product-colors">
+                                <span class="product-colors__label">Kolor<?php $moretti_current_color = current(array_filter($single_color_variants, fn($v) => !empty($v['is_current']))); echo $moretti_current_color ? ': <strong>' . esc_html($moretti_current_color['color_label']) . '</strong>' : ''; ?></span>
+                                <div class="single-color-variants" aria-label="Dostępne warianty kolorystyczne">
+                                    <?php foreach ($single_color_variants as $variant) : ?>
+                                        <a
+                                            class="single-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?> <?php echo !empty($variant['is_unpublished']) ? 'is-unpublished' : ''; ?>"
+                                            href="<?php echo esc_url($variant['url']); ?>"
+                                            style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
+                                            aria-label="<?php echo esc_attr($variant['color_label']); ?>"
+                                            title="<?php echo esc_attr($variant['color_label'] . (!empty($variant['is_unpublished']) ? ' — NIEOPUBLIKOWANY (' . $variant['status'] . '), klient tego nie widzi' : '')); ?>"
+                                            <?php if (!empty($variant['first_image_url'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
+                                        >
+                                            <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         <!-- Add to Cart + Wishlist -->
                         <div class="product-actions-row">
                             <div class="product-cart-form-custom">
@@ -539,24 +552,28 @@ get_header(); ?>
                         </div>
 
                         <?php
-                        $base_ts = current_time('timestamp');
-                        $ship_date = wp_date('d.m', strtotime('+1 day', $base_ts));
-                        $delivery_date = wp_date('d.m', strtotime('+3 days', $base_ts));
                         $care_link = function_exists('moretti_get_product_care_link') ? moretti_get_product_care_link($product) : null;
                         ?>
                         <div class="product-mvp-status">
                             <div class="product-mvp-status-list">
+                                <?php if ($product->is_in_stock()) : ?>
                                 <div class="product-mvp-status-item is-available">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                     Produkt dostępny
                                 </div>
+                                <?php else : ?>
+                                <div class="product-mvp-status-item is-unavailable">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    Chwilowo niedostępny
+                                </div>
+                                <?php endif; ?>
                                 <div class="product-mvp-status-item">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Kup teraz, wysyłka <?php echo esc_html($ship_date); ?>, u Ciebie <?php echo esc_html($delivery_date); ?>
+                                    <?php echo moretti_delivery_estimate_html(); ?>
                                 </div>
                                 <div class="product-mvp-status-item">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h15l3 4v6a2 2 0 01-2 2h-1a2 2 0 01-4 0H9a2 2 0 01-4 0H4a1 1 0 01-1-1V7zm16 4h-4V9h2.5L19 11z"></path></svg>
-                                    Darmowa dostawa od 250 zł
+                                    Darmowa dostawa od <?php echo esc_html(moretti_free_shipping_from_label()); ?>
                                 </div>
                                 <?php if ($care_link) : ?>
                                 <div class="product-mvp-status-item">
@@ -576,25 +593,6 @@ get_header(); ?>
                                 </div>
                             <?php endif; ?>
 
-                            <?php if (!empty($single_color_variants)) : ?>
-                                <div class="text-[10px] text-taupe-600 single-color-variants-row">
-                                    <span class="font-bold text-charcoal uppercase tracking-[0.2em]">KOLORY:</span>
-                                    <div class="single-color-variants" aria-label="Dostępne warianty kolorystyczne">
-                                        <?php foreach ($single_color_variants as $variant) : ?>
-                                            <a
-                                                class="single-color-dot <?php echo !empty($variant['is_current']) ? 'is-current' : ''; ?> <?php echo !empty($variant['is_unpublished']) ? 'is-unpublished' : ''; ?>"
-                                                href="<?php echo esc_url($variant['url']); ?>"
-                                                style="background-color: <?php echo esc_attr($variant['color_hex']); ?>;"
-                                                aria-label="<?php echo esc_attr($variant['color_label']); ?>"
-                                                title="<?php echo esc_attr($variant['color_label'] . (!empty($variant['is_unpublished']) ? ' — NIEOPUBLIKOWANY (' . $variant['status'] . '), klient tego nie widzi' : '')); ?>"
-                                                <?php if (!empty($variant['first_image_url'])) : ?>data-first-image-url="<?php echo esc_url($variant['first_image_url']); ?>"<?php endif; ?>
-                                            >
-                                                <span class="screen-reader-text"><?php echo esc_html($variant['color_label']); ?></span>
-                                            </a>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
 
                             <?php
                                 // Diagnostyka poza blokiem KOLORY, żeby działała także gdy wariantów nie znaleziono.
@@ -698,9 +696,9 @@ get_header(); ?>
                                     </svg>
                                 </summary>
                                 <div class="mt-4 text-taupe-700 text-sm space-y-2">
-                                    <p><strong>Darmowa dostawa</strong> dla zamówień powyżej 250 zł</p>
-                                    <p><strong>Szybki zwrot</strong> do 30 dni</p>
-                                    <p>Wysyłka w ciągu 24-48 godzin</p>
+                                    <p><strong>Darmowa dostawa</strong> od <?php echo esc_html(moretti_free_shipping_from_label()); ?> — każdą metodą</p>
+                                    <p><strong>Zwrot</strong> do <?php echo (int) MORETTI_RETURN_DAYS; ?> dni bez podania przyczyny — <a href="<?php echo esc_url(home_url('/zwroty/')); ?>" class="underline">jak zwrócić</a></p>
+                                    <p>Wysyłka następnego dnia roboczego po opłaceniu — <a href="<?php echo esc_url(home_url('/dostawa-i-platnosci/')); ?>" class="underline">metody i koszty dostawy</a></p>
                                 </div>
                             </details>
 

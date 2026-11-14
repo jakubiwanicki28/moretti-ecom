@@ -1,0 +1,172 @@
+/* „Zamówienie otrzymane” i podgląd zamówienia (inc/order-received.php). */
+
+.woocommerce-order {
+	--or-ink: #2a2826;
+	--or-muted: #6b6560;
+	--or-line: #e5e2dd;
+	--or-cream: #faf9f7;
+	max-width: 880px;
+	margin: 0 auto;
+	color: var(--or-ink);
+}
+.woocommerce-order .woocommerce-thankyou-order-received {
+	font-size: 1.125rem;
+	font-weight: 600;
+	margin: 0 0 1.25rem;
+}
+
+/* Numer, data, kwota, płatność — cztery pola zamiast luźnych linijek. */
+.woocommerce-order ul.woocommerce-order-overview {
+	list-style: none;
+	margin: 1.5rem 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	border: 1px solid var(--or-line);
+	border-radius: 8px;
+	overflow: hidden;
+}
+.woocommerce-order ul.woocommerce-order-overview li {
+	margin: 0;
+	padding: 0.875rem 1rem;
+	font-size: 0.6875rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--or-muted);
+	border-right: 1px solid var(--or-line);
+	line-height: 1.5;
+}
+.woocommerce-order ul.woocommerce-order-overview li:last-child {
+	border-right: 0;
+}
+.woocommerce-order ul.woocommerce-order-overview li strong {
+	display: block;
+	margin-top: 0.25rem;
+	font-size: 0.9375rem;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--or-ink);
+}
+
+/* Co dalej */
+.moretti-next-steps {
+	margin: 1.5rem 0 2rem;
+	padding: 1.125rem 1.25rem;
+	background: var(--or-cream, #faf9f7);
+	border: 1px solid var(--or-line, #e5e2dd);
+	border-radius: 8px;
+}
+.moretti-next-steps__title,
+.woocommerce-order .woocommerce-order-details__title,
+.woocommerce-order .woocommerce-column__title {
+	margin: 0 0 0.875rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--or-ink, #2a2826);
+}
+.moretti-next-steps__list {
+	margin: 0;
+	padding-left: 1.25rem;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+}
+.moretti-next-steps__list li + li {
+	margin-top: 0.25rem;
+}
+.moretti-next-steps a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+/* Szczegóły zamówienia */
+.woocommerce-order .woocommerce-order-details {
+	margin: 2rem 0;
+}
+.woocommerce-order table.order_details {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9375rem;
+}
+.woocommerce-order table.order_details th,
+.woocommerce-order table.order_details td {
+	padding: 0.75rem 0;
+	border-bottom: 1px solid var(--or-line);
+	text-align: left;
+	vertical-align: top;
+	font-weight: 400;
+}
+.woocommerce-order table.order_details thead th {
+	font-size: 0.6875rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--or-muted);
+}
+.woocommerce-order table.order_details tfoot th {
+	color: var(--or-muted);
+}
+.woocommerce-order table.order_details td:last-child,
+.woocommerce-order table.order_details th:last-child {
+	text-align: right;
+}
+.woocommerce-order table.order_details tfoot tr:nth-last-child(2) th,
+.woocommerce-order table.order_details tfoot tr:nth-last-child(2) td {
+	font-weight: 700;
+	color: var(--or-ink);
+	font-size: 1rem;
+}
+.woocommerce-order table.order_details .shipped_via {
+	display: block;
+	font-size: 0.8125rem;
+	color: var(--or-muted);
+}
+
+/* Adresy: karty obok siebie, bez kursywy. */
+.woocommerce-order .woocommerce-customer-details .woocommerce-columns--addresses {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1rem;
+}
+.woocommerce-order .woocommerce-customer-details .woocommerce-column {
+	width: auto !important;
+	float: none !important;
+	margin: 0 !important;
+	padding: 1.125rem 1.25rem;
+	border: 1px solid var(--or-line);
+	border-radius: 8px;
+}
+.woocommerce-order .woocommerce-customer-details address {
+	font-style: normal;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	border: 0;
+	padding: 0;
+}
+.woocommerce-order .woocommerce-customer-details address p {
+	margin: 0.25rem 0 0;
+}
+
+@media (max-width: 640px) {
+	.woocommerce-order ul.woocommerce-order-overview {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.woocommerce-order ul.woocommerce-order-overview li:nth-child(2) {
+		border-right: 0;
+	}
+	.woocommerce-order ul.woocommerce-order-overview li:nth-child(-n+2) {
+		border-bottom: 1px solid var(--or-line);
+	}
+}
+
+/* Odbiór w punkcie: zostaje sam adres rozliczeniowy (bez kolumn) — ta sama karta co przy dwóch adresach. */
+.woocommerce-order .woocommerce-customer-details > .woocommerce-column__title,
+.woocommerce-order .woocommerce-customer-details > address {
+	max-width: 420px;
+}
+.woocommerce-order .woocommerce-customer-details > address {
+	padding: 1.125rem 1.25rem;
+	border: 1px solid var(--or-line);
+	border-radius: 8px;
+}

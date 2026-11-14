@@ -408,7 +408,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Single product page: hover on color dot shows that variant's first image
     var singleMainImg = document.querySelector('.single-product-main .main-product-image-el, #moretti-main-img');
     if (singleMainImg) {
-        document.addEventListener('mouseover', function(e) {
+        // Tylko mysz: na telefonie dotknięcie kropki ma od razu otworzyć produkt w tym kolorze,
+        // a nie najpierw podmienić zdjęcie (iOS traktuje pierwsze dotknięcie jak najechanie).
+        var hasHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (hasHover) document.addEventListener('mouseover', function(e) {
             var singleDot = e.target.closest && e.target.closest('.single-color-dot[data-first-image-url]');
             if (!singleDot) return;
             var url = singleDot.getAttribute('data-first-image-url');

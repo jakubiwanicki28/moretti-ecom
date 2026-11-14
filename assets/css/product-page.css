@@ -1,0 +1,99 @@
+/* Strona produktu: okruszki, kolory nad przyciskiem, pasek zakupu na telefonie (inc/product-page.php). */
+
+.product-colors {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin: 0 0 1.25rem;
+}
+.product-colors__label {
+	font-size: 0.8125rem;
+	color: #6b6560;
+}
+.product-colors__label strong {
+	color: #2a2826;
+	font-weight: 600;
+}
+.product-colors .single-color-dot {
+	width: 26px;
+	height: 26px;
+}
+.product-colors .single-color-dot.is-current {
+	width: 28px;
+	height: 28px;
+}
+
+.product-mvp-status-item.is-unavailable {
+	color: #b42318;
+}
+
+.moretti-sticky-atc {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	.single-product-main .woocommerce-breadcrumb {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.single-product-main .mb-8:has(> .woocommerce-breadcrumb) {
+		margin-bottom: 0.75rem !important;
+	}
+
+	.moretti-sticky-atc {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 90;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+		background: #fff;
+		border-top: 1px solid #e5e2dd;
+		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+		transform: translateY(110%);
+		transition: transform 0.25s ease;
+	}
+	.moretti-sticky-atc[hidden] {
+		display: none;
+	}
+	.moretti-sticky-atc.is-visible {
+		transform: translateY(0);
+	}
+	.moretti-sticky-atc__price {
+		flex: 0 0 auto;
+		font-weight: 700;
+		font-size: 1rem;
+		color: #2a2826;
+		line-height: 1.2;
+	}
+	.moretti-sticky-atc__price del {
+		display: block;
+		font-weight: 400;
+		font-size: 0.75rem;
+		color: #8a7f74;
+	}
+	.moretti-sticky-atc__price ins {
+		text-decoration: none;
+	}
+	.moretti-sticky-atc__button {
+		flex: 1 1 auto;
+		min-height: 48px;
+		border: 0;
+		border-radius: 0;
+		background: #2a2826;
+		color: #fff;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+	}
+	body.has-sticky-atc .site-footer,
+	body.has-sticky-atc footer:last-of-type {
+		padding-bottom: 76px;
+	}
+}

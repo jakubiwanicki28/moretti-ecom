@@ -61,3 +61,38 @@
         display: none !important;
     }
 }
+
+/* Najniższa cena z 30 dni przed obniżką — tylko przy produktach w promocji (inc/price-history.php). */
+.moretti-card-omnibus {
+	display: block;
+	margin-top: 0.25rem;
+	font-size: 0.6875rem;
+	line-height: 1.35;
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: none;
+	color: #6b6560;
+}
+.moretti-card-omnibus .woocommerce-Price-amount {
+	font-size: inherit;
+	font-weight: 500;
+}
+
+/* Gwiazdki z prawdziwych opinii (inc/reviews.php) — pokazywane dopiero od pierwszej opinii. */
+.moretti-stars {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.125rem;
+	color: #c99a2e;
+	font-size: 1rem;
+	line-height: 1;
+}
+.moretti-stars__empty {
+	color: #ddd6cc;
+}
+.moretti-stars__count {
+	margin-left: 0.375rem;
+	color: #8a7f74;
+	font-size: 0.75rem;
+	text-decoration: none;
+}

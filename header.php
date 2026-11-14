@@ -14,7 +14,7 @@
     <!-- FAVICON & METADATA -->
     <link rel="icon" type="image/png" href="<?php echo get_template_directory_uri(); ?>/images/favicon.png">
     <link rel="apple-touch-icon" href="<?php echo get_template_directory_uri(); ?>/images/favicon.png">
-    <meta name="description" content="Moretti - Ekskluzywne portfele skórzane i akcesoria premium. Ponadczasowa elegancja, najwyższej jakości rzemiosło i dbałość o każdy detal. Darmowa dostawa od 250 zł.">
+    <meta name="description" content="Moretti - Ekskluzywne portfele skórzane i akcesoria premium. Ponadczasowa elegancja, najwyższej jakości rzemiosło i dbałość o każdy detal. Darmowa dostawa od <?php echo esc_attr(moretti_free_shipping_from_label()); ?>.">
     
     <!-- SOCIAL MEDIA (OPEN GRAPH) -->
     <meta property="og:title" content="Moretti - Ekskluzywne Portfele Premium">
@@ -416,7 +416,7 @@
 <!-- Top Banner (Hidden by user request) -->
 <?php if (false && get_theme_mod('show_top_banner', true)) : ?>
 <div class="bg-charcoal text-white text-center py-2 px-4 text-xs md:text-sm">
-    <?php echo wp_kses_post(get_theme_mod('top_banner_text', 'Darmowa dostawa przy zamówieniach powyżej 250 zł. <a href="/shop" class="underline">Kup teraz</a>')); ?>
+    <?php echo wp_kses_post(get_theme_mod('top_banner_text', 'Darmowa dostawa od ' . moretti_free_shipping_from_label() . '. <a href="/shop" class="underline">Kup teraz</a>')); ?>
 </div>
 <?php endif; ?>
 
@@ -612,9 +612,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                             </svg>
                             <?php $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0; ?>
-                            <?php if ($cart_count > 0) : ?>
-                                <span class="absolute top-0 right-0 bg-charcoal text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"><?php echo (int) $cart_count; ?></span>
-                            <?php endif; ?>
+                            <span data-cart-count class="absolute top-0 right-0 bg-charcoal text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"<?php echo $cart_count > 0 ? '' : ' style="display:none"'; ?>><?php echo (int) $cart_count; ?></span>
                         </div>
                         <span class="moretti-header-action-label">Koszyk</span>
                     </a>

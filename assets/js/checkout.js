@@ -11,7 +11,8 @@
  *    Startujemy ze współrzędnych kodu pocztowego z naszego serwera, a wyszukiwarkę w mapie
  *    ograniczamy do Polski i uczymy kodów pocztowych. Bez kodu pocztowego mapa sama pyta o lokalizację.
  *    „Znajdź mnie” przybliżało do dokładności GPS (zoom 18 ≈ 90 m promienia) — pusta mapa bez punktów.
- * 3. Brak punktu odbioru: zamiast okienka wtyczki — komunikat pod przyciskiem wyboru punktu.
+ * 3. Brak punktu odbioru: zamiast okienka wtyczki — komunikat pod przyciskiem wyboru punktu, razem z błędami pól.
+ * 4. Telefon: 9 cyfr dla Polski (sprawdzane też na serwerze, inc/checkout.php).
  */
 (function () {
 	'use strict';
@@ -216,7 +217,7 @@
 		});
 	}
 
-	function showPointError() {
+	function showPointError(scroll) {
 		var button = document.getElementById('apaczka_pl_geowidget_block');
 		if (!button) {
 			return;
@@ -230,21 +231,72 @@
 			error.textContent = 'Wybierz punkt odbioru, aby złożyć zamówienie.';
 			button.insertAdjacentElement('afterend', error);
 		}
-		button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		if (scroll !== false) {
+			button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
 	}
 
-	// Faza capture: zatrzymujemy kliknięcie, zanim dojdzie do Reacta i do okienka Apaczki.
+	// Kliknięcie „Zamawiam i płacę” NIE jest zatrzymywane: walidacja WooCommerce ma pokazać wszystkie błędy naraz
+	// (email, adres, telefon). Brak punktu i tak blokuje zamówienie — Apaczka zgłasza go w magazynie walidacji.
+	// Wcześniej blokowaliśmy kliknięcie i klient widział tylko „wybierz punkt”, a błędy pól dopiero za drugim razem.
+	// Pod przyciskiem punktu dokładamy czytelny komunikat; do punktu przewijamy tylko, gdy pola są już poprawne.
 	document.addEventListener('click', function (event) {
 		var target = event.target;
 		if (!target.closest || !target.closest('.wc-block-components-checkout-place-order-button')) {
 			return;
 		}
 		if (selectedRateNeedsPoint() && !hasPoint()) {
-			event.preventDefault();
-			event.stopPropagation();
-			showPointError();
+			showPointError(false);
+			setTimeout(function () {
+				// Inne błędy (pola, zgoda) mają pierwszeństwo — do nich przewija WooCommerce.
+				var errors = data.select('wc/store/validation').getValidationErrors() || {};
+				var others = Object.keys(errors).filter(function (id) {
+					return id.indexOf('apaczka') === -1;
+				});
+				if (!others.length) {
+					var button = document.getElementById('apaczka_pl_geowidget_block');
+					if (button) {
+						button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					}
+				}
+			}, 350);
 		}
 	}, true);
+
+	/* 4. Telefon: 9 cyfr (PL) — kurier i Paczkomat wysyłają na niego SMS z kodem odbioru. --------- */
+
+	var PHONE_ERROR = 'Podaj 9-cyfrowy numer telefonu (np. 500 100 200) — wyślemy na niego kod odbioru paczki.';
+
+	function phoneIsValid(phone) {
+		var digits = String(phone || '').replace(/[\s\-().]/g, '').replace(/^(\+48|0048)/, '');
+		return /^\d{9}$/.test(digits);
+	}
+
+	var lastPhoneState = {};
+	function validatePhones() {
+		var customer;
+		try {
+			customer = data.select('wc/store/cart').getCustomerData();
+		} catch (e) {
+			return;
+		}
+		[['shipping', customer.shippingAddress], ['billing', customer.billingAddress]].forEach(function (pair) {
+			var address = pair[1] || {};
+			var id = pair[0] + '_phone';
+			var invalid = !!address.phone && (address.country || 'PL') === 'PL' && !phoneIsValid(address.phone);
+			if (lastPhoneState[id] === invalid) {
+				return;
+			}
+			lastPhoneState[id] = invalid;
+			var validation = data.dispatch('wc/store/validation');
+			if (invalid) {
+				validation.setValidationErrors({ [id]: { message: PHONE_ERROR, hidden: true } });
+			} else {
+				validation.clearValidationError(id);
+			}
+		});
+	}
+	data.subscribe(validatePhones, 'wc/store/cart');
 
 	/* Wspólny obserwator — bloki renderują się asynchronicznie i przerysowują przy zmianach. ---- */
 

@@ -90,7 +90,7 @@ $moretti_footer_page_url = static function (array $slugs, $fallback = '/') {
             </p>
 
             <p style="font-size: 9px; color: #a8a09d; text-transform: uppercase; letter-spacing: 0.15em; margin: 0; font-weight: 600;">
-                DESIGN & DEVELOPED BY VISUAL CONTENT
+                DESIGN &amp; DEVELOPED BY VELOCY
             </p>
         </div>
     </div>

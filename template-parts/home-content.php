@@ -658,21 +658,17 @@ $home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-da
 
 <!-- 6. VIDEO DIVIDER -->
 <section id="home-video-break-banner" aria-label="Prezentacja kolekcji">
-    <video class="home-video-break-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
-        <?php
-        // get_theme_file_uri (WP 5.9+): szuka pliku w child theme, potem w parent — unika 404 przy aktywnym child theme
-        if (function_exists('get_theme_file_uri')) {
-            $home_loop_mp4 = get_theme_file_uri('images/LOOP.mp4');
-            $home_loop_mov = get_theme_file_uri('images/LOOP.mov');
-        } else {
-            $home_loop_mp4 = get_template_directory_uri() . '/images/LOOP.mp4';
-            $home_loop_mov = get_template_directory_uri() . '/images/LOOP.mov';
-        }
-        ?>
-        <source src="<?php echo esc_url($home_loop_mp4); ?>" type="video/mp4">
-        <source src="<?php echo esc_url($home_loop_mov); ?>" type="video/quicktime">
-        Twoja przeglądarka nie obsługuje odtwarzania wideo.
-    </video>
+    <?php
+    // Wideo pobiera się dopiero, gdy sekcja zbliża się do ekranu, w rozmiarze dopasowanym do urządzenia
+    // (telefon 720 px ≈ 0,1 MB, komputer 1280 px ≈ 0,4 MB; wcześniej 3 MB zaraz po wejściu na stronę).
+    // Pliki z oryginału LOOP.mp4 (3168 px), bez dźwięku, z faststart:
+    //   ffmpeg -i LOOP.mp4 -an -vf scale=1280:-2 -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart LOOP-1280.mp4
+    //   ffmpeg -i LOOP.mp4 -an -vf scale=720:-2  -c:v libx264 -preset slow -crf 26 -pix_fmt yuv420p -movflags +faststart LOOP-720.mp4
+    ?>
+    <video class="home-video-break-video" muted loop playsinline webkit-playsinline preload="none"
+           poster="<?php echo esc_url(get_theme_file_uri('images/LOOP-poster.webp')); ?>"
+           data-src-mobile="<?php echo esc_url(get_theme_file_uri('images/LOOP-720.mp4')); ?>"
+           data-src-desktop="<?php echo esc_url(get_theme_file_uri('images/LOOP-1280.mp4')); ?>"></video>
     <div class="home-video-break-tint" aria-hidden="true"></div>
     <div class="home-video-break-content">
         <p class="home-video-break-kicker">MORETTI COLLECTION</p>
@@ -687,22 +683,33 @@ $home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-da
     if (!el) return;
     el.muted = true;
     el.defaultMuted = true;
-    el.autoplay = true;
-    el.loop = true;
-    el.playsInline = true;
     function tryPlay() {
         if (el.play) el.play().catch(function () {});
     }
-    el.load();
-    el.addEventListener('loadeddata', tryPlay);
-    el.addEventListener('canplay', tryPlay);
+    function start() {
+        if (el.getAttribute('src')) return;
+        var mobile = window.matchMedia('(max-width: 767px)').matches;
+        el.src = el.getAttribute(mobile ? 'data-src-mobile' : 'data-src-desktop');
+        el.addEventListener('canplay', tryPlay);
+        el.load();
+    }
     el.addEventListener('error', function () {
-        // Keep section readable even when video cannot be loaded.
+        // Sekcja ma zostać czytelna, gdy wideo się nie wczyta (zostaje plakat).
         var wrap = document.getElementById('home-video-break-banner');
         if (wrap) wrap.classList.add('home-video-break-fallback');
     });
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries, observer) {
+            if (entries[0].isIntersecting) {
+                observer.disconnect();
+                start();
+            }
+        }, { rootMargin: '300px 0px' }).observe(el);
+    } else {
+        start();
+    }
     document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) tryPlay();
+        if (!document.hidden && el.getAttribute('src')) tryPlay();
     });
 })();
 </script>
@@ -847,11 +854,8 @@ $home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-da
                 <?php echo wp_trim_words(get_the_excerpt(), 25); ?>
             </p>
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                <span style="font-size: 1.5rem; font-weight: 700; color: #2a2826;"><?php echo $product->get_price_html(); ?></span>
-                <div style="display: flex; color: #fbbf24; font-size: 1rem;">
-                    <?php for($i=0; $i<5; $i++) echo "★"; ?>
-                    <span style="color: #a39588; font-size: 0.75rem; margin-left: 0.5rem;">(<?php echo $product->get_review_count(); ?> opinie)</span>
-                </div>
+                <span style="font-size: 1.5rem; font-weight: 700; color: #2a2826;"><?php echo $product->get_price_html(); ?></span><?php echo moretti_omnibus_note_html($product, 'moretti-card-omnibus'); ?>
+                <?php echo moretti_stars_html($product); ?>
             </div>
             <div id="home-featured-cta-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <a id="home-featured-details-btn" href="<?php the_permalink(); ?>" style="display: inline-block; background: #2a2826; color: #fff; padding: 1rem 3rem; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; transition: background 0.3s;">ZOBACZ SZCZEGÓŁY</a>
@@ -867,69 +871,40 @@ $home_gender_women_url = $home_gender_resolve_url(array('dla-niej', 'portfele-da
 // Featured Product Slider - Pure JavaScript, no classes
 let featuredCurrentIndex = 0;
 
-function featuredSliderNext() {
+// Jedna funkcja przełączania: przy produkcie z jednym zdjęciem (bez kropek) nic nie robi —
+// wcześniej automatyczne przewijanie sięgało po nieistniejącą kropkę i rzucało błąd skryptu.
+function featuredSliderShow(nextIndex) {
     const slider = document.getElementById('featured-slider');
     if (!slider) return;
-    
     const images = slider.querySelectorAll('.slider-image');
     const dots = slider.querySelectorAll('.slider-dot');
-    const totalImages = images.length;
-    
-    // Hide current
+    if (images.length < 2) return;
+
+    const total = images.length;
+    const next = ((nextIndex % total) + total) % total;
     images[featuredCurrentIndex].style.opacity = '0';
-    dots[featuredCurrentIndex].style.width = '8px';
-    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
-    
-    // Calculate next
-    featuredCurrentIndex = (featuredCurrentIndex + 1) % totalImages;
-    
-    // Show next
-    images[featuredCurrentIndex].style.opacity = '1';
-    dots[featuredCurrentIndex].style.width = '24px';
-    dots[featuredCurrentIndex].style.background = '#2a2826';
+    images[next].style.opacity = '1';
+    if (dots[featuredCurrentIndex]) {
+        dots[featuredCurrentIndex].style.width = '8px';
+        dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
+    }
+    if (dots[next]) {
+        dots[next].style.width = '24px';
+        dots[next].style.background = '#2a2826';
+    }
+    featuredCurrentIndex = next;
+}
+
+function featuredSliderNext() {
+    featuredSliderShow(featuredCurrentIndex + 1);
 }
 
 function featuredSliderPrev() {
-    const slider = document.getElementById('featured-slider');
-    if (!slider) return;
-    
-    const images = slider.querySelectorAll('.slider-image');
-    const dots = slider.querySelectorAll('.slider-dot');
-    const totalImages = images.length;
-    
-    // Hide current
-    images[featuredCurrentIndex].style.opacity = '0';
-    dots[featuredCurrentIndex].style.width = '8px';
-    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
-    
-    // Calculate prev
-    featuredCurrentIndex = (featuredCurrentIndex - 1 + totalImages) % totalImages;
-    
-    // Show prev
-    images[featuredCurrentIndex].style.opacity = '1';
-    dots[featuredCurrentIndex].style.width = '24px';
-    dots[featuredCurrentIndex].style.background = '#2a2826';
+    featuredSliderShow(featuredCurrentIndex - 1);
 }
 
 function featuredSliderGoTo(index) {
-    const slider = document.getElementById('featured-slider');
-    if (!slider) return;
-    
-    const images = slider.querySelectorAll('.slider-image');
-    const dots = slider.querySelectorAll('.slider-dot');
-    
-    // Hide current
-    images[featuredCurrentIndex].style.opacity = '0';
-    dots[featuredCurrentIndex].style.width = '8px';
-    dots[featuredCurrentIndex].style.background = 'rgba(42,40,38,0.2)';
-    
-    // Set new index
-    featuredCurrentIndex = index;
-    
-    // Show target
-    images[featuredCurrentIndex].style.opacity = '1';
-    dots[featuredCurrentIndex].style.width = '24px';
-    dots[featuredCurrentIndex].style.background = '#2a2826';
+    featuredSliderShow(index);
 }
 
 // Auto-advance featured slider every 5 seconds
@@ -1194,8 +1169,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 text-center">
         <div class="flex flex-col items-center">
             <svg class="w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-            <h3 class="font-bold uppercase text-sm mb-2">Darmowa Dostawa od 250 zł</h3>
-            <p class="text-xs text-taupe-600">Dla wszystkich zamówień powyżej 250 zł</p>
+            <h3 class="font-bold uppercase text-sm mb-2">Darmowa Dostawa od <?php echo esc_html(moretti_free_shipping_from_label()); ?></h3>
+            <p class="text-xs text-taupe-600">Paczkomat, punkt odbioru albo kurier — każda metoda</p>
         </div>
         <div class="flex flex-col items-center border-x border-gray-200">
             <svg class="w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -1205,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="flex flex-col items-center">
             <svg class="w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path></svg>
             <h3 class="font-bold uppercase text-sm mb-2">Gwarancja Zwrotu</h3>
-            <p class="text-xs text-taupe-600">14 dni na zwrot towaru</p>
+            <p class="text-xs text-taupe-600"><?php echo (int) MORETTI_RETURN_DAYS; ?> dni na zwrot towaru</p>
         </div>
     </div>
 
@@ -1214,8 +1189,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="space-y-4">
             <?php 
             $faqs = array(
-                "Jakie są koszty dostawy?" => "Dostawa kurierem InPost kosztuje 15 zł, powyżej 250 zł jest darmowa.",
-                "Z jakiej skóry wykonane są produkty?" => "Używamy wyłącznie naturalnej skóry bydlęcej.",
+                "Jakie są koszty dostawy?" => "Paczkomat InPost " . moretti_shipping_cost_label("Paczkomat") . ", punkt DPD " . moretti_shipping_cost_label("punktu DPD") . ", punkt Orlen Paczka " . moretti_shipping_cost_label("Orlen") . ", kurier InPost " . moretti_shipping_cost_label("Kurier InPost") . ", kurier DPD " . moretti_shipping_cost_label("Kurier DPD") . ". Od " . moretti_free_shipping_from_label() . " każda dostawa jest darmowa. Wysyłamy następnego dnia roboczego po opłaceniu.",
+                "Z jakiej skóry wykonane są produkty?" => "Portfele szyjemy ze skóry naturalnej. Materiał każdej torebki podajemy w jej opisie.",
                 "Jak dbać o skórzany portfel?" => "Zalecamy stosowanie dedykowanych balsamów do skór raz na kwartał."
             );
             foreach($faqs as $q => $a): ?>

@@ -475,3 +475,14 @@
         transform: scale(1.15);
     }
 }
+
+/*
+ * Szerokie ekrany: baner 16:9 na pełną szerokość okna rósł wyżej niż ekran (przy 1920 px ≈ 1080 px wysokości),
+ * a dolna część kadru (produkt) znikała pod linią przewijania. Baner zostaje na całą szerokość (jak np. ochnik.com),
+ * ale nie jest wyższy niż ekran pod nagłówkiem — zdjęcie przycina się wtedy z góry i z dołu (object-fit: cover).
+ */
+@media (min-width: 768px) {
+    .mh2__track-wrap {
+        max-height: calc(100vh - 100px);
+    }
+}

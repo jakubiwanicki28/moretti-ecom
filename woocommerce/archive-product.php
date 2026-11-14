@@ -1855,7 +1855,7 @@ if (isset($_GET['min_price']) || isset($_GET['max_price'])) {
                                     </a>
                                 </h3>
                                 <div class="product-price">
-                                    <?php echo $product->get_price_html(); ?>
+                                    <?php echo $product->get_price_html(); ?><?php echo moretti_omnibus_note_html($product, 'moretti-card-omnibus'); ?>
                                 </div>
                             </div>
                         </article>

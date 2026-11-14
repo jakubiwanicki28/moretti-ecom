@@ -11,14 +11,28 @@ if (!defined('ABSPATH')) {
 
 // Include site setup engine
 require_once get_template_directory() . '/inc/theme-setup-data.php';
+require_once get_template_directory() . '/inc/store-facts.php';
+require_once get_template_directory() . '/inc/free-shipping.php';
+require_once get_template_directory() . '/inc/price-history.php';
+require_once get_template_directory() . '/inc/reviews.php';
+require_once get_template_directory() . '/inc/product-page.php';
+require_once get_template_directory() . '/inc/checkout-validation.php';
+require_once get_template_directory() . '/inc/performance.php';
+require_once get_template_directory() . '/inc/order-received.php';
 require_once get_template_directory() . '/inc/product-care.php';
 require_once get_template_directory() . '/inc/checkout.php';
 require_once get_template_directory() . '/inc/payment-guard.php';
 require_once get_template_directory() . '/inc/litespeed-cache.php';
 require_once get_template_directory() . '/inc/added-to-cart.php';
 
-// Polish WooCommerce Defaults
+// Polish WooCommerce Defaults — jednorazowo (wersja w opcji). Wcześniej działało przy każdym wejściu na stronę
+// i nadpisywało zmiany z panelu (np. ustawienia opinii); teraz zmiana tutaj = podbicie wersji.
+const MORETTI_DEFAULTS_VERSION = 2;
 function moretti_wallet_setup() {
+    if ((int) get_option('moretti_defaults_version') >= MORETTI_DEFAULTS_VERSION) {
+        return;
+    }
+    update_option('moretti_defaults_version', MORETTI_DEFAULTS_VERSION, false);
     update_option('blogname', 'Moretti - Ekskluzywne Portfele Premium');
     update_option('blogdescription', 'Ponadczasowa Elegancja i Rzemiosło');
     update_option('woocommerce_currency', 'PLN');
@@ -908,40 +922,7 @@ function moretti_store_color_variants_debug($product_id, $debug = null) {
     return isset($store[(int) $product_id]) ? $store[(int) $product_id] : array();
 }
 
-/**
- * Resolve lowest price from last 30 days for Omnibus-like display.
- * Uses known plugin meta keys when available, otherwise falls back to regular price on sale.
- */
-function moretti_get_lowest_price_last_30_days($product) {
-    if (!$product instanceof WC_Product) {
-        return null;
-    }
-
-    $meta_keys = array(
-        '_omnibus_lowest_price',
-        '_wc_omnibus_lowest_price',
-        '_alg_wc_omnibus_price',
-        '_lowest_price_30_days',
-        '_lowest_price_last_30_days',
-    );
-
-    foreach ($meta_keys as $meta_key) {
-        $value = get_post_meta($product->get_id(), $meta_key, true);
-        if ($value !== '' && is_numeric($value) && (float) $value > 0) {
-            return (float) $value;
-        }
-    }
-
-    if ($product->is_on_sale()) {
-        $regular = (float) $product->get_regular_price();
-        $sale = (float) $product->get_sale_price();
-        if ($regular > 0 && $sale > 0 && $regular > $sale) {
-            return $regular;
-        }
-    }
-
-    return null;
-}
+// moretti_get_lowest_price_last_30_days() — inc/price-history.php (prawdziwa historia cen).
 
 /**
  * Keep quantity fixed to 1 on single product page.
@@ -1529,7 +1510,7 @@ function moretti_customize_register($wp_customize) {
     ));
 
     $wp_customize->add_setting('top_banner_text', array(
-        'default' => 'Darmowa dostawa przy zamówieniach powyżej 250 zł. <a href="/shop" class="underline">Kup teraz</a>',
+        'default' => 'Darmowa dostawa od ' . moretti_free_shipping_from_label() . '. <a href="/shop" class="underline">Kup teraz</a>',
         'transport' => 'refresh',
         'sanitize_callback' => 'wp_kses_post',
     ));

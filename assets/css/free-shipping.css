@@ -1,0 +1,53 @@
+/* Pasek „Brakuje Ci X zł do darmowej dostawy” — okienko „Dodano do koszyka”, koszyk, kasa (inc/free-shipping.php). */
+.moretti-fs {
+	--fs-ink: #2a2826;
+	--fs-track: #ece9e4;
+	--fs-free: #1f7a4d;
+	margin: 0 0 1.25rem;
+}
+.moretti-fs[hidden] {
+	display: none;
+}
+.moretti-fs__text {
+	margin: 0 0 0.5rem;
+	font-size: 0.875rem;
+	line-height: 1.4;
+	color: var(--fs-ink);
+}
+.moretti-fs.is-free .moretti-fs__text {
+	color: var(--fs-free);
+	font-weight: 600;
+}
+.moretti-fs.is-free .moretti-fs__text::before {
+	content: "✓ ";
+}
+.moretti-fs__track {
+	height: 4px;
+	border-radius: 2px;
+	background: var(--fs-track);
+	overflow: hidden;
+}
+.moretti-fs__track span {
+	display: block;
+	height: 100%;
+	background: var(--fs-ink);
+	transition: width 0.3s ease;
+}
+.moretti-fs.is-free .moretti-fs__track span {
+	background: var(--fs-free);
+}
+
+/* Koszyk i kasa: pasek nad blokiem, w szerokości treści. */
+.moretti-fs--page {
+	max-width: 72rem;
+	margin: 0 auto 1.5rem;
+	padding: 0.875rem 1rem;
+	border: 1px solid #e5e2dd;
+	border-radius: 6px;
+	background: #faf9f7;
+}
+
+/* Okienko „Dodano do koszyka”. */
+.moretti-atc .moretti-fs {
+	margin: 0.25rem 0 1rem;
+}
