@@ -345,3 +345,86 @@ html.moretti-map-open .linguise_switcher_root {
 		overflow: hidden; /* zamknięty panel ma szerokość 0, ale jego nagłówek wystawał na mapę */
 	}
 }
+
+/* Strona „Opłać zamówienie” (link z przypomnienia, „Zapłać ponownie”) — jedna zgoda, metody jak lista kart. */
+.woocommerce-order-pay #order_review .p24-regulation-wrapper,
+.woocommerce-order-pay #order_review .woocommerce-input-wrapper:has(input[name^="regulation_"]) {
+	display: none !important;
+}
+.woocommerce-order-pay #payment ul.payment_methods {
+	list-style: none;
+	margin: 1.5rem 0;
+	padding: 0;
+	display: grid;
+	gap: 0.5rem;
+}
+.woocommerce-order-pay #payment li.wc_payment_method {
+	border: 1px solid var(--mc-line);
+	border-radius: 6px;
+	padding: 0.875rem 1rem;
+	background: #fff;
+}
+.woocommerce-order-pay #payment li.wc_payment_method:has(> input:checked) {
+	border-color: var(--mc-ink);
+	box-shadow: 0 0 0 1px var(--mc-ink);
+}
+.woocommerce-order-pay #payment li.wc_payment_method > input[type="radio"] {
+	accent-color: var(--mc-ink);
+	margin: 0 0.625rem 0 0;
+	vertical-align: middle;
+}
+.woocommerce-order-pay #payment li.wc_payment_method > label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.625rem;
+	font-weight: 500;
+	color: var(--mc-ink);
+	cursor: pointer;
+	vertical-align: middle;
+}
+.woocommerce-order-pay #payment li.wc_payment_method > label img {
+	max-height: 22px;
+	width: auto;
+	margin: 0;
+}
+.woocommerce-order-pay #payment .payment_box {
+	margin-top: 0.75rem;
+	font-size: 0.875rem;
+	color: var(--mc-muted);
+}
+.woocommerce-order-pay #payment .woocommerce-privacy-policy-text {
+	font-size: 0.8125rem;
+	color: var(--mc-muted);
+}
+.woocommerce-order-pay #payment .woocommerce-terms-and-conditions-wrapper label {
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: var(--mc-ink);
+}
+.woocommerce-order-pay #payment .woocommerce-terms-and-conditions-wrapper input[type="checkbox"] {
+	accent-color: var(--mc-ink);
+	width: 1.125rem;
+	height: 1.125rem;
+	margin-right: 0.5rem;
+	vertical-align: -0.2em;
+}
+.woocommerce-order-pay #payment #place_order {
+	width: 100%;
+	margin-top: 1rem;
+	padding: 1rem;
+	background: var(--mc-ink) !important;
+	border: 0 !important;
+	border-radius: 4px;
+	color: #fff !important;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+.woocommerce-order-pay #payment .woocommerce-terms-and-conditions-wrapper a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.woocommerce-order-pay #payment .payment_box:not(:has(*:not(input[type="hidden"]):not(.p24-regulation-wrapper):not(.woocommerce-input-wrapper))) {
+	display: none !important;
+}

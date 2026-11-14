@@ -5,6 +5,9 @@
  *              transakcji, więc: (1) lista metod pochodzi ze zrzutu produkcji (fixtures/p24-payment-methods.json),
  *              (2) rejestracja transakcji zwraca token, (3) zamiast bramki P24 jest lokalny symulator
  *              (/?moretti-p24-sim=TOKEN) z przyciskami „Zapłać” / „Anuluj”, który kończy zamówienie jak prawdziwa płatność.
+ *              (4) awarie do testów strażnika płatności (inc/payment-guard.php): przycisk „Zapłać, ale sklep nie dostaje
+ *              powiadomienia” oznacza transakcję jako opłaconą tylko po stronie „P24”; transaction/by/sessionId
+ *              i transaction/verify odpowiadają jak prawdziwe API. Ręcznie: moretti_p24_sim_mark_paid($session_id).
  */
 
 if (!defined('ABSPATH') || wp_get_environment_type() !== 'local') {
@@ -25,9 +28,28 @@ add_filter('pre_http_request', function ($pre, $args, $url) {
         $body = file_get_contents(WP_CONTENT_DIR . '/themes/moretti-ecom/scripts/local-env/fixtures/p24-payment-methods.json');
     } elseif (str_contains($path, '/api/v1/transaction/register')) {
         // Opis i kwotę zapamiętujemy, żeby symulator pokazał to, co dostałby prawdziwy P24.
-        $token = 'LOCAL-' . wp_generate_password(12, false);
-        set_transient('moretti_p24_sim_' . $token, json_decode($args['body'] ?? '{}', true), DAY_IN_SECONDS);
+        $token    = 'LOCAL-' . wp_generate_password(12, false);
+        $register = json_decode($args['body'] ?? '{}', true);
+        set_transient('moretti_p24_sim_' . $token, $register, DAY_IN_SECONDS);
+        if (!empty($register['sessionId'])) {
+            set_transient('moretti_p24_sim_session_' . md5($register['sessionId']), $register, 3 * DAY_IN_SECONDS);
+        }
         $body = wp_json_encode(['data' => ['token' => $token], 'responseCode' => 0]);
+    } elseif (str_contains($path, '/api/v1/transaction/by/sessionId/')) {
+        $session_id = rawurldecode(substr($path, strpos($path, '/sessionId/') + strlen('/sessionId/')));
+        $register   = get_transient('moretti_p24_sim_session_' . md5($session_id)) ?: [];
+        $paid       = (bool) get_option('moretti_p24_sim_paid_' . md5($session_id));
+        $body = wp_json_encode(['data' => [
+            'orderId'       => $paid ? 900000000 + abs(crc32($session_id)) % 99999999 : 0,
+            'sessionId'     => $session_id,
+            'status'        => $paid ? 2 : 0,
+            'amount'        => (int) ($register['amount'] ?? 0),
+            'currency'      => $register['currency'] ?? 'PLN',
+            'paymentMethod' => (int) ($register['method'] ?? 0),
+            'statement'     => $paid ? 'p24-LOCAL-SIM' : '',
+        ], 'responseCode' => 0]);
+    } elseif (str_contains($path, '/api/v1/transaction/verify')) {
+        $body = wp_json_encode(['data' => ['status' => 'success'], 'responseCode' => 0]);
     } else {
         $body = wp_json_encode(['error' => 'Lokalna atrapa P24 — ta operacja nie jest obsługiwana', 'code' => 400]);
     }
@@ -48,6 +70,17 @@ add_action('woocommerce_rest_checkout_process_payment_with_context', function ($
     }
 }, 100, 2);
 
+// To samo dla klasycznej strony „Zapłać za zamówienie” (link z przypomnienia), która przekierowuje przez wp_redirect.
+add_filter('wp_redirect', function ($location) {
+    if (preg_match('~przelewy24\.pl/trnRequest/(LOCAL-[A-Za-z0-9]+)~', (string) $location, $m)) {
+        return add_query_arg(MORETTI_P24_SIM_PARAM, $m[1], home_url('/'));
+    }
+    return $location;
+});
+add_filter('allowed_redirect_hosts', function ($hosts) {
+    return array_merge($hosts, ['sandbox.przelewy24.pl']);
+});
+
 add_action('template_redirect', function () {
     if (empty($_GET[MORETTI_P24_SIM_PARAM])) {
         return;
@@ -62,7 +95,11 @@ add_action('template_redirect', function () {
     }
 
     if (isset($_POST['moretti_p24_action']) && check_admin_referer('moretti_p24_sim_' . $token)) {
-        if ($_POST['moretti_p24_action'] === 'pay') {
+        if ($_POST['moretti_p24_action'] === 'pay_silent') {
+            // Bank pobrał pieniądze, ale powiadomienie do sklepu nie dotarło (np. hosting leżał).
+            moretti_p24_sim_mark_paid((string) ($data['sessionId'] ?? ''));
+            wp_safe_redirect($order->get_checkout_order_received_url());
+        } elseif ($_POST['moretti_p24_action'] === 'pay') {
             $order->payment_complete($token);
             $order->add_order_note('Lokalny symulator P24: płatność zaakceptowana.');
             wp_safe_redirect($order->get_checkout_order_received_url());
@@ -100,8 +137,16 @@ add_action('template_redirect', function () {
             <?php wp_nonce_field('moretti_p24_sim_' . $token); ?>
             <button class="pay" name="moretti_p24_action" value="pay">Zapłać</button>
             <button class="cancel" name="moretti_p24_action" value="cancel">Anuluj płatność</button>
+            <button class="cancel" name="moretti_p24_action" value="pay_silent">Test awarii: zapłać, ale sklep nie dostaje powiadomienia</button>
         </form>
     </div></body></html>
     <?php
     exit;
 });
+
+/** Oznacza transakcję jako opłaconą po stronie „P24” bez powiadamiania sklepu (test strażnika płatności). */
+function moretti_p24_sim_mark_paid(string $session_id): void {
+    if ($session_id !== '') {
+        update_option('moretti_p24_sim_paid_' . md5($session_id), 1, false);
+    }
+}

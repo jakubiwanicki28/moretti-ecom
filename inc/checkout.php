@@ -8,6 +8,7 @@
  * - Kolejność płatności ustala motyw: P24 sam wypycha swoje „wyróżnione” metody (w tym Raty) na górę.
  * - Mapa punktów Apaczki startuje ze współrzędnych kodu pocztowego klienta (endpoint moretti/v1/postcode,
  *   dane GeoNames w inc/data/pl-postcodes.php), a nie z wyszukiwarki tekstowej widgetu.
+ * - Przelewy bankowe (e-przelewy, ITP) wracają do sklepu od razu, bez czekania na wynik na stronie P24.
  * - Walidacja punktu i wygląd: assets/js/checkout.js + assets/css/checkout.css.
  */
 
@@ -222,3 +223,67 @@ function moretti_checkout_p24_strings($translation, $text, $domain) {
     return $translation;
 }
 add_filter('gettext', 'moretti_checkout_p24_strings', 10, 3);
+
+/**
+ * Przelew bankowy: klient wraca do sklepu od razu, nie czeka na wynik na stronie P24.
+ *
+ * Wtyczka P24 1.2.0 wysyła waitForResult=true dla wszystkich metod poza Ratami i przekazem tradycyjnym.
+ * Bank potwierdza e-przelew (szczególnie ITP) z opóźnieniem: na prod mediana ok. 1,5 min, co 10. ponad 10 min,
+ * rekord 19,5 min (VIII–XI 2026). Strona P24 w tym czasie potrafi pokazać „nieoczekiwany błąd” i namawiać do ponownej
+ * płatności, choć bank już pobrał pieniądze (zamówienie #3621, 2026-11-06). Dokumentacja P24 zaleca dla
+ * e-przelewów waitForResult=false; wtedy klient czeka na naszej stronie „Zamówienie otrzymane”, gdzie
+ * karta statusu P24 mówi „Nie płać ponownie” i o potwierdzeniu informuje mailem.
+ * BLIK, karty i portfele potwierdzają się w kilkadziesiąt sekund — dla nich zostaje czekanie na wynik.
+ *
+ * Wtyczka nie ma filtra na dane rejestracji, więc poprawiamy treść żądania transaction/register.
+ * Podpis transakcji obejmuje tylko sessionId, merchantId, amount, currency i crc — zmiana go nie narusza.
+ */
+const MORETTI_P24_NO_WAIT_GROUPS = ['FastTransfers', 'eTransfer'];
+
+function moretti_p24_bank_transfer_no_wait($args, $url) {
+    if (!str_contains((string) $url, '/api/v1/transaction/register') || !preg_match('~^https://[a-z.]*przelewy24\.pl/~', (string) $url)) {
+        return $args;
+    }
+
+    $body = json_decode((string) ($args['body'] ?? ''), true);
+    if (!is_array($body) || empty($body['waitForResult']) || empty($body['method'])) {
+        return $args;
+    }
+
+    if (!class_exists(\WC_P24\Utilities\Payment_Methods::class)) {
+        return $args;
+    }
+
+    $group = \WC_P24\Utilities\Payment_Methods::get_group_name($body['method']);
+    if (in_array($group, MORETTI_P24_NO_WAIT_GROUPS, true)) {
+        $body['waitForResult'] = false;
+        $args['body'] = wp_json_encode($body);
+    }
+
+    return $args;
+}
+add_filter('http_request_args', 'moretti_p24_bank_transfer_no_wait', 10, 2);
+
+/**
+ * Strona „Opłać zamówienie” (link z przypomnienia strażnika płatności, „Zapłać ponownie” po nieudanej płatności).
+ * Ta sama jedna zgoda co na kasie: checkbox „Warunki” WooCommerce dostaje treść obejmującą regulamin sklepu
+ * i Przelewy24, a osobne checkboxy P24 są ukryte (assets/css/checkout.css). Akceptację przekazujemy wtyczce P24
+ * po stronie serwera — dopiero po zaznaczeniu naszej zgody, którą WooCommerce i tak waliduje przed płatnością.
+ */
+function moretti_order_pay_terms_text($text) {
+    return is_wc_endpoint_url('order-pay') ? moretti_checkout_terms_text() : $text;
+}
+add_filter('woocommerce_get_terms_and_conditions_checkbox_text', 'moretti_order_pay_terms_text');
+
+function moretti_order_pay_accept_p24_regulation() {
+    // phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce sprawdził nonce przed tą akcją.
+    if (empty($_POST['terms']) || empty($_POST['payment_method'])) {
+        return;
+    }
+    $_POST['regulation_0'] = '1';
+    if (preg_match('/^p24-online-payments-(\d+)$/', sanitize_key(wp_unslash($_POST['payment_method'])), $m)) {
+        $_POST['regulation_' . $m[1]] = '1';
+    }
+    // phpcs:enable
+}
+add_action('woocommerce_before_pay_action', 'moretti_order_pay_accept_p24_regulation');

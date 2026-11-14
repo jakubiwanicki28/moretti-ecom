@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 require_once get_template_directory() . '/inc/theme-setup-data.php';
 require_once get_template_directory() . '/inc/product-care.php';
 require_once get_template_directory() . '/inc/checkout.php';
+require_once get_template_directory() . '/inc/payment-guard.php';
 require_once get_template_directory() . '/inc/litespeed-cache.php';
 require_once get_template_directory() . '/inc/added-to-cart.php';
 
